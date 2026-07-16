@@ -460,6 +460,12 @@ events:
     payload:
       thread_ulid: 01KXMZJS3Y23WWGKQC8JPNB1TP
     timestamp: 2026-07-16T08:11:59.352Z
+  - _ulid: 01KXMZQ7BJ8FK5FR5CH219KBD7
+    actor: Jacob Chapel
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KXMZJW6KFZ5VNZSCM76ER48P
+    timestamp: 2026-07-16T08:12:05.363Z
 examined_commit: dc53f97405514dc91a021e92626e06d4b7219124
 external_links: []
 lifecycle_state: closed
@@ -570,6 +576,8 @@ threads:
           and both aliases; add cold-failure coverage."
         created_at: 2026-07-16T08:09:42.867Z
     kind: blocker
+    resolved_at: 2026-07-16T08:12:05.097Z
+    resolved_by: Jacob Chapel
   - _ulid: 01KXMZJZE02XGNQP1SBV811F3R
     anchor:
       type: code
@@ -605,5 +613,5 @@ verdicts:
     role: reviewer
     created_at: 2026-07-16T08:09:50.171Z
 created_at: 2026-07-16T07:49:16.506Z
-updated_at: 2026-07-16T08:11:59.048Z
+updated_at: 2026-07-16T08:12:05.097Z
 notes: []
