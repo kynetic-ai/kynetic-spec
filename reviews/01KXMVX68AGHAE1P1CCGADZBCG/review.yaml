@@ -2,7 +2,125 @@ _ulid: 01KXMVX68AGHAE1P1CCGADZBCG
 slugs: []
 title: Review canonical dispatch lifecycle API (cycle 3)
 author: Jacob Chapel
-checks: []
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: All 1052 matched files use the correct format.
+    name: format
+    required: true
+    runner: npm run format:check
+    created_at: 2026-07-16T07:19:23.808Z
+    completed_at: 2026-07-16T07:19:23.808Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Repo-wide lint completed with 0 errors and 702 baseline warnings; focused oxlint on all
+      six changed TypeScript/test files completed with 0 warnings and 0 errors.
+    name: lint
+    required: true
+    runner: npm run lint -- --quiet
+    created_at: 2026-07-16T07:19:27.064Z
+    completed_at: 2026-07-16T07:19:27.064Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Shared package build and tsc --noEmit completed successfully.
+    name: typecheck
+    required: true
+    runner: npm run typecheck
+    created_at: 2026-07-16T07:19:30.550Z
+    completed_at: 2026-07-16T07:19:30.550Z
+  - status: skipped
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Every suite reported PASS, including tests/daemon-agent-dispatch-lifecycle.test.ts 42/42,
+      tests/agent-dispatch-engine.test.ts 147/147, and tests/meta.test.ts 195 passed/1 skipped. The
+      wrapper then reproduced the pre-existing post-green teardown hang tracked by
+      @task-investigate-npm-test-teardown-hang-after-green-suite-run and was terminated after two
+      quiet intervals; no test failure was reported.
+    name: full test suite
+    required: true
+    runner: npm test -- --fresh
+    created_at: 2026-07-16T07:19:33.791Z
+    completed_at: 2026-07-16T07:19:33.791Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Validation passed with 6 repository baseline deprecation warnings.
+    name: kspec validate refs
+    required: true
+    runner: kspec validate --refs --warnings-ok
+    created_at: 2026-07-16T07:19:36.990Z
+    completed_at: 2026-07-16T07:19:36.990Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Validation passed with repository baseline orphan/status warnings.
+    name: kspec validate alignment
+    required: true
+    runner: kspec validate --alignment --warnings-ok
+    created_at: 2026-07-16T07:19:40.138Z
+    completed_at: 2026-07-16T07:19:40.138Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Mechanical validation passed with repository baseline coverage warnings; task-owned and
+      inherited annotations were audited manually.
+    name: kspec validate completeness
+    required: true
+    runner: kspec validate --completeness --warnings-ok
+    created_at: 2026-07-16T07:19:43.367Z
+    completed_at: 2026-07-16T07:19:43.367Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "daemon-agent-dispatch-lifecycle, daemon-api/agent-dispatch, and
+      daemon-agent-dispatch-routes completed: 14 suites and 67 tests passed."
+    name: focused lifecycle tests
+    required: true
+    runner: npm test -- --fresh focused files
+    created_at: 2026-07-16T07:19:46.738Z
+    completed_at: 2026-07-16T07:19:46.738Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Base 89a72367 through head 30da557f contains no whitespace errors.
+    name: diff check
+    required: true
+    runner: git diff --check
+    created_at: 2026-07-16T07:19:50.144Z
+    completed_at: 2026-07-16T07:19:50.144Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Files read: all six changed files; dispatch task-identity, control
+      schema/store/transaction, engine lifecycle/status, daemon middleware/server, task/spec/traits,
+      and both prior review cycles. Commands run: base/head diffs and context reads;
+      task/spec/trait/review lookups; format, repo/focused lint, typecheck, three validations, diff
+      check, focused tests, full fresh suite, pure identity probe, and real-shadow route probe.
+      Claims verified: prior matching-cleanup and corrupt/unavailable fixes pass; an absent
+      canonical-looking task_id still returned HTTP 200 and persisted a phantom paused task control;
+      status AC annotations only parse schemas; inherited API-trait N/A claims conflict with the new
+      endpoint. Categories searched: correctness, identity/cleanup edge cases, persistence/error
+      mapping, raw-error/path exposure, security/headers, test quality, legacy compatibility, and
+      integration. Shared/package guidance surfaces touched: none; neutrality checklist not
+      applicable."
+    name: review evidence log
+    required: true
+    runner: manual review
+    created_at: 2026-07-16T07:19:53.496Z
+    completed_at: 2026-07-16T07:19:53.496Z
 events:
   - _ulid: 01KXMVX67XCH67ZJXWVYGW89SX
     actor: Jacob Chapel
@@ -17,6 +135,97 @@ events:
       from: draft
       to: open
     timestamp: 2026-07-16T07:06:20.266Z
+  - _ulid: 01KXMWPR56YXY9GAWY9RGGDFHN
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: format
+    timestamp: 2026-07-16T07:19:24.070Z
+  - _ulid: 01KXMWPVAT8FD1CRFYZ5GQ7P14
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: lint
+    timestamp: 2026-07-16T07:19:27.322Z
+  - _ulid: 01KXMWPYREFKW205QZH7TYR71H
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: typecheck
+    timestamp: 2026-07-16T07:19:30.830Z
+  - _ulid: 01KXMWQ1WWCTB3RZTABD4TD2J5
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: skipped
+      name: full test suite
+    timestamp: 2026-07-16T07:19:34.045Z
+  - _ulid: 01KXMWQ510213WV2GFMJKJ9CA5
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate refs
+    timestamp: 2026-07-16T07:19:37.248Z
+  - _ulid: 01KXMWQ849KKZ6VESKC6DD58EA
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate alignment
+    timestamp: 2026-07-16T07:19:40.425Z
+  - _ulid: 01KXMWQB92SPAJFTG8NFWQG9X2
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate completeness
+    timestamp: 2026-07-16T07:19:43.650Z
+  - _ulid: 01KXMWQEHJD4N3H1Z65D3GPBTN
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: focused lifecycle tests
+    timestamp: 2026-07-16T07:19:46.994Z
+  - _ulid: 01KXMWQHVRWMAFF7MA34HSS5NV
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: diff check
+    timestamp: 2026-07-16T07:19:50.392Z
+  - _ulid: 01KXMWQN54XACMMR6ZKQJ802FK
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: review evidence log
+    timestamp: 2026-07-16T07:19:53.764Z
+  - _ulid: 01KXMWQRAK9FBJJJA21G614B37
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KXMWQR2NJSXMPK9TTWDY64RB
+    timestamp: 2026-07-16T07:19:57.011Z
+  - _ulid: 01KXMWQVPZS2D62FBN6P5TMN8N
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KXMWQVDBS6YXSKJ1MF90W8Y6
+    timestamp: 2026-07-16T07:20:00.479Z
+  - _ulid: 01KXMWQZ97Y06BEQRRHHK8TDES
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KXMWQZ0S152XRB425QTQTRB9
+    timestamp: 2026-07-16T07:20:04.135Z
 examined_commit: 30da557ff43c38e74c3933c432824b58ce3d4827
 external_links: []
 lifecycle_state: open
@@ -26,8 +235,73 @@ subject:
   content_hash: ""
   ref: "@01KXH2PSQY6GK4S66S4TB6JVV3"
   shadow_commit: ""
-threads: []
+threads:
+  - _ulid: 01KXMWQR2NJSXMPK9TTWDY64RB
+    anchor:
+      type: code
+      commit: 30da557ff43c38e74c3933c432824b58ce3d4827
+      line_end: 869
+      line_start: 864
+      path: packages/daemon/src/routes/agent-dispatch.ts
+      side: head
+    entries:
+      - _ulid: 01KXMWQR2NNFN5KM8WRVYF6P21
+        author: Jacob Chapel
+        body: "MUST-FIX: Task-scoped control validates task_id syntax but not task existence. This preflight
+          delegates to requireCanonicalTaskIdentity, whose full-ID path accepts any Crockford ULID
+          even when the loaded task index has no match. A real-shadow route probe using absent
+          task_id 01KG0RR6CA45ZT43W2T6HJMVB9 returned HTTP 200 outcome=applied and persisted
+          task_controls with task_ref/title null instead of the required 404 task_not_found. This
+          permits durable authority records for nonexistent tasks and leaves the closed not-found
+          behavior unproved. Require an existing loaded task at this mutation boundary, preserve
+          ref/id mismatch handling, and add exact behavioral task_not_found/ambiguous cases that
+          prove no mutation and no raw alias exposure."
+        created_at: 2026-07-16T07:19:56.758Z
+    kind: blocker
+  - _ulid: 01KXMWQVDBS6YXSKJ1MF90W8Y6
+    anchor:
+      type: code
+      commit: 30da557ff43c38e74c3933c432824b58ce3d4827
+      line_end: 248
+      line_start: 190
+      path: tests/daemon-agent-dispatch-lifecycle.test.ts
+      side: head
+    entries:
+      - _ulid: 01KXMWQVDB5KVTJC9QC1TBPV73
+        author: Jacob Chapel
+        body: "MUST-FIX: The lifecycle status ACs are annotated on Zod schema parse/rejection tests, not on
+          behavior that requests status. These cases pass even if GET /api/agent/status omits or
+          misreports authority/projection, queued/held counts, or held task
+          identity/scope/mode/reason. The only new route success case starts with empty runtime
+          state and accepts any Number/Array, so it does not prove the AC preconditions (active,
+          queued, or held work exists) or exact values. Keep the schema tests, but add behavioral
+          route fixtures with real active/queued/held state and exact lifecycle rows, and attach
+          these AC annotations to tests that exercise the endpoint."
+        created_at: 2026-07-16T07:20:00.171Z
+    kind: blocker
+  - _ulid: 01KXMWQZ0S152XRB425QTQTRB9
+    anchor:
+      type: code
+      commit: 30da557ff43c38e74c3933c432824b58ce3d4827
+      line_end: 17
+      line_start: 14
+      path: tests/daemon-api/agent-dispatch.test.ts
+      side: head
+    entries:
+      - _ulid: 01KXMWQZ0S6PJ8YQKHZ6B0DYDG
+        author: Jacob Chapel
+        body: "MUST-FIX: The inherited @trait-api-endpoint N/A annotations are no longer valid for this
+          spec. The new canonical endpoint accepts task_ref/task_id, so ac-2 applies; it persists
+          dispatch-control.yaml through the shadow transaction, so ac-5 applies; and every processed
+          response is still subject to ac-6, while this route sets no X-Request-Id (the repository
+          search finds that header only on the command route). Replace the stale exemptions with
+          behavioral coverage for structured 404/no mutation, semantic shadow commit, and
+          X-Request-Id on success/failure, implementing any missing behavior. N/A may only be used
+          when an inherited criterion genuinely does not apply, not because it is infrastructure or
+          untested."
+        created_at: 2026-07-16T07:20:03.865Z
+    kind: blocker
 verdicts: []
 created_at: 2026-07-16T07:05:26.538Z
-updated_at: 2026-07-16T07:06:19.988Z
+updated_at: 2026-07-16T07:20:03.865Z
 notes: []
