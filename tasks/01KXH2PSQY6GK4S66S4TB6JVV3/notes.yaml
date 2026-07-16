@@ -209,3 +209,20 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-07-16T10:09:53.748Z
+  - _ulid: 01KXN7G7XRPHA48S2PBHY0Y9H1
+    content: "Fix cycle 6: addressed and resolved the concurrent cold-start persistence blocker in
+      6f9462a6c7. Lifecycle routes now serialize per-project preflight, cold startup, durable
+      mutation, and rollback, and daemon shutdown waits for those transactions to settle. Added
+      real-shadow concurrent one-shot commit-failure coverage for canonical control, unified start,
+      and legacy start; first callers return control_commit_failed, queued callers observe the
+      settled unavailable store, neither reports success, no engine remains published, and committed
+      authority remains stopped. Also retained serialized retry after a generic startup failure.
+      Gates: format and diff checks pass; focused and repo lint pass with 0 errors and no
+      changed-file warnings; typecheck passes; focused compatibility slice 79/79; refs, alignment,
+      and completeness validation pass with repository baselines. Full fresh suite reported every
+      suite green, including lifecycle 54/54, engine 147/147, and meta 195 passed with 1 skipped,
+      then reproduced the separately tracked post-green wrapper teardown hang and was terminated
+      after two quiet polls."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-07-16T10:28:05.176Z
