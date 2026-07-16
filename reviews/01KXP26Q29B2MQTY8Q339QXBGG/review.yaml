@@ -105,6 +105,17 @@ checks:
     runner: kspec validate --completeness --warnings-ok
     created_at: 2026-07-16T18:33:52.925Z
     completed_at: 2026-07-16T18:33:52.925Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Effective target-to-head diff has no whitespace errors; worktree remained clean after all
+      gates.
+    name: diff hygiene
+    required: false
+    runner: git diff --check
+    created_at: 2026-07-16T18:33:59.594Z
+    completed_at: 2026-07-16T18:33:59.594Z
 events:
   - _ulid: 01KXP26Q28TJNT496CGT59MEE5
     actor: Jacob Chapel
@@ -189,6 +200,13 @@ events:
       status: pass
       name: kspec validate completeness
     timestamp: 2026-07-16T18:33:53.254Z
+  - _ulid: 01KXP39ZAC7QH602NJWWQ748F1
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: diff hygiene
+    timestamp: 2026-07-16T18:33:59.884Z
 examined_commit: 6c7f7d0fb155d07094f1ec8d6140b20a8e463065
 external_links: []
 lifecycle_state: open
@@ -201,5 +219,5 @@ subject:
 threads: []
 verdicts: []
 created_at: 2026-07-16T18:14:44.553Z
-updated_at: 2026-07-16T18:33:52.925Z
+updated_at: 2026-07-16T18:33:59.594Z
 notes: []
