@@ -123,3 +123,16 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-07-16T16:06:47.806Z
+  - _ulid: 01KXNVJAXNWJ24XTBWEF5GE12X
+    content: "Fix cycle 4 approach: preserve invalid-project recovery for both lifecycle status and
+      control responses by recognizing the middleware's top-level string error before strict
+      canonical envelope parsing, with behavioral API tests observing clearInvalidSelection. Move
+      task lifecycle success/failure announcements into persistent agents-page state so a successful
+      resume can remove its keyed row without removing the polite atomic live region; add Playwright
+      coverage that resumes a controlled held task, verifies the row disappears, and observes the
+      announcement. Re-read and re-verify all 16 @ui-agent-dispatch ACs plus assigned raw-error
+      coverage, then run focused and full project gates before resolving all cycle-4 threads and
+      resubmitting."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-07-16T16:18:45.301Z
