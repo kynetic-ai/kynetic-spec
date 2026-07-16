@@ -1,0 +1,26 @@
+_ulid: 01KXMGVGPJ801YQTGPPPRHMKWT
+slugs: []
+title: Review lifecycle engine restart, recovery, and evidence behavior
+author: Jacob Chapel
+checks: []
+events:
+  - _ulid: 01KXMGVGPHZH6B4J1E99N16H98
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-07-16T03:52:17.361Z
+examined_commit: f38eb47aa73c3ed032195fea02fdfa0210dbfa24
+external_links: []
+lifecycle_state: draft
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KXH2PXA2YQJEGTQ3A3H9N4FQ"
+  shadow_commit: ""
+threads: []
+verdicts: []
+created_at: 2026-07-16T03:52:17.362Z
+updated_at: null
+notes: []
