@@ -101,6 +101,29 @@ checks:
     runner: tsx in-memory DispatchEngine lifecycle diagnostic
     created_at: 2026-07-16T03:30:35.602Z
     completed_at: 2026-07-16T03:30:35.602Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: No whitespace errors in the base-to-head diff.
+    name: diff check
+    required: false
+    runner: git diff --check
+    created_at: 2026-07-16T03:32:14.599Z
+    completed_at: 2026-07-16T03:32:14.599Z
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: A throwing onDispatchControlEvent callback caused applyGlobalLifecycleAction('pause') to
+      reject after authority committed paused, while EventBus retained both
+      dispatch_control.pause_applied and dispatch_control.failed. Expected one applied outcome and a
+      resolved control call.
+    name: "behavioral diagnostic: publication callback isolation"
+    required: false
+    runner: tsx in-memory DispatchEngine lifecycle diagnostic
+    created_at: 2026-07-16T03:32:19.472Z
+    completed_at: 2026-07-16T03:32:19.472Z
 events:
   - _ulid: 01KXMEE5100ZRH21HSKMY9DHN8
     actor: Jacob Chapel
@@ -199,6 +222,20 @@ events:
       kind: nit
       thread_ulid: 01KXMFNTTDH0W4NWWSPJ9V0ZZ6
     timestamp: 2026-07-16T03:31:42.842Z
+  - _ulid: 01KXMFPTFE13B9XNFNARD4H4EV
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: diff check
+    timestamp: 2026-07-16T03:32:14.960Z
+  - _ulid: 01KXMFPZ9D3TFAMYJJEMPNSF64
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: fail
+      name: "behavioral diagnostic: publication callback isolation"
+    timestamp: 2026-07-16T03:32:19.888Z
 examined_commit: 5f0855ff1c7ce4fb93457d442d1bb6b5be4a7375
 external_links: []
 lifecycle_state: open
@@ -278,5 +315,5 @@ threads:
     kind: nit
 verdicts: []
 created_at: 2026-07-16T03:10:02.272Z
-updated_at: 2026-07-16T03:31:42.542Z
+updated_at: 2026-07-16T03:32:19.472Z
 notes: []
