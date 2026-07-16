@@ -30306,7 +30306,7 @@ reviews:
   - _ulid: 01KXP26Q29B2MQTY8Q339QXBGG
     slugs: []
     title: Review API and CLI lifecycle projection end to end (cycle 2)
-    disposition: pending
+    disposition: changes_requested
     author: Jacob Chapel
     check_count: 11
     examined_commit: 6c7f7d0fb155d07094f1ec8d6140b20a8e463065
@@ -30317,8 +30317,8 @@ reviews:
       content_hash: ""
       ref: "@01KXH2PXT88X9MSC62MQVY2CV4"
       shadow_commit: ""
-    thread_count: 0
-    unresolved_blocker_count: 0
+    thread_count: 1
+    unresolved_blocker_count: 1
     verdict_count: 0
     created_at: 2026-07-16T18:14:44.553Z
-    updated_at: 2026-07-16T18:33:59.594Z
+    updated_at: 2026-07-16T18:34:33.153Z

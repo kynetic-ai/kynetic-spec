@@ -207,6 +207,13 @@ events:
       status: pass
       name: diff hygiene
     timestamp: 2026-07-16T18:33:59.884Z
+  - _ulid: 01KXP3B028PB9PCCAJ1FYBR0SK
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KXP3AZT0NYB62N47AC3Q8WQ1
+    timestamp: 2026-07-16T18:34:33.416Z
 examined_commit: 6c7f7d0fb155d07094f1ec8d6140b20a8e463065
 external_links: []
 lifecycle_state: open
@@ -216,8 +223,28 @@ subject:
   content_hash: ""
   ref: "@01KXH2PXT88X9MSC62MQVY2CV4"
   shadow_commit: ""
-threads: []
+threads:
+  - _ulid: 01KXP3AZT0NYB62N47AC3Q8WQ1
+    anchor:
+      type: code
+      commit: 6c7f7d0fb155d07094f1ec8d6140b20a8e463065
+      line_end: 228
+      line_start: 228
+      path: tests/dispatch-lifecycle-surface-integration.test.ts
+      side: head
+    entries:
+      - _ulid: 01KXP3AZT1M6494JAW0M6ZE377
+        author: Jacob Chapel
+        body: "MUST-FIX — This annotation claims @trait-api-endpoint ac-3, which requires an invalid request
+          body to return HTTP 400 with the documented error/details validation shape. The annotated
+          test sends only schema-valid control bodies; its negative request is a valid body rejected
+          as invalid_transition with HTTP 409. Evidence: the full test body has no 400/details
+          assertion, and the fresh suite therefore cannot make this annotation meaningful. Remove
+          the inaccurate annotation or add a behavioral invalid-body assertion that proves the trait
+          AC. False AC attribution obscures which behavior is actually covered."
+        created_at: 2026-07-16T18:34:33.153Z
+    kind: blocker
 verdicts: []
 created_at: 2026-07-16T18:14:44.553Z
-updated_at: 2026-07-16T18:33:59.594Z
+updated_at: 2026-07-16T18:34:33.153Z
 notes: []
