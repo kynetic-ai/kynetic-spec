@@ -381,6 +381,20 @@ events:
       kind: blocker
       thread_ulid: 01KXMB1D0X2ZPH7C1KSQ2B8K3Y
     timestamp: 2026-07-16T02:10:39.010Z
+  - _ulid: 01KXMB1YNA7MB0V66JQABRS66A
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KXMB1YCTRZ3JX61MDD555PQ3
+    timestamp: 2026-07-16T02:10:56.810Z
+  - _ulid: 01KXMB21ZJRR259AF9NHVBFX33
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KXMB21QCT8AS8ZDX5CHZ9B2Z
+    timestamp: 2026-07-16T02:11:00.211Z
 examined_commit: 40aed15a47ba2163b9d3ff74e5cadfee02d83c5c
 external_links: []
 lifecycle_state: closed
@@ -536,6 +550,47 @@ threads:
           exactly one afterward for applied and noop paths.
         created_at: 2026-07-16T02:10:38.749Z
     kind: blocker
+  - _ulid: 01KXMB1YCTRZ3JX61MDD555PQ3
+    anchor:
+      type: code
+      commit: 40aed15a47ba2163b9d3ff74e5cadfee02d83c5c
+      line_end: 175
+      line_start: 148
+      path: tests/dispatch-control-events.test.ts
+      side: head
+    entries:
+      - _ulid: 01KXMB1YCVD50H1CXD4RX26DBA
+        author: Jacob Chapel
+        body: MUST-FIX — The 17 failure cases supply a preselected failurePredicate directly to the emitter.
+          They never provoke TaskIdentityResolutionError, DispatchLifecycleTransitionError,
+          store/transaction errors, or DispatchCleanupError through
+          applyGlobalLifecycleAction/applyTaskLifecycleAction, so _dispatchControlFailurePredicate
+          and the real emission sites are untested. This suite remained green while the real
+          ref-only lifecycle harness emitted zero events. Drive each failure class through the
+          engine boundary and assert the emitted identifier/code/count; a table test may remain as
+          supplemental mapper coverage.
+        created_at: 2026-07-16T02:10:56.539Z
+    kind: blocker
+  - _ulid: 01KXMB21QCT8AS8ZDX5CHZ9B2Z
+    anchor:
+      type: code
+      commit: 40aed15a47ba2163b9d3ff74e5cadfee02d83c5c
+      line_end: 50
+      line_start: 48
+      path: tests/dispatch-control-events.test.ts
+      side: head
+    entries:
+      - _ulid: 01KXMB21QCF0E2F9QB3RMS51HG
+        author: Jacob Chapel
+        body: MUST-FIX — The task explicitly Covers @dispatch-lifecycle-control-authority
+          ac-applied-control-is-auditable, ac-noop-control-is-auditable,
+          ac-failed-control-is-auditable, and ac-failure-events-use-closed-error-codes, but no test
+          in the repository has an AC annotation for any of those four refs (verified by rg). The
+          new annotations cover only taxonomy/payload ACs. Add correctly annotated behavioral tests
+          that actually prove each lifecycle audit AC; do not merely attach the annotations to the
+          current direct-emitter fixtures.
+        created_at: 2026-07-16T02:10:59.948Z
+    kind: blocker
 verdicts:
   - applies_to_version:
       type: entity_version
@@ -545,5 +600,5 @@ verdicts:
     role: reviewer
     created_at: 2026-07-16T02:09:24.139Z
 created_at: 2026-07-16T01:47:48.307Z
-updated_at: 2026-07-16T02:10:38.749Z
+updated_at: 2026-07-16T02:10:59.948Z
 notes: []
