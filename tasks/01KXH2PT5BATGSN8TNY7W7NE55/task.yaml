@@ -88,7 +88,7 @@ tags:
   - cli
   - safety
 vcs_refs: []
-review_ref: "@01KXNBP38KMTGGDZGGJ3RMENAW"
+review_ref: "@01KXNFWH3AT6DCQJNXC5V21WN5"
 submission_linkage:
   review_url: null
   branch: dispatch/task/task-cli-dispatch-lifecycle-controls/01kxh2pt
@@ -196,6 +196,13 @@ history:
         previous: 2026-07-16T11:34:38.684Z
     command: task-submit
     timestamp: 2026-07-16T12:46:56.989Z
+  - author: Jacob Chapel
+    changes:
+      review_ref:
+        new: "@01KXNFWH3AT6DCQJNXC5V21WN5"
+        previous: "@01KXNBP38KMTGGDZGGJ3RMENAW"
+    command: review-link
+    timestamp: 2026-07-16T12:54:38.777Z
 created_at: 2026-07-14T19:47:19.851Z
 started_at: 2026-07-16T12:25:44.159Z
 submitted_at: 2026-07-16T12:46:56.989Z
