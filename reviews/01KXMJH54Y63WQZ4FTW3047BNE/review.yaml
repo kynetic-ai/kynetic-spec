@@ -79,6 +79,17 @@ checks:
     runner: kspec
     created_at: 2026-07-16T04:37:24.031Z
     completed_at: 2026-07-16T04:37:24.031Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: No whitespace errors in the task diff from merge base 0e014e61d8f3 to reviewed head
+      227eb5005923.
+    name: diff check
+    required: false
+    runner: git diff --check
+    created_at: 2026-07-16T04:37:29.373Z
+    completed_at: 2026-07-16T04:37:29.373Z
 events:
   - _ulid: 01KXMJH54JXCW55KEJ8TNA7MES
     actor: Jacob Chapel
@@ -142,6 +153,13 @@ events:
       status: pass
       name: kspec validate completeness
     timestamp: 2026-07-16T04:37:24.282Z
+  - _ulid: 01KXMKE9CYD029FQTT8NQWPJ9G
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: diff check
+    timestamp: 2026-07-16T04:37:29.630Z
 examined_commit: 227eb5005923d64b52ea7d7f53f8107c2a7d5224
 external_links: []
 lifecycle_state: open
@@ -154,5 +172,5 @@ subject:
 threads: []
 verdicts: []
 created_at: 2026-07-16T04:21:35.006Z
-updated_at: 2026-07-16T04:37:24.031Z
+updated_at: 2026-07-16T04:37:29.373Z
 notes: []
