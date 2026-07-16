@@ -189,9 +189,6 @@ describe("dispatch lifecycle wire conversion", () => {
   // AC: @ui-agent-dispatch ac-1
   // AC: @ui-agent-dispatch ac-2
   // AC: @ui-agent-dispatch ac-status-projection
-  // AC: @ui-agent-dispatch ac-status-active-work-visible
-  // AC: @ui-agent-dispatch ac-status-queued-work-visible
-  // AC: @ui-agent-dispatch ac-status-held-work-visible
   it("deep-converts the exact public snake_case model to camelCase UI data", () => {
     const parsed = parseAgentDispatchStatusWire(lifecycleStatusFixture());
     expect(parsed).toEqual({
@@ -670,8 +667,6 @@ describe("lifecycle API behavior", () => {
     expect(fetchSpy).not.toHaveBeenCalled();
   });
 
-  // AC: @ui-agent-dispatch ac-control-separated-from-degraded
-  // AC: @ui-agent-dispatch ac-control-separated-from-blocked
   it("keeps authority, projection, degraded targets, and held evidence separate", () => {
     const status = parseAgentDispatchStatusWire(
       lifecycleStatusFixture({

@@ -59,8 +59,10 @@
 	}
 
 	async function runAction(action: GlobalLifecycleAction) {
+		let succeeded = false;
 		try {
 			await onAction(action);
+			succeeded = true;
 			await tick();
 			liveStatus = `Dispatch status changed: ${getLifecycleBadge(status)}`;
 		} catch {
@@ -69,7 +71,7 @@
 		} finally {
 			confirmationOpen = false;
 			pendingStop = false;
-			await restoreLifecycleFocus();
+			await restoreLifecycleFocus(!succeeded);
 		}
 	}
 </script>

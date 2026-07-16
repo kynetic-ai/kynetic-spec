@@ -16,6 +16,73 @@
 
 import { test, expect } from "./fixtures/test-base";
 
+const lifecycleTaskId = "01KXH2PVX606KVK5C4ERCB8WTY";
+const lifecycleTimestamp = "2026-07-16T12:00:00.000Z";
+
+function lifecycleStatusFixture(overrides: Record<string, unknown> = {}) {
+  return {
+    dispatch_enabled: false,
+    active_invocations: [],
+    queued_invocations: [],
+    agent_definitions: [],
+    degraded: { active: false, reason: "", enteredAt: null },
+    global_authority: "stopped",
+    projection: "stopped",
+    cleanup_state: { status: "idle", entries: [] },
+    active_count: 0,
+    queue_depth: 0,
+    held_count: 0,
+    held_tasks: [],
+    task_controls: [],
+    degraded_targets: [],
+    ...overrides,
+  };
+}
+
+function lifecycleMutationData(status: ReturnType<typeof lifecycleStatusFixture>) {
+  return {
+    global_authority: status.global_authority,
+    projection: status.projection,
+    cleanup_state: status.cleanup_state,
+    active_count: status.active_count,
+    queue_depth: status.queue_depth,
+    held_count: status.held_count,
+    held_tasks: status.held_tasks,
+    task_controls: status.task_controls,
+    degraded_targets: status.degraded_targets,
+  };
+}
+
+async function routeLifecycleStatus(
+  page: import("@playwright/test").Page,
+  status: ReturnType<typeof lifecycleStatusFixture>,
+) {
+  await page.route("**/api/agent/status", async (route) => {
+    await route.fulfill({
+      status: 200,
+      contentType: "application/json",
+      body: JSON.stringify(status),
+    });
+  });
+}
+
+async function routeRejectedLifecycleControl(
+  page: import("@playwright/test").Page,
+  status: ReturnType<typeof lifecycleStatusFixture>,
+) {
+  await page.route("**/api/agent/dispatch/control", async (route) => {
+    await route.fulfill({
+      status: 409,
+      contentType: "application/json",
+      body: JSON.stringify({
+        ok: false,
+        data: lifecycleMutationData(status),
+        error: { code: "invalid_transition", message: "private daemon detail" },
+      }),
+    });
+  });
+}
+
 async function routeLifecycleControls(
   page: import("@playwright/test").Page,
   initialAuthority: "stopped" | "running" | "paused",
@@ -349,6 +416,179 @@ test.describe("Agent and Dispatch View", () => {
         data: { action: "stop" },
         headers: { "Content-Type": "application/json" },
       });
+    });
+
+    // AC: @ui-agent-dispatch ac-status-active-work-visible
+    // AC: @ui-agent-dispatch ac-status-queued-work-visible
+    // AC: @ui-agent-dispatch ac-status-held-work-visible
+    test("keeps active, queued, and held work rendered while dispatch is draining", async ({
+      page,
+      daemon: _daemon,
+    }) => {
+      const status = lifecycleStatusFixture({
+        dispatch_enabled: false,
+        active_invocations: [
+          {
+            session_id: lifecycleTaskId,
+            agent_id: "task-worker",
+            task_ref: "@task-ui-dispatch-lifecycle-controls",
+            task_title: "Migrate every lifecycle UI consumer and control",
+            elapsed_ms: 1250,
+            resolved_adapter: "codex-acp",
+          },
+        ],
+        queued_invocations: [
+          {
+            agent_id: "pr-reviewer",
+            task_ref: "@task-ui-dispatch-lifecycle-controls",
+            task_title: "Migrate every lifecycle UI consumer and control",
+            wait_ms: 500,
+            resolved_adapter: "codex-acp",
+          },
+        ],
+        global_authority: "paused",
+        projection: "draining",
+        active_count: 1,
+        queue_depth: 1,
+        held_count: 1,
+        held_tasks: [
+          {
+            task_id: lifecycleTaskId,
+            task_ref: "@task-ui-dispatch-lifecycle-controls",
+            title: "Migrate every lifecycle UI consumer and control",
+            scope: "global",
+            mode: "paused",
+            reason: "operator request",
+            actor: "ui",
+            source: "ui",
+            controlled_at: lifecycleTimestamp,
+            updated_at: lifecycleTimestamp,
+          },
+        ],
+      });
+      await routeLifecycleStatus(page, status);
+
+      await page.goto("/agents");
+      await expect(page.getByTestId("agents-loading")).toHaveCount(0);
+
+      await expect(page.getByTestId("dispatch-status-badge")).toHaveText("Paused — draining");
+      await expect(page.getByTestId("dispatch-active-count")).toHaveText("1");
+      await expect(page.getByTestId("active-invocations-section")).toBeVisible();
+      await expect(page.getByTestId("active-invocation-row")).toContainText("task-worker");
+      await expect(page.getByTestId("dispatch-queued-count")).toHaveText("1");
+      await expect(page.getByTestId("queued-invocations-section")).toBeVisible();
+      await expect(page.getByTestId("queued-invocation-row")).toContainText("pr-reviewer");
+      await expect(page.getByTestId("dispatch-held-count")).toHaveText("1");
+      await expect(page.getByTestId("held-tasks-section")).toBeVisible();
+      await expect(page.getByTestId(`held-task-${lifecycleTaskId}`)).toContainText(
+        "Held by global authority",
+      );
+    });
+
+    // AC: @ui-agent-dispatch ac-control-separated-from-degraded
+    // AC: @ui-agent-dispatch ac-control-separated-from-blocked
+    test("labels authority, projection, degraded state, and held evidence separately", async ({
+      page,
+      daemon: _daemon,
+    }) => {
+      const status = lifecycleStatusFixture({
+        global_authority: "paused",
+        projection: "draining",
+        degraded: {
+          active: true,
+          reason: "branch diverged",
+          enteredAt: lifecycleTimestamp,
+        },
+        degraded_targets: [
+          {
+            branch: "dev",
+            reason: "branch diverged",
+            enteredAt: lifecycleTimestamp,
+            kind: "sync",
+          },
+        ],
+        held_count: 1,
+        held_tasks: [
+          {
+            task_id: lifecycleTaskId,
+            task_ref: "@task-ui-dispatch-lifecycle-controls",
+            title: "Migrate every lifecycle UI consumer and control",
+            scope: "global",
+            mode: "paused",
+            reason: "operator request",
+            actor: "ui",
+            source: "ui",
+            controlled_at: lifecycleTimestamp,
+            updated_at: lifecycleTimestamp,
+          },
+        ],
+      });
+      await routeLifecycleStatus(page, status);
+
+      await page.goto("/agents");
+      await expect(page.getByTestId("agents-loading")).toHaveCount(0);
+
+      await expect(page.getByTestId("dispatch-authority")).toHaveText("paused");
+      await expect(page.getByTestId("dispatch-projection")).toHaveText("draining");
+      await expect(page.getByTestId("dispatch-degraded-state")).toContainText("branch diverged");
+      await expect(page.getByTestId(`held-task-${lifecycleTaskId}`)).toContainText(
+        "Held by global authority: operator request",
+      );
+    });
+
+    // AC: @ui-agent-dispatch ac-lifecycle-focus-retained
+    test("returns focus to rejected global and task hard-stop controls", async ({
+      page,
+      daemon: _daemon,
+    }) => {
+      const status = lifecycleStatusFixture({
+        dispatch_enabled: true,
+        global_authority: "running",
+        projection: "running",
+        held_count: 1,
+        held_tasks: [
+          {
+            task_id: lifecycleTaskId,
+            task_ref: "@task-ui-dispatch-lifecycle-controls",
+            title: "Migrate every lifecycle UI consumer and control",
+            scope: "task",
+            mode: "paused",
+            reason: "operator request",
+            actor: "ui",
+            source: "ui",
+            controlled_at: lifecycleTimestamp,
+            updated_at: lifecycleTimestamp,
+          },
+        ],
+      });
+      await routeLifecycleStatus(page, status);
+      await routeRejectedLifecycleControl(page, status);
+
+      await page.goto("/agents");
+      await expect(page.getByTestId("agents-loading")).toHaveCount(0);
+
+      const globalStop = page.getByRole("button", { name: "Hard stop", exact: true });
+      await globalStop.click();
+      await page
+        .getByRole("dialog", { name: "Confirm hard stop" })
+        .getByRole("button", {
+          name: "Confirm",
+        })
+        .click();
+      await expect(page.getByTestId("error-message")).toContainText(
+        "Invalid dispatch lifecycle transition",
+      );
+      await expect(globalStop).toBeFocused();
+
+      const taskStop = page.getByRole("button", { name: "Hard-stop task", exact: true });
+      await taskStop.click();
+      await page
+        .getByRole("dialog", { name: "Confirm hard stop" })
+        .getByRole("button", {
+          name: "Confirm",
+        })
+        .click();
+      await expect(taskStop).toBeFocused();
     });
   });
 

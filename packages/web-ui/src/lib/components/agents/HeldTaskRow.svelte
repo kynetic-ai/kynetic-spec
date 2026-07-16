@@ -62,8 +62,10 @@
 	}
 
 	async function runAction(action: TaskLifecycleAction) {
+		let succeeded = false;
 		try {
 			await onAction(action, task);
+			succeeded = true;
 			await tick();
 			liveStatus = `Task lifecycle changed: ${task.title ?? task.taskId}`;
 		} catch {
@@ -71,7 +73,7 @@
 			liveStatus = `Task lifecycle unchanged: ${task.title ?? task.taskId}`;
 		} finally {
 			confirmationOpen = false;
-			await restoreLifecycleFocus();
+			await restoreLifecycleFocus(!succeeded);
 		}
 	}
 </script>
