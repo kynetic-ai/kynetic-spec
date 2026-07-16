@@ -411,6 +411,48 @@ events:
       status: pass
       name: diff whitespace
     timestamp: 2026-07-16T12:48:00.781Z
+  - _ulid: 01KXNFHJ2DZ8WRDTY2DQZ9VWG0
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KXNFHHTHF0QJK0KC9R955KZ1
+    timestamp: 2026-07-16T12:48:36.941Z
+  - _ulid: 01KXNFHN6SA25XWR5NVNGZBZJE
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KXNFHMYX7KW0EPQAW86RBG9H
+    timestamp: 2026-07-16T12:48:40.153Z
+  - _ulid: 01KXNFHRBBRKESXNVWRCNWGMTW
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KXNFHR1HXPEVF52WN2MEJTTN
+    timestamp: 2026-07-16T12:48:43.371Z
+  - _ulid: 01KXNFHVY3K0C0MM1R3WQH1ZXC
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KXNFHVN0NY9N4FYBNHN3N241
+    timestamp: 2026-07-16T12:48:47.043Z
+  - _ulid: 01KXNFHZACDSK7PCP47BAFBEKB
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KXNFHZ2DF2BZK31ABACASXR3
+    timestamp: 2026-07-16T12:48:50.508Z
+  - _ulid: 01KXNFJ2EH16PRQP779HMXVMAB
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KXNFJ26YTYJRKGYKFTBCGQTY
+    timestamp: 2026-07-16T12:48:53.713Z
 examined_commit: 94bade5fd3b922dc5be743c479cbca710b5f864c
 external_links: []
 lifecycle_state: open
@@ -540,7 +582,126 @@ threads:
           not applicable."
         created_at: 2026-07-16T12:47:07.573Z
     kind: nit
+  - _ulid: 01KXNFHHTHF0QJK0KC9R955KZ1
+    anchor:
+      type: code
+      commit: 94bade5fd3b922dc5be743c479cbca710b5f864c
+      line_end: 654
+      line_start: 644
+      path: tests/web-ui/dispatch-lifecycle-controls.test.ts
+      side: head
+    entries:
+      - _ulid: 01KXNFHHTHCCVW1XC3K8JR4RVA
+        author: Jacob Chapel
+        body: MUST-FIX — These five AC annotations do not have behavioral coverage. The test only compares
+          the exported HARD_STOP_CONFIRMATION constant; it never renders a lifecycle control,
+          opens/cancels the dialog, verifies accessible labeling/evidence, exercises a successful
+          state-changing mutation, checks focus, or observes a live update. Consequently it would
+          still pass if the components violated all five annotated ACs. Replace/add component or
+          browser tests that exercise the actual behaviors for hard-stop
+          cancellation/evidence/cancelled outcome, focus retention, and live updates.
+        created_at: 2026-07-16T12:48:36.689Z
+    kind: blocker
+  - _ulid: 01KXNFHMYX7KW0EPQAW86RBG9H
+    anchor:
+      type: code
+      commit: 94bade5fd3b922dc5be743c479cbca710b5f864c
+      line_end: 54
+      line_start: 47
+      path: packages/web-ui/src/lib/components/agents/DispatchStatus.svelte
+      side: head
+    entries:
+      - _ulid: 01KXNFHMYXAEY4C3G2VB7WJ3R0
+        author: Jacob Chapel
+        body: MUST-FIX — Focus restoration targets the pre-mutation DOM node. onAction awaits the mutation,
+          then await tick() lets the successful cache update replace Pause/Stop with Resume/Start;
+          the subsequent animation-frame callback calls focus() on invokingControl, which is now
+          detached. The same pattern exists in HeldTaskRow. This does not satisfy
+          ac-lifecycle-focus-retained after successful state-changing actions. Restore focus to a
+          surviving/replacement logical control after the refreshed DOM is committed, and cover the
+          success path behaviorally.
+        created_at: 2026-07-16T12:48:39.901Z
+    kind: blocker
+  - _ulid: 01KXNFHR1HXPEVF52WN2MEJTTN
+    anchor:
+      type: code
+      commit: 94bade5fd3b922dc5be743c479cbca710b5f864c
+      line_end: 267
+      line_start: 244
+      path: packages/web-ui/src/routes/agents/+page.svelte
+      side: head
+    entries:
+      - _ulid: 01KXNFHR1JCP7Y00RX6W9M7Z88
+        author: Jacob Chapel
+        body: MUST-FIX — The outer condition renders Active invocations only when activeInvocations.length >
+          0, so its nested empty-state branch is unreachable. When dispatch is running with zero
+          active work, the actionable empty state and polite live region disappear. Existing
+          Playwright tests for both behaviors failed twice; the base implementation rendered this
+          section whenever dispatch was enabled. Change the section condition so running/zero-active
+          remains visible and accessible.
+        created_at: 2026-07-16T12:48:43.058Z
+    kind: blocker
+  - _ulid: 01KXNFHVN0NY9N4FYBNHN3N241
+    anchor:
+      type: code
+      commit: 94bade5fd3b922dc5be743c479cbca710b5f864c
+      line_end: 1127
+      line_start: 1112
+      path: packages/web-ui/src/lib/api.ts
+      side: head
+    entries:
+      - _ulid: 01KXNFHVN0Q1VWPCNRM07DZWY9
+        author: Jacob Chapel
+        body: MUST-FIX — parseLifecycleWire constructs a new object from known lifecycle keys before passing
+          it to a strict schema. Unknown properties on the incoming public wire object are therefore
+          discarded instead of rejected, so the claimed closed exact wire/model boundary is not
+          actually closed. The mutation envelope follows the same projection pattern. Validate the
+          complete allowed status/mutation envelope (including rejection of unknown root fields)
+          before projection, and add unknown-field tests that would fail with the current
+          implementation.
+        created_at: 2026-07-16T12:48:46.753Z
+    kind: blocker
+  - _ulid: 01KXNFHZ2DF2BZK31ABACASXR3
+    anchor:
+      type: code
+      commit: 94bade5fd3b922dc5be743c479cbca710b5f864c
+      line_end: 90
+      line_start: 63
+      path: packages/web-ui/src/lib/components/agents/DispatchStatus.svelte
+      side: head
+    entries:
+      - _ulid: 01KXNFHZ2DY1GC2DM8S3SG0MDY
+        author: Jacob Chapel
+        body: "MUST-FIX — The existing agents browser suite was not migrated with the lifecycle UI: the full
+          file has 8 failures (38 pass), including missing dispatch-indicator-stopped/running and
+          dispatch-toggle-button selectors and an obsolete raw error-copy expectation. The
+          zero-active failures are separately anchored on +page.svelte; the remaining stale-contract
+          failures still make the project-defined browser regression gate red. Update the browser
+          assertions to the new stable lifecycle IDs and sanitized copy (or preserve compatible
+          behavior where required) so the suite passes."
+        created_at: 2026-07-16T12:48:50.253Z
+    kind: blocker
+  - _ulid: 01KXNFJ26YTYJRKGYKFTBCGQTY
+    entries:
+      - _ulid: 01KXNFJ26YBXDDMX3G0ZNZRKVY
+        author: Jacob Chapel
+        body: "Review evidence log (informational). Files read: every changed file in daemon status routing,
+          web API/types, DispatchStatus/HeldTaskRow/LifecycleEvidence/FleetBuffer, dispatch
+          lifecycle helpers, query keys/WebSocket invalidation, agents route, and all changed tests
+          (18 files), plus interacting existing agents Playwright coverage and the governing
+          task/spec/plan. Commands run: format check; repo and focused lint; typecheck; focused
+          Vitest; full Vitest; refs/alignment/completeness validation; diff check; full agents
+          Playwright file; targeted Playwright rerun; base-vs-head source inspection and
+          annotation/snake-case searches. Claims verified: the worker's 96 focused tests and full
+          unit-suite claim passed independently; the accessibility/behavioral-coverage claim did
+          not, because the annotated test only checks a constant and browser regressions reproduce.
+          Categories searched: correctness/action matrix, edge states, error sanitization/security,
+          test quality/AC annotations, accessibility/focus, cache/live-update integration, and wire
+          strictness. Shared/package guidance surfaces touched: none; shared-guidance neutrality is
+          not applicable."
+        created_at: 2026-07-16T12:48:53.470Z
+    kind: nit
 verdicts: []
 created_at: 2026-07-16T12:26:14.264Z
-updated_at: 2026-07-16T12:48:00.544Z
+updated_at: 2026-07-16T12:48:53.470Z
 notes: []
