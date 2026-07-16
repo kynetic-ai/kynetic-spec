@@ -193,6 +193,13 @@ events:
       status: pass
       name: diff whitespace
     timestamp: 2026-07-16T14:52:18.423Z
+  - _ulid: 01KXNPMHRFKHCFVPBS7QBQD11V
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KXNPMHFSGKCG2VQRDP7H4VQ8
+    timestamp: 2026-07-16T14:52:34.959Z
 examined_commit: 4094f8d891fa081dad353ba75d1ba270ae5ce541
 external_links: []
 lifecycle_state: open
@@ -202,8 +209,29 @@ subject:
   content_hash: ""
   ref: "@01KXH2PVX606KVK5C4ERCB8WTY"
   shadow_commit: ""
-threads: []
+threads:
+  - _ulid: 01KXNPMHFSGKCG2VQRDP7H4VQ8
+    anchor:
+      type: code
+      commit: 4094f8d891fa081dad353ba75d1ba270ae5ce541
+      line_end: 645
+      line_start: 614
+      path: tests/web-ui/dispatch-lifecycle-controls.test.ts
+      side: head
+    entries:
+      - _ulid: 01KXNPMHFSNBRMNJNTFB2D5K4F
+        author: Jacob Chapel
+        body: "MUST-FIX — The task explicitly assigns @dispatch-lifecycle-control-authority
+          ac-ui-failures-do-not-expose-raw-errors, but no test has the required
+          standalone  annotation. This test supplies strong behavioral evidence by injecting private
+          raw message/suggestion text and asserting that only fixed safe copy is returned, yet
+          without the exact annotation the assigned cross-spec criterion remains unlinked and cannot
+          be counted as covered. Add the exact annotation to this behavioral test (and retain its
+          negative raw-text assertions). Evidence: repository-wide  found zero occurrences of the
+          criterion ref in implementation or tests."
+        created_at: 2026-07-16T14:52:34.681Z
+    kind: blocker
 verdicts: []
 created_at: 2026-07-16T14:30:25.585Z
-updated_at: 2026-07-16T14:52:18.099Z
+updated_at: 2026-07-16T14:52:34.681Z
 notes: []
