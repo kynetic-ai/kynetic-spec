@@ -33927,7 +33927,7 @@
   type: task
   spec_ref: "@cli-agent-commands"
   plan_ref: "@plan-dispatch-lifecycle-pause-resume-and-stop-controls"
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on:
     - "@task-patch-dispatch-cli-specs"
@@ -33943,6 +33943,7 @@
   created_at: 2026-07-14T19:47:19.851Z
   started_at: 2026-07-16T13:26:57.677Z
   submitted_at: 2026-07-16T13:48:07.869Z
+  completed_at: 2026-07-16T14:15:21.630Z
   automation: eligible
 - _ulid: 01KXH2PVX606KVK5C4ERCB8WTY
   slugs:
