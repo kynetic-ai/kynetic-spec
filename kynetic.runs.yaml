@@ -81688,7 +81688,7 @@ runs:
     completed_at: 2026-07-16T17:20:01.726Z
   - _ulid: 01KXP1N7T51YKBY8C235Y00ASX
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -81704,7 +81704,20 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-07-16T18:08:41.166Z
-        completed_at: 2026-07-16T18:08:41.166Z
+        completed_at: 2026-07-16T18:09:26.110Z
+        notes: "High-confidence findings after baseline/search: (1) long-suite condensed-output and apparent
+          teardown friction is already covered by @01KP6PS1Q,
+          @task-investigate-npm-test-teardown-hang-after-green-suite-run, and inbox @01KTN0CE; do
+          not duplicate. (2) branch-conflation/dependency-gating success overlaps @01KP6QNNV; do not
+          duplicate. (3) untracked friction: parseAgentDispatchStatusWire is pure boundary logic but
+          resides in broad packages/web-ui/src/lib/api.ts, so non-Svelte behavioral tests must mock
+          mode, project, static API, and constants modules merely to import it. This repeated in the
+          UI owner suite and the new real-daemon suite; capture one friction observation, not a
+          task."
+      - status: completed
+        step_index: 2
+        started_at: 2026-07-16T18:09:26.110Z
+        completed_at: 2026-07-16T18:09:26.110Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-07-16T18:05:11.877Z
