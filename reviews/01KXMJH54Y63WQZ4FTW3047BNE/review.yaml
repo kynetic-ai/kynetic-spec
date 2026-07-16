@@ -1,0 +1,26 @@
+_ulid: 01KXMJH54Y63WQZ4FTW3047BNE
+slugs: []
+title: Review register, sanitize, and emit dispatch lifecycle events (cycle 3)
+author: Jacob Chapel
+checks: []
+events:
+  - _ulid: 01KXMJH54JXCW55KEJ8TNA7MES
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-07-16T04:21:34.994Z
+examined_commit: 227eb5005923d64b52ea7d7f53f8107c2a7d5224
+external_links: []
+lifecycle_state: draft
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KXH2PS9K1Z5BKY2ZHR30WJ8Y"
+  shadow_commit: ""
+threads: []
+verdicts: []
+created_at: 2026-07-16T04:21:35.006Z
+updated_at: null
+notes: []
