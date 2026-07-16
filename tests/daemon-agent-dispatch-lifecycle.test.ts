@@ -2,7 +2,7 @@ import { execSync } from "node:child_process";
 import { cpSync, rmSync, writeFileSync } from "node:fs";
 import path from "node:path";
 import { Elysia } from "elysia";
-import { afterEach, describe, expect, it } from "vitest";
+import { afterEach, describe, expect, it, vi } from "vitest";
 import YAML from "yaml";
 import {
   DispatchCleanupStateSchema,
@@ -12,10 +12,20 @@ import {
 } from "../packages/shared/src/api.ts";
 import { cleanupTempDir, createTempDir, initGitRepo, testUlids } from "./helpers/cli.ts";
 import { captureBroadcasts, createTestApp, makeRequest } from "./daemon-api/helpers.ts";
-import { createAgentDispatchRoutes, stopAllEngines } from "../dist/daemon/routes/agent-dispatch.js";
+import {
+  createAgentDispatchRoutes,
+  getDispatchEngine,
+  stopAllEngines,
+} from "../dist/daemon/routes/agent-dispatch.js";
 import { projectContextMiddleware } from "../dist/daemon/middleware/project-context.js";
+import {
+  DispatchCleanupError,
+  DispatchLifecycleTransitionError,
+} from "../dist/agent-runtime/dispatch.js";
+import { DispatchShadowTransactionError } from "../dist/agent-runtime/dispatch-shadow-transaction.js";
 
 const [taskA, taskB, cleanupA, cleanupB] = testUlids("DL", 4);
+const canonicalTaskId = "01KG0RR6CA45ZT43W2T6HJMVA1";
 const timestamp = "2026-07-15T12:00:00.000Z";
 
 const pendingEntry = {
@@ -131,6 +141,36 @@ function captureLifecycleEvents(fixture: Awaited<ReturnType<typeof createLifecyc
   return captureBroadcasts(fixture.pubsub);
 }
 
+function commitLifecycleControl(
+  fixture: Awaited<ReturnType<typeof createLifecycleRouteFixture>>,
+  control: {
+    version: 1;
+    revision: number;
+    global: Record<string, unknown>;
+    tasks: Record<string, unknown>;
+    pending_cleanup: Record<string, unknown>;
+  },
+) {
+  const specDir = path.join(fixture.projectDir, ".kspec");
+  writeFileSync(path.join(specDir, "dispatch-control.yaml"), YAML.stringify(control));
+  execSync("git add dispatch-control.yaml && git commit -m 'set lifecycle state'", {
+    cwd: specDir,
+    stdio: "pipe",
+  });
+}
+
+function lifecycleControl(
+  authority: "stopped" | "running" | "paused" = "stopped",
+): Parameters<typeof commitLifecycleControl>[1] {
+  return {
+    version: 1,
+    revision: 1,
+    global: { authority },
+    tasks: {},
+    pending_cleanup: {},
+  };
+}
+
 describe("dispatch lifecycle public wire schemas", () => {
   // AC: @daemon-agent-dispatch ac-public-status-lifecycle-additions
   // AC: @dispatch-lifecycle-control-authority ac-status-reports-authority
@@ -216,8 +256,24 @@ describe("dispatch lifecycle public wire schemas", () => {
     expect(
       DispatchLifecycleStatusSchema.safeParse({
         ...base,
+        held_count: 0,
+        held_tasks: [heldTask],
+      }).success,
+    ).toBe(false);
+    expect(
+      DispatchLifecycleStatusSchema.safeParse({
+        ...base,
         held_count: 1,
         held_tasks: [{ ...heldTask, task_id: taskA.toLowerCase() }],
+      }).success,
+    ).toBe(false);
+    expect(
+      DispatchTaskControlStatusSchema.safeParse({
+        ...taskControl,
+        cleanup_state: {
+          status: "failed",
+          entries: [{ ...failedEntry, task_id: taskA }],
+        },
       }).success,
     ).toBe(false);
   });
@@ -304,7 +360,6 @@ describe("canonical dispatch lifecycle routes", () => {
   // AC: @daemon-agent-dispatch ac-control-identity-mismatch
   it("canonicalizes task aliases and rejects disagreeing identity fields without mutation", async () => {
     const fixture = await createLifecycleRouteFixture();
-    const canonicalTaskId = "01KG0RR6CA45ZT43W2T6HJMVA1";
     const pause = await requestLifecycleRoute(fixture, "/api/agent/dispatch/control", {
       scope: "task",
       action: "pause",
@@ -340,5 +395,335 @@ describe("canonical dispatch lifecycle routes", () => {
         suggestion: expect.any(String),
       },
     });
+  });
+
+  // AC: @daemon-agent-dispatch ac-control-failure-no-success
+  it("does not report success when lifecycle persistence fails", async () => {
+    const fixture = await createLifecycleRouteFixture();
+    await requestLifecycleRoute(fixture, "/api/agent/dispatch/control", {
+      scope: "global",
+      action: "start",
+    });
+    const engine = getDispatchEngine(fixture.projectDir)!;
+    vi.spyOn(engine, "applyGlobalLifecycleAction").mockRejectedValueOnce(
+      new DispatchShadowTransactionError(
+        "control_commit_failed",
+        `raw commit failure in ${fixture.projectDir}`,
+      ),
+    );
+
+    const response = await requestLifecycleRoute(fixture, "/api/agent/dispatch/control", {
+      scope: "global",
+      action: "pause",
+    });
+    expect(response.status).toBe(503);
+    const body = await response.json();
+    expect(body).toEqual({
+      ok: false,
+      data: expect.objectContaining({ global_authority: "running" }),
+      error: {
+        code: "control_commit_failed",
+        message: "Dispatch control commit failed",
+        suggestion: expect.any(String),
+      },
+    });
+    expect(JSON.stringify(body)).not.toContain(fixture.projectDir);
+  });
+
+  // AC: @daemon-agent-dispatch ac-cleanup-failure-no-success
+  it.each([
+    ["cancellation_timeout", 500],
+    ["cancellation_failed", 500],
+    ["session_closure_failed", 500],
+    ["cleanup_ownership_mismatch", 409],
+    ["cleanup_process_birth_mismatch", 409],
+    ["cleanup_leader_missing_group_alive", 409],
+    ["cleanup_identity_unverifiable", 503],
+    ["cleanup_group_unverifiable", 503],
+    ["internal_error", 500],
+  ] as const)("does not report success for cleanup failure %s", async (code, status) => {
+    const fixture = await createLifecycleRouteFixture();
+    await requestLifecycleRoute(fixture, "/api/agent/dispatch/control", {
+      scope: "global",
+      action: "start",
+    });
+    const engine = getDispatchEngine(fixture.projectDir)!;
+    vi.spyOn(engine, "applyGlobalLifecycleAction").mockRejectedValueOnce(
+      new DispatchCleanupError(code, `raw cleanup failure in ${fixture.projectDir}`),
+    );
+
+    const response = await requestLifecycleRoute(fixture, "/api/agent/dispatch/control", {
+      scope: "global",
+      action: "stop",
+    });
+    expect(response.status).toBe(status);
+    const body = await response.json();
+    expect(body).toEqual({
+      ok: false,
+      data: expect.objectContaining({ global_authority: "running" }),
+      error: {
+        code,
+        message: expect.any(String),
+        suggestion: expect.any(String),
+      },
+    });
+    expect(JSON.stringify(body)).not.toContain(fixture.projectDir);
+  });
+
+  it("rejects invalid stopped transitions without creating runtime state", async () => {
+    const fixture = await createLifecycleRouteFixture();
+    const response = await requestLifecycleRoute(fixture, "/api/agent/dispatch/control", {
+      scope: "global",
+      action: "pause",
+    });
+
+    expect(response.status).toBe(409);
+    expect(await response.json()).toEqual({
+      ok: false,
+      data: expect.objectContaining({
+        global_authority: "stopped",
+        active_count: 0,
+        queue_depth: 0,
+        held_count: 0,
+      }),
+      error: {
+        code: "invalid_transition",
+        message: "Invalid dispatch lifecycle transition",
+        suggestion: expect.any(String),
+      },
+    });
+    expect(getDispatchEngine(fixture.projectDir)).toBeUndefined();
+  });
+
+  it("gates only matching cleanup scope before engine startup", async () => {
+    const taskCleanupFixture = await createLifecycleRouteFixture();
+    const taskCleanup = lifecycleControl();
+    taskCleanup.pending_cleanup[canonicalTaskId] = {
+      cleanup_id: cleanupA,
+      status: "pending",
+      phase: "owned",
+      targets: [],
+    };
+    commitLifecycleControl(taskCleanupFixture, taskCleanup);
+
+    const globalStart = await requestLifecycleRoute(
+      taskCleanupFixture,
+      "/api/agent/dispatch/control",
+      { scope: "global", action: "start" },
+    );
+    expect(globalStart.status).toBe(200);
+    expect(await globalStart.json()).toEqual({
+      ok: true,
+      data: expect.objectContaining({
+        global_authority: "running",
+        cleanup_state: expect.objectContaining({ status: "pending" }),
+        outcome: "applied",
+      }),
+      error: null,
+    });
+
+    const globalCleanupFixture = await createLifecycleRouteFixture();
+    const globalCleanup = lifecycleControl();
+    globalCleanup.pending_cleanup.global = {
+      cleanup_id: cleanupB,
+      status: "pending",
+      phase: "owned",
+      targets: [],
+    };
+    commitLifecycleControl(globalCleanupFixture, globalCleanup);
+    const taskPause = await requestLifecycleRoute(
+      globalCleanupFixture,
+      "/api/agent/dispatch/control",
+      { scope: "task", action: "pause", task_ref: "@test-task-ready" },
+    );
+    expect(taskPause.status).toBe(200);
+    expect(await taskPause.json()).toEqual({
+      ok: true,
+      data: expect.objectContaining({ task_id: canonicalTaskId, outcome: "applied" }),
+      error: null,
+    });
+
+    const matchingTaskFixture = await createLifecycleRouteFixture();
+    const matchingTaskCleanup = lifecycleControl();
+    matchingTaskCleanup.tasks[canonicalTaskId] = {
+      mode: "stopped",
+      reason: "maintenance",
+      actor: "api",
+      source: "api",
+      controlled_at: timestamp,
+      updated_at: timestamp,
+    };
+    matchingTaskCleanup.pending_cleanup[canonicalTaskId] = {
+      cleanup_id: cleanupA,
+      status: "failed",
+      phase: "owned",
+      error_code: "cancellation_failed",
+      targets: [],
+    };
+    commitLifecycleControl(matchingTaskFixture, matchingTaskCleanup);
+    const taskResume = await requestLifecycleRoute(
+      matchingTaskFixture,
+      "/api/agent/dispatch/control",
+      { scope: "task", action: "resume", task_ref: "@test-task-ready" },
+    );
+    expect(taskResume.status).toBe(409);
+    expect(getDispatchEngine(matchingTaskFixture.projectDir)).toBeUndefined();
+  });
+
+  it("preserves native Elysia invalid-body validation", async () => {
+    const fixture = await createLifecycleRouteFixture();
+    const response = await requestLifecycleRoute(fixture, "/api/agent/dispatch/control", {
+      scope: "global",
+      action: "restart",
+    });
+    expect(response.status).toBe(400);
+    expect(await response.json()).toEqual({
+      error: "validation_error",
+      details: [
+        {
+          field: "action",
+          message: expect.any(String),
+        },
+      ],
+    });
+  });
+});
+
+describe("legacy lifecycle compatibility adapters", () => {
+  it.each([
+    ["/api/agent/dispatch/stop", undefined],
+    ["/api/agent/dispatch", { action: "stop" }],
+  ])("retries cleanup after a failed %s request", async (route, body) => {
+    const fixture = await createLifecycleRouteFixture();
+    await requestLifecycleRoute(fixture, "/api/agent/dispatch/control", {
+      scope: "global",
+      action: "start",
+    });
+    const engine = getDispatchEngine(fixture.projectDir)!;
+    const original = engine.applyGlobalLifecycleAction.bind(engine);
+    const lifecycle = vi
+      .spyOn(engine, "applyGlobalLifecycleAction")
+      .mockRejectedValueOnce(new DispatchCleanupError("cancellation_failed", "injected"))
+      .mockImplementation(original);
+
+    const first = await requestLifecycleRoute(fixture, route, body ?? {});
+    expect(first.status).toBe(500);
+    expect(await first.json()).toEqual(
+      route.endsWith("/stop")
+        ? { stopped: false, reason: "cleanup_pending", error_code: "cancellation_failed" }
+        : {
+            dispatch_enabled: false,
+            reason: "cleanup_pending",
+            error_code: "cancellation_failed",
+          },
+    );
+    expect(getDispatchEngine(fixture.projectDir)).toBe(engine);
+
+    const second = await requestLifecycleRoute(fixture, route, body ?? {});
+    expect(second.status).toBe(200);
+    expect(await second.json()).toEqual(
+      route.endsWith("/stop") ? { stopped: true } : { dispatch_enabled: false },
+    );
+    expect(lifecycle).toHaveBeenCalledTimes(3);
+  });
+
+  it.each([
+    [
+      "/api/agent/dispatch/stop",
+      undefined,
+      { stopped: false, error_code: "control_commit_failed" },
+    ],
+    [
+      "/api/agent/dispatch",
+      { action: "stop" },
+      { dispatch_enabled: true, error_code: "control_commit_failed" },
+    ],
+  ])("omits cleanup_pending for pre-commit failure on %s", async (route, body, expected) => {
+    const fixture = await createLifecycleRouteFixture();
+    await requestLifecycleRoute(fixture, "/api/agent/dispatch/control", {
+      scope: "global",
+      action: "start",
+    });
+    const engine = getDispatchEngine(fixture.projectDir)!;
+    vi.spyOn(engine, "applyGlobalLifecycleAction").mockRejectedValueOnce(
+      new DispatchShadowTransactionError("control_commit_failed", "injected"),
+    );
+
+    const response = await requestLifecycleRoute(fixture, route, body ?? {});
+    expect(response.status).toBe(503);
+    expect(await response.json()).toEqual(expected);
+  });
+
+  it.each([
+    ["/api/agent/dispatch/stop", undefined, { stopped: false, error_code: "internal_error" }],
+    [
+      "/api/agent/dispatch",
+      { action: "stop" },
+      { dispatch_enabled: true, error_code: "internal_error" },
+    ],
+  ])("omits cleanup_pending for uncategorized failure on %s", async (route, body, expected) => {
+    const fixture = await createLifecycleRouteFixture();
+    await requestLifecycleRoute(fixture, "/api/agent/dispatch/control", {
+      scope: "global",
+      action: "start",
+    });
+    const engine = getDispatchEngine(fixture.projectDir)!;
+    vi.spyOn(engine, "applyGlobalLifecycleAction").mockRejectedValueOnce(
+      new Error(`raw failure in ${fixture.projectDir}`),
+    );
+
+    const response = await requestLifecycleRoute(fixture, route, body ?? {});
+    expect(response.status).toBe(500);
+    const responseBody = await response.json();
+    expect(responseBody).toEqual(expected);
+    expect(JSON.stringify(responseBody)).not.toContain(fixture.projectDir);
+  });
+
+  it.each([
+    [
+      "/api/agent/dispatch/stop",
+      undefined,
+      { stopped: false, reason: "invalid_transition", error_code: "invalid_transition" },
+    ],
+    [
+      "/api/agent/dispatch",
+      { action: "stop" },
+      {
+        dispatch_enabled: true,
+        error: "Invalid dispatch lifecycle transition",
+        error_code: "invalid_transition",
+      },
+    ],
+  ])("preserves the exact invalid-transition row on %s", async (route, body, expected) => {
+    const fixture = await createLifecycleRouteFixture();
+    await requestLifecycleRoute(fixture, "/api/agent/dispatch/control", {
+      scope: "global",
+      action: "start",
+    });
+    const engine = getDispatchEngine(fixture.projectDir)!;
+    vi.spyOn(engine, "applyGlobalLifecycleAction").mockRejectedValueOnce(
+      new DispatchLifecycleTransitionError("injected"),
+    );
+
+    const response = await requestLifecycleRoute(fixture, route, body ?? {});
+    expect(response.status).toBe(409);
+    expect(await response.json()).toEqual(expected);
+  });
+
+  it("rejects paused legacy start without creating an engine", async () => {
+    const fixture = await createLifecycleRouteFixture();
+    commitLifecycleControl(fixture, lifecycleControl("paused"));
+    const response = await requestLifecycleRoute(fixture, "/api/agent/dispatch/start", {});
+    expect(response.status).toBe(409);
+    expect(await response.json()).toEqual({
+      started: false,
+      error: "Invalid dispatch lifecycle transition",
+      status: expect.objectContaining({
+        running: false,
+        globalAuthority: "paused",
+      }),
+      error_code: "invalid_transition",
+    });
+    expect(getDispatchEngine(fixture.projectDir)).toBeUndefined();
   });
 });

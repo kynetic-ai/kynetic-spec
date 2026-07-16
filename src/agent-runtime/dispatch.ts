@@ -1101,6 +1101,55 @@ export class DispatchLifecycleTransitionError extends Error {
   }
 }
 
+/**
+ * Resolve a non-stop global transition from committed lifecycle authority.
+ * This pure guard is shared by route preflight and the locked mutation path so
+ * invalid requests can be rejected before any runtime infrastructure starts.
+ */
+export function resolveGlobalLifecycleTransition(
+  snapshot: DispatchControl,
+  action: Exclude<GlobalLifecycleAction, "stop">,
+): DispatchControl["global"]["authority"] {
+  const globalCleanup = projectDispatchCleanupState(snapshot, { scope: "global" });
+  if (globalCleanup.entries.length > 0) {
+    throw new DispatchLifecycleTransitionError(
+      `Cannot ${action} global dispatch while global cleanup is ${globalCleanup.status}`,
+    );
+  }
+
+  const authority = snapshot.global.authority;
+  if (authority === "stopped") {
+    if (action === "start") return "running";
+    throw new DispatchLifecycleTransitionError(`Cannot ${action} global dispatch while stopped`);
+  }
+  if (authority === "paused") {
+    if (action === "pause") return "paused";
+    if (action === "resume") return "running";
+    throw new DispatchLifecycleTransitionError("Cannot start global dispatch while paused");
+  }
+  if (action === "pause") return "paused";
+  return "running";
+}
+
+/** Validate task transition rules against only the task's matching cleanup. */
+export function assertTaskLifecycleTransition(
+  snapshot: DispatchControl,
+  taskId: string,
+  action: TaskLifecycleAction,
+): void {
+  if (action === "stop") return;
+  const current = snapshot.tasks[taskId];
+  if (action === "pause" && current?.mode === "stopped") {
+    throw new DispatchLifecycleTransitionError(`Cannot pause stopped task dispatch for ${taskId}`);
+  }
+  const cleanup = projectDispatchCleanupState(snapshot, { scope: "task", task_id: taskId });
+  if (action === "resume" && current?.mode === "stopped" && cleanup.entries.length > 0) {
+    throw new DispatchLifecycleTransitionError(
+      `Cannot resume task dispatch for ${taskId} while matching cleanup is ${cleanup.status}`,
+    );
+  }
+}
+
 export const DISPATCH_CONTROL_FAILURE_CODE_BY_PREDICATE = {
   request_validation: "validation_failed",
   missing_task: "task_not_found",
@@ -1869,15 +1918,8 @@ export class DispatchEngine {
         const reason = this._sanitizeLifecycleText(context.reason ?? "operator request", 240);
         const actor = this._sanitizeLifecycleText(context.actor ?? "dispatch-engine", 120);
         await this.lifecycleStore.mutate(`dispatch-global-${action}`, (snapshot) => {
-          const globalCleanup = projectDispatchCleanupState(snapshot, { scope: "global" });
-          if (globalCleanup.entries.length > 0) {
-            throw new DispatchLifecycleTransitionError(
-              `Cannot ${action} global dispatch while global cleanup is ${globalCleanup.status}`,
-            );
-          }
-
           const authority = snapshot.global.authority;
-          const next = this._resolveGlobalTransition(authority, action);
+          const next = resolveGlobalLifecycleTransition(snapshot, action);
           if (next === authority) {
             result = { outcome: "noop", authority };
             return null;
@@ -1986,17 +2028,9 @@ export class DispatchEngine {
           `dispatch-task-${action}-${identity.taskId}`,
           (snapshot) => {
             const current = snapshot.tasks[identity.taskId];
-            const cleanup = projectDispatchCleanupState(snapshot, {
-              scope: "task",
-              task_id: identity.taskId,
-            });
+            assertTaskLifecycleTransition(snapshot, identity.taskId, action);
 
             if (action === "pause") {
-              if (current?.mode === "stopped") {
-                throw new DispatchLifecycleTransitionError(
-                  `Cannot pause stopped task dispatch for ${identity.taskId}`,
-                );
-              }
               if (current?.mode === "paused") {
                 result = {
                   outcome: "noop",
@@ -2029,11 +2063,6 @@ export class DispatchEngine {
               };
             }
 
-            if (current?.mode === "stopped" && cleanup.entries.length > 0) {
-              throw new DispatchLifecycleTransitionError(
-                `Cannot resume task dispatch for ${identity.taskId} while matching cleanup is ${cleanup.status}`,
-              );
-            }
             if (!current) {
               result = {
                 outcome: "noop",
@@ -5370,23 +5399,6 @@ export class DispatchEngine {
   private _taskSchedulingPermitted(taskId: string): boolean {
     const snapshot = this.lifecyclePublication.snapshot;
     return snapshot.tasks[taskId] === undefined && snapshot.pending_cleanup[taskId] === undefined;
-  }
-
-  private _resolveGlobalTransition(
-    authority: DispatchControl["global"]["authority"],
-    action: Exclude<GlobalLifecycleAction, "stop">,
-  ): DispatchControl["global"]["authority"] {
-    if (authority === "stopped") {
-      if (action === "start") return "running";
-      throw new DispatchLifecycleTransitionError(`Cannot ${action} global dispatch while stopped`);
-    }
-    if (authority === "paused") {
-      if (action === "pause") return "paused";
-      if (action === "resume") return "running";
-      throw new DispatchLifecycleTransitionError("Cannot start global dispatch while paused");
-    }
-    if (action === "pause") return "paused";
-    return "running";
   }
 
   private _sanitizeLifecycleText(value: string, maxCodePoints: number): string {

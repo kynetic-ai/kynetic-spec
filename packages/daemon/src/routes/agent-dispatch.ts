@@ -31,8 +31,10 @@ import type {
   DispatchControlLifecycleEvent,
 } from "../../agent-runtime/dispatch.js";
 import {
+  assertTaskLifecycleTransition,
   DispatchCleanupError,
   DispatchLifecycleTransitionError,
+  resolveGlobalLifecycleTransition,
 } from "../../agent-runtime/dispatch.js";
 import {
   getOrCreateDispatchControlStore,
@@ -48,7 +50,9 @@ import { DEFAULT_KSPEC_CLI_PATH, runInvocation } from "../../agent-runtime/invoc
 import {
   normalizeTaskIdentity,
   buildTaskRefResolver,
+  requireCanonicalTaskIdentity,
   TaskIdentityResolutionError,
+  type CanonicalTaskIdentity,
 } from "../../agent-runtime/task-identity.js";
 import { ulid } from "ulid";
 import {
@@ -412,6 +416,24 @@ async function serializeInternalStatus(projectDir: string, engine: DispatchEngin
     ...status,
     degraded: serializeDegradedSummary(degradedTargets),
     degradedTargets,
+    globalAuthority: lifecycle.global_authority,
+    projection: lifecycle.projection,
+    cleanupState: lifecycle.cleanup_state,
+    heldCount: lifecycle.held_count,
+    heldTasks: lifecycle.held_tasks,
+    taskControls: lifecycle.task_controls,
+  };
+}
+
+async function serializeInternalStatusWithoutEngine(projectDir: string) {
+  const lifecycle = await serializeLifecycleStatus(projectDir, undefined);
+  return {
+    running: false,
+    activeInvocations: 0,
+    queuedInvocations: 0,
+    invocations: [],
+    degraded: { active: false, reason: "", enteredAt: null },
+    degradedTargets: [],
     globalAuthority: lifecycle.global_authority,
     projection: lifecycle.projection,
     cleanupState: lifecycle.cleanup_state,
@@ -811,6 +833,52 @@ async function ensureDispatchEngine(
   }
 }
 
+async function preflightLifecycleAction(
+  projectDir: string,
+  input:
+    | { scope: "global"; action: "start" | "pause" | "resume" | "stop" }
+    | {
+        scope: "task";
+        action: "pause" | "resume" | "stop";
+        taskId?: string;
+        taskRef?: string;
+      },
+): Promise<CanonicalTaskIdentity | null> {
+  if (!hasRealShadowWorktree(projectDir)) return null;
+  const snapshot = (await getOrCreateDispatchControlStore(projectDir).loadCommitted()).snapshot;
+  if (input.scope === "global") {
+    if (input.action !== "stop") resolveGlobalLifecycleTransition(snapshot, input.action);
+    return null;
+  }
+  const identity = await requireCanonicalTaskIdentity(projectDir, {
+    taskId: input.taskId,
+    taskRef: input.taskRef,
+    source: `daemon/dispatch-control-${input.action}`,
+  });
+  assertTaskLifecycleTransition(snapshot, identity.taskId, input.action);
+  return identity;
+}
+
+async function stopDispatchEngine(
+  projectDir: string,
+  engine: DispatchEngine,
+  closeRegistry: boolean,
+): Promise<void> {
+  // Commit/retry the durable hard stop before tearing down runtime helpers.
+  // A cleanup failure must leave the same engine lifecycle-capable for retry.
+  if (hasRealShadowWorktree(projectDir)) {
+    await engine.applyGlobalLifecycleAction("stop", {
+      actor: "api",
+      source: "api",
+    });
+  }
+  stopJoinAccumulator(projectDir);
+  stopHookExecutor(projectDir);
+  await stopScheduleEngine(projectDir);
+  if (closeRegistry) stopSessionRegistry(projectDir);
+  await engine.stop();
+}
+
 const lifecycleControlBodySchema = t.Object({
   scope: t.Union([t.Literal("global"), t.Literal("task")]),
   action: t.Union([t.Literal("start"), t.Literal("pause"), t.Literal("resume"), t.Literal("stop")]),
@@ -857,6 +925,7 @@ export function createAgentDispatchRoutes(options: AgentDispatchRouteOptions = {
         async ({ body, projectContext, request, set }) => {
           const projectDir = projectContext.path;
           let engine = engines.get(projectDir);
+          let preflightIdentity: CanonicalTaskIdentity | null = null;
           try {
             if (
               (body.scope === "global" &&
@@ -899,6 +968,19 @@ export function createAgentDispatchRoutes(options: AgentDispatchRouteOptions = {
                 error: { code: "invalid_transition" as const, ...copy },
               };
             }
+            if (!engine) {
+              preflightIdentity = await preflightLifecycleAction(
+                projectDir,
+                body.scope === "global"
+                  ? { scope: "global", action: body.action }
+                  : {
+                      scope: "task",
+                      action: body.action,
+                      taskId: body.task_id,
+                      taskRef: body.task_ref,
+                    },
+              );
+            }
             ({ engine } = await ensureDispatchEngine(projectDir, requestedCwd, pubsub));
             const result =
               body.scope === "global"
@@ -908,8 +990,8 @@ export function createAgentDispatchRoutes(options: AgentDispatchRouteOptions = {
                     source: "api",
                   })
                 : await engine.applyTaskLifecycleAction(body.action, {
-                    taskId: body.task_id,
-                    taskRef: body.task_ref,
+                    taskId: preflightIdentity?.taskId ?? body.task_id,
+                    taskRef: preflightIdentity?.displayRef ?? body.task_ref,
                     reason: body.reason,
                     actor: "api",
                     source: "api",
@@ -987,6 +1069,12 @@ export function createAgentDispatchRoutes(options: AgentDispatchRouteOptions = {
 
             const priorRunning = engine?.getStatus().running ?? false;
             try {
+              if (!engine) {
+                await preflightLifecycleAction(projectDir, {
+                  scope: "global",
+                  action: "start",
+                });
+              }
               ({ engine } = await ensureDispatchEngine(projectDir, requestedCwd, pubsub));
               if (hasRealShadowWorktree(projectDir)) {
                 const result = await engine.applyGlobalLifecycleAction("start", {
@@ -1015,19 +1103,22 @@ export function createAgentDispatchRoutes(options: AgentDispatchRouteOptions = {
               return { dispatch_enabled: false, reason: "No engine running" };
             }
 
-            stopJoinAccumulator(projectDir);
-            stopHookExecutor(projectDir);
-            await stopScheduleEngine(projectDir);
+            const priorRunning = engine.getStatus().running;
             try {
-              await engine.stop();
+              await stopDispatchEngine(projectDir, engine, false);
               engines.delete(projectDir);
               return { dispatch_enabled: false };
             } catch (error) {
               const code = lifecycleErrorCode(error, projectDir);
+              const cleanupPending = error instanceof DispatchCleanupError;
               set.status = CONTROL_ERROR_STATUS[code];
               return {
-                dispatch_enabled: false,
-                reason: "cleanup_pending",
+                dispatch_enabled: cleanupPending ? false : priorRunning,
+                ...(code === "invalid_transition"
+                  ? { error: "Invalid dispatch lifecycle transition" }
+                  : cleanupPending
+                    ? { reason: "cleanup_pending" }
+                    : {}),
                 error_code: code,
               };
             }
@@ -1074,6 +1165,12 @@ export function createAgentDispatchRoutes(options: AgentDispatchRouteOptions = {
         }
 
         try {
+          if (!engine) {
+            await preflightLifecycleAction(projectDir, {
+              scope: "global",
+              action: "start",
+            });
+          }
           ({ engine } = await ensureDispatchEngine(projectDir, requestedCwd, pubsub));
           if (hasRealShadowWorktree(projectDir)) {
             const result = await engine.applyGlobalLifecycleAction("start", {
@@ -1097,7 +1194,9 @@ export function createAgentDispatchRoutes(options: AgentDispatchRouteOptions = {
             ...(code === "invalid_transition"
               ? {
                   error: "Invalid dispatch lifecycle transition",
-                  ...(engine ? { status: await serializeInternalStatus(projectDir, engine) } : {}),
+                  status: engine
+                    ? await serializeInternalStatus(projectDir, engine)
+                    : await serializeInternalStatusWithoutEngine(projectDir),
                 }
               : {}),
             error_code: code,
@@ -1114,20 +1213,21 @@ export function createAgentDispatchRoutes(options: AgentDispatchRouteOptions = {
           return { stopped: false, reason: "No engine running" };
         }
 
-        stopJoinAccumulator(projectDir);
-        stopHookExecutor(projectDir);
-        await stopScheduleEngine(projectDir);
-        stopSessionRegistry(projectDir);
         try {
-          await engine.stop();
+          await stopDispatchEngine(projectDir, engine, true);
           engines.delete(projectDir);
           return { stopped: true };
         } catch (error) {
           const code = lifecycleErrorCode(error, projectDir);
+          const cleanupPending = error instanceof DispatchCleanupError;
           set.status = CONTROL_ERROR_STATUS[code];
           return {
             stopped: false,
-            reason: code === "invalid_transition" ? "invalid_transition" : "cleanup_pending",
+            ...(code === "invalid_transition"
+              ? { reason: "invalid_transition" }
+              : cleanupPending
+                ? { reason: "cleanup_pending" }
+                : {}),
             error_code: code,
           };
         }
