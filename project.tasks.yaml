@@ -33876,7 +33876,7 @@
   type: task
   spec_ref: "@dispatch-event-taxonomy"
   plan_ref: "@plan-dispatch-lifecycle-pause-resume-and-stop-controls"
-  status: needs_work
+  status: in_progress
   blocked_by: []
   depends_on:
     - "@task-patch-dispatch-events-specs"
@@ -33890,7 +33890,7 @@
   notes_count: 7
   todos_count: 0
   created_at: 2026-07-14T19:47:18.963Z
-  started_at: 2026-07-16T02:23:22.704Z
+  started_at: 2026-07-16T03:51:43.548Z
   submitted_at: 2026-07-16T03:01:18.707Z
   automation: eligible
 - _ulid: 01KXH2PSQY6GK4S66S4TB6JVV3
