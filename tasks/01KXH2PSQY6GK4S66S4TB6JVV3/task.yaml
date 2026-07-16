@@ -76,7 +76,7 @@ description: |
 spec_ref: "@daemon-agent-dispatch"
 plan_ref: "@plan-dispatch-lifecycle-pause-resume-and-stop-controls"
 origin: derived
-status: in_progress
+status: pending_review
 blocked_by: []
 depends_on:
   - "@task-patch-dispatch-api-specs"
@@ -93,8 +93,8 @@ review_ref: "@01KXMRY871XC18AHJE6H8J4GN5"
 submission_linkage:
   review_url: null
   branch: dispatch/task/task-daemon-dispatch-lifecycle-api/01kxh2ps
-  captured_at: 2026-07-16T06:04:30.088Z
-  commit: 224ff0ef123337050be9107fab0dafa7d90ecfcf
+  captured_at: 2026-07-16T06:56:26.340Z
+  commit: 30da557ff43c38e74c3933c432824b58ce3d4827
   remote: origin
   remote_url: git@github.com:lepahc/kynetic-spec.git
   upstream_ref: refs/heads/dispatch/task/task-daemon-dispatch-lifecycle-api/01kxh2ps
@@ -227,8 +227,35 @@ history:
         previous: 2026-07-16T05:45:20.014Z
     command: task-start
     timestamp: 2026-07-16T06:39:27.211Z
+  - author: Jacob Chapel
+    changes:
+      status:
+        new: pending_review
+        previous: in_progress
+      submission_linkage:
+        new:
+          review_url: null
+          branch: dispatch/task/task-daemon-dispatch-lifecycle-api/01kxh2ps
+          captured_at: 2026-07-16T06:56:26.340Z
+          commit: 30da557ff43c38e74c3933c432824b58ce3d4827
+          remote: origin
+          remote_url: git@github.com:lepahc/kynetic-spec.git
+          upstream_ref: refs/heads/dispatch/task/task-daemon-dispatch-lifecycle-api/01kxh2ps
+        previous:
+          review_url: null
+          branch: dispatch/task/task-daemon-dispatch-lifecycle-api/01kxh2ps
+          captured_at: 2026-07-16T06:04:30.088Z
+          commit: 224ff0ef123337050be9107fab0dafa7d90ecfcf
+          remote: origin
+          remote_url: git@github.com:lepahc/kynetic-spec.git
+          upstream_ref: refs/heads/dispatch/task/task-daemon-dispatch-lifecycle-api/01kxh2ps
+      submitted_at:
+        new: 2026-07-16T06:56:26.348Z
+        previous: 2026-07-16T06:04:30.095Z
+    command: task-submit
+    timestamp: 2026-07-16T06:56:26.348Z
 created_at: 2026-07-14T19:47:19.422Z
 started_at: 2026-07-16T06:39:27.198Z
-submitted_at: 2026-07-16T06:04:30.095Z
+submitted_at: 2026-07-16T06:56:26.348Z
 todos: []
 automation: eligible

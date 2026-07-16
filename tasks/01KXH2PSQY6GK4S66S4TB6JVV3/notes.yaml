@@ -78,3 +78,16 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-07-16T06:40:55.970Z
+  - _ulid: 01KXMVCNS2SQJXP0MZ5E9054E3
+    content: "Fix cycle 2: addressed and resolved all three review blockers in 30da557ff4. Matching task
+      cleanup now gates pause and resume for absent, paused, and stopped control rows without
+      affecting unrelated scopes. DispatchControlStore retains typed corrupt/unavailable degradation
+      so canonical control plus public/internal status return the frozen error code in both
+      no-engine and engine-present states. Added exact route fixtures for corrupt/unavailable status
+      and matching-cleanup matrices. Gates: format/diff, focused and repo lint (0 errors; focused 0
+      warnings), typecheck, focused 83/83, refs/alignment/completeness validations pass. Full fresh
+      suite reported every suite PASS through final agent-dispatch-engine 147/147, then reproduced
+      the separately tracked post-green teardown hang and was terminated after a quiet interval."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-07-16T06:56:25.378Z
