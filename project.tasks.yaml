@@ -33876,7 +33876,7 @@
   type: task
   spec_ref: "@dispatch-event-taxonomy"
   plan_ref: "@plan-dispatch-lifecycle-pause-resume-and-stop-controls"
-  status: in_progress
+  status: pending_review
   blocked_by: []
   depends_on:
     - "@task-patch-dispatch-events-specs"
@@ -33887,11 +33887,11 @@
     - events
     - schema
   review_ref: "@01KXM9QJPK2AEF4NSMVN5SMRJ2"
-  notes_count: 5
+  notes_count: 6
   todos_count: 0
   created_at: 2026-07-14T19:47:18.963Z
   started_at: 2026-07-16T02:23:22.704Z
-  submitted_at: 2026-07-16T01:38:27.757Z
+  submitted_at: 2026-07-16T03:01:18.707Z
   automation: eligible
 - _ulid: 01KXH2PSQY6GK4S66S4TB6JVV3
   slugs:

@@ -60,3 +60,18 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-07-16T02:23:49.542Z
+  - _ulid: 01KXMDY4TD74SR1P880FDE23RZ
+    content: "Fix cycle 1 completed in 5f0855ff1c. Addressed all four blockers: retained the resolved
+      canonical task identity for the operation so ref-only matrix failures emit; emitted one
+      identity-neutral failed payload when canonicalization never establishes a task ULID; replaced
+      the synthetic emitter Promise with real DispatchEngine and lifecycle-store applied/noop commit
+      barriers; drove all 17 failure classes through public engine action boundaries; and added
+      behavioral annotations for all four covered lifecycle audit ACs. Removed the misleading
+      direct-emitter commit-barrier claim. Verification: focused lifecycle/event slice 266/266;
+      format check; repo lint 0 errors; focused lint 0 warnings/errors; typecheck; diff check;
+      refs/alignment/completeness validations; final full suite 2,811/2,811 suites and 10,752 tests
+      passed with 3 skipped. An initial fresh full run hit one unrelated transient proc lstat ENOENT
+      in agent-invocation.test.ts; isolated rerun passed 14/14 and the final full rerun passed."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-07-16T03:01:17.773Z
