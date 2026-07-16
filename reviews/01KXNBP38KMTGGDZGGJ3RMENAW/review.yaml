@@ -363,6 +363,27 @@ events:
       status: pass
       name: diff check
     timestamp: 2026-07-16T12:03:23.844Z
+  - _ulid: 01KXNCZXD84E6C6HFDMDX2G1X8
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KXNCZX325B1SNBYF3ZVRPSJE
+    timestamp: 2026-07-16T12:04:01.576Z
+  - _ulid: 01KXND01DQSN6EMGB9E1PFG456
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KXND014EYSNKPWRR99W84G41
+    timestamp: 2026-07-16T12:04:05.688Z
+  - _ulid: 01KXND05TNYS36XX35747PZN1B
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KXND05GGR4MCQWADM95V5XX9
+    timestamp: 2026-07-16T12:04:10.197Z
 examined_commit: ef7ffa06f604363415e906b2db0ccfbc3abb4afb
 external_links: []
 lifecycle_state: open
@@ -452,7 +473,65 @@ threads:
           applicable."
         created_at: 2026-07-16T12:02:24.292Z
     kind: nit
+  - _ulid: 01KXNCZX325B1SNBYF3ZVRPSJE
+    anchor:
+      type: code
+      commit: ef7ffa06f604363415e906b2db0ccfbc3abb4afb
+      line_end: 227
+      line_start: 220
+      path: tests/cli-agent-dispatch-lifecycle.test.ts
+      side: head
+    entries:
+      - _ulid: 01KXNCZX3281QBJVPC5PFDHY81
+        author: Jacob Chapel
+        body: MUST-FIX — Own acceptance-criterion coverage is incomplete. The parameterized test exercises
+          start, pause, and resume, but only ac-start-reports-authority and the shared projection AC
+          are annotated. Targeted completeness validation reports ac-pause-reports-authority and
+          ac-resume-reports-authority as uncovered. Add standalone annotations for both criteria and
+          ensure the assertions prove each authority result.
+        created_at: 2026-07-16T12:04:01.250Z
+    kind: blocker
+  - _ulid: 01KXND014EYSNKPWRR99W84G41
+    anchor:
+      type: code
+      commit: ef7ffa06f604363415e906b2db0ccfbc3abb4afb
+      line_end: 170
+      line_start: 148
+      path: tests/cli-agent-dispatch-lifecycle.test.ts
+      side: head
+    entries:
+      - _ulid: 01KXND014FZ88MP8EQ94R84FFG
+        author: Jacob Chapel
+        body: MUST-FIX — The required behavioral CLI boundary is bypassed. runLifecycleCli constructs a bare
+          Commander instance, registers only agent commands, and directly injects JSON output state;
+          it does not invoke the built CLI through tests/helpers/cli.ts with an explicit cwd and
+          sanitized environment, and JSON cases never pass a real --json argument. This skips root
+          option parsing, pre-action setup, process-level exits, and actual stdout/stderr framing,
+          so exact grammar and JSON regressions can pass. Replace or supplement this harness with
+          the required subprocess helper and exercise real flags for every grammar row.
+        created_at: 2026-07-16T12:04:05.391Z
+    kind: blocker
+  - _ulid: 01KXND05GGR4MCQWADM95V5XX9
+    anchor:
+      type: code
+      commit: ef7ffa06f604363415e906b2db0ccfbc3abb4afb
+      line_end: 407
+      line_start: 405
+      path: src/cli/commands/agent.ts
+      side: head
+    entries:
+      - _ulid: 01KXND05GHXPTMMPQ49YTHMRZ0
+        author: Jacob Chapel
+        body: MUST-FIX — Project-context resolution is outside the closed lifecycle error boundary. If
+          initContext throws, mutation actions have no catch and can expose the rejected exception
+          or stack; status actions catch it with generic error(..., err), whose formatters stringify
+          or serialize the raw exception and may include cwd/path suggestions. This violates the
+          fixed internal_error mapping and no-raw-path requirement. Put context resolution behind
+          the fail-closed mapping in both helpers/callers and add human and JSON behavioral tests
+          with a distinctive thrown error that must not appear.
+        created_at: 2026-07-16T12:04:09.873Z
+    kind: blocker
 verdicts: []
 created_at: 2026-07-16T11:41:11.315Z
-updated_at: 2026-07-16T12:03:23.546Z
+updated_at: 2026-07-16T12:04:09.873Z
 notes: []
