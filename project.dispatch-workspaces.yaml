@@ -11071,7 +11071,7 @@ workspaces:
         head: 87ba5a40db4a3a66c21c89c9ff90b28d9177727c
         last_seen_at: 2026-07-16T13:53:45.616Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/stabilize-resistant-process-exit-test-01kxnjtv
-  - active_role: null
+  - active_role: worker
     base_branch_point: d207e138c177474260e1661bf7bd404c9eb6aa3f
     bootstrap:
       status: succeeded
@@ -11407,7 +11407,7 @@ workspaces:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-07-16T14:26:57.848Z
+      updated_at: 2026-07-16T14:27:41.247Z
     integration:
       status: pending
       detail: null
@@ -11416,17 +11416,17 @@ workspaces:
       target_branch: plan/plan-dispatch-lifecycle-pause-resume-and-stop-controls/01kxc2vx
       target_commit: d207e138c177474260e1661bf7bd404c9eb6aa3f
       updated_at: 2026-07-16T14:26:57.848Z
-    lifecycle_state: ready
+    lifecycle_state: active
     resolved_base_branch: plan/plan-dispatch-lifecycle-pause-resume-and-stop-controls/01kxc2vx
     task_id: 01KXH2PXT88X9MSC62MQVY2CV4
     task_ref: "@01KXH2PXT88X9MSC62MQVY2CV4"
     task_slug: task-verify-api-cli-projection
     timestamps:
       closed_at: null
-      last_active_at: null
-      last_reconciled_at: 2026-07-16T14:26:57.848Z
+      last_active_at: 2026-07-16T14:27:41.247Z
+      last_reconciled_at: 2026-07-16T14:27:41.247Z
       created_at: 2026-07-16T14:26:57.848Z
-      updated_at: 2026-07-16T14:27:24.584Z
+      updated_at: 2026-07-16T14:27:41.247Z
     workspace_id: dispatch-workspace-01KXH2PXT88X9MSC62MQVY2CV4
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
