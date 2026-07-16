@@ -24000,6 +24000,16 @@ observations:
     resolved: false
     workflow_ref: "@session-reflect-loop"
     created_at: 2026-07-16T02:18:04.519Z
+  - _ulid: 01KXMBK52MM3J37Z5D1MQ2Z5SW
+    type: success
+    content: "For safety-critical cleanup, pair a physical destructive-surface regression test with a
+      separate production-wiring test: the first proves protected evidence survives real filesystem
+      and registry cleanup, while the second proves the engine supplies globally controlled
+      identities instead of relying on manually injected classifier state."
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    created_at: 2026-07-16T02:20:20.436Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
