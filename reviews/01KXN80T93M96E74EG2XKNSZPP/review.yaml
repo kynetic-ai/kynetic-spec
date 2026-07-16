@@ -250,6 +250,16 @@ checks:
     runner: kspec item get plus rg annotation audit
     created_at: 2026-07-16T10:53:40.399Z
     completed_at: 2026-07-16T10:53:40.399Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: No whitespace errors.
+    name: diff whitespace
+    required: false
+    runner: git diff --check
+    created_at: 2026-07-16T10:53:45.912Z
+    completed_at: 2026-07-16T10:53:45.912Z
 events:
   - _ulid: 01KXN80T8W5B91KWP2BR13A6RX
     actor: Jacob Chapel
@@ -418,6 +428,13 @@ events:
       status: pass
       name: AC coverage
     timestamp: 2026-07-16T10:53:40.639Z
+  - _ulid: 01KXN8Z8SSFN12ES1G6KZP2YWX
+    actor: codex-reviewer
+    event_type: check_added
+    payload:
+      status: pass
+      name: diff whitespace
+    timestamp: 2026-07-16T10:53:46.169Z
 examined_commit: 6f9462a6c73e15e96c1f013e5a2067034d02e397
 external_links: []
 lifecycle_state: open
@@ -430,5 +447,5 @@ subject:
 threads: []
 verdicts: []
 created_at: 2026-07-16T10:37:08.259Z
-updated_at: 2026-07-16T10:53:40.399Z
+updated_at: 2026-07-16T10:53:45.912Z
 notes: []
