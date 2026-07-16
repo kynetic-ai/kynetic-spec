@@ -30233,7 +30233,7 @@ reviews:
     title: Review API and CLI lifecycle projection end to end
     disposition: pending
     author: Jacob Chapel
-    check_count: 0
+    check_count: 7
     examined_commit: 502c9cdde3f4acc5526d3a7969e3fe9da9f0b2b2
     lifecycle_state: open
     related_refs: []
@@ -30246,4 +30246,4 @@ reviews:
     unresolved_blocker_count: 0
     verdict_count: 0
     created_at: 2026-07-16T15:17:40.992Z
-    updated_at: 2026-07-16T15:17:58.191Z
+    updated_at: 2026-07-16T15:37:12.751Z

@@ -2,7 +2,79 @@ _ulid: 01KXNR2GG0FB8C7CW32367NMPK
 slugs: []
 title: Review API and CLI lifecycle projection end to end
 author: Jacob Chapel
-checks: []
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: All 1054 matched files formatted; git diff --check also passed.
+    name: format
+    required: true
+    runner: npm run format:check
+    created_at: 2026-07-16T15:36:52.485Z
+    completed_at: 2026-07-16T15:36:52.485Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Repo lint: 0 errors. Focused npx oxlint on all 5 changed TypeScript/test files: 0
+      warnings and 0 errors."
+    name: lint
+    required: true
+    runner: npm run lint -- --quiet
+    created_at: 2026-07-16T15:36:55.976Z
+    completed_at: 2026-07-16T15:36:55.976Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Shared package build and tsc --noEmit passed.
+    name: typecheck
+    required: true
+    runner: npm run typecheck
+    created_at: 2026-07-16T15:36:59.513Z
+    completed_at: 2026-07-16T15:36:59.513Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Fresh full suite passed: 2826 suites, 10881 tests passed, 3 skipped. Fresh focused
+      lifecycle slice also passed 138/138."
+    name: full test suite
+    required: true
+    runner: npm test
+    created_at: 2026-07-16T15:37:02.920Z
+    completed_at: 2026-07-16T15:37:02.920Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: kspec validate --refs --warnings-ok passed; 6 accepted deprecated-reference warnings.
+    name: kspec validate refs
+    required: true
+    runner: kspec
+    created_at: 2026-07-16T15:37:06.270Z
+    completed_at: 2026-07-16T15:37:06.270Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: kspec validate --alignment --warnings-ok passed; accepted repository baseline warnings.
+    name: kspec validate alignment
+    required: true
+    runner: kspec
+    created_at: 2026-07-16T15:37:09.484Z
+    completed_at: 2026-07-16T15:37:09.484Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: kspec validate --completeness --warnings-ok passed; accepted repository baseline warnings.
+    name: kspec validate completeness
+    required: true
+    runner: kspec
+    created_at: 2026-07-16T15:37:12.751Z
+    completed_at: 2026-07-16T15:37:12.751Z
 events:
   - _ulid: 01KXNR2GG04X797SV13YMG23W5
     actor: Jacob Chapel
@@ -17,6 +89,55 @@ events:
       from: draft
       to: open
     timestamp: 2026-07-16T15:17:58.528Z
+  - _ulid: 01KXNS5N89CVJYY3VJ88Q0SN72
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: format
+    timestamp: 2026-07-16T15:36:52.745Z
+  - _ulid: 01KXNS5RNAFQPTACJ2ATT6Z3HD
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: lint
+    timestamp: 2026-07-16T15:36:56.234Z
+  - _ulid: 01KXNS5W3Z5NAQVXTPXYRQA34E
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: typecheck
+    timestamp: 2026-07-16T15:36:59.775Z
+  - _ulid: 01KXNS5ZEA9RXRQ6R5MJR3ARX6
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: full test suite
+    timestamp: 2026-07-16T15:37:03.179Z
+  - _ulid: 01KXNS62PQ9TR9J6HKC058KYPQ
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate refs
+    timestamp: 2026-07-16T15:37:06.519Z
+  - _ulid: 01KXNS65VDW9GTFN9FXX2Z2WJP
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate alignment
+    timestamp: 2026-07-16T15:37:09.741Z
+  - _ulid: 01KXNS69153K2Q8501EY4PCP66
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate completeness
+    timestamp: 2026-07-16T15:37:12.997Z
 examined_commit: 502c9cdde3f4acc5526d3a7969e3fe9da9f0b2b2
 external_links: []
 lifecycle_state: open
@@ -29,5 +150,5 @@ subject:
 threads: []
 verdicts: []
 created_at: 2026-07-16T15:17:40.992Z
-updated_at: 2026-07-16T15:17:58.191Z
+updated_at: 2026-07-16T15:37:12.751Z
 notes: []
