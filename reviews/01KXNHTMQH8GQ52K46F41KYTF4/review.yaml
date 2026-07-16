@@ -448,6 +448,20 @@ events:
       kind: blocker
       thread_ulid: 01KXNK2PEVY02D0VWA81QE2KWK
     timestamp: 2026-07-16T13:50:24.494Z
+  - _ulid: 01KXNK3D6XCD2AV0SFJVCY2QGG
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KXNK3CWXRHAB6EXNBBYVSY6S
+    timestamp: 2026-07-16T13:50:47.517Z
+  - _ulid: 01KXNK3GHW0YAWR67QKBT5AKNX
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KXNK3G7MR06W9FKC18D5RBV4
+    timestamp: 2026-07-16T13:50:50.940Z
 examined_commit: da3bae8d95d5c41771751ce68f54e04cdd21a15b
 external_links: []
 lifecycle_state: open
@@ -592,7 +606,46 @@ threads:
           the invoking button on errors and add a behavioral task-row error-focus case.
         created_at: 2026-07-16T13:50:24.219Z
     kind: blocker
+  - _ulid: 01KXNK3CWXRHAB6EXNBBYVSY6S
+    anchor:
+      type: code
+      commit: da3bae8d95d5c41771751ce68f54e04cdd21a15b
+      line_end: 195
+      line_start: 189
+      path: tests/web-ui/dispatch-lifecycle-controls.test.ts
+      side: head
+    entries:
+      - _ulid: 01KXNK3CWXQJHK054ZFHZ4W56B
+        author: Jacob Chapel
+        body: MUST-FIX — The annotations for ac-status-active-work-visible, ac-status-queued-work-visible,
+          and ac-status-held-work-visible are attached to a wire-conversion test. Deep-equaling
+          parsed arrays and calling renderLifecycleConsumer, a local object-projection helper, does
+          not render the agents view and would still pass if the view hid draining active work,
+          queued rows, or HeldTaskRow entirely. The current agents browser additions only route
+          empty lifecycle arrays. Add behavioral rendered-view coverage for active work during
+          draining/cleanup plus queued and held rows.
+        created_at: 2026-07-16T13:50:47.197Z
+    kind: blocker
+  - _ulid: 01KXNK3G7MR06W9FKC18D5RBV4
+    anchor:
+      type: code
+      commit: da3bae8d95d5c41771751ce68f54e04cdd21a15b
+      line_end: 687
+      line_start: 673
+      path: tests/web-ui/dispatch-lifecycle-controls.test.ts
+      side: head
+    entries:
+      - _ulid: 01KXNK3G7MGJVDTBVQQ919XF0D
+        author: Jacob Chapel
+        body: MUST-FIX — ac-control-separated-from-degraded and ac-control-separated-from-blocked are not
+          behaviorally covered. This test only proves the API parser retains separate properties; it
+          never renders the authority, projection, degraded-state label, and held/blocked evidence
+          that the ACs require the agents view to label separately. A UI regression that merges or
+          omits those labels would leave this test green. Replace or supplement it with rendered
+          behavioral assertions.
+        created_at: 2026-07-16T13:50:50.612Z
+    kind: blocker
 verdicts: []
 created_at: 2026-07-16T13:28:31.729Z
-updated_at: 2026-07-16T13:50:24.219Z
+updated_at: 2026-07-16T13:50:50.612Z
 notes: []
