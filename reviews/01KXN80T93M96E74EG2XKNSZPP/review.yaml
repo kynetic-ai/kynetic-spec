@@ -171,6 +171,20 @@ checks:
     runner: npm run typecheck
     created_at: 2026-07-16T10:52:59.986Z
     completed_at: 2026-07-16T10:52:59.986Z
+  - status: skipped
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Fresh full run reported all visible suites PASS, including lifecycle 54/54 and
+      agent-dispatch-engine 147/147, then entered the pre-existing wrapper long-tail/hang tracked by
+      @task-investigate-npm-test-teardown-hang-after-green-suite-run. The incomplete silent meta
+      long-tail was rerun directly and passed: 195 passed, 1 skipped, exit 0. Focused changed-route
+      slice passed 79/79."
+    name: full test suite
+    required: true
+    runner: npm test -- --fresh
+    created_at: 2026-07-16T10:53:05.669Z
+    completed_at: 2026-07-16T10:53:05.669Z
 events:
   - _ulid: 01KXN80T8W5B91KWP2BR13A6RX
     actor: Jacob Chapel
@@ -290,6 +304,13 @@ events:
       status: pass
       name: typecheck
     timestamp: 2026-07-16T10:53:00.238Z
+  - _ulid: 01KXN8Y1GKGJPGSRZWQE1S94TR
+    actor: codex-reviewer
+    event_type: check_added
+    payload:
+      status: skipped
+      name: full test suite
+    timestamp: 2026-07-16T10:53:05.939Z
 examined_commit: 6f9462a6c73e15e96c1f013e5a2067034d02e397
 external_links: []
 lifecycle_state: open
@@ -302,5 +323,5 @@ subject:
 threads: []
 verdicts: []
 created_at: 2026-07-16T10:37:08.259Z
-updated_at: 2026-07-16T10:52:59.986Z
+updated_at: 2026-07-16T10:53:05.669Z
 notes: []
