@@ -5337,3 +5337,16 @@ inbox:
       - reflection
     added_by: Jacob Chapel
     created_at: 2026-07-16T15:45:33.729Z
+  - _ulid: 01KXP7JMK6VECTWKSHYGJA81ZH
+    text: "Batch JSON cannot express negated boolean options: review check with required:false passes
+      batch validation and dry-run, but buildCommandArgv omits false booleans, so --no-required is
+      never emitted and the stored check remains required. Define consistent JSON semantics for
+      negated Commander flags, update argv construction, and add behavioral coverage for optional
+      review checks."
+    tags:
+      - reflection
+      - cli
+      - batch
+      - bug
+    added_by: Jacob Chapel
+    created_at: 2026-07-16T19:48:38.119Z
