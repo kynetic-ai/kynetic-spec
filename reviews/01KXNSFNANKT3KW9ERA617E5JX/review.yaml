@@ -91,6 +91,17 @@ checks:
     runner: npm run test:e2e -- tests/e2e/agents.spec.ts
     created_at: 2026-07-16T16:05:09.696Z
     completed_at: 2026-07-16T16:05:09.696Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "PASS: no whitespace errors; detached snapshot and canonical branch both remained at
+      ccdbdbf1576a, with integration target d207e138c1."
+    name: diff check
+    required: false
+    runner: git diff --check d207e138c1..ccdbdbf157
+    created_at: 2026-07-16T16:05:15.810Z
+    completed_at: 2026-07-16T16:05:15.810Z
 events:
   - _ulid: 01KXNSFNANGKV7Q691FYEJJR3W
     actor: Jacob Chapel
@@ -161,6 +172,13 @@ events:
       status: pass
       name: agents browser e2e
     timestamp: 2026-07-16T16:05:09.977Z
+  - _ulid: 01KXNTSMN6NQZM5835GFEPG3NZ
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: diff check
+    timestamp: 2026-07-16T16:05:16.070Z
 examined_commit: ccdbdbf1576a4b84197652909759850dff01cc5c
 external_links: []
 lifecycle_state: open
@@ -173,5 +191,5 @@ subject:
 threads: []
 verdicts: []
 created_at: 2026-07-16T15:42:20.501Z
-updated_at: 2026-07-16T16:05:09.696Z
+updated_at: 2026-07-16T16:05:15.810Z
 notes: []
