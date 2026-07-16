@@ -81187,9 +81187,22 @@ runs:
     completed_at: 2026-07-16T13:51:35.499Z
   - _ulid: 01KXNKB5NWW31C5JC6VFJAKMWH
     status: active
-    current_step: 0
+    current_step: 1
     initiated_by: Jacob Chapel
-    step_results: []
+    step_results:
+      - status: completed
+        step_index: 0
+        started_at: 2026-07-16T13:55:01.948Z
+        completed_at: 2026-07-16T13:55:59.225Z
+        notes: Meaningful reviewer-only session confirmed by closed review @01KXNHTM, four anchored
+          blockers, passing checks, request-changes verdict, and pending_review-to-needs_work
+          transition. Duplicate-prevention baseline used targeted kspec searches across tasks,
+          inbox, specs, and observations because unbounded full listings are already tracked as
+          @01KXNHG8.
+      - status: completed
+        step_index: 1
+        started_at: 2026-07-16T13:55:59.225Z
+        completed_at: 2026-07-16T13:55:59.225Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-07-16T13:55:01.948Z
