@@ -11581,3 +11581,80 @@ workspaces:
         head: 8364599a91cd18587254d378c3a6c8f45922a00b
         last_seen_at: 2026-07-16T19:14:42.374Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-verify-api-cli-projection-01kxh2px
+  - active_role: null
+    base_branch_point: 2b1916dc1b0a272e6cd022d7c4687d0bbbd14173
+    bootstrap:
+      status: not_run
+      canonicalBranchHead: null
+      configHash: null
+      failureMessage: null
+      invalidationReasons: []
+      lastRole: null
+      lastRunAt: null
+      roleStates:
+        reviewer:
+          status: not_run
+          canonicalBranchHead: null
+          configHash: null
+          failureMessage: null
+          invalidationReasons: []
+          lastRunAt: null
+          steps: []
+        worker:
+          status: not_run
+          canonicalBranchHead: null
+          configHash: null
+          failureMessage: null
+          invalidationReasons: []
+          lastRunAt: null
+          steps: []
+      steps: []
+    branch_provenance:
+      adopted_at: null
+      adopted_from: null
+      ownership: dispatcher-managed
+      rehydrated: null
+      remote_ref: null
+      source: provisioned
+    canonical_branch: dispatch/task/task-verify-ui-lifecycle-browser/01kxh2py
+    canonical_branch_head: 2b1916dc1b0a272e6cd022d7c4687d0bbbd14173
+    cleanup:
+      status: not_scheduled
+      detail: null
+      eligible: false
+      reason: null
+      updated_at: 2026-07-16T19:46:01.318Z
+    health:
+      status: healthy
+      issues: []
+      summary: Workspace record matches current git branch and worktree state.
+      updated_at: 2026-07-16T19:46:01.318Z
+    integration:
+      status: pending
+      detail: null
+      outcome: manual_merge
+      publication_mode: manual_merge
+      target_branch: plan/plan-dispatch-lifecycle-pause-resume-and-stop-controls/01kxc2vx
+      target_commit: 2b1916dc1b0a272e6cd022d7c4687d0bbbd14173
+      updated_at: 2026-07-16T19:46:01.318Z
+    lifecycle_state: ready
+    resolved_base_branch: plan/plan-dispatch-lifecycle-pause-resume-and-stop-controls/01kxc2vx
+    task_id: 01KXH2PY7C0W6GDQAFZN12HMC4
+    task_ref: "@01KXH2PY7C0W6GDQAFZN12HMC4"
+    task_slug: task-verify-ui-lifecycle-browser
+    timestamps:
+      closed_at: null
+      last_active_at: null
+      last_reconciled_at: 2026-07-16T19:46:01.318Z
+      created_at: 2026-07-16T19:46:01.318Z
+      updated_at: 2026-07-16T19:46:01.318Z
+    workspace_id: dispatch-workspace-01KXH2PY7C0W6GDQAFZN12HMC4
+    worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
+    worktrees:
+      reviewer: null
+      worker:
+        branch_mode: branch
+        branch_ref: dispatch/task/task-verify-ui-lifecycle-browser/01kxh2py
+        head: 2b1916dc1b0a272e6cd022d7c4687d0bbbd14173
+        last_seen_at: 2026-07-16T19:46:01.318Z
+        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-verify-ui-lifecycle-browser-01kxh2py
