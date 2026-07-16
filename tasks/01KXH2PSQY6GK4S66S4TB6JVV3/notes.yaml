@@ -108,3 +108,17 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-07-16T07:29:43.022Z
+  - _ulid: 01KXMY2NSCHC4MWSA6TB5QW5JM
+    content: "Fix cycle 3: addressed and resolved all three review blockers in dc53f97405. Strict
+      lifecycle mutation identity now rejects canonical-looking ULIDs that do not identify an
+      existing task, with exact task_not_found/ambiguous responses and no mutation or alias
+      exposure. Canonical controls emit X-Request-Id and retain semantic shadow commit subjects.
+      Lifecycle status ACs now exercise GET /api/agent/status with populated active, queued, and
+      durably task-held state and exact values; stale trait N/A annotations were removed. Gates:
+      format/diff, focused and repo lint (0 errors; focused 0 warnings), typecheck, focused 70/70,
+      refs/alignment/completeness validations pass. Full fresh suite reported every suite PASS
+      through final agent-dispatch-engine 147/147, then reproduced the separately tracked post-green
+      teardown hang and was terminated after two quiet intervals."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-07-16T07:43:23.436Z
