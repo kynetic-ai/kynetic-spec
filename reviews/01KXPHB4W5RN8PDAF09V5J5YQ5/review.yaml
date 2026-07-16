@@ -69,6 +69,13 @@ events:
       kind: blocker
       thread_ulid: 01KXPHGF1TZMS8Q95WTK4PZ5Z4
     timestamp: 2026-07-16T22:42:13.050Z
+  - _ulid: 01KXPHGPQYRQ0AER2DDJXQSAEE
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KXPHGPCYNQGYZRTT9849V25T
+    timestamp: 2026-07-16T22:42:20.542Z
 examined_commit: null
 external_links: []
 lifecycle_state: open
@@ -479,7 +486,27 @@ threads:
           execution-time baseline and reject new or changed refs problems.
         created_at: 2026-07-16T22:42:12.666Z
     kind: blocker
+  - _ulid: 01KXPHGPCYNQGYZRTT9849V25T
+    anchor:
+      type: structured
+      field: exact-owned-file-sets
+      ref: "@task-audit-remaining-public-docs"
+      section: tasks
+    entries:
+      - _ulid: 01KXPHGPCY6GMXD30P6CC5Z1AP
+        author: Jacob Chapel
+        body: Task 7 cannot satisfy its own manifest-closure gate under its exact file contract. Task 1
+          rejects extra records against the then-current tracked Markdown universe, so it cannot
+          predeclare the six Markdown pages Tasks 2 through 5 later create. Task 7 must therefore
+          add those pages and their evidence or dispositions to
+          tests/fixtures/public-documentation-surfaces.json, but its Exact owned file sets names
+          only documentation sets and tests/public-documentation-inventory.test.ts; the manifest
+          fixture is omitted. Add the fixture as an explicit Task 7 modify-owned file, with Task 8
+          test-only for this artifact, so the task is standalone and the ownership and closure path
+          is executable.
+        created_at: 2026-07-16T22:42:20.190Z
+    kind: blocker
 verdicts: []
 created_at: 2026-07-16T22:39:18.405Z
-updated_at: 2026-07-16T22:42:12.666Z
+updated_at: 2026-07-16T22:42:20.190Z
 notes: []
