@@ -7759,7 +7759,7 @@ workspaces:
         head: 5f77a5ccc7b8d2f2ea48581d08f06797c0ea56c3
         last_seen_at: 2026-07-15T15:09:12.111Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/stabilize-daemon-command-api-overlap-timing-test-01kxk05h
-  - active_role: null
+  - active_role: reviewer
     base_branch_point: 958c482d258844ba156717bd1878a5e821263488
     bootstrap:
       status: succeeded
@@ -8239,12 +8239,12 @@ workspaces:
       detail: integrated-into-base-branch
       eligible: true
       reason: integrated-into-base-branch
-      updated_at: 2026-07-16T02:51:23.539Z
+      updated_at: 2026-07-16T02:52:48.468Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-07-16T02:51:23.539Z
+      updated_at: 2026-07-16T02:52:48.468Z
     integration:
       status: merged
       detail: integration:merged
@@ -8252,7 +8252,7 @@ workspaces:
       publication_mode: manual_merge
       target_branch: plan/plan-dispatch-lifecycle-pause-resume-and-stop-controls/01kxc2vx
       target_commit: 958c482d258844ba156717bd1878a5e821263488
-      updated_at: 2026-07-16T02:51:23.539Z
+      updated_at: 2026-07-16T02:52:48.468Z
     lifecycle_state: closing
     resolved_base_branch: plan/plan-dispatch-lifecycle-pause-resume-and-stop-controls/01kxc2vx
     task_id: 01KXH2PRVHHSQ14WR16A5KHTJT
@@ -8261,9 +8261,9 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-07-16T02:23:43.883Z
-      last_reconciled_at: 2026-07-16T02:51:23.539Z
+      last_reconciled_at: 2026-07-16T02:52:48.468Z
       created_at: 2026-07-15T22:24:20.888Z
-      updated_at: 2026-07-16T02:51:23.539Z
+      updated_at: 2026-07-16T02:52:48.468Z
     workspace_id: dispatch-workspace-01KXH2PRVHHSQ14WR16A5KHTJT
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
