@@ -15,7 +15,7 @@
 	import type { BroadcastEvent } from '@kynetic-ai/shared';
 	import { useQueryClient } from '@tanstack/svelte-query';
 	import { createQuery } from '$lib/query/createQuery.svelte.js';
-	import { fetchTasks, fetchAgentStatus, isCacheWarmingError, type AgentDispatchStatus } from '$lib/api';
+	import { fetchTasks, fetchAgentStatus, isCacheWarmingError, DispatchLifecycleApiError, formatDispatchLifecycleError, type AgentDispatchStatus } from '$lib/api';
 	import CacheWarmingBanner from '$lib/components/CacheWarmingBanner.svelte';
 	import { subscribe, unsubscribe, on, off } from '$lib/stores/connection.svelte';
 	import { isInitialized as isProjectInitialized } from '$lib/stores/project.svelte';
@@ -65,8 +65,16 @@
 	let loading = $derived(tasksQuery.isLoading);
 	// AC: @ui-data-freshness ac-warming-skeleton — Distinguish warming errors from other errors
 	let cacheWarming = $derived(isCacheWarmingError(tasksQuery.error));
-	let error = $derived(cacheWarming ? '' : (tasksQuery.error?.message ?? ''));
-	let agentStatus = $derived<AgentDispatchStatus | null>(agentStatusQuery.data ?? null);
+	let error = $derived(
+		cacheWarming
+			? ''
+			: tasksQuery.error?.message ??
+				(agentStatusQuery.error ? formatDispatchLifecycleError(agentStatusQuery.error) : '')
+	);
+	let agentStatus = $derived<AgentDispatchStatus | null>(
+		agentStatusQuery.data ??
+			(agentStatusQuery.error instanceof DispatchLifecycleApiError ? agentStatusQuery.error.status ?? null : null)
+	);
 
 	// Derived: output lines per session (for ActiveFleetRow)
 	let agentOutputLines = $derived<Record<string, string[]>>(
@@ -144,7 +152,7 @@
 		const status = agentStatusQuery.data;
 		if (!status) return;
 		const activeSessions = new Set(
-			status.active_invocations.map((inv) => inv.session_id)
+			status.activeInvocations.map((inv) => inv.sessionId)
 		);
 		for (const sessionId of Object.keys(sessionStates)) {
 			if (!activeSessions.has(sessionId)) {

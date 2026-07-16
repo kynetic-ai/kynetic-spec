@@ -6,7 +6,8 @@
 	import { createMutation, useQueryClient } from '@tanstack/svelte-query';
 	import {
 		updateAgentDefinition,
-		type AgentDefinition
+		type AgentDefinition,
+		type AgentDispatchStatus
 	} from '$lib/api';
 	import {
 		AGENT_DISPATCH_EVENTS,
@@ -37,10 +38,10 @@
 
 	interface Props {
 		agents: AgentDefinition[];
-		dispatchEnabled: boolean;
+		status: AgentDispatchStatus | null;
 	}
 
-	let { agents, dispatchEnabled }: Props = $props();
+	let { agents, status }: Props = $props();
 
 	const queryClient = useQueryClient();
 
@@ -145,9 +146,9 @@
 		{/if}
 	</h2>
 
-	{#if !dispatchEnabled}
+	{#if status && status.globalAuthority !== 'running'}
 		<div class="text-sm text-muted-foreground bg-muted/50 p-3 rounded-lg mb-3">
-			Dispatch engine is not running. Triggers are shown but will not fire until dispatch is started.
+			Dispatch authority is {status.globalAuthority}. Triggers are shown, and {status.heldCount} task{status.heldCount === 1 ? '' : 's'} currently held.
 		</div>
 	{/if}
 

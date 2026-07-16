@@ -14,6 +14,8 @@
 	import { createQuery } from '$lib/query/createQuery.svelte.js';
 	import {
 		fetchAgentStatus,
+		DispatchLifecycleApiError,
+		formatDispatchLifecycleError,
 		fetchAgentDefinitions,
 		fetchHooks,
 		fetchSchedules,
@@ -32,6 +34,7 @@
 	import HooksSection from '$lib/components/automation/HooksSection.svelte';
 	import SchedulesSection from '$lib/components/automation/SchedulesSection.svelte';
 	import EventLogSection from '$lib/components/automation/EventLogSection.svelte';
+	import LifecycleEvidence from '$lib/components/agents/LifecycleEvidence.svelte';
 	import CompositionsSection from '$lib/components/automation/CompositionsSection.svelte';
 	import { Separator } from '$lib/components/ui/separator';
 	import { Skeleton } from '$lib/components/ui/skeleton';
@@ -77,7 +80,10 @@
 	}));
 
 	// --- Derived state ---
-	let dispatchStatus = $derived<AgentDispatchStatus | null>(agentStatusQuery.data ?? null);
+	let dispatchStatus = $derived<AgentDispatchStatus | null>(
+		agentStatusQuery.data ??
+			(agentStatusQuery.error instanceof DispatchLifecycleApiError ? agentStatusQuery.error.status ?? null : null)
+	);
 	let agentDefinitions = $derived<AgentDefinition[]>(agentDefsQuery.data?.items ?? []);
 	let hooks = $derived<HookSummary[]>(hooksQuery.data?.items ?? []);
 	let schedules = $derived<ScheduleSummary[]>(schedulesQuery.data?.items ?? []);
@@ -134,7 +140,7 @@
 			data-testid="error-message"
 			role="alert"
 		>
-			{agentStatusQuery.error?.message || hooksQuery.error?.message || schedulesQuery.error?.message}
+			{agentStatusQuery.error ? formatDispatchLifecycleError(agentStatusQuery.error) : hooksQuery.error?.message || schedulesQuery.error?.message}
 		</div>
 	{/if}
 
@@ -150,10 +156,13 @@
 			<Skeleton class="h-40 w-full rounded-lg" />
 		</div>
 	{:else}
+		{#if dispatchStatus}
+			<LifecycleEvidence status={dispatchStatus} />
+		{/if}
 		<!-- AC: @ui-automation-view ac-1, ac-5 — Agent Dispatch Triggers -->
 		<DispatchTriggersSection
 			agents={agentDefinitions}
-			dispatchEnabled={dispatchStatus?.dispatch_enabled ?? false}
+			status={dispatchStatus}
 		/>
 
 		<Separator />
