@@ -34,6 +34,8 @@ export interface DispatchControlStoreOptions {
   onDegraded?: (reason: string) => void;
 }
 
+export type DispatchControlStoreDegradedKind = "corrupt" | "unavailable";
+
 export type DispatchControlMutation = (
   current: DispatchControl,
 ) => DispatchControl | null | Promise<DispatchControl | null>;
@@ -93,6 +95,7 @@ export class DispatchControlStore {
   private publication: DispatchControlPublication | null = null;
   private publicationVerified = false;
   private degradedReason: string | null = null;
+  private degradedKind: DispatchControlStoreDegradedKind | null = null;
   private settledReread: Promise<void> | null = null;
   private readonly publicationListeners = new Map<
     string | symbol,
@@ -131,6 +134,10 @@ export class DispatchControlStore {
 
   getDegradedReason(): string | null {
     return this.degradedReason;
+  }
+
+  getDegradedKind(): DispatchControlStoreDegradedKind | null {
+    return this.degradedKind;
   }
 
   async getObservedHead(): Promise<string> {
@@ -346,6 +353,9 @@ export class DispatchControlStore {
 
   private markDegraded(error: unknown): void {
     const detail = error instanceof Error ? error.message : String(error);
+    this.degradedKind = /Invalid dispatch-control\.yaml|malformed committed control/i.test(detail)
+      ? "corrupt"
+      : "unavailable";
     this.degradedReason = `control_store_degraded: dispatch-control.yaml: ${detail}`;
     for (const listener of this.degradedListeners.values()) {
       try {
@@ -358,6 +368,7 @@ export class DispatchControlStore {
 
   private clearDegraded(): void {
     this.degradedReason = null;
+    this.degradedKind = null;
   }
 }
 

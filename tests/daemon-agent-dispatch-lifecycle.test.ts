@@ -23,6 +23,7 @@ import {
   DispatchLifecycleTransitionError,
 } from "../dist/agent-runtime/dispatch.js";
 import { DispatchShadowTransactionError } from "../dist/agent-runtime/dispatch-shadow-transaction.js";
+import { getOrCreateDispatchControlStore } from "../dist/agent-runtime/dispatch-control-store.js";
 
 const [taskA, taskB, cleanupA, cleanupB] = testUlids("DL", 4);
 const canonicalTaskId = "01KG0RR6CA45ZT43W2T6HJMVA1";
@@ -154,6 +155,20 @@ function commitLifecycleControl(
   const specDir = path.join(fixture.projectDir, ".kspec");
   writeFileSync(path.join(specDir, "dispatch-control.yaml"), YAML.stringify(control));
   execSync("git add dispatch-control.yaml && git commit -m 'set lifecycle state'", {
+    cwd: specDir,
+    stdio: "pipe",
+  });
+}
+
+function commitCorruptLifecycleControl(
+  fixture: Awaited<ReturnType<typeof createLifecycleRouteFixture>>,
+) {
+  const specDir = path.join(fixture.projectDir, ".kspec");
+  writeFileSync(
+    path.join(specDir, "dispatch-control.yaml"),
+    YAML.stringify({ version: 99, revision: 1 }),
+  );
+  execSync("git add dispatch-control.yaml && git commit -m 'commit corrupt lifecycle state'", {
     cwd: specDir,
     stdio: "pipe",
   });
@@ -569,6 +584,256 @@ describe("canonical dispatch lifecycle routes", () => {
     expect(taskResume.status).toBe(409);
     expect(getDispatchEngine(matchingTaskFixture.projectDir)).toBeUndefined();
   });
+
+  it.each([
+    ["absent", "pause"],
+    ["absent", "resume"],
+    ["paused", "pause"],
+    ["paused", "resume"],
+  ] as const)(
+    "rejects task %s control row %s while matching cleanup is pending",
+    async (controlState, action) => {
+      const fixture = await createLifecycleRouteFixture();
+      const control = lifecycleControl();
+      if (controlState === "paused") {
+        control.tasks[canonicalTaskId] = {
+          mode: "paused",
+          reason: "maintenance",
+          actor: "api",
+          source: "api",
+          controlled_at: timestamp,
+          updated_at: timestamp,
+        };
+      }
+      control.pending_cleanup[canonicalTaskId] = {
+        cleanup_id: cleanupA,
+        status: "pending",
+        phase: "owned",
+        targets: [],
+      };
+      commitLifecycleControl(fixture, control);
+
+      const response = await requestLifecycleRoute(fixture, "/api/agent/dispatch/control", {
+        scope: "task",
+        action,
+        task_ref: "@test-task-ready",
+      });
+
+      expect(response.status).toBe(409);
+      expect(await response.json()).toEqual({
+        ok: false,
+        data: {
+          global_authority: "stopped",
+          projection: "stopped",
+          cleanup_state: {
+            status: "pending",
+            entries: [
+              {
+                cleanup_id: cleanupA,
+                scope: "task",
+                task_id: canonicalTaskId,
+                status: "pending",
+                phase: "owned",
+              },
+            ],
+          },
+          active_count: 0,
+          queue_depth: 0,
+          held_count: 0,
+          held_tasks: [],
+          task_controls:
+            controlState === "paused"
+              ? [
+                  {
+                    task_id: canonicalTaskId,
+                    task_ref: "@test-task-ready",
+                    title: "Ready task",
+                    mode: "paused",
+                    reason: "maintenance",
+                    actor: "api",
+                    source: "api",
+                    controlled_at: timestamp,
+                    updated_at: timestamp,
+                    cleanup_state: {
+                      status: "pending",
+                      entries: [
+                        {
+                          cleanup_id: cleanupA,
+                          scope: "task",
+                          task_id: canonicalTaskId,
+                          status: "pending",
+                          phase: "owned",
+                        },
+                      ],
+                    },
+                  },
+                ]
+              : [],
+          degraded_targets: [],
+        },
+        error: {
+          code: "invalid_transition",
+          message: "Invalid dispatch lifecycle transition",
+          suggestion: "Refresh lifecycle status and choose an allowed action.",
+        },
+      });
+      expect(getDispatchEngine(fixture.projectDir)).toBeUndefined();
+    },
+  );
+
+  // AC: @daemon-agent-dispatch ac-control-failure-no-success
+  // AC: @daemon-agent-dispatch ac-control-error-current-status
+  it("reports corrupt committed lifecycle state consistently on canonical surfaces", async () => {
+    const fixture = await createLifecycleRouteFixture();
+    commitCorruptLifecycleControl(fixture);
+    const lifecycle = {
+      global_authority: "stopped",
+      projection: "stopped",
+      cleanup_state: { status: "idle", entries: [] },
+      active_count: 0,
+      queue_depth: 0,
+      held_count: 0,
+      held_tasks: [],
+      task_controls: [],
+      degraded_targets: [],
+    };
+
+    const control = await requestLifecycleRoute(fixture, "/api/agent/dispatch/control", {
+      scope: "global",
+      action: "start",
+    });
+    expect(control.status).toBe(503);
+    expect(await control.json()).toEqual({
+      ok: false,
+      data: lifecycle,
+      error: {
+        code: "control_store_corrupt",
+        message: "Dispatch control store is corrupt",
+        suggestion: "Repair the committed dispatch control data and retry.",
+      },
+    });
+
+    const publicStatus = await requestLifecycleRoute(fixture, "/api/agent/status");
+    expect(publicStatus.status).toBe(503);
+    expect(await publicStatus.json()).toEqual({
+      ok: false,
+      data: lifecycle,
+      error: {
+        code: "control_store_corrupt",
+        message: "Dispatch control store is corrupt",
+        suggestion: "Repair the committed dispatch control data and retry.",
+      },
+    });
+
+    const internalStatus = await requestLifecycleRoute(fixture, "/api/agent/dispatch/status");
+    expect(internalStatus.status).toBe(503);
+    expect(await internalStatus.json()).toEqual({
+      running: false,
+      activeInvocations: 0,
+      queuedInvocations: 0,
+      invocations: [],
+      degraded: { active: false, reason: "", enteredAt: null },
+      degradedTargets: [],
+      globalAuthority: "stopped",
+      projection: "stopped",
+      cleanupState: { status: "idle", entries: [] },
+      heldCount: 0,
+      heldTasks: [],
+      taskControls: [],
+      error_code: "control_store_corrupt",
+    });
+  });
+
+  it("retains corrupt-store classification when an engine already exists", async () => {
+    const fixture = await createLifecycleRouteFixture();
+    const start = await requestLifecycleRoute(fixture, "/api/agent/dispatch/control", {
+      scope: "global",
+      action: "start",
+    });
+    expect(start.status).toBe(200);
+
+    commitCorruptLifecycleControl(fixture);
+    const store = getOrCreateDispatchControlStore(fixture.projectDir);
+    await store.observeWorktreeEvent();
+    expect(store.getDegradedKind()).toBe("corrupt");
+
+    const control = await requestLifecycleRoute(fixture, "/api/agent/dispatch/control", {
+      scope: "global",
+      action: "pause",
+    });
+    expect(control.status).toBe(503);
+    expect(await control.json()).toEqual({
+      ok: false,
+      data: expect.objectContaining({ global_authority: "running" }),
+      error: {
+        code: "control_store_corrupt",
+        message: "Dispatch control store is corrupt",
+        suggestion: "Repair the committed dispatch control data and retry.",
+      },
+    });
+
+    const internalStatus = await requestLifecycleRoute(fixture, "/api/agent/dispatch/status");
+    expect(internalStatus.status).toBe(503);
+    expect(await internalStatus.json()).toEqual(
+      expect.objectContaining({
+        running: true,
+        globalAuthority: "running",
+        error_code: "control_store_corrupt",
+      }),
+    );
+  });
+
+  it.each(["/api/agent/status", "/api/agent/dispatch/status"])(
+    "preserves unavailable-store classification on %s",
+    async (route) => {
+      const fixture = await createLifecycleRouteFixture();
+      const store = getOrCreateDispatchControlStore(fixture.projectDir);
+      await store.loadCommitted();
+      vi.spyOn(store, "getDegradedReason").mockReturnValue("control store unavailable");
+      vi.spyOn(store, "getDegradedKind").mockReturnValue("unavailable");
+
+      const response = await requestLifecycleRoute(fixture, route);
+      expect(response.status).toBe(503);
+      const body = await response.json();
+      if (route.endsWith("/dispatch/status")) {
+        expect(body).toEqual({
+          running: false,
+          activeInvocations: 0,
+          queuedInvocations: 0,
+          invocations: [],
+          degraded: { active: false, reason: "", enteredAt: null },
+          degradedTargets: [],
+          globalAuthority: "stopped",
+          projection: "stopped",
+          cleanupState: { status: "idle", entries: [] },
+          heldCount: 0,
+          heldTasks: [],
+          taskControls: [],
+          error_code: "control_store_unavailable",
+        });
+      } else {
+        expect(body).toEqual({
+          ok: false,
+          data: {
+            global_authority: "stopped",
+            projection: "stopped",
+            cleanup_state: { status: "idle", entries: [] },
+            active_count: 0,
+            queue_depth: 0,
+            held_count: 0,
+            held_tasks: [],
+            task_controls: [],
+            degraded_targets: [],
+          },
+          error: {
+            code: "control_store_unavailable",
+            message: "Dispatch control store is unavailable",
+            suggestion: "Restore the project shadow worktree and retry.",
+          },
+        });
+      }
+    },
+  );
 
   it("preserves native Elysia invalid-body validation", async () => {
     const fixture = await createLifecycleRouteFixture();

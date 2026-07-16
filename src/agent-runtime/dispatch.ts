@@ -1143,9 +1143,9 @@ export function assertTaskLifecycleTransition(
     throw new DispatchLifecycleTransitionError(`Cannot pause stopped task dispatch for ${taskId}`);
   }
   const cleanup = projectDispatchCleanupState(snapshot, { scope: "task", task_id: taskId });
-  if (action === "resume" && current?.mode === "stopped" && cleanup.entries.length > 0) {
+  if (cleanup.entries.length > 0) {
     throw new DispatchLifecycleTransitionError(
-      `Cannot resume task dispatch for ${taskId} while matching cleanup is ${cleanup.status}`,
+      `Cannot ${action} task dispatch for ${taskId} while matching cleanup is ${cleanup.status}`,
     );
   }
 }

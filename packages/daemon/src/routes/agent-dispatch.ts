@@ -297,12 +297,19 @@ function lifecycleErrorCode(error: unknown, projectDir?: string): DispatchContro
   }
   if (error instanceof DispatchCleanupError) return error.code;
   if (error instanceof DispatchShadowTransactionError) return "control_commit_failed";
-  const degraded = projectDir
-    ? getOrCreateDispatchControlStore(projectDir).getDegradedReason()
-    : null;
-  if (degraded?.includes("parse") || degraded?.includes("invalid")) return "control_store_corrupt";
-  if (degraded) return "control_store_unavailable";
+  const degradedCode = projectDir ? lifecycleStoreErrorCode(projectDir) : null;
+  if (degradedCode) return degradedCode;
   return "internal_error";
+}
+
+function lifecycleStoreErrorCode(
+  projectDir: string,
+): "control_store_corrupt" | "control_store_unavailable" | null {
+  const store = getOrCreateDispatchControlStore(projectDir);
+  const kind = store.getDegradedKind();
+  if (kind === "corrupt") return "control_store_corrupt";
+  if (kind === "unavailable" || store.getDegradedReason()) return "control_store_unavailable";
+  return null;
 }
 
 function preferredTaskRef(task: { _ulid: string; slugs?: string[] } | undefined): string | null {
@@ -845,7 +852,11 @@ async function preflightLifecycleAction(
       },
 ): Promise<CanonicalTaskIdentity | null> {
   if (!hasRealShadowWorktree(projectDir)) return null;
-  const snapshot = (await getOrCreateDispatchControlStore(projectDir).loadCommitted()).snapshot;
+  const store = getOrCreateDispatchControlStore(projectDir);
+  const snapshot = (await store.loadCommitted()).snapshot;
+  if (store.getDegradedReason()) {
+    throw new Error("Dispatch control store is degraded");
+  }
   if (input.scope === "global") {
     if (input.action !== "stop") resolveGlobalLifecycleTransition(snapshot, input.action);
     return null;
@@ -1249,8 +1260,10 @@ export function createAgentDispatchRoutes(options: AgentDispatchRouteOptions = {
           };
           try {
             const lifecycle = await serializeLifecycleStatus(projectContext.path, undefined);
-            const store = getOrCreateDispatchControlStore(projectContext.path);
-            if (hasRealShadowWorktree(projectContext.path) && store.getDegradedReason()) {
+            const degradedCode = hasRealShadowWorktree(projectContext.path)
+              ? lifecycleStoreErrorCode(projectContext.path)
+              : null;
+            if (degradedCode) {
               set.status = 503;
               return {
                 ...base,
@@ -1260,7 +1273,7 @@ export function createAgentDispatchRoutes(options: AgentDispatchRouteOptions = {
                 heldCount: lifecycle.held_count,
                 heldTasks: lifecycle.held_tasks,
                 taskControls: lifecycle.task_controls,
-                error_code: "control_store_unavailable" as const,
+                error_code: degradedCode,
               };
             }
             return {
@@ -1308,7 +1321,7 @@ export function createAgentDispatchRoutes(options: AgentDispatchRouteOptions = {
             error_code: "internal_error" as const,
           };
         }
-        return {
+        const internalStatus = {
           ...status,
           degraded: serializeDegradedSummary(degradedTargets),
           degradedTargets,
@@ -1319,6 +1332,14 @@ export function createAgentDispatchRoutes(options: AgentDispatchRouteOptions = {
           heldTasks: lifecycle.held_tasks,
           taskControls: lifecycle.task_controls,
         };
+        const degradedCode = hasRealShadowWorktree(projectContext.path)
+          ? lifecycleStoreErrorCode(projectContext.path)
+          : null;
+        if (degradedCode) {
+          set.status = 503;
+          return { ...internalStatus, error_code: degradedCode };
+        }
+        return internalStatus;
       })
 
       // AC: @daemon-agent-dispatch ac-5 - Public status endpoint
@@ -1501,15 +1522,17 @@ export function createAgentDispatchRoutes(options: AgentDispatchRouteOptions = {
           held_tasks: lifecycle.held_tasks,
           task_controls: lifecycle.task_controls,
         };
-        const store = getOrCreateDispatchControlStore(projectDir);
-        if (hasRealShadowWorktree(projectDir) && store.getDegradedReason()) {
+        const degradedCode = hasRealShadowWorktree(projectDir)
+          ? lifecycleStoreErrorCode(projectDir)
+          : null;
+        if (degradedCode) {
           set.status = 503;
           return {
             ok: false,
             data: lifecycle,
             error: {
-              code: "control_store_unavailable" as const,
-              ...CONTROL_ERROR_COPY.control_store_unavailable,
+              code: degradedCode,
+              ...CONTROL_ERROR_COPY[degradedCode],
             },
           };
         }
