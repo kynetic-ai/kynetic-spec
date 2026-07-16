@@ -161,3 +161,17 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-07-16T09:13:28.728Z
+  - _ulid: 01KXN3MHWKSKM81P7BRCK06RM1
+    content: "Fix cycle 5 approach: make dispatch engine startup single-flight per project and keep
+      engines unpublished until DispatchEngine.start plus schedule/hook/join initialization settle.
+      Concurrent canonical and alias callers await the same readiness promise; startup failure tears
+      down partial runtime helpers and leaves no published engine or durable lifecycle mutation.
+      Shutdown also waits for any in-flight initialization before teardown. Edge cases: preserve
+      existing cwd conflict rows after a shared startup, retain cold post-start persistence rollback
+      ownership, and avoid exposing unready engines to status/events. Tests first: hold and reject a
+      real route startup, issue two concurrent canonical starts, then assert both fail, no engine
+      remains, and committed global authority stays stopped; re-run all lifecycle/compatibility and
+      full project gates."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-07-16T09:20:32.147Z
