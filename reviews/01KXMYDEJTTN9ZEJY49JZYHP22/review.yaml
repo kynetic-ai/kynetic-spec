@@ -2,7 +2,124 @@ _ulid: 01KXMYDEJTTN9ZEJY49JZYHP22
 slugs: []
 title: Review canonical dispatch lifecycle API (cycle 4)
 author: Jacob Chapel
-checks: []
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: All 1052 matched files use the correct format.
+    name: format
+    required: true
+    runner: npm run format:check
+    created_at: 2026-07-16T08:07:42.382Z
+    completed_at: 2026-07-16T08:07:42.382Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Repo-wide lint completed with 0 errors and 702 baseline warnings; focused oxlint on all 8
+      changed TypeScript/test files completed with 0 warnings and 0 errors.
+    name: lint
+    required: true
+    runner: npm run lint -- --quiet
+    created_at: 2026-07-16T08:07:46.532Z
+    completed_at: 2026-07-16T08:07:46.532Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Shared package build and tsc --noEmit completed successfully.
+    name: typecheck
+    required: true
+    runner: npm run typecheck
+    created_at: 2026-07-16T08:07:49.765Z
+    completed_at: 2026-07-16T08:07:49.765Z
+  - status: skipped
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Every suite reported PASS through the final tests/agent-dispatch-engine.test.ts 147/147.
+      The wrapper then reproduced the pre-existing post-green teardown hang tracked by
+      @task-investigate-npm-test-teardown-hang-after-green-suite-run and was terminated after two
+      30-second quiet intervals; no test failure was reported.
+    name: full test suite
+    required: true
+    runner: npm test -- --fresh
+    created_at: 2026-07-16T08:07:52.874Z
+    completed_at: 2026-07-16T08:07:52.874Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Validation passed with 6 repository baseline deprecation warnings.
+    name: kspec validate refs
+    required: true
+    runner: kspec validate --refs --warnings-ok
+    created_at: 2026-07-16T08:07:56.342Z
+    completed_at: 2026-07-16T08:07:56.342Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Validation passed with repository baseline orphan/status warnings.
+    name: kspec validate alignment
+    required: true
+    runner: kspec validate --alignment --warnings-ok
+    created_at: 2026-07-16T08:07:59.449Z
+    completed_at: 2026-07-16T08:07:59.449Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Mechanical validation passed with repository baseline coverage warnings; task-owned and
+      inherited annotations were audited manually.
+    name: kspec validate completeness
+    required: true
+    runner: kspec validate --completeness --warnings-ok
+    created_at: 2026-07-16T08:08:02.605Z
+    completed_at: 2026-07-16T08:08:02.605Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Lifecycle route, daemon agent API, dispatch routes, and dispatch-control event suites
+      completed: 19 suites and 104 tests passed."
+    name: focused lifecycle tests
+    required: true
+    runner: npm test -- --fresh focused files
+    created_at: 2026-07-16T08:08:06.578Z
+    completed_at: 2026-07-16T08:08:06.578Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Base 89a72367 through head dc53f974 contains no whitespace errors.
+    name: diff check
+    required: true
+    runner: git diff --check
+    created_at: 2026-07-16T08:08:09.634Z
+    completed_at: 2026-07-16T08:08:09.634Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Files read: all eight changed files; task identity, control schema/store/transaction,
+      engine lifecycle/status/event emission, daemon middleware/server, task/spec/plan/traits,
+      dependency event contract, and all prior review cycles. Commands run: base/head diffs and
+      context reads; task/spec/plan/review lookups; format, repo/focused lint, typecheck, three
+      validations, diff check, focused tests, full fresh suite, and three real-shadow route probes.
+      Claims verified: prior identity, endpoint-status, matching-cleanup, and corrupt/unavailable
+      fixes work; native invalid-body response lacks X-Request-Id; cold commit failure leaves an
+      engine running; legacy stop emits two lifecycle events. Categories searched: correctness,
+      state rollback, transition and cleanup edges, error handling, raw/path exposure,
+      tracing/security, test quality, compatibility, event integration, and regression behavior.
+      Shared/package guidance surfaces touched: none; shared-guidance-neutrality direction checks
+      and regeneration requirements are not applicable."
+    name: review evidence log
+    required: true
+    runner: manual review
+    created_at: 2026-07-16T08:08:12.724Z
+    completed_at: 2026-07-16T08:08:12.724Z
 events:
   - _ulid: 01KXMYDEJQP46RBZ6WEM49MADG
     actor: Jacob Chapel
@@ -17,17 +134,191 @@ events:
       from: draft
       to: open
     timestamp: 2026-07-16T07:49:34.109Z
+  - _ulid: 01KXMZF6S1QW5ZTG6XBKRFT83E
+    actor: codex-reviewer
+    event_type: check_added
+    payload:
+      status: pass
+      name: format
+    timestamp: 2026-07-16T08:07:42.626Z
+  - _ulid: 01KXMZFATZTE692DSKGKEQDMQ8
+    actor: codex-reviewer
+    event_type: check_added
+    payload:
+      status: pass
+      name: lint
+    timestamp: 2026-07-16T08:07:46.783Z
+  - _ulid: 01KXMZFDZY5H6HWWKRGS8Q5WMD
+    actor: codex-reviewer
+    event_type: check_added
+    payload:
+      status: pass
+      name: typecheck
+    timestamp: 2026-07-16T08:07:50.014Z
+  - _ulid: 01KXMZFH1QH397FW2MM0FAJ8PG
+    actor: codex-reviewer
+    event_type: check_added
+    payload:
+      status: skipped
+      name: full test suite
+    timestamp: 2026-07-16T08:07:53.143Z
+  - _ulid: 01KXMZFMCV6PH8QC9KPQN3S9KN
+    actor: codex-reviewer
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate refs
+    timestamp: 2026-07-16T08:07:56.571Z
+  - _ulid: 01KXMZFQE5JSD0PJ2K018GYV72
+    actor: codex-reviewer
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate alignment
+    timestamp: 2026-07-16T08:07:59.685Z
+  - _ulid: 01KXMZFVCZCD29CV8M2SMMP500
+    actor: codex-reviewer
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate completeness
+    timestamp: 2026-07-16T08:08:03.743Z
+  - _ulid: 01KXMZFYD3C932E95ATX6W5XS9
+    actor: codex-reviewer
+    event_type: check_added
+    payload:
+      status: pass
+      name: focused lifecycle tests
+    timestamp: 2026-07-16T08:08:06.819Z
+  - _ulid: 01KXMZG1D0FM5PYH70YX0C665C
+    actor: codex-reviewer
+    event_type: check_added
+    payload:
+      status: pass
+      name: diff check
+    timestamp: 2026-07-16T08:08:09.888Z
+  - _ulid: 01KXMZG4D2X386RV7X3Q24QNHC
+    actor: codex-reviewer
+    event_type: check_added
+    payload:
+      status: pass
+      name: review evidence log
+    timestamp: 2026-07-16T08:08:12.962Z
+  - _ulid: 01KXMZG7F2VDSEZQR4F748BDT1
+    actor: codex-reviewer
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KXMZG783STJTAHES2WB7HY5B
+    timestamp: 2026-07-16T08:08:16.098Z
+  - _ulid: 01KXMZGAJ7SVY2RKVQXBNME6VB
+    actor: codex-reviewer
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KXMZGA9GW42NP0WF1X50HWQM
+    timestamp: 2026-07-16T08:08:19.271Z
+  - _ulid: 01KXMZGDS8KXBYYJ0DYPC2AST1
+    actor: codex-reviewer
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KXMZGDGH4S2NS0NN8N2QH9TV
+    timestamp: 2026-07-16T08:08:22.568Z
+  - _ulid: 01KXMZGGV2AMNMBQ6968DV1RXQ
+    actor: codex-reviewer
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: request_changes
+    timestamp: 2026-07-16T08:08:25.698Z
+  - _ulid: 01KXMZGGV29NNAZMG3JNRSWZX7
+    actor: codex-reviewer
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-07-16T08:08:25.698Z
 examined_commit: dc53f97405514dc91a021e92626e06d4b7219124
 external_links: []
-lifecycle_state: open
+lifecycle_state: closed
 related_refs: []
 subject:
   type: task
   content_hash: ""
   ref: "@01KXH2PSQY6GK4S66S4TB6JVV3"
   shadow_commit: ""
-threads: []
-verdicts: []
+threads:
+  - _ulid: 01KXMZG783STJTAHES2WB7HY5B
+    anchor:
+      type: code
+      commit: dc53f97405514dc91a021e92626e06d4b7219124
+      line_end: 937
+      line_start: 934
+      path: packages/daemon/src/routes/agent-dispatch.ts
+      side: head
+    entries:
+      - _ulid: 01KXMZG783T546TZN2NKV0DV4P
+        author: codex-reviewer
+        body: "MUST-FIX: X-Request-Id is assigned inside the route handler, after Elysia body validation. A
+          real-shadow request with action=restart returned the required native 400 validation body
+          but x-request-id was null, so @trait-api-endpoint ac-6 and the claimed canonical failure
+          tracing are still incomplete. Install the header in an onTransform or equivalent
+          pre-validation hook and extend the native invalid-body test to assert it."
+        created_at: 2026-07-16T08:08:15.875Z
+    kind: blocker
+  - _ulid: 01KXMZGA9GW42NP0WF1X50HWQM
+    anchor:
+      type: code
+      commit: dc53f97405514dc91a021e92626e06d4b7219124
+      line_end: 1110
+      line_start: 1082
+      path: packages/daemon/src/routes/agent-dispatch.ts
+      side: head
+    entries:
+      - _ulid: 01KXMZGA9G7KTD7X5RY179YF6K
+        author: codex-reviewer
+        body: "MUST-FIX: Cold start failures do not roll back the engine created before the lifecycle
+          mutation. With a real shadow pre-commit hook forcing control_commit_failed, POST
+          /api/agent/dispatch returned HTTP 503
+          {dispatch_enabled:false,error_code:control_commit_failed}, but getDispatchEngine still
+          existed with running=true and durable authority=stopped. The failed request therefore
+          changes runtime state and the next public status contradicts the frozen prior-running
+          response. Track whether ensureDispatchEngine created the engine and tear it down/remove it
+          on pre-commit failure across canonical start and both start aliases; add cold-failure
+          behavioral coverage."
+        created_at: 2026-07-16T08:08:18.992Z
+    kind: blocker
+  - _ulid: 01KXMZGDGH4S2NS0NN8N2QH9TV
+    anchor:
+      type: code
+      commit: dc53f97405514dc91a021e92626e06d4b7219124
+      line_end: 890
+      line_start: 873
+      path: packages/daemon/src/routes/agent-dispatch.ts
+      side: head
+    entries:
+      - _ulid: 01KXMZGDGH94DSVS4DTEARSG8D
+        author: codex-reviewer
+        body: "MUST-FIX: stopDispatchEngine applies the durable global stop and then calls engine.stop(),
+          whose shutdown path applies global stop again. A real legacy /api/agent/dispatch/stop
+          request emitted dispatch_control.stop_applied (source api) followed by
+          dispatch_control.noop (source daemon_shutdown). This regresses the dependency contract
+          that one control outcome emits exactly once and creates two audit events for one alias
+          request. Use a teardown path that does not repeat lifecycle control after the successful
+          durable stop and assert one event with the expected identifier/outcome."
+        created_at: 2026-07-16T08:08:22.289Z
+    kind: blocker
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: request_changes
+    reviewer: codex-reviewer
+    role: reviewer
+    created_at: 2026-07-16T08:08:25.698Z
 created_at: 2026-07-16T07:49:16.506Z
-updated_at: 2026-07-16T07:49:33.798Z
+updated_at: 2026-07-16T08:08:25.698Z
 notes: []
