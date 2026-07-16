@@ -2,7 +2,110 @@ _ulid: 01KXP5YBWVAF4A87YA6VXEETNC
 slugs: []
 title: Review API and CLI lifecycle projection end to end (cycle 3)
 author: Jacob Chapel
-checks: []
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: 1056 files checked; exit 0.
+    name: format
+    required: true
+    runner: npm run format:check
+    created_at: 2026-07-16T19:42:16.967Z
+    completed_at: 2026-07-16T19:42:16.967Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Repo-wide lint exit 0 with 0 errors. Four warnings in
+      tests/web-ui/ws-cache-invalidation.test.ts are pre-existing on the 817a42a5 base and outside
+      this task diff.
+    name: lint
+    required: true
+    runner: npm run lint -- --quiet
+    created_at: 2026-07-16T19:42:20.644Z
+    completed_at: 2026-07-16T19:42:20.644Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Exit 0; task-owned changed files introduce no warnings. Reported warnings are unchanged
+      base lines in ws-cache-invalidation.test.ts.
+    name: focused-lint
+    required: true
+    runner: npx oxlint changed TypeScript and test files
+    created_at: 2026-07-16T19:42:24.140Z
+    completed_at: 2026-07-16T19:42:24.140Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: TypeScript and Svelte checks passed; exit 0.
+    name: typecheck
+    required: true
+    runner: npm run typecheck
+    created_at: 2026-07-16T19:42:27.609Z
+    completed_at: 2026-07-16T19:42:27.609Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: 2830 suites passed; 10926 tests passed; 3 skipped; exit 0; duration 3836.2s.
+    name: full test suite
+    required: true
+    runner: npm test -- --fresh
+    created_at: 2026-07-16T19:42:32.121Z
+    completed_at: 2026-07-16T19:42:32.121Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: 14 suites and 139 tests passed; exit 0.
+    name: focused lifecycle tests
+    required: true
+    runner: npm test -- lifecycle surface files
+    created_at: 2026-07-16T19:42:37.526Z
+    completed_at: 2026-07-16T19:42:37.526Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Passed with 6 accepted repository warnings.
+    name: kspec validate refs
+    required: true
+    runner: kspec validate --refs --warnings-ok
+    created_at: 2026-07-16T19:42:42.456Z
+    completed_at: 2026-07-16T19:42:42.456Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Passed with 55 accepted repository warnings.
+    name: kspec validate alignment
+    required: true
+    runner: kspec validate --alignment --warnings-ok
+    created_at: 2026-07-16T19:42:49.298Z
+    completed_at: 2026-07-16T19:42:49.298Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Passed with 325 accepted repository warnings.
+    name: kspec validate completeness
+    required: true
+    runner: kspec validate --completeness --warnings-ok
+    created_at: 2026-07-16T19:42:54.003Z
+    completed_at: 2026-07-16T19:42:54.003Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Exit 0.
+    name: diff hygiene
+    required: true
+    runner: git diff --check
+    created_at: 2026-07-16T19:42:58.862Z
+    completed_at: 2026-07-16T19:42:58.862Z
 events:
   - _ulid: 01KXP5YBWC2V4XF2PE1VNVCQM6
     actor: Jacob Chapel
@@ -17,17 +120,140 @@ events:
       from: draft
       to: open
     timestamp: 2026-07-16T19:20:23.490Z
+  - _ulid: 01KXP770N1EY4DB0MWKK3VG2BM
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: format
+    timestamp: 2026-07-16T19:42:17.250Z
+  - _ulid: 01KXP7749H81SXV34MYTJZX8VP
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: lint
+    timestamp: 2026-07-16T19:42:20.977Z
+  - _ulid: 01KXP777N8Y2DG621Z83B074CV
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: focused-lint
+    timestamp: 2026-07-16T19:42:24.424Z
+  - _ulid: 01KXP77B20PFHSV413B2PD4C8P
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: typecheck
+    timestamp: 2026-07-16T19:42:27.904Z
+  - _ulid: 01KXP77FG0YQBTT54PX4YWQPDW
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: full test suite
+    timestamp: 2026-07-16T19:42:32.448Z
+  - _ulid: 01KXP77MS6823EF2M31Q0NMYTS
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: focused lifecycle tests
+    timestamp: 2026-07-16T19:42:37.862Z
+  - _ulid: 01KXP77SP8QR5CBB7FNZGKPMMT
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate refs
+    timestamp: 2026-07-16T19:42:42.888Z
+  - _ulid: 01KXP780AC2PWYGM5ZZEVCBZPE
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate alignment
+    timestamp: 2026-07-16T19:42:49.676Z
+  - _ulid: 01KXP784W2RG3PHZGWNRHZKNBQ
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate completeness
+    timestamp: 2026-07-16T19:42:54.338Z
+  - _ulid: 01KXP789N51SZAZV963ZFNTJFM
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: diff hygiene
+    timestamp: 2026-07-16T19:42:59.237Z
+  - _ulid: 01KXP78ETH4T09Z6S5SS4S4JNC
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KXP78EHZNM1G6KBHVWW47GFF
+    timestamp: 2026-07-16T19:43:04.529Z
+  - _ulid: 01KXP78KR12CVY3TK672X1PEEE
+    actor: pr-reviewer
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: approve
+    timestamp: 2026-07-16T19:43:09.569Z
+  - _ulid: 01KXP78KR1CG4TDFHFNYY4MS9F
+    actor: pr-reviewer
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-07-16T19:43:09.569Z
 examined_commit: 8364599a91cd18587254d378c3a6c8f45922a00b
 external_links: []
-lifecycle_state: open
+lifecycle_state: closed
 related_refs: []
 subject:
   type: task
   content_hash: ""
   ref: "@01KXH2PXT88X9MSC62MQVY2CV4"
   shadow_commit: ""
-threads: []
-verdicts: []
+threads:
+  - _ulid: 01KXP78EHZNM1G6KBHVWW47GFF
+    entries:
+      - _ulid: 01KXP78EHZQETAADWTD3BF5GN8
+        author: Jacob Chapel
+        body: "Review evidence log. Files read: packages/daemon/src/routes/agent-dispatch.ts;
+          src/agent-runtime/dispatch.ts; tests/cli-agent-dispatch-lifecycle.test.ts;
+          tests/daemon-agent-dispatch-lifecycle.test.ts; tests/dispatch-control-events.test.ts;
+          tests/dispatch-lifecycle-surface-integration.test.ts; surrounding shared lifecycle
+          schemas, daemon serializers, CLI contract, UI wire parser, and prior review threads.
+          Commands run: task/spec/review inspection; full diff and blame inspection; focused
+          139-test lifecycle run; fresh full npm test; format, repo and focused lint, typecheck,
+          three kspec validations, diff check, branch ancestry and status checks. Claims verified:
+          all 17 failure codes preserve API status/body, CLI exit/copy, and sanitized event parity;
+          invalid body proves HTTP 400 validation details; matching cleanup failure includes current
+          aggregate and nested task state; public snake-case to UI camel-case round trip uses the
+          real parser; exact public status keys and lifecycle invariants are behavioral assertions.
+          Categories searched: correctness, edge cases, error handling, security boundaries, test
+          quality, AC and inherited-trait coverage, integration, branch coherence, and regression
+          risk. No source-scanning tests or unresolved blockers found. The guarded failure seam was
+          checked against the explicit fixture requirement and an existing repository test-injection
+          precedent."
+        created_at: 2026-07-16T19:43:04.255Z
+    kind: nit
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: approve
+    reviewer: pr-reviewer
+    role: reviewer
+    created_at: 2026-07-16T19:43:09.569Z
 created_at: 2026-07-16T19:20:05.275Z
-updated_at: 2026-07-16T19:20:23.123Z
+updated_at: 2026-07-16T19:43:09.569Z
 notes: []
