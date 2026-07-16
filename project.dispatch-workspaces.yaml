@@ -11545,12 +11545,12 @@ workspaces:
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-07-16T16:15:03.092Z
+      updated_at: 2026-07-16T17:30:13.480Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-07-16T16:15:03.092Z
+      updated_at: 2026-07-16T17:30:13.480Z
     integration:
       status: pending
       detail: null
@@ -11558,18 +11558,18 @@ workspaces:
       publication_mode: manual_merge
       target_branch: plan/plan-dispatch-lifecycle-pause-resume-and-stop-controls/01kxc2vx
       target_commit: d207e138c177474260e1661bf7bd404c9eb6aa3f
-      updated_at: 2026-07-16T16:15:03.092Z
+      updated_at: 2026-07-16T17:30:13.480Z
     lifecycle_state: ready
     resolved_base_branch: plan/plan-dispatch-lifecycle-pause-resume-and-stop-controls/01kxc2vx
     task_id: 01KXH2PXT88X9MSC62MQVY2CV4
-    task_ref: "@01KXH2PXT88X9MSC62MQVY2CV4"
+    task_ref: "@task-verify-api-cli-projection"
     task_slug: task-verify-api-cli-projection
     timestamps:
       closed_at: null
       last_active_at: 2026-07-16T15:48:04.088Z
-      last_reconciled_at: 2026-07-16T16:15:03.092Z
+      last_reconciled_at: 2026-07-16T17:30:13.480Z
       created_at: 2026-07-16T14:26:57.848Z
-      updated_at: 2026-07-16T16:15:03.092Z
+      updated_at: 2026-07-16T17:30:13.480Z
     workspace_id: dispatch-workspace-01KXH2PXT88X9MSC62MQVY2CV4
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
@@ -11577,6 +11577,6 @@ workspaces:
       worker:
         branch_mode: branch
         branch_ref: dispatch/task/task-verify-api-cli-projection/01kxh2px
-        head: 502c9cdde3f4acc5526d3a7969e3fe9da9f0b2b2
-        last_seen_at: 2026-07-16T15:47:08.700Z
+        head: 3a4637de7ea99344ebb5f260fbbc7251a466ee36
+        last_seen_at: 2026-07-16T17:30:13.480Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-verify-api-cli-projection-01kxh2px
