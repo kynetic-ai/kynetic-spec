@@ -247,6 +247,54 @@ events:
       from: open
       to: closed
     timestamp: 2026-07-16T05:35:16.381Z
+  - _ulid: 01KXMRB9HDT5T3B2YSV541703T
+    actor: Jacob Chapel
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KXMPQP4NY96DVHVEKXYH0CK0
+    timestamp: 2026-07-16T06:03:14.349Z
+  - _ulid: 01KXMRBCT26Y0N69RA6HF6ZBY1
+    actor: Jacob Chapel
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KXMPQP4NY96DVHVEKXYH0CK0
+    timestamp: 2026-07-16T06:03:17.699Z
+  - _ulid: 01KXMRBFWWVDD4DVXE10AXRFC2
+    actor: Jacob Chapel
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KXMPQSBN3A5QTRCBCBYWG9RX
+    timestamp: 2026-07-16T06:03:20.860Z
+  - _ulid: 01KXMRBJW0TBHH8KSRFVY0SZ00
+    actor: Jacob Chapel
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KXMPQSBN3A5QTRCBCBYWG9RX
+    timestamp: 2026-07-16T06:03:23.904Z
+  - _ulid: 01KXMRBNVD353KZDTNECDN1ZF0
+    actor: Jacob Chapel
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KXMPQWFKR73QY49M1ZHWN4TY
+    timestamp: 2026-07-16T06:03:26.957Z
+  - _ulid: 01KXMRBRVPS997MNSDJSN77ZDD
+    actor: Jacob Chapel
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KXMPQWFKR73QY49M1ZHWN4TY
+    timestamp: 2026-07-16T06:03:30.038Z
+  - _ulid: 01KXMRBVVQJ7CDZ0MHM1JM624C
+    actor: Jacob Chapel
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KXMPQZJ9EE3GNNPYXNKRZVGF
+    timestamp: 2026-07-16T06:03:33.111Z
+  - _ulid: 01KXMRBZ3ZYZEP86KXYEA9NZCY
+    actor: Jacob Chapel
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KXMPQZJ9EE3GNNPYXNKRZVGF
+    timestamp: 2026-07-16T06:03:36.447Z
 examined_commit: 9e07c0203194a8d450906f08be1e346a3e8226c0
 external_links: []
 lifecycle_state: closed
@@ -278,7 +326,16 @@ threads:
           transition/identity against committed authority before starting runtime infrastructure,
           and add a behavioral regression test."
         created_at: 2026-07-16T05:35:03.317Z
+      - _ulid: 01KXMRB997CYFV67V66XTZJ804
+        author: Jacob Chapel
+        body: "Fixed in 224ff0ef12: shared pure transition guards now preflight committed matching-scope
+          authority before ensureDispatchEngine, while the locked engine mutation reuses the same
+          guards. Behavioral tests prove stopped global pause, matching task cleanup resume, and
+          paused legacy start return 409 with no engine/runtime state created."
+        created_at: 2026-07-16T06:03:14.086Z
     kind: blocker
+    resolved_at: 2026-07-16T06:03:17.434Z
+    resolved_by: Jacob Chapel
   - _ulid: 01KXMPQSBN3A5QTRCBCBYWG9RX
     anchor:
       type: code
@@ -300,7 +357,16 @@ threads:
           failure mode. Preserve a retryable engine/lifecycle state and prove repeated alias stop
           actually retries matching global cleanup before success."
         created_at: 2026-07-16T05:35:06.614Z
+      - _ulid: 01KXMRBFN8CYSW9FH29JM6QAXD
+        author: Jacob Chapel
+        body: "Fixed in 224ff0ef12: legacy stop adapters now apply/retry durable global stop before runtime
+          teardown. Cleanup failure leaves the same lifecycle-capable engine registered; repeated
+          /dispatch/stop and action=stop tests prove a second request retries cleanup before
+          success."
+        created_at: 2026-07-16T06:03:20.616Z
     kind: blocker
+    resolved_at: 2026-07-16T06:03:23.666Z
+    resolved_by: Jacob Chapel
   - _ulid: 01KXMPQWFKR73QY49M1ZHWN4TY
     anchor:
       type: code
@@ -320,7 +386,16 @@ threads:
           plus error_code. Apply stage-aware translation to both stop aliases and deep-equal every
           listed 409/500/503 row."
         created_at: 2026-07-16T05:35:09.811Z
+      - _ulid: 01KXMRBNK9BQWG5ZVN2115ES8F
+        author: Jacob Chapel
+        body: "Fixed in 224ff0ef12: compatibility translators emit cleanup_pending only for
+          DispatchCleanupError. Deep-equal tests cover cleanup, pre-commit control_commit_failed,
+          uncategorized internal_error, and invalid_transition rows for both stop aliases, including
+          prior-running booleans and path-free payloads."
+        created_at: 2026-07-16T06:03:26.697Z
     kind: blocker
+    resolved_at: 2026-07-16T06:03:29.782Z
+    resolved_by: Jacob Chapel
   - _ulid: 01KXMPQZJ9EE3GNNPYXNKRZVGF
     anchor:
       type: code
@@ -343,7 +418,17 @@ threads:
           behavioral in-process tests with the two missing AC annotations and the frozen
           canonical/alias matrix; do not use source-scanning tests."
         created_at: 2026-07-16T05:35:12.969Z
+      - _ulid: 01KXMRBVMH4XGFKCTMZ93JAC30
+        author: Jacob Chapel
+        body: "Fixed in 224ff0ef12: added standalone AC annotations and behavioral failure injection for
+          ac-control-failure-no-success and ac-cleanup-failure-no-success; closed cleanup-code
+          matrix; matching-scope/no-engine transitions; retryable alias stops; exact adapter rows;
+          native invalid-body preservation; isolated count mismatch and nested-task cleanup schema
+          rejection. Focused route slice passes 59/59 and engine/API slice passes 96/96."
+        created_at: 2026-07-16T06:03:32.881Z
     kind: blocker
+    resolved_at: 2026-07-16T06:03:36.186Z
+    resolved_by: Jacob Chapel
 verdicts:
   - applies_to_version:
       type: entity_version
@@ -353,5 +438,5 @@ verdicts:
     role: reviewer
     created_at: 2026-07-16T05:35:16.381Z
 created_at: 2026-07-16T05:18:48.534Z
-updated_at: 2026-07-16T05:35:16.381Z
+updated_at: 2026-07-16T06:03:36.186Z
 notes: []
