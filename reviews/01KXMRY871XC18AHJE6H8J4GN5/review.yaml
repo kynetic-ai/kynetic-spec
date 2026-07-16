@@ -431,6 +431,24 @@ events:
       kind: blocker
       thread_ulid: 01KXMSVF271NM7SMGVQJ6GZCAJ
     timestamp: 2026-07-16T06:29:33.124Z
+  - _ulid: 01KXMSWK36QZF36WP1MADQQHDN
+    actor: Jacob Chapel
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KXMSV8MHBHXE6HAHN72BY4S6
+    timestamp: 2026-07-16T06:30:09.766Z
+  - _ulid: 01KXMSWPD5DTWMPAG3ZMZPDJEZ
+    actor: Jacob Chapel
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KXMSVBTJ8Z3BRPZBY4K5139Q
+    timestamp: 2026-07-16T06:30:13.157Z
+  - _ulid: 01KXMSWSN336X639GP09ZWR0YQ
+    actor: Jacob Chapel
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KXMSVF271NM7SMGVQJ6GZCAJ
+    timestamp: 2026-07-16T06:30:16.483Z
 examined_commit: 224ff0ef123337050be9107fab0dafa7d90ecfcf
 external_links: []
 lifecycle_state: open
@@ -527,6 +545,8 @@ threads:
           for paused or absent control rows with matching cleanup."
         created_at: 2026-07-16T06:29:26.290Z
     kind: blocker
+    resolved_at: 2026-07-16T06:30:09.474Z
+    resolved_by: Jacob Chapel
   - _ulid: 01KXMSVBTJ8Z3BRPZBY4K5139Q
     anchor:
       type: code
@@ -548,6 +568,8 @@ threads:
           control regression test."
         created_at: 2026-07-16T06:29:29.554Z
     kind: blocker
+    resolved_at: 2026-07-16T06:30:12.883Z
+    resolved_by: Jacob Chapel
   - _ulid: 01KXMSVF271NM7SMGVQJ6GZCAJ
     anchor:
       type: code
@@ -569,7 +591,9 @@ threads:
           and unavailable cases."
         created_at: 2026-07-16T06:29:32.871Z
     kind: blocker
+    resolved_at: 2026-07-16T06:30:16.200Z
+    resolved_by: Jacob Chapel
 verdicts: []
 created_at: 2026-07-16T06:13:35.585Z
-updated_at: 2026-07-16T06:29:32.871Z
+updated_at: 2026-07-16T06:30:16.200Z
 notes: []
