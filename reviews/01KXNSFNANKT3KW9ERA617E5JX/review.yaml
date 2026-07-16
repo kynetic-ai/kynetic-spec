@@ -79,6 +79,18 @@ checks:
     runner: kspec validate --completeness --warnings-ok
     created_at: 2026-07-16T16:05:03.420Z
     completed_at: 2026-07-16T16:05:03.420Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "PASS on ccdbdbf1576a: production web build succeeded and all 50 agents Playwright tests
+      passed in 22.2s. Existing Svelte accessibility warnings in untouched DispatchTriggersSection
+      label lines remain baseline."
+    name: agents browser e2e
+    required: true
+    runner: npm run test:e2e -- tests/e2e/agents.spec.ts
+    created_at: 2026-07-16T16:05:09.696Z
+    completed_at: 2026-07-16T16:05:09.696Z
 events:
   - _ulid: 01KXNSFNANGKV7Q691FYEJJR3W
     actor: Jacob Chapel
@@ -142,6 +154,13 @@ events:
       status: pass
       name: kspec validate completeness
     timestamp: 2026-07-16T16:05:03.690Z
+  - _ulid: 01KXNTSEPSWTGFJ9QVP2WY35B4
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: agents browser e2e
+    timestamp: 2026-07-16T16:05:09.977Z
 examined_commit: ccdbdbf1576a4b84197652909759850dff01cc5c
 external_links: []
 lifecycle_state: open
@@ -154,5 +173,5 @@ subject:
 threads: []
 verdicts: []
 created_at: 2026-07-16T15:42:20.501Z
-updated_at: 2026-07-16T16:05:03.420Z
+updated_at: 2026-07-16T16:05:09.696Z
 notes: []
