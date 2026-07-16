@@ -66,3 +66,15 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-07-16T06:30:30.185Z
+  - _ulid: 01KXMTGA52PS10YYBDGG9PYHC1
+    content: "Fix cycle 2 approach: make matching task cleanup reject both pause and resume before any
+      task-control mutation, regardless of an absent/paused/stopped row, while preserving stop retry
+      and unrelated-scope behavior. Add a typed degraded classification to DispatchControlStore so
+      canonical mutation, internal status, and public status consistently distinguish corrupt
+      committed control from unavailable storage without parsing response-time strings. Tests first:
+      paused and absent matching-cleanup pause/resume route matrix, plus deep-equal corrupt-store
+      canonical control/public status/internal status responses and unavailable regression coverage.
+      Re-verify all daemon-agent-dispatch AC annotations and full compatibility gates."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-07-16T06:40:55.970Z
