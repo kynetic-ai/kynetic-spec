@@ -79965,7 +79965,7 @@ runs:
     completed_at: 2026-07-16T02:18:13.328Z
   - _ulid: 01KXMBD9YPXBCR40773YF4VTVN
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -79978,7 +79978,16 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-07-16T02:19:45.910Z
-        completed_at: 2026-07-16T02:19:45.910Z
+        completed_at: 2026-07-16T02:19:58.555Z
+        notes: "High-confidence friction candidates: (1) reflection guidance omits the required
+          workflow-show run ref; (2) best-effort task resolution can mask missing split-backend
+          registration in in-process tests. High-confidence success: for destructive cleanup policy,
+          pair a physical filesystem/registry regression test with a separate production-wiring test
+          so both observable preservation and real state propagation are proven."
+      - status: completed
+        step_index: 2
+        started_at: 2026-07-16T02:19:58.555Z
+        completed_at: 2026-07-16T02:19:58.555Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-07-16T02:17:08.822Z
