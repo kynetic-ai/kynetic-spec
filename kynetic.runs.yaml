@@ -80241,7 +80241,7 @@ runs:
     completed_at: 2026-07-16T04:15:52.187Z
   - _ulid: 01KXMJ25R23RDBZ1VTNXJH18DG
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -80253,7 +80253,21 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-07-16T04:14:29.016Z
-        completed_at: 2026-07-16T04:14:29.016Z
+        completed_at: 2026-07-16T04:16:40.528Z
+        notes: "High-confidence candidates: (1) friction — concurrent full npm test runs in separate
+          dispatch worktrees bypass the per-worktree lock and caused severe verification slowdown;
+          confirmed via process inspection showing simultaneous vitest trees and no search matches
+          for cross-worktree/multi-agent contention. (2) success — an exact
+          trigger→barrier→mutation→observation→outcome task handoff with named test-only helpers
+          made a verification-only race suite independently falsifiable without production ownership
+          drift; searches for trigger/barrier and verification handoff found no matches. Existing
+          successes for detached merge and batched checks are duplicates of @01KRGCTK and @01KSS63E
+          and will be skipped. The apparent duplicate-check issue was traced to reviewer tool
+          polling, not kspec, and is excluded as low-confidence/non-systemic."
+      - status: completed
+        step_index: 2
+        started_at: 2026-07-16T04:16:40.528Z
+        completed_at: 2026-07-16T04:16:40.528Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-07-16T04:13:24.098Z
