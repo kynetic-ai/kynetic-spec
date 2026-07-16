@@ -367,6 +367,20 @@ events:
       status: fail
       name: "behavioral diagnostic: ref-only failure events"
     timestamp: 2026-07-16T02:10:17.371Z
+  - _ulid: 01KXMB19XZRANRX32KVVME1SYA
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KXMB19N8NESY7AZSKHKFKSA6
+    timestamp: 2026-07-16T02:10:35.583Z
+  - _ulid: 01KXMB1D92ZSZ0GFKG3QR5QG93
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KXMB1D0X2ZPH7C1KSQ2B8K3Y
+    timestamp: 2026-07-16T02:10:39.010Z
 examined_commit: 40aed15a47ba2163b9d3ff74e5cadfee02d83c5c
 external_links: []
 lifecycle_state: closed
@@ -479,6 +493,49 @@ threads:
           neutrality: not applicable; no package guidance surfaces changed."
         created_at: 2026-07-16T02:09:20.192Z
     kind: nit
+  - _ulid: 01KXMB19N8NESY7AZSKHKFKSA6
+    anchor:
+      type: code
+      commit: 40aed15a47ba2163b9d3ff74e5cadfee02d83c5c
+      line_end: 1915
+      line_start: 1904
+      path: src/agent-runtime/dispatch.ts
+      side: head
+    entries:
+      - _ulid: 01KXMB19N8NHYB6T7N4KX71S0P
+        author: Jacob Chapel
+        body: "MUST-FIX — Ref-only task failures are unaudited. This catch reconstructs event identity only
+          from context.taskId and silently skips emission when the request used taskRef. Task
+          controls explicitly accept refs, so a resolved ref that reaches an invalid matrix
+          transition and an unresolved ref both return an error without dispatch_control.failed,
+          violating ac-failed-control-is-auditable and the closed-code contract. Reproduction: I
+          instrumented the existing test case that pauses stopped @task-alpha and then
+          @missing-task; onDispatchControlEvent received 0 events (expected invalid_transition and
+          task_not_found). Ensure every task failure emits exactly once; for pre-canonicalization
+          failures, reconcile the required canonical task_id contract rather than dropping the audit
+          outcome."
+        created_at: 2026-07-16T02:10:35.304Z
+    kind: blocker
+  - _ulid: 01KXMB1D0X2ZPH7C1KSQ2B8K3Y
+    anchor:
+      type: code
+      commit: 40aed15a47ba2163b9d3ff74e5cadfee02d83c5c
+      line_end: 35
+      line_start: 25
+      path: tests/dispatch-control-events.test.ts
+      side: head
+    entries:
+      - _ulid: 01KXMB1D0XK7TBWC15X7H6VZXC
+        author: Jacob Chapel
+        body: MUST-FIX — The alleged commit barrier is a local Promise that directly invokes
+          emitDispatchControlOutcome after release; it never drives DispatchEngine, a lifecycleStore
+          mutation, or committed publication. Therefore the test cannot detect an engine emission
+          before commit, during retry observation, or after the wrong durable state. Replace/add a
+          behavioral engine/store test whose barrier surrounds the actual commit and whose event
+          capture is attached to the engine EventBus/callback, proving zero before commit and
+          exactly one afterward for applied and noop paths.
+        created_at: 2026-07-16T02:10:38.749Z
+    kind: blocker
 verdicts:
   - applies_to_version:
       type: entity_version
@@ -488,5 +545,5 @@ verdicts:
     role: reviewer
     created_at: 2026-07-16T02:09:24.139Z
 created_at: 2026-07-16T01:47:48.307Z
-updated_at: 2026-07-16T02:10:16.991Z
+updated_at: 2026-07-16T02:10:38.749Z
 notes: []
