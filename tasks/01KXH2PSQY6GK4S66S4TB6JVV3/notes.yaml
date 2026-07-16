@@ -141,3 +141,18 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-07-16T08:21:07.687Z
+  - _ulid: 01KXN1JB28MHX2B39VNCTA7HGP
+    content: "Fix cycle 4: addressed and resolved all three open review blockers in f5628f4686.
+      Canonical control now assigns X-Request-Id before native body validation; failed cold global
+      starts roll back every newly created runtime surface across canonical control and both
+      aliases; successful legacy stops reuse a runtime-only teardown path so one request emits
+      exactly one API lifecycle outcome. Added real-shadow commit-failure, native-validation
+      tracing, and single-event behavioral coverage. Gates: format/diff, focused and repo lint (0
+      errors; focused 0 warnings), typecheck, focused lifecycle/event/shutdown suites 293/293,
+      refs/alignment/completeness validations pass with unchanged repository baselines. The
+      exact-final full repository run reported every suite PASS through final agent-dispatch-engine
+      147/147, then reproduced the separately tracked post-green wrapper teardown hang and was
+      terminated after two quiet intervals."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-07-16T08:44:22.472Z
