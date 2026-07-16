@@ -9670,7 +9670,7 @@ workspaces:
         head: 6f9462a6c73e15e96c1f013e5a2067034d02e397
         last_seen_at: 2026-07-16T10:34:05.447Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-daemon-dispatch-lifecycle-api-01kxh2ps
-  - active_role: null
+  - active_role: reviewer
     base_branch_point: f98c880ce3e3a884ef5af2161a87ff90f06f4146
     bootstrap:
       status: succeeded
@@ -10155,7 +10155,7 @@ workspaces:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-07-16T12:50:38.396Z
+      updated_at: 2026-07-16T12:51:32.352Z
     integration:
       status: pending
       detail: null
@@ -10171,10 +10171,10 @@ workspaces:
     task_slug: task-cli-dispatch-lifecycle-controls
     timestamps:
       closed_at: null
-      last_active_at: 2026-07-16T12:23:43.376Z
-      last_reconciled_at: 2026-07-16T12:50:38.396Z
+      last_active_at: 2026-07-16T12:51:32.352Z
+      last_reconciled_at: 2026-07-16T12:51:32.352Z
       created_at: 2026-07-16T10:55:38.101Z
-      updated_at: 2026-07-16T12:51:03.071Z
+      updated_at: 2026-07-16T12:51:32.352Z
     workspace_id: dispatch-workspace-01KXH2PT5BATGSN8TNY7W7NE55
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
