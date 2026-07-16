@@ -24176,6 +24176,17 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-07-16T15:11:54.970Z
+  - _ulid: 01KXNS4ZC2VR3D6DTPQXP10A1S
+    type: friction
+    content: Task-local cross-spec AC ownership is recorded only in prose '### Covers' sections, so
+      automated completeness validation cannot require the corresponding exact test annotation. A
+      task can pass refs/alignment/completeness while an explicitly assigned criterion remains
+      unlinked, deferring detection to manual review and causing avoidable fix cycles.
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    workflow_ref: "@session-reflect-loop"
+    created_at: 2026-07-16T15:36:30.338Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
