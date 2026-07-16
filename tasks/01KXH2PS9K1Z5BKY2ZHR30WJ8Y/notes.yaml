@@ -91,3 +91,15 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-07-16T03:51:58.244Z
+  - _ulid: 01KXMJ014Q9YTJFFKWGVEKNW51
+    content: "Fix cycle 2 completed in 227eb50059 after rebasing onto the current plan branch. Isolated
+      throwing agents-topic callbacks from durable lifecycle classification, so committed
+      applied/noop/failed outcomes cannot be rejected or double-emitted by WebSocket delivery. Added
+      daemon-startup recovery auditing after durable failed cleanup commit and behavioral coverage
+      for session_closure_failed ordering. Re-verified all four lifecycle audit ACs and the closed
+      17-code matrix. Gates: focused event/recovery suite 230/230; format check; repo lint 0 errors;
+      focused lint 0 warnings/errors; typecheck; diff check; refs/alignment/completeness
+      validations; full suite 459 files, 10,769 passed, 3 skipped."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-07-16T04:12:13.847Z

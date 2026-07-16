@@ -252,6 +252,42 @@ events:
       from: open
       to: closed
     timestamp: 2026-07-16T03:32:46.265Z
+  - _ulid: 01KXMHZET3XFVFHQBA26K00SS3
+    actor: Jacob Chapel
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KXMFNHSFS1MQP4NBQ8DDSCPD
+    timestamp: 2026-07-16T04:11:55.075Z
+  - _ulid: 01KXMHZJ51871KRCF28PR84BG0
+    actor: Jacob Chapel
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KXMFNHSFS1MQP4NBQ8DDSCPD
+    timestamp: 2026-07-16T04:11:58.497Z
+  - _ulid: 01KXMHZNRY5YZJ4DNTT271VFFF
+    actor: Jacob Chapel
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KXMFNNYBPJN8BW93SXKZV3EE
+    timestamp: 2026-07-16T04:12:02.206Z
+  - _ulid: 01KXMHZRZMNXTDSTYXQ2R2QWCD
+    actor: Jacob Chapel
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KXMFNNYBPJN8BW93SXKZV3EE
+    timestamp: 2026-07-16T04:12:05.492Z
+  - _ulid: 01KXMHZWED1PW1HHTP0C5YZW8A
+    actor: Jacob Chapel
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KXMFNTTDH0W4NWWSPJ9V0ZZ6
+    timestamp: 2026-07-16T04:12:09.037Z
+  - _ulid: 01KXMHZZR596DZF2K31PJC0Z2K
+    actor: Jacob Chapel
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KXMFNTTDH0W4NWWSPJ9V0ZZ6
+    timestamp: 2026-07-16T04:12:12.421Z
 examined_commit: 5f0855ff1c7ce4fb93457d442d1bb6b5be4a7375
 external_links: []
 lifecycle_state: closed
@@ -284,7 +320,16 @@ threads:
           durable control result and add a behavioral regression proving a publication failure
           cannot reject/reclassify or double-emit the control outcome."
         created_at: 2026-07-16T03:31:33.296Z
+      - _ulid: 01KXMHZEHTCTZ0N4R36F054DZX
+        author: Jacob Chapel
+        body: "Fixed in 227eb50059: agents-topic callback delivery is now best-effort outside durable
+          outcome classification. A public applyGlobalLifecycleAction regression injects a throwing
+          callback and proves the committed pause still resolves successfully with exactly one
+          retained applied event and no failed reclassification."
+        created_at: 2026-07-16T04:11:54.810Z
     kind: blocker
+    resolved_at: 2026-07-16T04:11:58.215Z
+    resolved_by: Jacob Chapel
   - _ulid: 01KXMFNNYBPJN8BW93SXKZV3EE
     anchor:
       type: code
@@ -307,7 +352,16 @@ threads:
           injects DispatchCleanupError into a pause store mutation and cannot detect this missing
           path."
         created_at: 2026-07-16T03:31:37.547Z
+      - _ulid: 01KXMHZN74AGE8HQV9MYPSS7FG
+        author: Jacob Chapel
+        body: "Fixed in 227eb50059: daemon startup recovery now audits each failed cleanup immediately after
+          _markCleanupFailed commits the closed error code. The behavioral start() regression drives
+          a real signals_sent session-closure failure and proves one daemon_startup
+          dispatch_control.failed event is observed only after durable cleanup status is failed."
+        created_at: 2026-07-16T04:12:01.636Z
     kind: blocker
+    resolved_at: 2026-07-16T04:12:05.239Z
+    resolved_by: Jacob Chapel
   - _ulid: 01KXMFNTTDH0W4NWWSPJ9V0ZZ6
     entries:
       - _ulid: 01KXMFNTTEFKS5QA0Y1GPV572W
@@ -328,7 +382,14 @@ threads:
           Full-suite triage: one intermittent agent-invocation process-identity assertion failed
           under load, passed twice in isolated fresh reruns, and is tracked as @01KXMFGZ."
         created_at: 2026-07-16T03:31:42.542Z
+      - _ulid: 01KXMHZW4ADYAMFGNW8JM5SS8T
+        author: Jacob Chapel
+        body: Acknowledged and re-verified the recorded surfaces and prior fixes while addressing both
+          cycle-2 blockers. No additional finding was embedded in this evidence thread.
+        created_at: 2026-07-16T04:12:08.714Z
     kind: nit
+    resolved_at: 2026-07-16T04:12:12.169Z
+    resolved_by: Jacob Chapel
 verdicts:
   - applies_to_version:
       type: entity_version
@@ -338,5 +399,5 @@ verdicts:
     role: reviewer
     created_at: 2026-07-16T03:32:46.260Z
 created_at: 2026-07-16T03:10:02.272Z
-updated_at: 2026-07-16T03:32:46.265Z
+updated_at: 2026-07-16T04:12:12.169Z
 notes: []
