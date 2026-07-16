@@ -80048,7 +80048,7 @@ runs:
     completed_at: 2026-07-16T02:53:11.965Z
   - _ulid: 01KXMDZK5KZ8S40FK21CW2HARR
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -80065,7 +80065,21 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-07-16T03:02:33.982Z
-        completed_at: 2026-07-16T03:02:33.982Z
+        completed_at: 2026-07-16T03:02:54.399Z
+        notes: "Systemic friction: (1) the review record contained two copies of every finding, verdict, and
+          check set; the reviewer resolved only the second copies, leaving visually identical
+          blockers open for the worker to disambiguate and resolve; (2) task-scoped failed events
+          require a canonical task_id, while missing/ambiguous ref failures happen before a
+          canonical identity exists, forcing an undocumented identity-neutral fallback decision; (3)
+          the required fresh full suite hit a transient Linux proc lstat race and took about 50
+          minutes before failing, requiring an isolated rerun and another roughly 44-minute full
+          run; (4) hundreds of stale active workflow runs prevent workflow next/show from selecting
+          the run just started, producing a very large ambiguity list and requiring the explicit run
+          ref at every step."
+      - status: completed
+        step_index: 2
+        started_at: 2026-07-16T03:02:54.399Z
+        completed_at: 2026-07-16T03:02:54.399Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-07-16T03:02:05.235Z
