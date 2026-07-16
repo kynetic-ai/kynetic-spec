@@ -76,7 +76,7 @@ description: |
 spec_ref: "@daemon-agent-dispatch"
 plan_ref: "@plan-dispatch-lifecycle-pause-resume-and-stop-controls"
 origin: derived
-status: in_progress
+status: pending_review
 blocked_by: []
 depends_on:
   - "@task-patch-dispatch-api-specs"
@@ -93,8 +93,8 @@ review_ref: "@01KXMYDEJTTN9ZEJY49JZYHP22"
 submission_linkage:
   review_url: null
   branch: dispatch/task/task-daemon-dispatch-lifecycle-api/01kxh2ps
-  captured_at: 2026-07-16T07:43:27.004Z
-  commit: dc53f97405514dc91a021e92626e06d4b7219124
+  captured_at: 2026-07-16T08:44:26.223Z
+  commit: f5628f46861b4183eccb74b1b9ca4b7526ff996c
   remote: origin
   remote_url: git@github.com:lepahc/kynetic-spec.git
   upstream_ref: refs/heads/dispatch/task/task-daemon-dispatch-lifecycle-api/01kxh2ps
@@ -341,8 +341,35 @@ history:
         previous: 2026-07-16T07:29:28.350Z
     command: task-start
     timestamp: 2026-07-16T08:19:23.183Z
+  - author: Jacob Chapel
+    changes:
+      status:
+        new: pending_review
+        previous: in_progress
+      submission_linkage:
+        new:
+          review_url: null
+          branch: dispatch/task/task-daemon-dispatch-lifecycle-api/01kxh2ps
+          captured_at: 2026-07-16T08:44:26.223Z
+          commit: f5628f46861b4183eccb74b1b9ca4b7526ff996c
+          remote: origin
+          remote_url: git@github.com:lepahc/kynetic-spec.git
+          upstream_ref: refs/heads/dispatch/task/task-daemon-dispatch-lifecycle-api/01kxh2ps
+        previous:
+          review_url: null
+          branch: dispatch/task/task-daemon-dispatch-lifecycle-api/01kxh2ps
+          captured_at: 2026-07-16T07:43:27.004Z
+          commit: dc53f97405514dc91a021e92626e06d4b7219124
+          remote: origin
+          remote_url: git@github.com:lepahc/kynetic-spec.git
+          upstream_ref: refs/heads/dispatch/task/task-daemon-dispatch-lifecycle-api/01kxh2ps
+      submitted_at:
+        new: 2026-07-16T08:44:26.234Z
+        previous: 2026-07-16T07:43:27.018Z
+    command: task-submit
+    timestamp: 2026-07-16T08:44:26.234Z
 created_at: 2026-07-14T19:47:19.422Z
 started_at: 2026-07-16T08:19:23.182Z
-submitted_at: 2026-07-16T07:43:27.018Z
+submitted_at: 2026-07-16T08:44:26.234Z
 todos: []
 automation: eligible
