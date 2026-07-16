@@ -46,7 +46,7 @@ description: |
 spec_ref: "@daemon-agent-dispatch"
 plan_ref: "@plan-dispatch-lifecycle-pause-resume-and-stop-controls"
 origin: derived
-status: pending
+status: in_progress
 blocked_by: []
 depends_on:
   - "@task-cli-dispatch-lifecycle-controls"
@@ -59,6 +59,7 @@ tags:
   - api
   - cli
 vcs_refs: []
+session_id: 01KXNN6T7ZSY0WRTT3WTV4Z58C
 history:
   - author: Jacob Chapel
     changes:
@@ -67,6 +68,20 @@ history:
         previous: null
     command: task-set
     timestamp: 2026-07-14T20:12:11.157Z
+  - author: Jacob Chapel
+    changes:
+      status:
+        new: in_progress
+        previous: pending
+      session_id:
+        new: 01KXNN6T7ZSY0WRTT3WTV4Z58C
+        previous: null
+      started_at:
+        new: 2026-07-16T14:28:44.149Z
+        previous: null
+    command: task-start
+    timestamp: 2026-07-16T14:28:44.153Z
 created_at: 2026-07-14T19:47:23.592Z
+started_at: 2026-07-16T14:28:44.149Z
 todos: []
 automation: eligible
