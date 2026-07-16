@@ -23987,6 +23987,19 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-07-16T01:06:19.779Z
+  - _ulid: 01KXMBF0B60YPENZ3B8HG13JZX
+    type: friction
+    content: Dispatch supplied an unavailable reviewer workflow entrypoint. The dispatched role prompt
+      required pr-review, but the rendered skill set exposed kspec-review instead, so the reviewer
+      had to infer a fallback. This is repeatable for similarly configured review invocations and
+      contradicts @dispatch-role-workflow-entry-contract ac-4, which requires missing or invalid
+      entrypoints to fail fast with actionable guidance. The dispatcher should validate that the
+      adapter-facing entrypoint resolves to an available workflow or skill before dispatch.
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    workflow_ref: "@session-reflect-loop"
+    created_at: 2026-07-16T02:18:04.519Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
