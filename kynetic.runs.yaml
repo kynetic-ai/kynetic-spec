@@ -81886,7 +81886,7 @@ runs:
     completed_at: 2026-07-16T20:19:15.885Z
   - _ulid: 01KXPAS91Y0VEGTH2K4G4B9ACD
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -81901,7 +81901,18 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-07-16T20:46:46.823Z
-        completed_at: 2026-07-16T20:46:46.823Z
+        completed_at: 2026-07-16T20:47:36.291Z
+        notes: "High-confidence friction: review batch mutations had delayed read-after-write visibility and
+          led to duplicate check records; already tracked by @01KXNDDB52657Q6BKF3ZSXQESG. Full-suite
+          detached review cost/progress was substantial; already tracked by
+          @01KVXG7Z525NDD3XVE36V1AS5Q and @01KNTB8YTNSHRAPC5WRQWH4RRV. High-confidence success:
+          probing Playwright device configuration directly disproved the claimed 1440x900 coverage
+          even though 12/12 E2E tests passed; this is an instance of the already documented
+          adversarial direct-probe review pattern, so no new capture proposed."
+      - status: completed
+        step_index: 2
+        started_at: 2026-07-16T20:47:36.291Z
+        completed_at: 2026-07-16T20:47:36.291Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-07-16T20:44:41.406Z
