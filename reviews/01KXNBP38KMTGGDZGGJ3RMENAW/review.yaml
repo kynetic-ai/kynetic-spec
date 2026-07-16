@@ -2,7 +2,104 @@ _ulid: 01KXNBP38KMTGGDZGGJ3RMENAW
 slugs: []
 title: Review safe lifecycle CLI commands
 author: Jacob Chapel
-checks: []
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: All 1053 files passed Prettier formatting validation.
+    name: format
+    required: true
+    runner: npm run format:check
+    created_at: 2026-07-16T12:01:46.074Z
+    completed_at: 2026-07-16T12:01:46.074Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Exit 0 with 0 errors. The 696 reported warnings are the repository baseline; focused lint
+      found 31 warnings only in unchanged portions of tests/cli-agent-commands.test.ts.
+    name: lint
+    required: true
+    runner: npm run lint -- --quiet
+    created_at: 2026-07-16T12:01:49.264Z
+    completed_at: 2026-07-16T12:01:49.264Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Exit 0. No warnings in changed lines; 31 warnings are in unchanged WebSocket mock code in
+      tests/cli-agent-commands.test.ts.
+    name: focused-lint
+    required: true
+    runner: npx oxlint changed TypeScript files
+    created_at: 2026-07-16T12:01:52.507Z
+    completed_at: 2026-07-16T12:01:52.507Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: TypeScript typecheck completed successfully.
+    name: typecheck
+    required: true
+    runner: npm run typecheck
+    created_at: 2026-07-16T12:01:55.635Z
+    completed_at: 2026-07-16T12:01:55.635Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Fresh full run: 10860 passed, 3 skipped, 1 known flaky agent-invocation test failed. Two
+      immediate isolated fresh reruns passed 14/14; the branch changes neither
+      tests/agent-invocation.test.ts nor src/agent-runtime/invocation.ts. Existing stabilization
+      task: @stabilize-agent-invocation-process-identity."
+    name: full test suite
+    required: true
+    runner: npm test -- --fresh
+    created_at: 2026-07-16T12:01:58.849Z
+    completed_at: 2026-07-16T12:01:58.849Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Reference validation passed with 6 repository-baseline warnings.
+    name: kspec validate refs
+    required: true
+    runner: kspec validate --refs --warnings-ok
+    created_at: 2026-07-16T12:02:02.094Z
+    completed_at: 2026-07-16T12:02:02.094Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Alignment validation passed with 55 repository-baseline warnings.
+    name: kspec validate alignment
+    required: true
+    runner: kspec validate --alignment --warnings-ok
+    created_at: 2026-07-16T12:02:05.239Z
+    completed_at: 2026-07-16T12:02:05.239Z
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Targeted completeness output for @cli-agent-commands reports uncovered
+      ac-pause-reports-authority and ac-resume-reports-authority. The command exits 0 only because
+      warnings are allowed; missing own-AC annotations are a review blocker.
+    name: kspec validate completeness
+    required: true
+    runner: kspec validate --completeness --warnings-ok
+    created_at: 2026-07-16T12:02:08.304Z
+    completed_at: 2026-07-16T12:02:08.304Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: No whitespace errors in the reviewed diff.
+    name: diff check
+    required: true
+    runner: git diff --check
+    created_at: 2026-07-16T12:02:11.469Z
+    completed_at: 2026-07-16T12:02:11.469Z
 events:
   - _ulid: 01KXNBP38JXQ0H0P916D19W8YE
     actor: Jacob Chapel
@@ -17,6 +114,97 @@ events:
       from: draft
       to: open
     timestamp: 2026-07-16T11:41:23.935Z
+  - _ulid: 01KXNCVSA6Y9A5W5ECTWBSEZ9F
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: format
+    timestamp: 2026-07-16T12:01:46.311Z
+  - _ulid: 01KXNCVWE0KEQ6VMHYRZGX58YZ
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: lint
+    timestamp: 2026-07-16T12:01:49.505Z
+  - _ulid: 01KXNCVZMEK01YPNNRCR5JV1X3
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: focused-lint
+    timestamp: 2026-07-16T12:01:52.782Z
+  - _ulid: 01KXNCW2NPSSNGGY9DR1G8GW97
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: typecheck
+    timestamp: 2026-07-16T12:01:55.894Z
+  - _ulid: 01KXNCW5SY48GXTBZSJJC4V24F
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: full test suite
+    timestamp: 2026-07-16T12:01:59.102Z
+  - _ulid: 01KXNCW8YWR612SM93YQQHD6XV
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate refs
+    timestamp: 2026-07-16T12:02:02.332Z
+  - _ulid: 01KXNCWC1JHG2TCTQV7M0K71N0
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate alignment
+    timestamp: 2026-07-16T12:02:05.491Z
+  - _ulid: 01KXNCWF16SY588E9RRA66NNEN
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: fail
+      name: kspec validate completeness
+    timestamp: 2026-07-16T12:02:08.550Z
+  - _ulid: 01KXNCWJ4ARVZTMDX5JSTHRMP9
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: diff check
+    timestamp: 2026-07-16T12:02:11.722Z
+  - _ulid: 01KXNCWN3VW7CKYQSA1MHQDW94
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KXNCWMWFGEJKNPKP4NT11N5Y
+    timestamp: 2026-07-16T12:02:14.779Z
+  - _ulid: 01KXNCWR7ZA0SPV6KM9NNASVXH
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KXNCWQZVVMZJ0E6S6ACP8AZS
+    timestamp: 2026-07-16T12:02:17.983Z
+  - _ulid: 01KXNCWVGFT4HDTAW5D31PXSHV
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KXNCWV7YCH8FQXGN928Z8SYG
+    timestamp: 2026-07-16T12:02:21.327Z
+  - _ulid: 01KXNCWYNJHGPRWS0DYSBZFSCE
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KXNCWYD4HT48MYAFT8D2Q0R8
+    timestamp: 2026-07-16T12:02:24.562Z
 examined_commit: ef7ffa06f604363415e906b2db0ccfbc3abb4afb
 external_links: []
 lifecycle_state: open
@@ -26,8 +214,87 @@ subject:
   content_hash: ""
   ref: "@01KXH2PT5BATGSN8TNY7W7NE55"
   shadow_commit: ""
-threads: []
+threads:
+  - _ulid: 01KXNCWMWFGEJKNPKP4NT11N5Y
+    anchor:
+      type: code
+      commit: ef7ffa06f604363415e906b2db0ccfbc3abb4afb
+      line_end: 227
+      line_start: 220
+      path: tests/cli-agent-dispatch-lifecycle.test.ts
+      side: head
+    entries:
+      - _ulid: 01KXNCWMWFZN03D1RSC036PAD0
+        author: Jacob Chapel
+        body: MUST-FIX — Own acceptance-criterion coverage is incomplete. The parameterized test exercises
+          start, pause, and resume, but only ac-start-reports-authority and the shared projection AC
+          are annotated. Targeted completeness validation reports ac-pause-reports-authority and
+          ac-resume-reports-authority as uncovered. Add standalone annotations for both criteria and
+          ensure the associated assertions prove each authority result.
+        created_at: 2026-07-16T12:02:14.543Z
+    kind: blocker
+  - _ulid: 01KXNCWQZVVMZJ0E6S6ACP8AZS
+    anchor:
+      type: code
+      commit: ef7ffa06f604363415e906b2db0ccfbc3abb4afb
+      line_end: 170
+      line_start: 148
+      path: tests/cli-agent-dispatch-lifecycle.test.ts
+      side: head
+    entries:
+      - _ulid: 01KXNCWQZVCNCXQBEV05E8JZRK
+        author: Jacob Chapel
+        body: MUST-FIX — The required behavioral CLI boundary is bypassed. runLifecycleCli constructs a bare
+          Commander instance, registers only agent commands, and directly injects JSON output state;
+          it does not invoke the built CLI through tests/helpers/cli.ts with an explicit cwd and
+          sanitized environment, and JSON cases never pass a real --json argument. This skips root
+          option parsing, pre-action setup, process-level exit behavior, and actual stdout/stderr
+          framing, so regressions in the exact grammar and JSON mode can pass. Replace or supplement
+          this harness with the task-required subprocess helper and exercise the real flags for
+          every grammar row.
+        created_at: 2026-07-16T12:02:17.723Z
+    kind: blocker
+  - _ulid: 01KXNCWV7YCH8FQXGN928Z8SYG
+    anchor:
+      type: code
+      commit: ef7ffa06f604363415e906b2db0ccfbc3abb4afb
+      line_end: 407
+      line_start: 405
+      path: src/cli/commands/agent.ts
+      side: head
+    entries:
+      - _ulid: 01KXNCWV7Y9Z36D5ZW9P9B00Y1
+        author: Jacob Chapel
+        body: MUST-FIX — Project-context resolution is outside the closed lifecycle error boundary. If
+          initContext throws, mutation actions have no catch and can expose the rejected exception
+          or stack; the two status actions catch it with generic error(..., err), whose text and
+          JSON formatters stringify or serialize the raw exception and may include cwd/path
+          suggestions. That violates the task requirement that every runtime failure use the fixed
+          internal_error mapping and never expose a response path, cwd, or raw exception. Put
+          context resolution behind the fail-closed mapping in both helpers/callers and add
+          behavioral coverage with a distinctive thrown error that must not appear in either human
+          or JSON output.
+        created_at: 2026-07-16T12:02:21.054Z
+    kind: blocker
+  - _ulid: 01KXNCWYD4HT48MYAFT8D2Q0R8
+    entries:
+      - _ulid: 01KXNCWYD4KYA5MFAY2SWW31EY
+        author: Jacob Chapel
+        body: "Review evidence log — Files read: every changed file plus surrounding CLI output/index code,
+          daemon dispatch routes and serializers, task/spec context, and project review/work gates.
+          Commands run: format check; repo and focused lint; typecheck; fresh full test suite; two
+          isolated flaky-test reruns; refs/alignment/completeness validation; diff check;
+          task/spec/review lookups; annotation and integration searches. Claims verified: canonical
+          control/status endpoint routing and strict response schemas were compared independently
+          with daemon implementations; the reported full-suite claim was rerun and its one
+          intermittent failure triaged to existing task
+          @stabilize-agent-invocation-process-identity. Categories searched: correctness, edge
+          cases, error handling/data exposure, security boundary, test quality, AC coverage, and
+          daemon integration. Shared/package guidance surfaces touched: none; neutrality review not
+          applicable."
+        created_at: 2026-07-16T12:02:24.292Z
+    kind: nit
 verdicts: []
 created_at: 2026-07-16T11:41:11.315Z
-updated_at: 2026-07-16T11:41:23.681Z
+updated_at: 2026-07-16T12:02:24.292Z
 notes: []
