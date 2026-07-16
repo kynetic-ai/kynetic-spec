@@ -11,8 +11,8 @@ checks:
     name: format
     required: true
     runner: npm run format:check
-    created_at: 2026-07-16T17:13:00.668Z
-    completed_at: 2026-07-16T17:13:00.668Z
+    created_at: 2026-07-16T17:13:29.647Z
+    completed_at: 2026-07-16T17:13:29.647Z
   - status: pass
     applies_to_version:
       type: entity_version
@@ -23,8 +23,8 @@ checks:
     name: lint
     required: true
     runner: npm run lint -- --quiet
-    created_at: 2026-07-16T17:13:05.151Z
-    completed_at: 2026-07-16T17:13:05.151Z
+    created_at: 2026-07-16T17:13:33.532Z
+    completed_at: 2026-07-16T17:13:33.532Z
   - status: pass
     applies_to_version:
       type: entity_version
@@ -33,8 +33,8 @@ checks:
     name: typecheck
     required: true
     runner: npm run typecheck
-    created_at: 2026-07-16T17:13:08.803Z
-    completed_at: 2026-07-16T17:13:08.803Z
+    created_at: 2026-07-16T17:13:37.198Z
+    completed_at: 2026-07-16T17:13:37.198Z
   - status: pass
     applies_to_version:
       type: entity_version
@@ -49,8 +49,8 @@ checks:
     name: full test suite
     required: true
     runner: npm test -- --fresh
-    created_at: 2026-07-16T17:13:12.450Z
-    completed_at: 2026-07-16T17:13:12.450Z
+    created_at: 2026-07-16T17:13:40.857Z
+    completed_at: 2026-07-16T17:13:40.857Z
   - status: pass
     applies_to_version:
       type: entity_version
@@ -59,8 +59,8 @@ checks:
     name: kspec validate refs
     required: true
     runner: kspec validate --refs --warnings-ok
-    created_at: 2026-07-16T17:13:16.397Z
-    completed_at: 2026-07-16T17:13:16.397Z
+    created_at: 2026-07-16T17:13:44.995Z
+    completed_at: 2026-07-16T17:13:44.995Z
   - status: pass
     applies_to_version:
       type: entity_version
@@ -69,8 +69,8 @@ checks:
     name: kspec validate alignment
     required: true
     runner: kspec validate --alignment --warnings-ok
-    created_at: 2026-07-16T17:13:20.015Z
-    completed_at: 2026-07-16T17:13:20.015Z
+    created_at: 2026-07-16T17:13:48.826Z
+    completed_at: 2026-07-16T17:13:48.826Z
   - status: pass
     applies_to_version:
       type: entity_version
@@ -80,8 +80,8 @@ checks:
     name: kspec validate completeness
     required: true
     runner: kspec validate --completeness --warnings-ok
-    created_at: 2026-07-16T17:13:23.839Z
-    completed_at: 2026-07-16T17:13:23.839Z
+    created_at: 2026-07-16T17:13:52.497Z
+    completed_at: 2026-07-16T17:13:52.497Z
   - status: pass
     applies_to_version:
       type: entity_version
@@ -92,8 +92,8 @@ checks:
     name: agents browser e2e
     required: true
     runner: npm run test:e2e -- tests/e2e/agents.spec.ts
-    created_at: 2026-07-16T17:13:27.582Z
-    completed_at: 2026-07-16T17:13:27.582Z
+    created_at: 2026-07-16T17:13:56.598Z
+    completed_at: 2026-07-16T17:13:56.598Z
   - status: pass
     applies_to_version:
       type: entity_version
@@ -102,8 +102,8 @@ checks:
     name: diff hygiene
     required: true
     runner: git diff --check f98c880..HEAD
-    created_at: 2026-07-16T17:13:31.384Z
-    completed_at: 2026-07-16T17:13:31.384Z
+    created_at: 2026-07-16T17:14:00.778Z
+    completed_at: 2026-07-16T17:14:00.778Z
 events:
   - _ulid: 01KXNXFEQA7CMHYNGWDGNSB1SH
     actor: Jacob Chapel
@@ -118,69 +118,69 @@ events:
       from: draft
       to: open
     timestamp: 2026-07-16T16:52:21.946Z
-  - _ulid: 01KXNYNPDP62MR741SW9JHW5PX
+  - _ulid: 01KXNYPJJ5Z40JCW8CTPFTXJ8Y
     actor: Jacob Chapel
     event_type: check_added
     payload:
       status: pass
       name: format
-    timestamp: 2026-07-16T17:13:01.110Z
-  - _ulid: 01KXNYNTMD97530R1W3ZXBSR3H
+    timestamp: 2026-07-16T17:13:29.925Z
+  - _ulid: 01KXNYPPC7E68KEQ2MSHNYQQVN
     actor: Jacob Chapel
     event_type: check_added
     payload:
       status: pass
       name: lint
-    timestamp: 2026-07-16T17:13:05.421Z
-  - _ulid: 01KXNYNY6MQCFNWSRTQCPXVV0F
+    timestamp: 2026-07-16T17:13:33.831Z
+  - _ulid: 01KXNYPSYDF5MB8VTR4HGM8PFY
     actor: Jacob Chapel
     event_type: check_added
     payload:
       status: pass
       name: typecheck
-    timestamp: 2026-07-16T17:13:09.077Z
-  - _ulid: 01KXNYP1S45XBEPQVCR743R84M
+    timestamp: 2026-07-16T17:13:37.485Z
+  - _ulid: 01KXNYPXKC97KCMN9Z7EQPNPXW
     actor: Jacob Chapel
     event_type: check_added
     payload:
       status: pass
       name: full test suite
-    timestamp: 2026-07-16T17:13:12.740Z
-  - _ulid: 01KXNYP5MX2CDGR9PW8Q4H8HWB
+    timestamp: 2026-07-16T17:13:41.228Z
+  - _ulid: 01KXNYQ1HWJDSX4C7ZT1TSPYNN
     actor: Jacob Chapel
     event_type: check_added
     payload:
       status: pass
       name: kspec validate refs
-    timestamp: 2026-07-16T17:13:16.701Z
-  - _ulid: 01KXNYP959A1BC4QDRN8AKWYCJ
+    timestamp: 2026-07-16T17:13:45.276Z
+  - _ulid: 01KXNYQ5A7GK2HKBSZTMPJK3XD
     actor: Jacob Chapel
     event_type: check_added
     payload:
       status: pass
       name: kspec validate alignment
-    timestamp: 2026-07-16T17:13:20.298Z
-  - _ulid: 01KXNYPCXB8WQ1SJ2S8BW14E8B
+    timestamp: 2026-07-16T17:13:49.127Z
+  - _ulid: 01KXNYQ8X1R3RS6YJSEQQE4WT3
     actor: Jacob Chapel
     event_type: check_added
     payload:
       status: pass
       name: kspec validate completeness
-    timestamp: 2026-07-16T17:13:24.139Z
-  - _ulid: 01KXNYPGHTRP0FHSJGXT0FSAPD
+    timestamp: 2026-07-16T17:13:52.801Z
+  - _ulid: 01KXNYQCW9TB0SR9J9EED1PM9B
     actor: Jacob Chapel
     event_type: check_added
     payload:
       status: pass
       name: agents browser e2e
-    timestamp: 2026-07-16T17:13:27.866Z
-  - _ulid: 01KXNYPM9FBCETAS55HK1B98YR
+    timestamp: 2026-07-16T17:13:56.873Z
+  - _ulid: 01KXNYQH1KF1BQ1BK6C34E1CC3
     actor: Jacob Chapel
     event_type: check_added
     payload:
       status: pass
       name: diff hygiene
-    timestamp: 2026-07-16T17:13:31.695Z
+    timestamp: 2026-07-16T17:14:01.139Z
 examined_commit: 5730514449aa2ac0f80f87e29201897efb9248c2
 external_links: []
 lifecycle_state: open
@@ -193,5 +193,5 @@ subject:
 threads: []
 verdicts: []
 created_at: 2026-07-16T16:52:08.042Z
-updated_at: 2026-07-16T17:13:31.384Z
+updated_at: 2026-07-16T17:14:00.778Z
 notes: []
