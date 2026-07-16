@@ -61,3 +61,17 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-07-16T13:27:42.613Z
+  - _ulid: 01KXNJYGA42C8CC1E8QDVBKYQB
+    content: "Fix cycle 2 completed in f84a91662f. Addressed the sole blocker by making the internal
+      lifecycle status boundary fully strict: top-level, active invocation, queued invocation,
+      degraded, and degraded-target fields are explicitly validated, so unknown cwd/error/raw daemon
+      values cannot reach either JSON status projection. Added an explicit mock-daemon status
+      payload seam and real subprocess/HTTP regressions for both agent status commands covering
+      unknown top-level and nested fields. Re-verified all lifecycle AC annotations. Gates: format
+      clean; focused lint 0 warnings/errors; repo lint 0 errors; typecheck passed; focused slice 40
+      suites/168 tests passed; fresh full suite 2,824 suites/10,878 passed/3 skipped;
+      refs/alignment/completeness validations exited 0 with baseline warnings only; diff check
+      clean. Replied to and resolved every cycle-2 review thread."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-07-16T13:48:06.852Z
