@@ -310,6 +310,12 @@ function lifecycleErrorCode(error: unknown, projectDir?: string): DispatchContro
   }
   if (error instanceof DispatchCleanupError) return error.code;
   if (error instanceof DispatchShadowTransactionError) return "control_commit_failed";
+  if (
+    error instanceof Error &&
+    /Invalid dispatch-control\.yaml|malformed committed control/i.test(error.message)
+  ) {
+    return "control_store_corrupt";
+  }
   const degradedCode = projectDir ? lifecycleStoreErrorCode(projectDir) : null;
   if (degradedCode) return degradedCode;
   return "internal_error";

@@ -478,6 +478,11 @@ describe("safe agent dispatch lifecycle CLI", () => {
     delete process.env.KSPEC_SESSION_ID;
   });
 
+  it("keeps the lifecycle failure surface closed to exactly seventeen codes", () => {
+    expect(CLOSED_ERRORS).toHaveLength(17);
+    expect(new Set(CLOSED_ERRORS.map(([code]) => code))).toHaveLength(17);
+  });
+
   // AC: @cli-agent-commands ac-start-reports-authority
   // AC: @cli-agent-commands ac-pause-reports-authority
   // AC: @cli-agent-commands ac-resume-reports-authority

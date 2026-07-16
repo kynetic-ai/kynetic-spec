@@ -306,6 +306,7 @@ describe("DispatchEngine lifecycle audit boundary", () => {
   // AC: @dispatch-lifecycle-control-authority ac-failed-control-is-auditable
   // AC: @dispatch-lifecycle-control-authority ac-failure-events-use-closed-error-codes
   it("maps every engine failure class to one closed failed event", async () => {
+    const observedCodes: string[] = [];
     const actualIdentityCases = [
       {
         code: "validation_failed",
@@ -343,6 +344,7 @@ describe("DispatchEngine lifecycle audit boundary", () => {
         type: "dispatch_control.failed",
         data: { outcome: "failed", error_code: identityCase.code },
       });
+      observedCodes.push(String(fixture.callbackEvents[0]?.data.error_code));
       expect(fixture.busEvents).toHaveLength(1);
     }
 
@@ -367,6 +369,7 @@ describe("DispatchEngine lifecycle audit boundary", () => {
     ).rejects.toBeDefined();
     expect(matrixFixture.callbackEvents).toHaveLength(1);
     expect(matrixFixture.callbackEvents[0]?.data.error_code).toBe("invalid_transition");
+    observedCodes.push(String(matrixFixture.callbackEvents[0]?.data.error_code));
 
     const injectedFailures: ReadonlyArray<readonly [unknown, string]> = [
       [new Error("Timed out waiting for file lock"), "control_store_unavailable"],
@@ -416,8 +419,12 @@ describe("DispatchEngine lifecycle audit boundary", () => {
         type: "dispatch_control.failed",
         data: { scope: "global", outcome: "failed", error_code: expectedCode },
       });
+      observedCodes.push(String(fixture.callbackEvents[0]?.data.error_code));
       expect(fixture.busEvents).toHaveLength(1);
     }
+
+    expect(observedCodes).toHaveLength(17);
+    expect(new Set(observedCodes)).toHaveLength(17);
   });
 });
 

@@ -1882,6 +1882,8 @@ export class DispatchEngine {
     context: GlobalLifecycleActionContext = {},
   ): Promise<GlobalLifecycleActionResult> {
     try {
+      const injectedFailure = this._takeInjectedLifecycleFailure();
+      if (injectedFailure) throw injectedFailure;
       const result = await this._applyGlobalLifecycleAction(action, context);
       this._emitDispatchControlOutcome({
         scope: "global",
@@ -2006,6 +2008,53 @@ export class DispatchEngine {
         });
       }
       throw error;
+    }
+  }
+
+  /**
+   * Consume the real-daemon lifecycle surface test's one-shot failure marker.
+   * The seam is inert outside the test runtime and deliberately lives inside
+   * the public action wrapper so normal failure-event classification still
+   * runs before the error reaches the HTTP boundary.
+   */
+  private _takeInjectedLifecycleFailure(): Error | null {
+    if (process.env.NODE_ENV !== "test") return null;
+    const marker = path.join(this.projectDir, ".kspec", ".test-lifecycle-failure");
+    if (!fsSync.existsSync(marker)) return null;
+    const code = fsSync.readFileSync(marker, "utf8").trim() as DispatchControlErrorCode;
+    fsSync.rmSync(marker, { force: true });
+    switch (code) {
+      case "validation_failed":
+        return new TaskIdentityResolutionError("missing-task-identity", "injected validation");
+      case "task_not_found":
+        return new TaskIdentityResolutionError("unresolved-task-ref", "injected missing task");
+      case "task_identity_ambiguous":
+        return new TaskIdentityResolutionError("ambiguous-task-ref", "injected ambiguity");
+      case "task_identity_mismatch":
+        return new TaskIdentityResolutionError("task-id-ref-mismatch", "injected mismatch");
+      case "invalid_transition":
+        return new DispatchLifecycleTransitionError("injected invalid transition");
+      case "control_store_unavailable":
+        return new TaskIdentityResolutionError(
+          "task-identity-unavailable",
+          "injected unavailable control store",
+        );
+      case "control_store_corrupt":
+        return new Error("Invalid dispatch-control.yaml committed object (injected)");
+      case "control_commit_failed":
+        return new DispatchShadowTransactionError(code, "injected commit failure");
+      case "cancellation_timeout":
+      case "cancellation_failed":
+      case "session_closure_failed":
+      case "cleanup_ownership_mismatch":
+      case "cleanup_process_birth_mismatch":
+      case "cleanup_leader_missing_group_alive":
+      case "cleanup_identity_unverifiable":
+      case "cleanup_group_unverifiable":
+      case "internal_error":
+        return new DispatchCleanupError(code, `injected ${code}`);
+      default:
+        return new Error("Invalid injected lifecycle failure code");
     }
   }
 
