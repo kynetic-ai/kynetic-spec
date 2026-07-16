@@ -24123,6 +24123,20 @@ observations:
     resolved: false
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     created_at: 2026-07-16T12:11:21.965Z
+  - _ulid: 01KXNHG881XZA1WMVDNTTFCTCD
+    type: friction
+    content: "The autonomous session-reflect-loop mandates unfiltered 'kspec meta observations list',
+      'kspec inbox list', and 'kspec tasks list' commands before identifying candidates. As project
+      history grows, that baseline becomes unusable: this run returned about 60,000 tokens and the
+      observations listing alone reported roughly 267,000 tokens before truncation, so the required
+      evidence cannot actually be inspected. The workflow should use counts plus candidate-driven
+      targeted searches (or bounded/paginated listings) while preserving search-before-capture
+      semantics."
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
+    created_at: 2026-07-16T13:22:51.265Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
