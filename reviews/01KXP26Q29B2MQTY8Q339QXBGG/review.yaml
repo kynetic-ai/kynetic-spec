@@ -221,6 +221,13 @@ events:
       kind: blocker
       thread_ulid: 01KXP3B610FDNFGR1BZ890XHN5
     timestamp: 2026-07-16T18:34:39.798Z
+  - _ulid: 01KXP3BC4K2A7D7E6M53CT70EN
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KXP3BBW9EKWJBMTREREY6C0V
+    timestamp: 2026-07-16T18:34:45.779Z
 examined_commit: 6c7f7d0fb155d07094f1ec8d6140b20a8e463065
 external_links: []
 lifecycle_state: open
@@ -270,7 +277,29 @@ threads:
           the test would still pass if this AC regressed on this branch.
         created_at: 2026-07-16T18:34:39.521Z
     kind: blocker
+  - _ulid: 01KXP3BBW9EKWJBMTREREY6C0V
+    entries:
+      - _ulid: 01KXP3BBW9Q9SVGGH6FPH37Z2T
+        author: Jacob Chapel
+        body: "Review evidence log — Files read: packages/daemon/src/routes/agent-dispatch.ts;
+          src/agent-runtime/dispatch.ts; tests/cli-agent-dispatch-lifecycle.test.ts;
+          tests/daemon-agent-dispatch-lifecycle.test.ts; tests/dispatch-control-events.test.ts;
+          tests/dispatch-lifecycle-surface-integration.test.ts; surrounding
+          packages/shared/src/api.ts, src/cli/commands/agent.ts, packages/web-ui/src/lib/api.ts;
+          task/spec and prior review history. Commands run: target/head merge-base and full
+          effective diff/stat; git log/blame/status/diff-check; task/spec/review lookups; AC
+          annotation searches; npm run format:check; npm run lint -- --quiet; focused npx oxlint
+          over all effective changed files; npm run typecheck; npm test -- --fresh; all three kspec
+          validation modes. Claims verified: prior all-17 failure matrix, exact public status, and
+          UI conversion/semantic-roundtrip blockers are behaviorally resolved; fresh suite
+          independently matched the worker's 2830 suites/10926 passing tests/3 skipped claim.
+          Categories searched: correctness, scope/cleanup edge cases, error handling,
+          raw-field/security boundaries, test quality and annotation accuracy, API/CLI/UI/event
+          integration. Shared/package guidance surfaces touched: none, so neutrality directions and
+          generated-artifact checks were not applicable."
+        created_at: 2026-07-16T18:34:45.513Z
+    kind: nit
 verdicts: []
 created_at: 2026-07-16T18:14:44.553Z
-updated_at: 2026-07-16T18:34:39.521Z
+updated_at: 2026-07-16T18:34:45.513Z
 notes: []
