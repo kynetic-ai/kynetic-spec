@@ -8794,7 +8794,7 @@ workspaces:
         head: 5f0855ff1c7ce4fb93457d442d1bb6b5be4a7375
         last_seen_at: 2026-07-16T03:06:26.228Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-dispatch-lifecycle-events-01kxh2ps
-  - active_role: null
+  - active_role: worker
     base_branch_point: 0e014e61d8f3b4804be4f3f6dce2bc8439fcc4b9
     bootstrap:
       status: succeeded
@@ -9130,7 +9130,7 @@ workspaces:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-07-16T03:07:25.837Z
+      updated_at: 2026-07-16T03:08:04.973Z
     integration:
       status: pending
       detail: null
@@ -9139,17 +9139,17 @@ workspaces:
       target_branch: plan/plan-dispatch-lifecycle-pause-resume-and-stop-controls/01kxc2vx
       target_commit: 0e014e61d8f3b4804be4f3f6dce2bc8439fcc4b9
       updated_at: 2026-07-16T03:07:25.837Z
-    lifecycle_state: ready
+    lifecycle_state: active
     resolved_base_branch: plan/plan-dispatch-lifecycle-pause-resume-and-stop-controls/01kxc2vx
     task_id: 01KXH2PXA2YQJEGTQ3A3H9N4FQ
     task_ref: "@01KXH2PXA2YQJEGTQ3A3H9N4FQ"
     task_slug: task-verify-engine-restart-races
     timestamps:
       closed_at: null
-      last_active_at: null
-      last_reconciled_at: 2026-07-16T03:07:25.837Z
+      last_active_at: 2026-07-16T03:08:04.973Z
+      last_reconciled_at: 2026-07-16T03:08:04.973Z
       created_at: 2026-07-16T03:07:25.837Z
-      updated_at: 2026-07-16T03:07:51.568Z
+      updated_at: 2026-07-16T03:08:04.973Z
     workspace_id: dispatch-workspace-01KXH2PXA2YQJEGTQ3A3H9N4FQ
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
