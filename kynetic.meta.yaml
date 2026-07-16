@@ -24237,6 +24237,26 @@ observations:
     resolved: false
     workflow_ref: "@session-reflect-loop"
     created_at: 2026-07-16T18:09:54.292Z
+  - _ulid: 01KXP99B2V316J1243HVTPPM3Y
+    type: success
+    content: "Browser route fixtures at the exact public wire boundary provide high-value cross-layer
+      verification: returning complete snake_case responses through Playwright exercised schema
+      validation, recursive camelCase conversion, lifecycle action derivation, accessibility state,
+      and rendered DOM behavior together without mocking product helpers."
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    created_at: 2026-07-16T20:18:30.620Z
+  - _ulid: 01KXP99BDQTETPGWHH29VV7FXN
+    type: friction
+    content: Playwright records intentional HTTP 4xx/503 route-fixture responses as console resource
+      errors. Browser regressions that exercise mapped failures or static fallback must classify and
+      assert those expected transport logs separately from unexpected console/page errors; an
+      unconditional empty-error assertion produces false failures.
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    created_at: 2026-07-16T20:18:30.967Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
