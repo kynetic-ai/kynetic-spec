@@ -1,1 +1,19 @@
-notes: []
+notes:
+  - _ulid: 01KXM7REQAXW665DRYAMKHEDZ6
+    content: "Approach: extend the canonical registry and both schema owners with the six
+      dispatch_control identifiers and one strict discriminated payload schema; reuse the engine
+      EventBus, lifecycle mutex, committed store results, existing text sanitizer semantics, task
+      identity errors, shadow transaction errors, and cleanup errors. Add one exported closed error
+      mapper and one typed outcome emitter, then wire lifecycle action success/failure paths only
+      after durable mutation/cleanup settles and forward the typed event on the agents WebSocket
+      callback. Edge cases: task/global identity exclusivity, failed-only closed error_code, Unicode
+      code-point bounds, control/whitespace normalization, omission of all unapproved raw fields,
+      commit/verification collapse to control_commit_failed, store corruption versus availability,
+      and exactly-once emission after commit rather than retry observations. Test plan: write
+      behavioral emitter fixtures first for four applied actions, noop, all 17 failures, commit
+      barrier timing, full sanitizer/forbidden-field matrix, registry/payload cross-schema parity,
+      EventBus delivery, shared schema parity, and agents callback publication; retain existing
+      trait error-guidance coverage."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-07-16T01:13:19.850Z
