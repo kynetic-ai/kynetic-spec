@@ -1,1 +1,17 @@
-notes: []
+notes:
+  - _ulid: 01KXP7JKX1S4K5EDVVFHPV1JWE
+    content: "Approach: create only tests/e2e/dispatch-lifecycle.spec.ts, reusing the shared Playwright
+      daemon fixture and local public-wire route helpers. Cover lifecycle
+      authority/projection/action matrices, cleanup scope and retry behavior, canonical task
+      identity, mapped errors, confirmation/focus/live-region keyboard behavior,
+      dashboard/board/automation consumers, narrow viewport overflow, malformed wire rejection, and
+      static read-only fallback. Edge cases: unrelated task cleanup must not block global start;
+      global cleanup must not block task metadata controls; mixed failed/pending evidence; stale 409
+      refresh; retry success remains stopped; retry failure retains evidence; mixed casing and
+      malformed conditional rows fail closed. Test plan: behavioral browser assertions annotated
+      against all 16 @ui-agent-dispatch ACs; record every console/page error; run the focused
+      Playwright spec, required web-ui regression slice, typecheck/lint/format/full suite, and kspec
+      validation."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-07-16T19:48:37.410Z
