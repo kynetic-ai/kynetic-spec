@@ -67,6 +67,19 @@ checks:
     runner: canonical-plan-review
     created_at: 2026-07-16T22:43:31.388Z
     completed_at: 2026-07-16T22:43:31.388Z
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: The eight tasks form one serial acyclic chain with ordered priorities and unique prose and
+      index owners, but Task 7 omits the manifest JSON from its exact modify-owned files even though
+      six later tracked pages must be added after Task 1 creates the initial exact-universe
+      manifest.
+    name: Task dependency and file ownership
+    required: true
+    runner: canonical-plan-review
+    created_at: 2026-07-16T22:43:42.162Z
+    completed_at: 2026-07-16T22:43:42.162Z
 events:
   - _ulid: 01KXPHB4W525RSJNXKZZMG0HTJ
     actor: Jacob Chapel
@@ -175,6 +188,13 @@ events:
       status: pass
       name: AC and factual reference resolution
     timestamp: 2026-07-16T22:43:31.989Z
+  - _ulid: 01KXPHK6T94CC9CX5RKJ270FGY
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: fail
+      name: Task dependency and file ownership
+    timestamp: 2026-07-16T22:43:42.537Z
 examined_commit: null
 external_links: []
 lifecycle_state: open
@@ -607,5 +627,5 @@ threads:
     kind: blocker
 verdicts: []
 created_at: 2026-07-16T22:39:18.405Z
-updated_at: 2026-07-16T22:43:31.388Z
+updated_at: 2026-07-16T22:43:42.162Z
 notes: []
