@@ -49,3 +49,17 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-07-16T12:54:26.033Z
+  - _ulid: 01KXNH9T0BPB87RCQ2V90NGA4Y
+    content: "Fix cycle 1 completed in da3bae8d95. Addressed all five blocker themes and the
+      informational thread: strict full status/error/mutation envelope rejection before projection;
+      connected replacement focus for global and task controls with invoking-control cancel focus;
+      reachable running/zero-active section; migrated agents browser selectors, confirmation flow,
+      and sanitized errors; replaced constant-only AC claims with real
+      dialog/cancel/request-count/success-focus/live-region coverage. Re-verified all 16
+      @ui-agent-dispatch ACs. Gates: format pass; repo lint 0 errors and focused lint 0
+      warnings/errors; typecheck pass; focused lifecycle 98/98; agents Playwright 47/47; full suite
+      10,873 passed/3 skipped; refs/alignment/completeness accepted baselines; diff check pass. All
+      12 historical review threads are resolved and canonical branch is pushed."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-07-16T13:19:20.075Z
