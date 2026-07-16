@@ -179,6 +179,13 @@ events:
       status: pass
       name: diff check
     timestamp: 2026-07-16T16:05:16.070Z
+  - _ulid: 01KXNTST3ANGQ81CCRZD3TP13H
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KXNTSSV2PEQW0C0KQAJ619MM
+    timestamp: 2026-07-16T16:05:21.642Z
 examined_commit: ccdbdbf1576a4b84197652909759850dff01cc5c
 external_links: []
 lifecycle_state: open
@@ -188,8 +195,37 @@ subject:
   content_hash: ""
   ref: "@01KXH2PVX606KVK5C4ERCB8WTY"
   shadow_commit: ""
-threads: []
+threads:
+  - _ulid: 01KXNTSSV2PEQW0C0KQAJ619MM
+    anchor:
+      type: code
+      commit: ccdbdbf1576a4b84197652909759850dff01cc5c
+      line_end: 1449
+      line_start: 1445
+      path: packages/web-ui/src/lib/api.ts
+      side: head
+    entries:
+      - _ulid: 01KXNTSSV3TFMTH3PBQ2TMM0FX
+        author: Jacob Chapel
+        body: 'MUST-FIX — Preserve invalid-project recovery before strict lifecycle-envelope parsing. Both
+          fetchAgentStatus (line 1325) and controlDispatchLifecycle (line 1505) send every non-2xx
+          body here, but project-context middleware returns a 400 body shaped as { error: "Invalid
+          kspec project ..." }. This function requires error to be an object, so it throws an
+          envelope/type error and never calls isInvalidProjectError/clearInvalidSelection. The base
+          status/control paths used handleResponseError, which did clear the stale selected project.
+          Impact: @multi-directory-daemon ac-36 regresses for the agents status fetch and lifecycle
+          controls; localStorage keeps the deleted/invalid project selected and the user sees an
+          unrelated fixed lifecycle-health failure instead of recovering. Evidence:
+          tests/daemon-path-validation-middleware.test.ts:288-298 proves the actual 400/string
+          response shape; project.svelte.ts:190-211 defines the required clearing behavior; the
+          fresh full suite passes only because tests/web-ui/dispatch-lifecycle-controls.test.ts
+          mocks isInvalidProjectError to false and has no invalid-project integration case. Detect
+          this response using the HTTP status plus parsed message before applying strict canonical
+          lifecycle parsing, and add a behavioral regression test that observes
+          clearInvalidSelection.'
+        created_at: 2026-07-16T16:05:21.379Z
+    kind: blocker
 verdicts: []
 created_at: 2026-07-16T15:42:20.501Z
-updated_at: 2026-07-16T16:05:15.810Z
+updated_at: 2026-07-16T16:05:21.379Z
 notes: []
