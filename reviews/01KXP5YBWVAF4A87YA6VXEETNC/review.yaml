@@ -1,0 +1,26 @@
+_ulid: 01KXP5YBWVAF4A87YA6VXEETNC
+slugs: []
+title: Review API and CLI lifecycle projection end to end (cycle 3)
+author: Jacob Chapel
+checks: []
+events:
+  - _ulid: 01KXP5YBWC2V4XF2PE1VNVCQM6
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-07-16T19:20:05.261Z
+examined_commit: 8364599a91cd18587254d378c3a6c8f45922a00b
+external_links: []
+lifecycle_state: draft
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KXH2PXT88X9MSC62MQVY2CV4"
+  shadow_commit: ""
+threads: []
+verdicts: []
+created_at: 2026-07-16T19:20:05.275Z
+updated_at: null
+notes: []
