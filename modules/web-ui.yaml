@@ -612,7 +612,7 @@ features:
           and WebSocket broadcasts for agent invocation status.
         status:
           maturity: draft
-          implementation: in_progress
+          implementation: implemented
         depends_on: []
         implements: []
         relates_to: []
