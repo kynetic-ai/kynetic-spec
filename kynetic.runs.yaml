@@ -80718,9 +80718,20 @@ runs:
     completed_at: 2026-07-16T09:36:56.503Z
   - _ulid: 01KXN623FTQ39M00QH755FVXAW
     status: active
-    current_step: 0
+    current_step: 1
     initiated_by: Jacob Chapel
-    step_results: []
+    step_results:
+      - status: completed
+        step_index: 0
+        started_at: 2026-07-16T10:02:53.306Z
+        completed_at: 2026-07-16T10:03:54.665Z
+        notes: "Baseline established before capture: listed all observations, inbox items, and tasks.
+          Follow-up keyword searches will be used for each concrete candidate because the global
+          lists are large."
+      - status: completed
+        step_index: 1
+        started_at: 2026-07-16T10:03:54.665Z
+        completed_at: 2026-07-16T10:03:54.665Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-07-16T10:02:53.306Z
