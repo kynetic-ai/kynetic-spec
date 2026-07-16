@@ -216,6 +216,42 @@ events:
       from: open
       to: closed
     timestamp: 2026-07-16T16:06:45.658Z
+  - _ulid: 01KXNWVFNC48DCZYSS8QMJ313X
+    actor: Jacob Chapel
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KXNTSSV2PEQW0C0KQAJ619MM
+    timestamp: 2026-07-16T16:41:13.644Z
+  - _ulid: 01KXNWVKMGKBH0GH0Y02GY1RWN
+    actor: Jacob Chapel
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KXNTSSV2PEQW0C0KQAJ619MM
+    timestamp: 2026-07-16T16:41:17.712Z
+  - _ulid: 01KXNWVQBJ6WB2N46XGB5M4KVF
+    actor: Jacob Chapel
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KXNTSZN8V7HNKTY6ZM79AYSA
+    timestamp: 2026-07-16T16:41:21.522Z
+  - _ulid: 01KXNWVTTD0DTTCM0WKESRAR7S
+    actor: Jacob Chapel
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KXNTSZN8V7HNKTY6ZM79AYSA
+    timestamp: 2026-07-16T16:41:25.069Z
+  - _ulid: 01KXNWVY60Q30Z9DVHX8R0KFKC
+    actor: Jacob Chapel
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KXNTV4PVK79SWPT0701A2RD7
+    timestamp: 2026-07-16T16:41:28.512Z
+  - _ulid: 01KXNWW1CX7SM0SHJ19WCVBRGD
+    actor: Jacob Chapel
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KXNTV4PVK79SWPT0701A2RD7
+    timestamp: 2026-07-16T16:41:31.805Z
 examined_commit: ccdbdbf1576a4b84197652909759850dff01cc5c
 external_links: []
 lifecycle_state: closed
@@ -254,7 +290,15 @@ threads:
           lifecycle parsing, and add a behavioral regression test that observes
           clearInvalidSelection.'
         created_at: 2026-07-16T16:05:21.379Z
+      - _ulid: 01KXNWVFB2Y1V7V43VBQFVTKFC
+        author: Jacob Chapel
+        body: "Fixed in 5730514449: both lifecycle status and control paths now detect the middleware
+          top-level string invalid-project response before strict envelope parsing, call
+          clearInvalidSelection, and behavioral API coverage verifies recovery for both call sites."
+        created_at: 2026-07-16T16:41:13.311Z
     kind: blocker
+    resolved_at: 2026-07-16T16:41:17.352Z
+    resolved_by: Jacob Chapel
   - _ulid: 01KXNTSZN8V7HNKTY6ZM79AYSA
     anchor:
       type: code
@@ -279,7 +323,16 @@ threads:
           removes its row. Move/forward task lifecycle announcements to a persistent parent live
           region and add a browser behavioral test for this removal path."
         created_at: 2026-07-16T16:05:27.337Z
+      - _ulid: 01KXNWVQ3Q774X2HKABMJ0EAEE
+        author: Jacob Chapel
+        body: "Fixed in 5730514449: task lifecycle announcements now live in persistent agents-page state
+          rather than HeldTaskRow. New Playwright coverage resumes a paused controlled task,
+          verifies its keyed row disappears, and verifies the surviving polite atomic live region
+          announces success."
+        created_at: 2026-07-16T16:41:21.271Z
     kind: blocker
+    resolved_at: 2026-07-16T16:41:24.811Z
+    resolved_by: Jacob Chapel
   - _ulid: 01KXNTV4PVK79SWPT0701A2RD7
     entries:
       - _ulid: 01KXNTV4PWCBV4ZT157HA05FYN
@@ -305,7 +358,14 @@ threads:
           threads recorded; no source-scanning tests and no shared/package guidance surfaces
           touched."
         created_at: 2026-07-16T16:06:05.276Z
+      - _ulid: 01KXNWVXY1BMF4SPX9ME0J0A3T
+        author: Jacob Chapel
+        body: Acknowledged the cycle-4 evidence log. The two recorded blockers were addressed together and
+          all listed deterministic gates were rerun on the new commit.
+        created_at: 2026-07-16T16:41:28.257Z
     kind: nit
+    resolved_at: 2026-07-16T16:41:31.549Z
+    resolved_by: Jacob Chapel
 verdicts:
   - applies_to_version:
       type: entity_version
@@ -315,5 +375,5 @@ verdicts:
     role: reviewer
     created_at: 2026-07-16T16:06:45.657Z
 created_at: 2026-07-16T15:42:20.501Z
-updated_at: 2026-07-16T16:06:45.658Z
+updated_at: 2026-07-16T16:41:31.549Z
 notes: []
