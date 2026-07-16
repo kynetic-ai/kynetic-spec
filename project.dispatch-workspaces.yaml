@@ -8794,7 +8794,7 @@ workspaces:
         head: f38eb47aa73c3ed032195fea02fdfa0210dbfa24
         last_seen_at: 2026-07-16T03:49:54.424Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-verify-engine-restart-races-01kxh2px
-  - active_role: worker
+  - active_role: null
     base_branch_point: 87ba5a40db4a3a66c21c89c9ff90b28d9177727c
     bootstrap:
       status: succeeded
@@ -9125,12 +9125,12 @@ workspaces:
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-07-16T04:17:55.111Z
+      updated_at: 2026-07-16T04:24:21.981Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-07-16T04:19:08.966Z
+      updated_at: 2026-07-16T04:24:21.981Z
     integration:
       status: pending
       detail: null
@@ -9138,8 +9138,8 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: 87ba5a40db4a3a66c21c89c9ff90b28d9177727c
-      updated_at: 2026-07-16T04:17:55.111Z
-    lifecycle_state: active
+      updated_at: 2026-07-16T04:24:21.981Z
+    lifecycle_state: ready
     resolved_base_branch: dev
     task_id: 01KXMFGZ2D226T5YRAH5ZW5X9A
     task_ref: "@01KXMFGZ2D226T5YRAH5ZW5X9A"
@@ -9147,9 +9147,9 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-07-16T04:19:08.966Z
-      last_reconciled_at: 2026-07-16T04:19:08.966Z
+      last_reconciled_at: 2026-07-16T04:24:21.981Z
       created_at: 2026-07-16T04:17:55.111Z
-      updated_at: 2026-07-16T04:19:08.966Z
+      updated_at: 2026-07-16T04:24:21.981Z
     workspace_id: dispatch-workspace-01KXMFGZ2D226T5YRAH5ZW5X9A
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
