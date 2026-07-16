@@ -81147,7 +81147,7 @@ runs:
     completed_at: 2026-07-16T13:22:50.203Z
   - _ulid: 01KXNK01Q8MFXVKCNS3BPC51JJ
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -81160,7 +81160,16 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-07-16T13:49:52.428Z
-        completed_at: 2026-07-16T13:49:52.428Z
+        completed_at: 2026-07-16T13:50:52.986Z
+        notes: "High-confidence candidates: (1) exact duplicate review blocker/nit/check rows created
+          redundant worker triage; unique in searches. (2) fresh full-suite host contention; already
+          tracked by @01KXMJ9R, skip. (3) child-process recording mock-daemon behavioral proof;
+          already tracked by @01KQZ3VH8, skip. Other session issues were one-off command/tool
+          mistakes and are below the capture threshold."
+      - status: completed
+        step_index: 2
+        started_at: 2026-07-16T13:50:52.986Z
+        completed_at: 2026-07-16T13:50:52.986Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-07-16T13:48:57.448Z
