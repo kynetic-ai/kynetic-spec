@@ -80821,7 +80821,7 @@ runs:
     completed_at: 2026-07-16T10:32:25.718Z
   - _ulid: 01KXN93SG8HDYBFH4YP1A41Q58
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -80834,7 +80834,20 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-07-16T10:57:15.237Z
-        completed_at: 2026-07-16T10:57:15.237Z
+        completed_at: 2026-07-16T10:58:23.311Z
+        notes: "High-confidence success: diff-first review, focused behavioral regression tests,
+          deterministic gates, and supported detached merge helper produced an auditable clean
+          merge; already represented by success observations @01KPA80NSA8AYXW12G10TEZ3E6 and
+          @01KSS63EMWF7PS0M6XV7KWNAA8 plus implemented helper @detached-reviewer-merge-helper.
+          High-confidence friction: npm test remained alive after green output/two quiet intervals;
+          already tracked by pending @task-investigate-npm-test-teardown-hang-after-green-suite-run.
+          Candidate batch review-check read-after-write delay was concrete but observed only once
+          and root cause is uncertain, so it does not meet the loop workflow's
+          systemic/high-confidence threshold."
+      - status: completed
+        step_index: 2
+        started_at: 2026-07-16T10:58:23.311Z
+        completed_at: 2026-07-16T10:58:23.311Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-07-16T10:56:14.344Z
