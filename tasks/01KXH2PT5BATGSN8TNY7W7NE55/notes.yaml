@@ -1,1 +1,18 @@
-notes: []
+notes:
+  - _ulid: 01KXN96HMPXTBA8Z3CJ4P4WC8N
+    content: "Approach: replace legacy start/stop handlers with one canonical control helper targeting
+      POST /api/agent/dispatch/control; add strict internal-status and control-response validation
+      using shared lifecycle row schemas while preserving existing invocation/queue fields; append
+      lifecycle fields to both status renderers; add closed error-copy rendering and semantic
+      lifecycle exits; implement stop preflight in order (dispatch-session guard, force/TTY
+      requirement, confirmation, HTTP). Reuse getRunningDaemonClient/initContext headers and
+      existing output JSON state. Edge cases: malformed/unsorted/duplicate/count-mismatched status
+      fails closed without raw daemon text; global responses forbid task identity while task
+      responses require canonical identity; non-TTY/JSON force requirement; dispatch-owned session
+      rejection before prompt/request; unrelated cleanup rows remain observability only. Test plan:
+      behavioral CLI fixture tests cover grammar/body/routes, exact success/error envelopes, status
+      projections, schema rejection, prompt/preflight, and endpoint regression; retain existing
+      agent invocation/queue coverage."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-07-16T10:57:44.599Z
