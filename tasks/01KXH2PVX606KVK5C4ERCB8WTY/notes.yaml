@@ -79,3 +79,15 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-07-16T14:04:13.389Z
+  - _ulid: 01KXNMWDFEJ1X7APP652WTW91R
+    content: "Fix cycle 2 completed in 4094f8d891. Rejected global and task hard stops now restore focus
+      to the still-connected invoking control; successful transitions retain replacement-control
+      focus behavior. Replaced five parser-level AC claims with Playwright coverage that renders
+      draining active work, queued rows, canonical held rows, and separately labelled authority,
+      projection, degraded state, and held/blocked evidence. All 10 cycle-2 threads are resolved.
+      Gates: format pass; repo lint 0 errors; focused lint 0 warnings/errors; typecheck pass;
+      focused lifecycle 98/98; agents Playwright 50/50; full suite 10,873 passed/3 skipped;
+      refs/alignment/completeness accepted baselines; diff check pass. Canonical branch pushed."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-07-16T14:21:55.566Z

@@ -33952,7 +33952,7 @@
   type: task
   spec_ref: "@ui-agent-dispatch"
   plan_ref: "@plan-dispatch-lifecycle-pause-resume-and-stop-controls"
-  status: in_progress
+  status: pending_review
   blocked_by: []
   depends_on:
     - "@task-patch-dispatch-ui-specs"
@@ -33963,11 +33963,11 @@
     - ui
     - accessibility
   review_ref: "@01KXNHTMQH8GQ52K46F41KYTF4"
-  notes_count: 7
+  notes_count: 8
   todos_count: 0
   created_at: 2026-07-14T19:47:21.638Z
   started_at: 2026-07-16T14:02:48.288Z
-  submitted_at: 2026-07-16T13:19:21.030Z
+  submitted_at: 2026-07-16T14:21:56.551Z
   automation: eligible
 - _ulid: 01KXH2PWH4C8T1X1BWHN9FWWDR
   slugs:
