@@ -9640,7 +9640,7 @@ workspaces:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-07-16T10:05:49.250Z
+      updated_at: 2026-07-16T10:06:19.021Z
     integration:
       status: pending
       detail: null
@@ -9649,7 +9649,7 @@ workspaces:
       target_branch: plan/plan-dispatch-lifecycle-pause-resume-and-stop-controls/01kxc2vx
       target_commit: 89a72367b80e3c0e51fd4259d40f6abeac6bf447
       updated_at: 2026-07-16T10:05:49.250Z
-    lifecycle_state: integrating
+    lifecycle_state: ready
     resolved_base_branch: plan/plan-dispatch-lifecycle-pause-resume-and-stop-controls/01kxc2vx
     task_id: 01KXH2PSQY6GK4S66S4TB6JVV3
     task_ref: "@01KXH2PSQY6GK4S66S4TB6JVV3"
@@ -9657,18 +9657,13 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-07-16T09:39:00.421Z
-      last_reconciled_at: 2026-07-16T10:05:49.250Z
+      last_reconciled_at: 2026-07-16T10:06:19.021Z
       created_at: 2026-07-16T04:39:20.168Z
-      updated_at: 2026-07-16T10:05:49.250Z
+      updated_at: 2026-07-16T10:06:19.021Z
     workspace_id: dispatch-workspace-01KXH2PSQY6GK4S66S4TB6JVV3
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
-      reviewer:
-        branch_mode: detached
-        branch_ref: null
-        head: cd4d2f46e13e390617ae1fe9e09ee74af8af4e43
-        last_seen_at: 2026-07-16T09:38:22.718Z
-        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-daemon-dispatch-lifecycle-api-01kxh2ps-review
+      reviewer: null
       worker:
         branch_mode: branch
         branch_ref: dispatch/task/task-daemon-dispatch-lifecycle-api/01kxh2ps
