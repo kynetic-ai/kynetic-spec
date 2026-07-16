@@ -2,7 +2,101 @@ _ulid: 01KXNKDHFG004F3F1QZ0PV5YGZ
 slugs: []
 title: Review safe lifecycle CLI commands (cycle 3)
 author: Jacob Chapel
-checks: []
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Exit 0; all 1053 files use the correct format.
+    name: format
+    required: true
+    runner: npm run format:check
+    created_at: 2026-07-16T14:13:24.516Z
+    completed_at: 2026-07-16T14:13:24.516Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Exit 0 with 0 errors. Focused oxlint on all changed TypeScript/test files also exited 0;
+      its 31 warnings are on unchanged lines 2175+ in tests/cli-agent-commands.test.ts, outside
+      submitted hunks.
+    name: lint
+    required: true
+    runner: npm run lint -- --quiet
+    created_at: 2026-07-16T14:13:27.837Z
+    completed_at: 2026-07-16T14:13:27.837Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Shared package build and tsc --noEmit completed successfully.
+    name: typecheck
+    required: true
+    runner: npm run typecheck
+    created_at: 2026-07-16T14:13:31.079Z
+    completed_at: 2026-07-16T14:13:31.079Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Fresh full run passed all 2824 suites: 10878 tests passed and 3 skipped."
+    name: full test suite
+    required: true
+    runner: npm test -- --fresh
+    created_at: 2026-07-16T14:13:34.472Z
+    completed_at: 2026-07-16T14:13:34.472Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Exit 0; schema and references passed with 6 documented repository-baseline deprecation
+      warnings.
+    name: kspec validate refs
+    required: true
+    runner: kspec validate --refs --warnings-ok
+    created_at: 2026-07-16T14:13:37.715Z
+    completed_at: 2026-07-16T14:13:37.715Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Exit 0; alignment passed with the existing orphan/status warning baseline.
+    name: kspec validate alignment
+    required: true
+    runner: kspec validate --alignment --warnings-ok
+    created_at: 2026-07-16T14:13:42.118Z
+    completed_at: 2026-07-16T14:13:42.118Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Exit 0; lifecycle authority AC annotations are covered. Reported warnings are the
+      repository baseline and no submitted lifecycle AC gap remains.
+    name: kspec validate completeness
+    required: true
+    runner: kspec validate --completeness --warnings-ok
+    created_at: 2026-07-16T14:13:45.323Z
+    completed_at: 2026-07-16T14:13:45.323Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: 40 suites and 168 focused tests passed.
+    name: focused lifecycle tests
+    required: false
+    runner: npm test -- lifecycle/agent/endpoint files
+    created_at: 2026-07-16T14:13:48.690Z
+    completed_at: 2026-07-16T14:13:48.690Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: No whitespace errors in the reviewed comparison.
+    name: diff check
+    required: false
+    runner: git diff --check
+    created_at: 2026-07-16T14:13:52.004Z
+    completed_at: 2026-07-16T14:13:52.004Z
 events:
   - _ulid: 01KXNKDHFG9HW1B52MKMYJTEMW
     actor: Jacob Chapel
@@ -17,6 +111,69 @@ events:
       from: draft
       to: open
     timestamp: 2026-07-16T13:56:34.466Z
+  - _ulid: 01KXNMCTN7Q5QS81182S4DJNW9
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: format
+    timestamp: 2026-07-16T14:13:24.776Z
+  - _ulid: 01KXNMCXWQS3B5B2QN5X3W862Z
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: lint
+    timestamp: 2026-07-16T14:13:28.088Z
+  - _ulid: 01KXNMD12Z30G8ZHF1FRYZ85B6
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: typecheck
+    timestamp: 2026-07-16T14:13:31.359Z
+  - _ulid: 01KXNMD4CBPR05BG1A3YNX537P
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: full test suite
+    timestamp: 2026-07-16T14:13:34.731Z
+  - _ulid: 01KXNMD7HX1V2GBBNQZSYV32WZ
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate refs
+    timestamp: 2026-07-16T14:13:37.981Z
+  - _ulid: 01KXNMDBVB6ZEW0P7JCE6YNMGM
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate alignment
+    timestamp: 2026-07-16T14:13:42.379Z
+  - _ulid: 01KXNMDEZY0R00TA6V05YHFFNK
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate completeness
+    timestamp: 2026-07-16T14:13:45.598Z
+  - _ulid: 01KXNMDJ8MNZM1KA1RCSH7R90D
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: focused lifecycle tests
+    timestamp: 2026-07-16T14:13:48.948Z
+  - _ulid: 01KXNMDNGEX1KDJGKAW4GCYC2A
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: diff check
+    timestamp: 2026-07-16T14:13:52.270Z
 examined_commit: f84a91662f82218f14c9a14fd6c75672b6f271cc
 external_links: []
 lifecycle_state: open
@@ -29,5 +186,5 @@ subject:
 threads: []
 verdicts: []
 created_at: 2026-07-16T13:56:19.568Z
-updated_at: 2026-07-16T13:56:34.230Z
+updated_at: 2026-07-16T14:13:52.004Z
 notes: []
