@@ -165,6 +165,16 @@ checks:
     runner: npm run test:e2e -- tests/e2e/dispatch-lifecycle.spec.ts
     created_at: 2026-07-16T20:43:02.432Z
     completed_at: 2026-07-16T20:43:02.432Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: No whitespace errors in base-to-head diff.
+    name: git diff check
+    required: true
+    runner: git diff --check
+    created_at: 2026-07-16T20:43:08.343Z
+    completed_at: 2026-07-16T20:43:08.343Z
 events:
   - _ulid: 01KXP9HCR5RXH7NE50P26WHG71
     actor: Jacob Chapel
@@ -333,6 +343,13 @@ events:
       status: pass
       name: focused browser suite
     timestamp: 2026-07-16T20:43:02.707Z
+  - _ulid: 01KXPAPEECZR6CRB0W8QP41MVQ
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: git diff check
+    timestamp: 2026-07-16T20:43:08.620Z
 examined_commit: 4bedaff5093dbef95ea81efb52b33c53be08a837
 external_links: []
 lifecycle_state: open
@@ -457,5 +474,5 @@ threads:
     kind: nit
 verdicts: []
 created_at: 2026-07-16T20:22:54.480Z
-updated_at: 2026-07-16T20:43:02.432Z
+updated_at: 2026-07-16T20:43:08.343Z
 notes: []
