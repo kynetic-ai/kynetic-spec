@@ -358,6 +358,70 @@ describe("safe lifecycle commands through the built CLI", () => {
     },
   );
 
+  it.each(
+    ["agent status --json", "agent dispatch status --json"].flatMap((command) => [
+      [command, "top-level", lifecycleStatus({ cwd: "/secret/raw" }), "/secret/raw"],
+      [
+        command,
+        "nested",
+        lifecycleStatus({
+          activeInvocations: 1,
+          queuedInvocations: 1,
+          invocations: [
+            {
+              invocationId: "invocation",
+              sessionId: "session",
+              agentId: "worker",
+              agentName: "Worker",
+              elapsedMs: 1,
+              resolvedAdapter: "codex-acp",
+              error: "raw daemon detail",
+            },
+          ],
+          queued: [
+            {
+              agentId: "reviewer",
+              agentName: "Reviewer",
+              waitMs: 1,
+              error: "raw queued detail",
+            },
+          ],
+        }),
+        "raw daemon detail",
+      ],
+    ]) as Array<[string, string, Record<string, unknown>, string]>,
+  )(
+    "fails closed when %s receives an unknown %s status field",
+    async (command, _location, maliciousStatus, rawValue) => {
+      const malicious = await startMockDaemon({
+        asChildProcess: true,
+        mode: "refuse",
+        bindHost: "127.0.0.1",
+        agentDispatchStatus: maliciousStatus,
+      });
+      if (!malicious) throw new Error("malicious lifecycle mock daemon failed to start");
+      writeMockDaemonMetadata({ home: isolated, client: malicious });
+      try {
+        const result = runLifecycleCli(command, tempDir, isolated);
+
+        expect(result.exitCode).toBe(3);
+        expect(JSON.parse(result.stderr)).toEqual({
+          ok: false,
+          data: null,
+          error: {
+            code: "internal_error",
+            message: "Dispatch lifecycle command failed.",
+            suggestion: "Retry; if it persists, inspect daemon logs.",
+          },
+        });
+        expect(`${result.stdout}\n${result.stderr}`).not.toContain(rawValue);
+      } finally {
+        await malicious.stop();
+        writeMockDaemonMetadata({ home: isolated, client: mock });
+      }
+    },
+  );
+
   it.each([
     ["human mutation", "agent dispatch pause"],
     ["JSON mutation", "agent dispatch pause --json"],

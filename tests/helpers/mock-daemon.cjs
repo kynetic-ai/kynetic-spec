@@ -59,6 +59,17 @@ if (healthCommandDispatchRaw !== null) {
   }
 }
 
+const agentDispatchStatusRaw = getArg("agent-dispatch-status", null);
+let agentDispatchStatus = null;
+if (agentDispatchStatusRaw !== null) {
+  try {
+    agentDispatchStatus = JSON.parse(agentDispatchStatusRaw);
+  } catch {
+    process.stderr.write("mock daemon: invalid --agent-dispatch-status JSON\n");
+    process.exit(2);
+  }
+}
+
 // ── Test-only failure-injection seams ─────────────────────────────────
 // These flags exist to drive the failure-path contract tests in
 // tests/helpers/mock-daemon.test.ts. Production mock-daemon usage never
@@ -203,19 +214,22 @@ const server = http.createServer(async (req, res) => {
     return ok(res, { outcome: "executed", accepted: true, reason: null });
   }
   if (path === "/api/agent/dispatch/status") {
-    return ok(res, {
-      running: false,
-      activeInvocations: 0,
-      queuedInvocations: 0,
-      invocations: [],
-      queued: [],
-      globalAuthority: "stopped",
-      projection: "stopped",
-      cleanupState: { status: "idle", entries: [] },
-      heldCount: 0,
-      heldTasks: [],
-      taskControls: [],
-    });
+    return ok(
+      res,
+      agentDispatchStatus ?? {
+        running: false,
+        activeInvocations: 0,
+        queuedInvocations: 0,
+        invocations: [],
+        queued: [],
+        globalAuthority: "stopped",
+        projection: "stopped",
+        cleanupState: { status: "idle", entries: [] },
+        heldCount: 0,
+        heldTasks: [],
+        taskControls: [],
+      },
+    );
   }
   if (path === "/api/agent/dispatch/control" && method === "POST") {
     let request = {};

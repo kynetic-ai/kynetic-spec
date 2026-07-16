@@ -196,15 +196,38 @@ const InternalDegradedSchema = z
 const DegradedTargetSchema = z
   .object({ branch: z.string(), reason: z.string(), enteredAt: z.string(), kind: z.string() })
   .strict();
+const InternalInvocationSchema = z
+  .object({
+    invocationId: z.string(),
+    sessionId: z.string(),
+    agentId: z.string(),
+    agentName: z.string(),
+    taskRef: z.string().optional(),
+    elapsedMs: z.number().nonnegative(),
+    resolvedAdapter: z.string().optional(),
+    runner: z.string().optional(),
+  })
+  .strict();
+const InternalQueuedInvocationSchema = z
+  .object({
+    agentId: z.string(),
+    agentName: z.string(),
+    taskRef: z.string().optional(),
+    waitMs: z.number().nonnegative(),
+    runner: z.string().optional(),
+    adapter: z.string().optional(),
+  })
+  .strict();
 
 const InternalLifecycleStatusSchema = z
   .object({
     running: z.boolean(),
     activeInvocations: z.number().int().nonnegative(),
     queuedInvocations: z.number().int().nonnegative(),
-    invocations: z.array(z.unknown()),
-    queued: z.array(z.unknown()).optional(),
+    invocations: z.array(InternalInvocationSchema),
+    queued: z.array(InternalQueuedInvocationSchema).optional(),
     degraded: InternalDegradedSchema.optional(),
+    degradedTargets: z.array(DegradedTargetSchema).optional(),
     globalAuthority: z.enum(["stopped", "running", "paused"]),
     projection: z.enum(["running", "paused", "draining", "stopped"]),
     cleanupState: DispatchCleanupStateSchema,
@@ -212,22 +235,8 @@ const InternalLifecycleStatusSchema = z
     heldTasks: z.array(DispatchHeldTaskSchema),
     taskControls: z.array(DispatchTaskControlStatusSchema),
   })
-  .passthrough()
+  .strict()
   .superRefine((status, ctx) => {
-    for (const forbidden of [
-      "global_authority",
-      "cleanup_state",
-      "active_count",
-      "queue_depth",
-      "held_count",
-      "held_tasks",
-      "task_controls",
-      "degraded_targets",
-    ]) {
-      if (forbidden in status) {
-        ctx.addIssue({ code: "custom", path: [forbidden], message: "mixed status casing" });
-      }
-    }
     if (status.heldCount !== status.heldTasks.length) {
       ctx.addIssue({ code: "custom", path: ["heldCount"], message: "heldCount mismatch" });
     }
@@ -1624,13 +1633,7 @@ export function registerAgentCommands(program: Command): void {
           console.log(`  Active invocations: ${chalk.cyan(String(data.activeInvocations))}`);
           console.log(`  Queued invocations: ${chalk.cyan(String(data.queuedInvocations))}`);
 
-          const invocations = data.invocations as Array<{
-            sessionId: string;
-            agentId: string;
-            agentName: string;
-            taskRef?: string;
-            elapsedMs: number;
-          }>;
+          const invocations = data.invocations;
           if (invocations.length > 0) {
             console.log();
             console.log(chalk.bold("Active:"));
@@ -1644,12 +1647,7 @@ export function registerAgentCommands(program: Command): void {
             }
           }
 
-          const queuedItems = (data.queued ?? []) as Array<{
-            agentId: string;
-            agentName: string;
-            taskRef?: string;
-            waitMs: number;
-          }>;
+          const queuedItems = data.queued ?? [];
           if (queuedItems.length > 0) {
             console.log();
             console.log(chalk.bold("Queued:"));
