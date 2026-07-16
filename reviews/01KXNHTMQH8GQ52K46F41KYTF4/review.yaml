@@ -2,7 +2,121 @@ _ulid: 01KXNHTMQH8GQ52K46F41KYTF4
 slugs: []
 title: Review lifecycle UI consumers and controls (cycle 2)
 author: Jacob Chapel
-checks: []
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: All 1054 files matched formatting.
+    name: format
+    required: true
+    runner: npm run format:check
+    created_at: 2026-07-16T13:48:06.556Z
+    completed_at: 2026-07-16T13:48:06.556Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: 0 errors. Focused changed-file lint had 0 errors; four warnings are at unchanged
+      pre-existing lines 18-21 and 74 of ws-cache-invalidation.test.ts.
+    name: lint
+    required: true
+    runner: npm run lint -- --quiet
+    created_at: 2026-07-16T13:48:10.129Z
+    completed_at: 2026-07-16T13:48:10.129Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: 0 errors and 0 branch-introduced warnings.
+    name: focused-lint
+    required: false
+    runner: npx oxlint changed TS/test files
+    created_at: 2026-07-16T13:48:13.665Z
+    completed_at: 2026-07-16T13:48:13.665Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Shared build and tsc --noEmit passed.
+    name: typecheck
+    required: true
+    runner: npm run typecheck
+    created_at: 2026-07-16T13:48:16.914Z
+    completed_at: 2026-07-16T13:48:16.914Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: 10872 passed, 3 skipped. One unrelated resistant-process /proc race failed, then all 14
+      agent-invocation tests passed on immediate fresh rerun; tracked as flaky bug @01KXNJTV per
+      review policy.
+    name: full test suite
+    required: true
+    runner: npm test -- --fresh
+    created_at: 2026-07-16T13:48:20.258Z
+    completed_at: 2026-07-16T13:48:20.258Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: 98/98 passed across dispatch-lifecycle-controls, ws-cache-invalidation, and fleet-buffer.
+    name: focused lifecycle tests
+    required: true
+    runner: npm test -- focused lifecycle files
+    created_at: 2026-07-16T13:48:23.843Z
+    completed_at: 2026-07-16T13:48:23.843Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: 47/47 Chromium tests passed after production E2E build.
+    name: agents browser regression suite
+    required: true
+    runner: npm run test:e2e -- tests/e2e/agents.spec.ts
+    created_at: 2026-07-16T13:48:27.300Z
+    completed_at: 2026-07-16T13:48:27.300Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Passed with accepted warning baseline.
+    name: kspec validate refs
+    required: true
+    runner: kspec
+    created_at: 2026-07-16T13:48:30.592Z
+    completed_at: 2026-07-16T13:48:30.592Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Passed with accepted warning baseline.
+    name: kspec validate alignment
+    required: true
+    runner: kspec
+    created_at: 2026-07-16T13:48:33.974Z
+    completed_at: 2026-07-16T13:48:33.974Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Passed with accepted warning baseline; manual AC quality audit found the coverage findings
+      recorded in this review.
+    name: kspec validate completeness
+    required: true
+    runner: kspec
+    created_at: 2026-07-16T13:48:37.254Z
+    completed_at: 2026-07-16T13:48:37.254Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: No whitespace errors.
+    name: diff whitespace
+    required: false
+    runner: git diff --check
+    created_at: 2026-07-16T13:48:40.489Z
+    completed_at: 2026-07-16T13:48:40.489Z
 events:
   - _ulid: 01KXNHTMQC5R18ZPV5W8YDBVZJ
     actor: Jacob Chapel
@@ -17,6 +131,118 @@ events:
       from: draft
       to: open
     timestamp: 2026-07-16T13:28:56.068Z
+  - _ulid: 01KXNJYG99ZJ011EM8TMG64Z5N
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: format
+    timestamp: 2026-07-16T13:48:06.825Z
+  - _ulid: 01KXNJYKR8E4ESY3SEHPKENNWW
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: lint
+    timestamp: 2026-07-16T13:48:10.376Z
+  - _ulid: 01KXNJYQ6W71Y1EFBGJE6H582W
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: focused-lint
+    timestamp: 2026-07-16T13:48:13.916Z
+  - _ulid: 01KXNJYTD35V1JD62WSFQ4V6Z7
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: typecheck
+    timestamp: 2026-07-16T13:48:17.187Z
+  - _ulid: 01KXNJYXN2QZMTJ6XFYHY3RT8E
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: full test suite
+    timestamp: 2026-07-16T13:48:20.514Z
+  - _ulid: 01KXNJZ152TTAZC63P3383P34M
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: focused lifecycle tests
+    timestamp: 2026-07-16T13:48:24.098Z
+  - _ulid: 01KXNJZ4H8J4S2VFWA8X774ZHW
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: agents browser regression suite
+    timestamp: 2026-07-16T13:48:27.560Z
+  - _ulid: 01KXNJZ7R3NN923TJM57R6NES8
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate refs
+    timestamp: 2026-07-16T13:48:30.851Z
+  - _ulid: 01KXNJZB1PAVXESADSYJSDAH9K
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate alignment
+    timestamp: 2026-07-16T13:48:34.230Z
+  - _ulid: 01KXNJZE7XQ6ZRQWRQW5QHYEAD
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate completeness
+    timestamp: 2026-07-16T13:48:37.501Z
+  - _ulid: 01KXNJZHDZHQFE8CF39WEA8ES0
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: diff whitespace
+    timestamp: 2026-07-16T13:48:40.767Z
+  - _ulid: 01KXNJZMGNE939X0ZTF3VRETRE
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KXNJZM8CJFPVDS4CFCRW9APK
+    timestamp: 2026-07-16T13:48:43.925Z
+  - _ulid: 01KXNJZQTJSCJE5FZ75BM0F85F
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KXNJZQJJ61G1KRW7WV1PNB35
+    timestamp: 2026-07-16T13:48:47.314Z
+  - _ulid: 01KXNJZTYFXZQBNNNR8P8RP63D
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KXNJZTP7K0ZGYPCYFB7YHPX9
+    timestamp: 2026-07-16T13:48:50.511Z
+  - _ulid: 01KXNJZY6KDNA90M5JVZH55JFE
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KXNJZXY943DPPV9KFHRSFJ5G
+    timestamp: 2026-07-16T13:48:53.843Z
+  - _ulid: 01KXNK01GFYK97S5G7FKBKTTB4
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KXNK017NVG2ZJE7B7YAH4WSV
+    timestamp: 2026-07-16T13:48:57.231Z
 examined_commit: da3bae8d95d5c41771751ce68f54e04cdd21a15b
 external_links: []
 lifecycle_state: open
@@ -26,8 +252,103 @@ subject:
   content_hash: ""
   ref: "@01KXH2PVX606KVK5C4ERCB8WTY"
   shadow_commit: ""
-threads: []
+threads:
+  - _ulid: 01KXNJZM8CJFPVDS4CFCRW9APK
+    anchor:
+      type: code
+      commit: da3bae8d95d5c41771751ce68f54e04cdd21a15b
+      line_end: 72
+      line_start: 43
+      path: packages/web-ui/src/lib/components/agents/DispatchStatus.svelte
+      side: head
+    entries:
+      - _ulid: 01KXNJZM8CBXDTJRXQ6XTE5D1P
+        author: Jacob Chapel
+        body: MUST-FIX — Failed global hard stops do not restore focus to the invoking Hard stop control.
+          runAction always calls restoreLifecycleFocus with the default false, and that branch
+          prefers the first enabled replacement before the still-connected invoking button. In
+          running state actions are ordered Pause, Hard stop; in paused state Resume, Hard stop.
+          Therefore a rejected hard stop focuses Pause/Resume, violating ac-lifecycle-focus-retained
+          and the task requirement for success/error refresh. The browser test covers Cancel and
+          successful Pause only, so it does not catch this error path.
+        created_at: 2026-07-16T13:48:43.660Z
+    kind: blocker
+  - _ulid: 01KXNJZQJJ61G1KRW7WV1PNB35
+    anchor:
+      type: code
+      commit: da3bae8d95d5c41771751ce68f54e04cdd21a15b
+      line_end: 74
+      line_start: 41
+      path: packages/web-ui/src/lib/components/agents/HeldTaskRow.svelte
+      side: head
+    entries:
+      - _ulid: 01KXNJZQJJ6EVNYRZGE4C46V0X
+        author: Jacob Chapel
+        body: MUST-FIX — Held/task hard-stop failures have the same focus regression. The error path reaches
+          finally and calls restoreLifecycleFocus with the default false, which prefers the row
+          first enabled control over connectedInvoker. For absent or paused controls that moves
+          focus from Hard-stop task to Pause task or Resume task after a rejected request. Preserve
+          the invoking button on errors and add a behavioral task-row error-focus case.
+        created_at: 2026-07-16T13:48:47.058Z
+    kind: blocker
+  - _ulid: 01KXNJZTP7K0ZGYPCYFB7YHPX9
+    anchor:
+      type: code
+      commit: da3bae8d95d5c41771751ce68f54e04cdd21a15b
+      line_end: 195
+      line_start: 189
+      path: tests/web-ui/dispatch-lifecycle-controls.test.ts
+      side: head
+    entries:
+      - _ulid: 01KXNJZTP7N1T0H8H0HFTHBBYP
+        author: Jacob Chapel
+        body: MUST-FIX — The annotations for ac-status-active-work-visible, ac-status-queued-work-visible,
+          and ac-status-held-work-visible are attached to a wire-conversion test. Deep-equaling
+          parsed arrays and calling renderLifecycleConsumer, a local object-projection helper, does
+          not render the agents view and would still pass if the view hid draining active work,
+          queued rows, or HeldTaskRow entirely. The current agents browser additions only route
+          empty lifecycle arrays. Add behavioral rendered-view coverage for active work during
+          draining/cleanup plus queued and held rows.
+        created_at: 2026-07-16T13:48:50.247Z
+    kind: blocker
+  - _ulid: 01KXNJZXY943DPPV9KFHRSFJ5G
+    anchor:
+      type: code
+      commit: da3bae8d95d5c41771751ce68f54e04cdd21a15b
+      line_end: 687
+      line_start: 673
+      path: tests/web-ui/dispatch-lifecycle-controls.test.ts
+      side: head
+    entries:
+      - _ulid: 01KXNJZXY9WTC4JQDBMBCPE0TB
+        author: Jacob Chapel
+        body: MUST-FIX — ac-control-separated-from-degraded and ac-control-separated-from-blocked are not
+          behaviorally covered. This test only proves the API parser retains separate properties; it
+          never renders the authority, projection, degraded-state label, and held/blocked evidence
+          that the ACs require the agents view to label separately. A UI regression that merges or
+          omits those labels would leave this test green. Replace or supplement it with rendered
+          behavioral assertions.
+        created_at: 2026-07-16T13:48:53.577Z
+    kind: blocker
+  - _ulid: 01KXNK017NVG2ZJE7B7YAH4WSV
+    entries:
+      - _ulid: 01KXNK017N6J7MY8VSWXX22X41
+        author: Jacob Chapel
+        body: "Review evidence log. Files read: all 19 changed files, surrounding daemon status
+          serialization, lifecycle schemas/consumers, complete lifecycle unit tests, agents
+          Playwright changes, prior review threads, task/spec/plan. Commands run: diff/stat/log,
+          consumer and AC searches, format, repo/focused lint, typecheck, fresh full tests, focused
+          rerun, focused lifecycle tests, agents E2E, refs/alignment/completeness validation, diff
+          check. Claims verified: strict snake-to-camel boundary, prior five blocker fixes,
+          global/task action matrices, sanitized failures, status/event invalidation, static/legacy
+          fallback, and browser confirmation/cancel/success-focus/live behavior. Categories
+          searched: correctness, edge cases, error handling, accessibility, security/data exposure,
+          test quality, integration. Findings: failed hard-stop focus on global/task controls and
+          non-behavioral coverage for five rendered-view ACs. Shared/package guidance surfaces
+          touched: none."
+        created_at: 2026-07-16T13:48:56.949Z
+    kind: nit
 verdicts: []
 created_at: 2026-07-16T13:28:31.729Z
-updated_at: 2026-07-16T13:28:55.819Z
+updated_at: 2026-07-16T13:48:56.949Z
 notes: []
