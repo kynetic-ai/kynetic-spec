@@ -10185,7 +10185,7 @@ workspaces:
         head: f84a91662f82218f14c9a14fd6c75672b6f271cc
         last_seen_at: 2026-07-16T13:52:44.126Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-cli-dispatch-lifecycle-controls-01kxh2pt
-  - active_role: reviewer
+  - active_role: null
     base_branch_point: f98c880ce3e3a884ef5af2161a87ff90f06f4146
     bootstrap:
       status: succeeded
@@ -10687,9 +10687,9 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-07-16T16:48:17.430Z
-      last_reconciled_at: 2026-07-16T17:15:59.973Z
+      last_reconciled_at: 2026-07-16T17:20:25.492Z
       created_at: 2026-07-16T11:39:15.669Z
-      updated_at: 2026-07-16T17:15:59.973Z
+      updated_at: 2026-07-16T17:20:25.492Z
     workspace_id: dispatch-workspace-01KXH2PVX606KVK5C4ERCB8WTY
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
