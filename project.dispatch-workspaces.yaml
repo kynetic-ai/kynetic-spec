@@ -12051,12 +12051,12 @@ workspaces:
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-07-16T20:48:18.961Z
+      updated_at: 2026-07-16T20:48:41.470Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-07-16T20:48:29.999Z
+      updated_at: 2026-07-16T20:48:41.470Z
     integration:
       status: pending
       detail: null
@@ -12064,7 +12064,7 @@ workspaces:
       publication_mode: manual_merge
       target_branch: plan/plan-dispatch-lifecycle-pause-resume-and-stop-controls/01kxc2vx
       target_commit: 2b1916dc1b0a272e6cd022d7c4687d0bbbd14173
-      updated_at: 2026-07-16T20:48:18.961Z
+      updated_at: 2026-07-16T20:48:41.470Z
     lifecycle_state: ready
     resolved_base_branch: plan/plan-dispatch-lifecycle-pause-resume-and-stop-controls/01kxc2vx
     task_id: 01KXH2PY7C0W6GDQAFZN12HMC4
@@ -12073,9 +12073,9 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-07-16T20:21:07.699Z
-      last_reconciled_at: 2026-07-16T20:48:29.999Z
+      last_reconciled_at: 2026-07-16T20:48:41.470Z
       created_at: 2026-07-16T19:46:01.318Z
-      updated_at: 2026-07-16T20:48:29.999Z
+      updated_at: 2026-07-16T20:48:41.470Z
     workspace_id: dispatch-workspace-01KXH2PY7C0W6GDQAFZN12HMC4
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
@@ -12084,5 +12084,5 @@ workspaces:
         branch_mode: branch
         branch_ref: dispatch/task/task-verify-ui-lifecycle-browser/01kxh2py
         head: 4bedaff5093dbef95ea81efb52b33c53be08a837
-        last_seen_at: 2026-07-16T20:20:21.235Z
+        last_seen_at: 2026-07-16T20:48:41.470Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-verify-ui-lifecycle-browser-01kxh2py
