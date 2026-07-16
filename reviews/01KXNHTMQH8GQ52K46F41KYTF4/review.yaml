@@ -190,6 +190,47 @@ checks:
     runner: npm run test:e2e -- tests/e2e/agents.spec.ts
     created_at: 2026-07-16T13:49:37.955Z
     completed_at: 2026-07-16T13:49:37.955Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Passed with accepted warning baseline.
+    name: kspec validate refs
+    required: true
+    runner: kspec validate --refs --warnings-ok
+    created_at: 2026-07-16T13:49:54.086Z
+    completed_at: 2026-07-16T13:49:54.086Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Passed with accepted warning baseline.
+    name: kspec validate alignment
+    required: true
+    runner: kspec validate --alignment --warnings-ok
+    created_at: 2026-07-16T13:49:57.587Z
+    completed_at: 2026-07-16T13:49:57.587Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Passed with accepted warning baseline; manual AC quality audit found coverage findings
+      recorded in this review.
+    name: kspec validate completeness
+    required: true
+    runner: kspec validate --completeness --warnings-ok
+    created_at: 2026-07-16T13:50:00.864Z
+    completed_at: 2026-07-16T13:50:00.864Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: No whitespace errors.
+    name: diff whitespace
+    required: false
+    runner: git diff --check
+    created_at: 2026-07-16T13:50:04.103Z
+    completed_at: 2026-07-16T13:50:04.103Z
 events:
   - _ulid: 01KXNHTMQC5R18ZPV5W8YDBVZJ
     actor: Jacob Chapel
@@ -365,6 +406,34 @@ events:
       status: pass
       name: agents browser regression suite
     timestamp: 2026-07-16T13:49:38.212Z
+  - _ulid: 01KXNK1S9EESM1SM4GHF6Y8G9D
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate refs
+    timestamp: 2026-07-16T13:49:54.350Z
+  - _ulid: 01KXNK1WPSBRYV4T4PSD4BBG18
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate alignment
+    timestamp: 2026-07-16T13:49:57.849Z
+  - _ulid: 01KXNK1ZY12QGK1SWP8B6H3NSM
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate completeness
+    timestamp: 2026-07-16T13:50:01.153Z
+  - _ulid: 01KXNK231WR8QP9KYYANY2V1MB
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: diff whitespace
+    timestamp: 2026-07-16T13:50:04.348Z
 examined_commit: da3bae8d95d5c41771751ce68f54e04cdd21a15b
 external_links: []
 lifecycle_state: open
@@ -472,5 +541,5 @@ threads:
     kind: nit
 verdicts: []
 created_at: 2026-07-16T13:28:31.729Z
-updated_at: 2026-07-16T13:49:37.955Z
+updated_at: 2026-07-16T13:50:04.103Z
 notes: []
