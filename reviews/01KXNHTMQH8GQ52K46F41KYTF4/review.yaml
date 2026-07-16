@@ -434,6 +434,20 @@ events:
       status: pass
       name: diff whitespace
     timestamp: 2026-07-16T13:50:04.348Z
+  - _ulid: 01KXNK2K2WX2XH88BX93ZHE9NS
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KXNK2JT34W1FSSS4T1Y5AP02
+    timestamp: 2026-07-16T13:50:20.764Z
+  - _ulid: 01KXNK2PQEZB1MVREMY4WNA92E
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KXNK2PEVY02D0VWA81QE2KWK
+    timestamp: 2026-07-16T13:50:24.494Z
 examined_commit: da3bae8d95d5c41771751ce68f54e04cdd21a15b
 external_links: []
 lifecycle_state: open
@@ -539,7 +553,46 @@ threads:
           touched: none."
         created_at: 2026-07-16T13:48:56.949Z
     kind: nit
+  - _ulid: 01KXNK2JT34W1FSSS4T1Y5AP02
+    anchor:
+      type: code
+      commit: da3bae8d95d5c41771751ce68f54e04cdd21a15b
+      line_end: 72
+      line_start: 43
+      path: packages/web-ui/src/lib/components/agents/DispatchStatus.svelte
+      side: head
+    entries:
+      - _ulid: 01KXNK2JT3Q5HM1T4Y6X957ZH1
+        author: Jacob Chapel
+        body: MUST-FIX — Failed global hard stops do not restore focus to the invoking Hard stop control.
+          runAction always calls restoreLifecycleFocus with the default false, and that branch
+          prefers the first enabled replacement before the still-connected invoking button. In
+          running state actions are ordered Pause then Hard stop; in paused state Resume then Hard
+          stop. Therefore a rejected hard stop focuses Pause or Resume, violating
+          ac-lifecycle-focus-retained and the task requirement for success/error refresh. The
+          browser test covers Cancel and successful Pause only, so it does not catch this error
+          path.
+        created_at: 2026-07-16T13:50:20.483Z
+    kind: blocker
+  - _ulid: 01KXNK2PEVY02D0VWA81QE2KWK
+    anchor:
+      type: code
+      commit: da3bae8d95d5c41771751ce68f54e04cdd21a15b
+      line_end: 74
+      line_start: 41
+      path: packages/web-ui/src/lib/components/agents/HeldTaskRow.svelte
+      side: head
+    entries:
+      - _ulid: 01KXNK2PEVGKXA7Q51CMTVFJKX
+        author: Jacob Chapel
+        body: MUST-FIX — Held/task hard-stop failures have the same focus regression. The error path reaches
+          finally and calls restoreLifecycleFocus with the default false, which prefers the row
+          first enabled control over connectedInvoker. For absent or paused controls that moves
+          focus from Hard-stop task to Pause task or Resume task after a rejected request. Preserve
+          the invoking button on errors and add a behavioral task-row error-focus case.
+        created_at: 2026-07-16T13:50:24.219Z
+    kind: blocker
 verdicts: []
 created_at: 2026-07-16T13:28:31.729Z
-updated_at: 2026-07-16T13:50:04.103Z
+updated_at: 2026-07-16T13:50:24.219Z
 notes: []
