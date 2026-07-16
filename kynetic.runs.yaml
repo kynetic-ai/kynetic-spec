@@ -81312,7 +81312,7 @@ runs:
     completed_at: 2026-07-16T14:19:34.424Z
   - _ulid: 01KXNMXDVK32VN1A07F259QA95
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -81328,7 +81328,16 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-07-16T14:23:29.118Z
-        completed_at: 2026-07-16T14:23:29.118Z
+        completed_at: 2026-07-16T14:24:32.239Z
+        notes: "High-confidence success candidate: match each AC annotation to the abstraction of its
+          observable verb. For agents-view visibility/separation ACs, Playwright rendering caught
+          regressions that exact wire parsing could not; parser tests remain valuable but should
+          claim only conversion/validation behavior. Friction candidates were concrete but already
+          tracked by refs from step 1, so none are new."
+      - status: completed
+        step_index: 2
+        started_at: 2026-07-16T14:24:32.239Z
+        completed_at: 2026-07-16T14:24:32.239Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-07-16T14:22:28.724Z
