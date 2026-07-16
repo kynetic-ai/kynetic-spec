@@ -46,6 +46,16 @@ checks:
     runner: npm test -- --fresh
     created_at: 2026-07-16T16:04:32.673Z
     completed_at: 2026-07-16T16:04:32.673Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: PASS on ccdbdbf1576a; known repository warning baseline accepted by --warnings-ok.
+    name: kspec validate refs
+    required: true
+    runner: kspec validate --refs --warnings-ok
+    created_at: 2026-07-16T16:04:50.870Z
+    completed_at: 2026-07-16T16:04:50.870Z
 events:
   - _ulid: 01KXNSFNANGKV7Q691FYEJJR3W
     actor: Jacob Chapel
@@ -88,6 +98,13 @@ events:
       status: pass
       name: full test suite
     timestamp: 2026-07-16T16:04:32.938Z
+  - _ulid: 01KXNTRWEBKBJYY3AZW30NYV8T
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate refs
+    timestamp: 2026-07-16T16:04:51.276Z
 examined_commit: ccdbdbf1576a4b84197652909759850dff01cc5c
 external_links: []
 lifecycle_state: open
@@ -100,5 +117,5 @@ subject:
 threads: []
 verdicts: []
 created_at: 2026-07-16T15:42:20.501Z
-updated_at: 2026-07-16T16:04:32.673Z
+updated_at: 2026-07-16T16:04:50.870Z
 notes: []
