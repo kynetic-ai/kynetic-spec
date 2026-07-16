@@ -472,6 +472,42 @@ events:
     payload:
       thread_ulid: 01KXMZJZE02XGNQP1SBV811F3R
     timestamp: 2026-07-16T08:12:11.080Z
+  - _ulid: 01KXN1HCBPFBYBBT5T5Q1KHYNR
+    actor: Jacob Chapel
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KXMZG783STJTAHES2WB7HY5B
+    timestamp: 2026-07-16T08:43:51.030Z
+  - _ulid: 01KXN1HFGTSFSEBJFKD7FEDV5F
+    actor: Jacob Chapel
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KXMZG783STJTAHES2WB7HY5B
+    timestamp: 2026-07-16T08:43:54.266Z
+  - _ulid: 01KXN1HJMQW8G2E6Y8HFC853EN
+    actor: Jacob Chapel
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KXMZGA9GW42NP0WF1X50HWQM
+    timestamp: 2026-07-16T08:43:57.463Z
+  - _ulid: 01KXN1HNSCA3BFGMGCCH3A8EAF
+    actor: Jacob Chapel
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KXMZGA9GW42NP0WF1X50HWQM
+    timestamp: 2026-07-16T08:44:00.684Z
+  - _ulid: 01KXN1HS4TEVRV9JHBEZJ26BCH
+    actor: Jacob Chapel
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KXMZGDGH4S2NS0NN8N2QH9TV
+    timestamp: 2026-07-16T08:44:04.122Z
+  - _ulid: 01KXN1HW8Y46A987RF38RRMPVQ
+    actor: Jacob Chapel
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KXMZGDGH4S2NS0NN8N2QH9TV
+    timestamp: 2026-07-16T08:44:07.326Z
 examined_commit: dc53f97405514dc91a021e92626e06d4b7219124
 external_links: []
 lifecycle_state: closed
@@ -499,7 +535,15 @@ threads:
           tracing are still incomplete. Install the header in an onTransform or equivalent
           pre-validation hook and extend the native invalid-body test to assert it."
         created_at: 2026-07-16T08:08:15.875Z
+      - _ulid: 01KXN1HC43V8MX45A1T1MDAHEC
+        author: Jacob Chapel
+        body: "Fixed in f5628f4686: canonical control installs X-Request-Id in an onTransform hook before
+          Elysia body validation, and the native invalid-action 400 test now asserts a canonical
+          ULID tracing header."
+        created_at: 2026-07-16T08:43:50.786Z
     kind: blocker
+    resolved_at: 2026-07-16T08:43:54.013Z
+    resolved_by: Jacob Chapel
   - _ulid: 01KXMZGA9GW42NP0WF1X50HWQM
     anchor:
       type: code
@@ -521,7 +565,16 @@ threads:
           on pre-commit failure across canonical start and both start aliases; add cold-failure
           behavioral coverage."
         created_at: 2026-07-16T08:08:18.992Z
+      - _ulid: 01KXN1HJDHSYMNPHHD9FS03GVM
+        author: Jacob Chapel
+        body: "Fixed in f5628f4686: all three global start surfaces track cold engine creation and roll back
+          join/hook/schedule helpers plus runtime engine registration on store persistence failures.
+          Real-shadow pre-commit-hook tests prove canonical control and both aliases return frozen
+          503 rows with no engine remaining."
+        created_at: 2026-07-16T08:43:57.233Z
     kind: blocker
+    resolved_at: 2026-07-16T08:44:00.438Z
+    resolved_by: Jacob Chapel
   - _ulid: 01KXMZGDGH4S2NS0NN8N2QH9TV
     anchor:
       type: code
@@ -541,7 +594,16 @@ threads:
           request. Use a teardown path that does not repeat lifecycle control after the successful
           durable stop and assert one event with the expected identifier/outcome."
         created_at: 2026-07-16T08:08:22.289Z
+      - _ulid: 01KXN1HRX31ZQK7YNCGDHAZDPR
+        author: Jacob Chapel
+        body: "Fixed in f5628f4686: after the API durable stop settles, runtime teardown calls
+          DispatchEngine.stop with the lifecycle transition explicitly skipped. Both legacy stop
+          aliases now have behavioral assertions for exactly one global/api stop_applied outcome,
+          while ordinary daemon shutdown retains its own hard-stop transition."
+        created_at: 2026-07-16T08:44:03.875Z
     kind: blocker
+    resolved_at: 2026-07-16T08:44:07.084Z
+    resolved_by: Jacob Chapel
   - _ulid: 01KXMZJS3Y23WWGKQC8JPNB1TP
     anchor:
       type: code
@@ -621,5 +683,5 @@ verdicts:
     role: reviewer
     created_at: 2026-07-16T08:09:50.171Z
 created_at: 2026-07-16T07:49:16.506Z
-updated_at: 2026-07-16T08:12:10.812Z
+updated_at: 2026-07-16T08:44:07.084Z
 notes: []
