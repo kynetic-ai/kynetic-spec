@@ -295,6 +295,12 @@ events:
     payload:
       thread_ulid: 01KXMPQZJ9EE3GNNPYXNKRZVGF
     timestamp: 2026-07-16T06:03:36.447Z
+  - _ulid: 01KXMRC979MSRYTWXFN9Y5GR6K
+    actor: Jacob Chapel
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KXMPQP4NY96DVHVEKXYH0CK0
+    timestamp: 2026-07-16T06:03:46.793Z
 examined_commit: 9e07c0203194a8d450906f08be1e346a3e8226c0
 external_links: []
 lifecycle_state: closed
@@ -333,6 +339,12 @@ threads:
           guards. Behavioral tests prove stopped global pause, matching task cleanup resume, and
           paused legacy start return 409 with no engine/runtime state created."
         created_at: 2026-07-16T06:03:14.086Z
+      - _ulid: 01KXMRC8Z6KP59ZM8RJBXJJAGV
+        author: Jacob Chapel
+        body: "Fixed in 224ff0ef12: shared pure transition guards preflight committed matching-scope
+          authority before ensureDispatchEngine, and behavioral tests prove invalid canonical and
+          legacy requests create no engine state."
+        created_at: 2026-07-16T06:03:46.534Z
     kind: blocker
     resolved_at: 2026-07-16T06:03:17.434Z
     resolved_by: Jacob Chapel
@@ -438,5 +450,5 @@ verdicts:
     role: reviewer
     created_at: 2026-07-16T05:35:16.381Z
 created_at: 2026-07-16T05:18:48.534Z
-updated_at: 2026-07-16T06:03:36.186Z
+updated_at: 2026-07-16T06:03:46.534Z
 notes: []
