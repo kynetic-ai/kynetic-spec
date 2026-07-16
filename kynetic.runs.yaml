@@ -79965,7 +79965,7 @@ runs:
     completed_at: 2026-07-16T02:18:13.328Z
   - _ulid: 01KXMBD9YPXBCR40773YF4VTVN
     status: active
-    current_step: 2
+    current_step: 3
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -79987,7 +79987,18 @@ runs:
       - status: completed
         step_index: 2
         started_at: 2026-07-16T02:19:58.555Z
-        completed_at: 2026-07-16T02:19:58.555Z
+        completed_at: 2026-07-16T02:20:12.914Z
+        notes: "Decision: skip workflow-show friction as duplicate of @task-workflow-show-default-active-run
+          and observations including @01KN0DG5Q; skip split-backend resolver friction as exact
+          duplicate of @01KTFE14H. Capture one unique success: physical destructive-surface
+          regression coverage plus a separate production-wiring test closes the gap left by tests
+          that manually inject protection state. Existing @01KXM7BM covers classifier/matrix plus
+          physical assertions, but not verification that production supplies globally controlled
+          identities."
+      - status: completed
+        step_index: 3
+        started_at: 2026-07-16T02:20:12.914Z
+        completed_at: 2026-07-16T02:20:12.914Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-07-16T02:17:08.822Z
