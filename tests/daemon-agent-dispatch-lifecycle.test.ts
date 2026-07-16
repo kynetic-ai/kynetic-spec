@@ -1,5 +1,5 @@
 import { execSync } from "node:child_process";
-import { cpSync, rmSync, writeFileSync } from "node:fs";
+import { chmodSync, cpSync, rmSync, writeFileSync } from "node:fs";
 import path from "node:path";
 import { Elysia } from "elysia";
 import { afterEach, describe, expect, it, vi } from "vitest";
@@ -172,6 +172,16 @@ function commitCorruptLifecycleControl(
     cwd: specDir,
     stdio: "pipe",
   });
+}
+
+function rejectShadowCommits(fixture: Awaited<ReturnType<typeof createLifecycleRouteFixture>>) {
+  const hookPath = execSync("git rev-parse --git-path hooks/pre-commit", {
+    cwd: path.join(fixture.projectDir, ".kspec"),
+  })
+    .toString()
+    .trim();
+  writeFileSync(hookPath, "#!/bin/sh\nexit 1\n");
+  chmodSync(hookPath, 0o755);
 }
 
 function lifecycleControl(
@@ -1027,6 +1037,7 @@ describe("canonical dispatch lifecycle routes", () => {
       action: "restart",
     });
     expect(response.status).toBe(400);
+    expect(response.headers.get("x-request-id")).toMatch(/^[0-9A-HJKMNP-TV-Z]{26}$/);
     expect(await response.json()).toEqual({
       error: "validation_error",
       details: [
@@ -1040,6 +1051,70 @@ describe("canonical dispatch lifecycle routes", () => {
 });
 
 describe("legacy lifecycle compatibility adapters", () => {
+  // AC: @daemon-agent-dispatch ac-control-failure-no-success
+  it.each([
+    ["canonical control", "/api/agent/dispatch/control", { scope: "global", action: "start" }],
+    ["unified alias", "/api/agent/dispatch", { action: "start" }],
+    ["start alias", "/api/agent/dispatch/start", {}],
+  ])("removes a cold engine after %s persistence failure", async (_name, route, body) => {
+    const fixture = await createLifecycleRouteFixture();
+    rejectShadowCommits(fixture);
+
+    const response = await requestLifecycleRoute(fixture, route, body);
+    expect(response.status).toBe(503);
+    expect(await response.json()).toEqual(
+      route.endsWith("/control")
+        ? {
+            ok: false,
+            data: expect.objectContaining({
+              global_authority: "stopped",
+              projection: "stopped",
+            }),
+            error: {
+              code: "control_commit_failed",
+              message: "Dispatch control commit failed",
+              suggestion: "Resolve the shadow worktree commit failure and retry.",
+            },
+          }
+        : route.endsWith("/start")
+          ? { started: false, error_code: "control_commit_failed" }
+          : { dispatch_enabled: false, error_code: "control_commit_failed" },
+    );
+    expect(getDispatchEngine(fixture.projectDir)).toBeUndefined();
+  });
+
+  it.each([
+    ["/api/agent/dispatch/stop", undefined],
+    ["/api/agent/dispatch", { action: "stop" }],
+  ])("emits one lifecycle outcome for a successful %s request", async (route, body) => {
+    const fixture = await createLifecycleRouteFixture();
+    await requestLifecycleRoute(fixture, "/api/agent/dispatch/control", {
+      scope: "global",
+      action: "start",
+    });
+    const broadcasts = captureLifecycleEvents(fixture);
+    broadcasts.mockClear();
+
+    const response = await requestLifecycleRoute(fixture, route, body ?? {});
+    expect(response.status).toBe(200);
+    const lifecycleCalls = broadcasts.mock.calls.filter(
+      ([topic, event]) => topic === "agents" && String(event).startsWith("dispatch_control."),
+    );
+    expect(lifecycleCalls).toEqual([
+      [
+        "agents",
+        "dispatch_control.stop_applied",
+        expect.objectContaining({
+          scope: "global",
+          action: "stop",
+          outcome: "applied",
+          source: "api",
+        }),
+        fixture.projectDir,
+      ],
+    ]);
+  });
+
   it.each([
     ["/api/agent/dispatch/stop", undefined],
     ["/api/agent/dispatch", { action: "stop" }],
@@ -1074,7 +1149,7 @@ describe("legacy lifecycle compatibility adapters", () => {
     expect(await second.json()).toEqual(
       route.endsWith("/stop") ? { stopped: true } : { dispatch_enabled: false },
     );
-    expect(lifecycle).toHaveBeenCalledTimes(3);
+    expect(lifecycle).toHaveBeenCalledTimes(2);
   });
 
   it.each([

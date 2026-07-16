@@ -1778,11 +1778,14 @@ export class DispatchEngine {
    * Stop the dispatch engine gracefully.
    *
    * Sends cancel signals to all active invocations and waits for them to finish.
+   * `skipLifecycleTransition` is reserved for runtime teardown after the caller
+   * has already settled durable lifecycle authority, or after a cold start
+   * failed before its lifecycle transition committed.
    * AC: @agent-dispatch-engine ac-11
    */
-  async stop(): Promise<void> {
+  async stop(options: { skipLifecycleTransition?: boolean } = {}): Promise<void> {
     let hardStopError: unknown;
-    if (this.lifecycleStore && this.lifecycleStarted) {
+    if (!options.skipLifecycleTransition && this.lifecycleStore && this.lifecycleStarted) {
       try {
         await this.applyGlobalLifecycleAction("stop", {
           reason: "daemon shutdown",

@@ -204,6 +204,12 @@ const CONTROL_ERROR_STATUS: Record<DispatchControlErrorCode, number> = {
   internal_error: 500,
 };
 
+const COLD_ENGINE_ROLLBACK_CODES = new Set<DispatchControlErrorCode>([
+  "control_store_unavailable",
+  "control_store_corrupt",
+  "control_commit_failed",
+]);
+
 const CONTROL_ERROR_COPY: Record<
   DispatchControlErrorCode,
   { message: string; suggestion: string }
@@ -887,7 +893,31 @@ async function stopDispatchEngine(
   stopHookExecutor(projectDir);
   await stopScheduleEngine(projectDir);
   if (closeRegistry) stopSessionRegistry(projectDir);
-  await engine.stop();
+  await engine.stop({ skipLifecycleTransition: true });
+}
+
+async function rollbackColdDispatchEngine(
+  projectDir: string,
+  engine: DispatchEngine,
+): Promise<void> {
+  let rollbackError: unknown;
+  try {
+    try {
+      stopJoinAccumulator(projectDir);
+      stopHookExecutor(projectDir);
+      await stopScheduleEngine(projectDir);
+    } catch (error) {
+      rollbackError = error;
+    }
+    try {
+      await engine.stop({ skipLifecycleTransition: true });
+    } catch (error) {
+      rollbackError ??= error;
+    }
+  } finally {
+    if (engines.get(projectDir) === engine) engines.delete(projectDir);
+  }
+  if (rollbackError) throw rollbackError;
 }
 
 const lifecycleControlBodySchema = t.Object({
@@ -923,6 +953,14 @@ export function createAgentDispatchRoutes(options: AgentDispatchRouteOptions = {
         { body: stateChangeBodySchema },
       )
 
+      // AC: @trait-api-endpoint ac-6 — run before body validation so native
+      // validation failures carry the same tracing header as handled responses.
+      .onTransform(({ request, set }) => {
+        if (new URL(request.url).pathname === "/api/agent/dispatch/control") {
+          set.headers["X-Request-Id"] = ulid();
+        }
+      })
+
       // Canonical lifecycle control boundary.
       // AC: @daemon-agent-dispatch ac-6
       // AC: @daemon-agent-dispatch ac-control-error-current-status
@@ -934,9 +972,9 @@ export function createAgentDispatchRoutes(options: AgentDispatchRouteOptions = {
       .post(
         "/dispatch/control",
         async ({ body, projectContext, request, set }) => {
-          set.headers["X-Request-Id"] = ulid();
           const projectDir = projectContext.path;
           let engine = engines.get(projectDir);
+          let createdEngine = false;
           let preflightIdentity: CanonicalTaskIdentity | null = null;
           try {
             if (
@@ -993,7 +1031,9 @@ export function createAgentDispatchRoutes(options: AgentDispatchRouteOptions = {
                     },
               );
             }
-            ({ engine } = await ensureDispatchEngine(projectDir, requestedCwd, pubsub));
+            const ensured = await ensureDispatchEngine(projectDir, requestedCwd, pubsub);
+            engine = ensured.engine;
+            createdEngine = ensured.created;
             const result =
               body.scope === "global"
                 ? await engine.applyGlobalLifecycleAction(body.action, {
@@ -1025,6 +1065,16 @@ export function createAgentDispatchRoutes(options: AgentDispatchRouteOptions = {
             };
           } catch (error) {
             const code = lifecycleErrorCode(error, projectDir);
+            if (
+              createdEngine &&
+              engine &&
+              body.scope === "global" &&
+              body.action === "start" &&
+              COLD_ENGINE_ROLLBACK_CODES.has(code)
+            ) {
+              await rollbackColdDispatchEngine(projectDir, engine).catch(() => undefined);
+              engine = undefined;
+            }
             const copy = CONTROL_ERROR_COPY[code];
             set.status = CONTROL_ERROR_STATUS[code];
             const current = await serializeLifecycleStatus(projectDir, engine).catch(async () => {
@@ -1080,6 +1130,7 @@ export function createAgentDispatchRoutes(options: AgentDispatchRouteOptions = {
             }
 
             const priorRunning = engine?.getStatus().running ?? false;
+            let createdEngine = false;
             try {
               if (!engine) {
                 await preflightLifecycleAction(projectDir, {
@@ -1087,7 +1138,9 @@ export function createAgentDispatchRoutes(options: AgentDispatchRouteOptions = {
                   action: "start",
                 });
               }
-              ({ engine } = await ensureDispatchEngine(projectDir, requestedCwd, pubsub));
+              const ensured = await ensureDispatchEngine(projectDir, requestedCwd, pubsub);
+              engine = ensured.engine;
+              createdEngine = ensured.created;
               if (hasRealShadowWorktree(projectDir)) {
                 const result = await engine.applyGlobalLifecycleAction("start", {
                   actor: "api",
@@ -1100,6 +1153,10 @@ export function createAgentDispatchRoutes(options: AgentDispatchRouteOptions = {
               return { dispatch_enabled: true };
             } catch (error) {
               const code = lifecycleErrorCode(error, projectDir);
+              if (createdEngine && engine && COLD_ENGINE_ROLLBACK_CODES.has(code)) {
+                await rollbackColdDispatchEngine(projectDir, engine).catch(() => undefined);
+                engine = undefined;
+              }
               set.status = CONTROL_ERROR_STATUS[code];
               return {
                 dispatch_enabled: priorRunning,
@@ -1147,6 +1204,7 @@ export function createAgentDispatchRoutes(options: AgentDispatchRouteOptions = {
       .post("/dispatch/start", async ({ projectContext, request, set }) => {
         const projectDir = projectContext.path;
         let requestedCwd: string;
+        let createdEngine = false;
         try {
           requestedCwd = resolveDispatchCwd(projectDir, request.headers.get("X-Kspec-Cwd"));
         } catch {
@@ -1183,7 +1241,9 @@ export function createAgentDispatchRoutes(options: AgentDispatchRouteOptions = {
               action: "start",
             });
           }
-          ({ engine } = await ensureDispatchEngine(projectDir, requestedCwd, pubsub));
+          const ensured = await ensureDispatchEngine(projectDir, requestedCwd, pubsub);
+          engine = ensured.engine;
+          createdEngine = ensured.created;
           if (hasRealShadowWorktree(projectDir)) {
             const result = await engine.applyGlobalLifecycleAction("start", {
               actor: "api",
@@ -1200,6 +1260,10 @@ export function createAgentDispatchRoutes(options: AgentDispatchRouteOptions = {
           return { started: true, status: await serializeInternalStatus(projectDir, engine) };
         } catch (error) {
           const code = lifecycleErrorCode(error, projectDir);
+          if (createdEngine && engine && COLD_ENGINE_ROLLBACK_CODES.has(code)) {
+            await rollbackColdDispatchEngine(projectDir, engine).catch(() => undefined);
+            engine = undefined;
+          }
           set.status = CONTROL_ERROR_STATUS[code];
           return {
             started: false,
