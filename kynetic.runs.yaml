@@ -79873,7 +79873,7 @@ runs:
     completed_at: 2026-07-16T01:33:02.874Z
   - _ulid: 01KXM98DTSQ6NH1VYZB4VR343P
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -79886,7 +79886,17 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-07-16T01:42:23.543Z
-        completed_at: 2026-07-16T01:42:23.543Z
+        completed_at: 2026-07-16T01:42:27.696Z
+        notes: "High-confidence signals: full-suite verification remains costly, but teardown and sharding
+          work are already tracked by @task-investigate-npm-test-teardown-hang-after-green-suite-run
+          and the completed local sharding task. Canonical lifecycle failure identity is already
+          covered by @dispatch-event-payload and follow-on @task-daemon-dispatch-lifecycle-api.
+          Existing targeted WebSocket invalidation avoided unnecessary UI work and is already
+          represented by completed invalidation tasks."
+      - status: completed
+        step_index: 2
+        started_at: 2026-07-16T01:42:27.696Z
+        completed_at: 2026-07-16T01:42:27.696Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-07-16T01:39:31.802Z
