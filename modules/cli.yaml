@@ -10783,7 +10783,7 @@ features:
       canonical-task dispatch start, pause, resume, hard-stop, and status controls.
     status:
       maturity: draft
-      implementation: in_progress
+      implementation: implemented
     depends_on: []
     implements: []
     relates_to: []
