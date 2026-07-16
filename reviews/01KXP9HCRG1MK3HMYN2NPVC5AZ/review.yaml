@@ -378,6 +378,12 @@ events:
     payload:
       thread_ulid: 01KXPAM2Y5VHRPSBR93CPTX5E9
     timestamp: 2026-07-16T21:09:06.941Z
+  - _ulid: 01KXPC665DN6CEJV66BM7TDESG
+    actor: Jacob Chapel
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KXPAM6BX5C1KZE8VHJY5165J
+    timestamp: 2026-07-16T21:09:13.005Z
 examined_commit: 4bedaff5093dbef95ea81efb52b33c53be08a837
 external_links: []
 lifecycle_state: closed
@@ -434,6 +440,12 @@ threads:
           valid. Add behavioral scenarios/assertions for both separation criteria or remove the
           false annotations and accurately document where the task obtains that browser proof."
         created_at: 2026-07-16T20:41:54.813Z
+      - _ulid: 01KXPC65XE3YGDXQA72Z520Q67
+        author: Jacob Chapel
+        body: "Fixed in b28c29557d: the paused/draining scenario now coexists with active degraded state, a
+          degraded target, and held work. Browser assertions separately identify authority,
+          projection, Degraded state/reason, Held Tasks, and the Held by global authority reason."
+        created_at: 2026-07-16T21:09:12.749Z
     kind: blocker
   - _ulid: 01KXPAMA10AGG32NS2VXCXQXVR
     anchor:
@@ -518,5 +530,5 @@ verdicts:
     role: reviewer
     created_at: 2026-07-16T20:43:50.975Z
 created_at: 2026-07-16T20:22:54.480Z
-updated_at: 2026-07-16T21:09:06.658Z
+updated_at: 2026-07-16T21:09:12.749Z
 notes: []
