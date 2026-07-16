@@ -24151,6 +24151,18 @@ observations:
     resolved_at: 2026-07-16T13:58:38.556Z
     resolved_by: Jacob Chapel
     created_at: 2026-07-16T13:56:47.432Z
+  - _ulid: 01KXNN1RPPSE89NBXQKWY9VDPT
+    type: success
+    content: For acceptance criteria tied to rendered UI behavior, place the AC annotation on a browser
+      test that renders the real view and asserts the visible evidence; keep parser/conversion tests
+      annotated only for wire-boundary behavior. In the dispatch lifecycle fix cycle, exact deep
+      conversion stayed green while active, queued, held, degraded, and blocked evidence could have
+      disappeared from the agents view, whereas focused Playwright coverage made those ACs
+      independently falsifiable.
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    created_at: 2026-07-16T14:24:50.902Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
