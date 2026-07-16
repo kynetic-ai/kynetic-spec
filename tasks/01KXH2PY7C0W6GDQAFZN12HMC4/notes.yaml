@@ -15,3 +15,21 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-07-16T19:48:37.410Z
+  - _ulid: 01KXP8ZV3PDRKYESQFSKEBWN94
+    content: "Implemented focused browser regression in tests/e2e/dispatch-lifecycle.spec.ts only.
+      Scenario matrix: desktop running/running, paused/paused, paused/draining, legacy
+      false-with-active, stopped/idle, global pending, mixed global failed plus task pending,
+      unrelated task cleanup, task stopped idle/failed; global retry failure/success and stale 409;
+      task canonical-ref controls; global cleanup with task metadata mutation/no start;
+      dashboard/board/automation consumers; 390x844 agents/board/automation with reduced motion and
+      no overflow; malformed mixed-case/conditional wire rejection; static 503 snapshot
+      fallback/read-only. Accessibility proof: Space and Enter activation, hard-stop dialog cancel
+      sends zero requests, focus returns to replacement/invoking controls, global and task polite
+      live regions update. Console/page-error outcome: zero unexpected errors; intentional 409 and
+      503 resource logs are captured and asserted exactly. Verification: focused Playwright 12/12
+      passed; required web UI slice 100/100 passed; full npm suite 10,926 passed with 3 skipped;
+      format, changed-file/repo lint (0 errors), typecheck, diff check, and
+      refs/alignment/completeness validation all pass (warnings only under --warnings-ok)."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-07-16T20:13:19.350Z
