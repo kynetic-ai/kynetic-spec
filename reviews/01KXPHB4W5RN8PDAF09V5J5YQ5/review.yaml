@@ -31,6 +31,13 @@ events:
       kind: blocker
       thread_ulid: 01KXPHD9F2QYM30C3QNK4WJ95Z
     timestamp: 2026-07-16T22:40:29.127Z
+  - _ulid: 01KXPHDKRKRHW23DKJKARF145C
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KXPHDKB3007KN8QCHZ86BDEV
+    timestamp: 2026-07-16T22:40:39.187Z
 examined_commit: null
 external_links: []
 lifecycle_state: open
@@ -110,7 +117,305 @@ threads:
             ... and 1 more (use -v to see all) exits 0 with  and six deprecated-reference warnings; it does not exit 4 with seven / ambiguity errors. The final lifecycle review also recorded the refs gate passing before this plan was imported. Replace the revision-time seven-error statement and corresponding completion disclaimer with the current passing baseline (including warning comparison if desired), while retaining the policy to capture a fresh execution-time baseline and reject new/changed refs problems.
         created_at: 2026-07-16T22:40:28.642Z
     kind: blocker
+  - _ulid: 01KXPHDKB3007KN8QCHZ86BDEV
+    anchor:
+      type: structured
+      field: exact-owned-file-sets
+      ref: "@task-audit-remaining-public-docs"
+      section: tasks
+    entries:
+      - _ulid: 01KXPHDKB45W5MDWTS80E8PD3P
+        author: Jacob Chapel
+        body: >-
+          Task 7 cannot satisfy its own manifest-closure gate under its exact file contract. Task
+          1's comparison rejects extra records against the then-current
+          .agents/skills/audit/SKILL.md
+
+          .agents/skills/codex/SKILL.md
+
+          .agents/skills/e2e/SKILL.md
+
+          .agents/skills/eval-agents/SKILL.md
+
+          .agents/skills/kspec-create-workflow/SKILL.md
+
+          .agents/skills/kspec-help/SKILL.md
+
+          .agents/skills/kspec-merge/SKILL.md
+
+          .agents/skills/kspec-observe/SKILL.md
+
+          .agents/skills/kspec-plan/SKILL.md
+
+          .agents/skills/kspec-reflect/SKILL.md
+
+          .agents/skills/kspec-review-plan/SKILL.md
+
+          .agents/skills/kspec-review/SKILL.md
+
+          .agents/skills/kspec-task-work/SKILL.md
+
+          .agents/skills/kspec-triage-automation/SKILL.md
+
+          .agents/skills/kspec-triage-inbox/SKILL.md
+
+          .agents/skills/kspec-triage/SKILL.md
+
+          .agents/skills/kspec-triage/docs/automation.md
+
+          .agents/skills/kspec-triage/docs/inbox.md
+
+          .agents/skills/kspec-triage/docs/observations.md
+
+          .agents/skills/kspec-writing-specs/SKILL.md
+
+          .agents/skills/release/SKILL.md
+
+          .agents/skills/review-gates/SKILL.md
+
+          .agents/skills/shared-guidance-neutrality/SKILL.md
+
+          .agents/skills/svelte-5/SKILL.md
+
+          .agents/skills/ui-data-layer/SKILL.md
+
+          .agents/skills/work-gates/SKILL.md
+
+          .claude/skills/audit/SKILL.md
+
+          .claude/skills/codex/SKILL.md
+
+          .claude/skills/e2e/SKILL.md
+
+          .claude/skills/eval-agents/SKILL.md
+
+          .claude/skills/release/SKILL.md
+
+          .claude/skills/review-gates/SKILL.md
+
+          .claude/skills/shared-guidance-neutrality/SKILL.md
+
+          .claude/skills/svelte-5/SKILL.md
+
+          .claude/skills/ui-data-layer/SKILL.md
+
+          .claude/skills/ui-design/SKILL.md
+
+          .claude/skills/work-gates/SKILL.md
+
+          .factory/skills/droid-status/SKILL.md
+
+          .factory/skills/kspec-create-workflow/SKILL.md
+
+          .factory/skills/kspec-help/SKILL.md
+
+          .factory/skills/kspec-merge/SKILL.md
+
+          .factory/skills/kspec-observe/SKILL.md
+
+          .factory/skills/kspec-plan/SKILL.md
+
+          .factory/skills/kspec-reflect/SKILL.md
+
+          .factory/skills/kspec-review-plan/SKILL.md
+
+          .factory/skills/kspec-review/SKILL.md
+
+          .factory/skills/kspec-task-work/SKILL.md
+
+          .factory/skills/kspec-triage-automation/SKILL.md
+
+          .factory/skills/kspec-triage-inbox/SKILL.md
+
+          .factory/skills/kspec-triage/SKILL.md
+
+          .factory/skills/kspec-triage/docs/automation.md
+
+          .factory/skills/kspec-triage/docs/inbox.md
+
+          .factory/skills/kspec-triage/docs/observations.md
+
+          .factory/skills/kspec-writing-specs/SKILL.md
+
+          .factory/skills/review-gates/SKILL.md
+
+          .factory/skills/shared-guidance-neutrality/SKILL.md
+
+          .factory/skills/work-gates/SKILL.md
+
+          .github/ISSUE_TEMPLATE/maintainer-approved-issues-and-features.md
+
+          AGENTS.md
+
+          CLAUDE.md
+
+          CONTRIBUTING.md
+
+          INSTALL.md
+
+          README.md
+
+          RELEASE_NOTES.md
+
+          SECURITY.md
+
+          docs/agents-eval-scenarios.md
+
+          docs/concepts/agent-runners.md
+
+          docs/concepts/agents-and-dispatch.md
+
+          docs/concepts/index.md
+
+          docs/concepts/local-resources.md
+
+          docs/concepts/reviews.md
+
+          docs/concepts/specs-tasks-plans-inbox.md
+
+          docs/concepts/the-shadow-branch.md
+
+          docs/concepts/traits.md
+
+          docs/concepts/web-ui-and-daemon.md
+
+          docs/concepts/what-kspec-is.md
+
+          docs/concepts/working-with-an-agent.md
+
+          docs/getting-started/connecting-your-agent.md
+
+          docs/getting-started/index.md
+
+          docs/getting-started/initializing-a-project.md
+
+          docs/getting-started/installation.md
+
+          docs/getting-started/overview.md
+
+          docs/getting-started/tutorial.md
+
+          docs/getting-started/where-to-go-next.md
+
+          docs/getting-started/your-first-action.md
+
+          docs/guides/authoring-and-completing-a-task.md
+
+          docs/guides/configuring-agent-runners.md
+
+          docs/guides/directing-your-agent.md
+
+          docs/guides/importing-and-approving-a-plan.md
+
+          docs/guides/index.md
+
+          docs/guides/recovering-from-shadow-branch-issues.md
+
+          docs/guides/reviewing-an-agents-work.md
+
+          docs/guides/starting-a-new-project.md
+
+          docs/guides/upgrading-kspec.md
+
+          docs/guides/working-with-local-resources.md
+
+          docs/history/KYNETIC_SPEC_DESIGN.md
+
+          docs/history/living-spec-research.md
+
+          docs/prime-mock.md
+
+          docs/release-notes/index.md
+
+          docs/troubleshooting/cannot-run-from-inside-kspec.md
+
+          docs/troubleshooting/daemon-port-in-use.md
+
+          docs/troubleshooting/dispatch-refuses-to-assign.md
+
+          docs/troubleshooting/entity-storage-incompatible.md
+
+          docs/troubleshooting/index.md
+
+          docs/troubleshooting/plan-or-review-index-drift.md
+
+          docs/troubleshooting/review-blocking-merge.md
+
+          docs/troubleshooting/runner-validation-failures.md
+
+          docs/troubleshooting/shadow-branch-out-of-sync.md
+
+          docs/troubleshooting/shadow-branch-worktree-broken.md
+
+          docs/troubleshooting/upgrade-pre-plan-state.md
+
+          kspec-agents.md
+
+          packages/web-ui/README.md
+
+          templates/agents-sections/01-quick-start.md
+
+          templates/agents-sections/02-shadow-branch.md
+
+          templates/agents-sections/03-task-lifecycle.md
+
+          templates/agents-sections/04-pr-workflow.md
+
+          templates/agents-sections/05-commit-convention.md
+
+          templates/agents-sections/06-agent-dispatch-mode.md
+
+          templates/agents-sections/07-batch-usage.md
+
+          templates/skills/create-workflow/SKILL.md
+
+          templates/skills/help/SKILL.md
+
+          templates/skills/merge/SKILL.md
+
+          templates/skills/observe/SKILL.md
+
+          templates/skills/plan/SKILL.md
+
+          templates/skills/reflect/SKILL.md
+
+          templates/skills/review-plan/SKILL.md
+
+          templates/skills/review/SKILL.md
+
+          templates/skills/task-work/SKILL.md
+
+          templates/skills/triage-automation/SKILL.md
+
+          templates/skills/triage-inbox/SKILL.md
+
+          templates/skills/triage/SKILL.md
+
+          templates/skills/triage/docs/automation.md
+
+          templates/skills/triage/docs/inbox.md
+
+          templates/skills/triage/docs/observations.md
+
+          templates/skills/writing-specs/SKILL.md
+
+          tests/e2e/fixtures/plans/01KG0RRPCA45ZT43W2T6HJMVP1/plan.md
+
+          tests/e2e/fixtures/plans/01KG0RRRCA45ZT43W2T6HJMVP2/plan.md
+
+          tests/e2e/fixtures/plans/01KG0RRSCA45ZT43W2T6HJMVP3/plan.md
+
+          tests/fixtures/multi-dir/README.md
+
+          tests/fixtures/multi-dir/project-invalid/README.md, so it cannot predeclare the six
+          Markdown pages Tasks 2-5 later create. Task 7 must therefore add those pages and their
+          evidence/dispositions to , but its  names only documentation sets and ; the manifest
+          fixture is omitted. Add the fixture as Task 7's explicit modify-owned file (with Task 8
+          test-only for this artifact) so the task is standalone and the ownership/closure path is
+          executable.
+        created_at: 2026-07-16T22:40:38.756Z
+    kind: blocker
 verdicts: []
 created_at: 2026-07-16T22:39:18.405Z
-updated_at: 2026-07-16T22:40:28.642Z
+updated_at: 2026-07-16T22:40:38.756Z
 notes: []
