@@ -67,6 +67,16 @@ checks:
     runner: npm run test:e2e -- tests/e2e/agents.spec.ts
     created_at: 2026-07-16T14:51:48.293Z
     completed_at: 2026-07-16T14:51:48.293Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "PASS: kspec validate --refs --warnings-ok completed; 6 accepted baseline warnings."
+    name: kspec validate refs
+    required: true
+    runner: kspec
+    created_at: 2026-07-16T14:51:56.707Z
+    completed_at: 2026-07-16T14:51:56.707Z
 events:
   - _ulid: 01KXNNBZH9EH8XB3452DF7J13S
     actor: Jacob Chapel
@@ -123,6 +133,13 @@ events:
       status: pass
       name: agents browser tests
     timestamp: 2026-07-16T14:51:48.645Z
+  - _ulid: 01KXNPKCSM5XN6W5KPZ192FR9J
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate refs
+    timestamp: 2026-07-16T14:51:57.108Z
 examined_commit: 4094f8d891fa081dad353ba75d1ba270ae5ce541
 external_links: []
 lifecycle_state: open
@@ -135,5 +152,5 @@ subject:
 threads: []
 verdicts: []
 created_at: 2026-07-16T14:30:25.585Z
-updated_at: 2026-07-16T14:51:48.293Z
+updated_at: 2026-07-16T14:51:56.707Z
 notes: []
