@@ -80332,7 +80332,7 @@ runs:
     completed_at: 2026-07-16T04:42:06.899Z
   - _ulid: 01KXMNAH44ZGKRC27RQQV2QWTW
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -80345,7 +80345,19 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-07-16T05:11:01.236Z
-        completed_at: 2026-07-16T05:11:01.236Z
+        completed_at: 2026-07-16T05:12:09.040Z
+        notes: "High-confidence candidates: (1) full npm test completed all suites but hung during teardown;
+          (2) synthetic shadow fixtures pass detection but cannot support committed shadow
+          mutations, while a real kspec-meta worktree fixture gives behavioral persistence coverage.
+          Targeted searches found both already tracked:
+          @task-investigate-npm-test-teardown-hang-after-green-suite-run and unresolved friction
+          observation @01KTVGEA638QDJ1HPCTHSX3JSF, whose content also records the real-shadow
+          fixture pattern. No other session-specific pattern met the repeatable/high-confidence
+          bar."
+      - status: completed
+        step_index: 2
+        started_at: 2026-07-16T05:12:09.040Z
+        completed_at: 2026-07-16T05:12:09.040Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-07-16T05:10:23.620Z
