@@ -292,8 +292,13 @@ function handleInProcessRequest(
     });
   }
   if (path === "/api/agent/dispatch/control" && method === "POST") {
-    const request = JSON.parse(ctx.body || "{}") as { action?: string; scope?: string };
-    const authority = request.action === "start" ? "running" : "stopped";
+    const request = JSON.parse(ctx.body || "{}") as {
+      action?: string;
+      scope?: string;
+      task_ref?: string;
+    };
+    const authority =
+      request.action === "pause" ? "paused" : request.action === "stop" ? "stopped" : "running";
     return respondJson(ctx.response, 200, {
       ok: true,
       data: {
@@ -307,6 +312,12 @@ function handleInProcessRequest(
         task_controls: [],
         degraded_targets: [],
         outcome: "applied",
+        ...(request.scope === "task"
+          ? {
+              task_id: "01KXH2PT5BATGSN8TNY7W7NE55",
+              task_ref: request.task_ref ?? null,
+            }
+          : {}),
       },
       error: null,
     });

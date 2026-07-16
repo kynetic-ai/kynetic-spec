@@ -222,7 +222,8 @@ const server = http.createServer(async (req, res) => {
     try {
       request = JSON.parse(body || "{}");
     } catch {}
-    const authority = request.action === "start" ? "running" : "stopped";
+    const authority =
+      request.action === "pause" ? "paused" : request.action === "stop" ? "stopped" : "running";
     return ok(res, {
       ok: true,
       data: {
@@ -236,6 +237,12 @@ const server = http.createServer(async (req, res) => {
         task_controls: [],
         degraded_targets: [],
         outcome: "applied",
+        ...(request.scope === "task"
+          ? {
+              task_id: "01KXH2PT5BATGSN8TNY7W7NE55",
+              task_ref: request.task_ref ?? null,
+            }
+          : {}),
       },
       error: null,
     });

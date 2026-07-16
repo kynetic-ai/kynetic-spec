@@ -1,9 +1,26 @@
-import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+import { writeFileSync } from "node:fs";
+import { join } from "node:path";
+import { afterAll, afterEach, beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
 import { Command } from "commander";
+import { stringify as yamlStringify } from "yaml";
 import { registerAgentCommands } from "../src/cli/commands/agent.js";
 import * as parser from "../src/parser/index.js";
 import { getRunningDaemonClient } from "../src/cli/daemon-client.js";
 import { runWithOutputState } from "../src/cli/output.js";
+import {
+  cleanupTempDir,
+  createIsolatedKspecHome,
+  createTempDir,
+  initGitRepo,
+  kspec,
+  type IsolatedKspecHome,
+  type KspecOptions,
+} from "./helpers/cli.js";
+import {
+  startMockDaemon,
+  writeMockDaemonMetadata,
+  type MockDaemonClient,
+} from "./helpers/mock-daemon.js";
 
 vi.mock("../src/cli/daemon-client.js", () => ({
   getRunningDaemonClient: vi.fn<typeof getRunningDaemonClient>(),
@@ -145,7 +162,24 @@ function controlSuccess(action: string, overrides: Record<string, unknown> = {})
   };
 }
 
-async function runLifecycleCli(args: string[], json = false) {
+function runLifecycleCli(
+  args: string,
+  cwd: string,
+  isolated: IsolatedKspecHome,
+  options: KspecOptions = {},
+) {
+  return kspec(args, cwd, {
+    ...options,
+    env: {
+      ...isolated.env,
+      KSPEC_NO_DAEMON: "",
+      ...options.env,
+    },
+    expectFail: true,
+  });
+}
+
+async function runLifecycleHandler(args: string[], json = false) {
   const program = new Command();
   program.exitOverride();
   registerAgentCommands(program);
@@ -198,6 +232,169 @@ async function withTtyInput(answer: string, fn: () => Promise<void>) {
   }
 }
 
+describe("safe lifecycle commands through the built CLI", () => {
+  let tempDir: string;
+  let isolated: IsolatedKspecHome;
+  let mock: MockDaemonClient;
+
+  function writeProject(manifest = yamlStringify({ kynetic: "1", title: "Lifecycle CLI" })) {
+    writeFileSync(join(tempDir, "kynetic.yaml"), manifest);
+    writeFileSync(
+      join(tempDir, "kynetic.meta.yaml"),
+      yamlStringify({ kynetic_meta: "1.0", agents: [] }),
+    );
+    writeFileSync(join(tempDir, "project.tasks.yaml"), yamlStringify([]));
+  }
+
+  beforeAll(async () => {
+    tempDir = await createTempDir("kspec-secret-raw-context-should-never-render-");
+    initGitRepo(tempDir);
+    isolated = await createIsolatedKspecHome(tempDir);
+    writeProject();
+    const started = await startMockDaemon({
+      asChildProcess: true,
+      mode: "refuse",
+      bindHost: "127.0.0.1",
+    });
+    if (!started) throw new Error("lifecycle mock daemon failed to start");
+    mock = started;
+    writeMockDaemonMetadata({ home: isolated, client: mock });
+  });
+
+  afterAll(async () => {
+    await mock?.stop();
+    await cleanupTempDir(tempDir);
+  });
+
+  it.each([
+    ["start", "agent dispatch start --reason operator --json", "running"],
+    ["pause", "agent dispatch pause --reason operator --json", "paused"],
+    ["resume", "agent dispatch resume --reason operator --json", "running"],
+    ["stop", "agent dispatch stop --reason operator --force --json", "stopped"],
+  ])("parses and executes the real global %s grammar", (action, command, authority) => {
+    const before = mock.requests().length;
+    const result = runLifecycleCli(command, tempDir, isolated);
+
+    expect(result.exitCode).toBe(0);
+    expect(JSON.parse(result.stdout)).toEqual(
+      expect.objectContaining({
+        ok: true,
+        data: expect.objectContaining({
+          global_authority: authority,
+          projection: authority,
+        }),
+        error: null,
+      }),
+    );
+    const requests = mock.requests().slice(before);
+    const request = requests.find(
+      (entry) => entry.method === "POST" && entry.url === "/api/agent/dispatch/control",
+    );
+    expect(request).toBeDefined();
+    expect(JSON.parse(request!.body)).toEqual({
+      scope: "global",
+      action,
+      reason: "operator",
+    });
+    expect(requests.some((entry) => entry.url === "/api/agent/status")).toBe(false);
+  });
+
+  it.each(["pause", "resume", "stop"])("parses and executes the real task %s grammar", (action) => {
+    const before = mock.requests().length;
+    const force = action === "stop" ? " --force" : "";
+    const result = runLifecycleCli(
+      `agent dispatch task ${action} @task-alias --reason operator${force} --json`,
+      tempDir,
+      isolated,
+    );
+
+    expect(result.exitCode).toBe(0);
+    expect(JSON.parse(result.stdout)).toEqual(
+      expect.objectContaining({
+        ok: true,
+        data: expect.objectContaining({ task_id: TASK_ID, task_ref: "@task-alias" }),
+        error: null,
+      }),
+    );
+    const requests = mock.requests().slice(before);
+    const request = requests.find(
+      (entry) => entry.method === "POST" && entry.url === "/api/agent/dispatch/control",
+    );
+    expect(request).toBeDefined();
+    expect(JSON.parse(request!.body)).toEqual({
+      scope: "task",
+      action,
+      task_ref: "@task-alias",
+      reason: "operator",
+    });
+  });
+
+  it.each(["agent status --json", "agent dispatch status --json"])(
+    "parses the real status grammar for %s",
+    (command) => {
+      const before = mock.requests().length;
+      const result = runLifecycleCli(command, tempDir, isolated);
+
+      expect(result.exitCode).toBe(0);
+      expect(JSON.parse(result.stdout)).toEqual(
+        expect.objectContaining({
+          globalAuthority: "stopped",
+          projection: "stopped",
+          cleanupState: { status: "idle", entries: [] },
+          activeCount: 0,
+          queuedInvocations: 0,
+          heldCount: 0,
+          heldTasks: [],
+          taskControls: [],
+        }),
+      );
+      const requests = mock.requests().slice(before);
+      expect(
+        requests.some(
+          (entry) => entry.method === "GET" && entry.url === "/api/agent/dispatch/status",
+        ),
+      ).toBe(true);
+      expect(requests.some((entry) => entry.url === "/api/agent/status")).toBe(false);
+    },
+  );
+
+  it.each([
+    ["human mutation", "agent dispatch pause"],
+    ["JSON mutation", "agent dispatch pause --json"],
+    ["human status", "agent status"],
+    ["JSON status", "agent dispatch status --json"],
+  ])("maps project-context failure for %s without exposing raw details", (_label, command) => {
+    const distinctive = "format_version_newer_than_supported";
+    writeProject(yamlStringify({ kynetic: "999.0", title: "Unsupported" }));
+    try {
+      const before = mock.requests().length;
+      const result = runLifecycleCli(command, tempDir, isolated);
+
+      expect(result.exitCode).toBe(3);
+      expect(`${result.stdout}\n${result.stderr}`).not.toContain(distinctive);
+      if (command.endsWith("--json")) {
+        expect(JSON.parse(result.stderr)).toEqual({
+          ok: false,
+          data: null,
+          error: {
+            code: "internal_error",
+            message: "Dispatch lifecycle command failed.",
+            suggestion: "Retry; if it persists, inspect daemon logs.",
+          },
+        });
+      } else {
+        expect(result.stderr).toBe(
+          "Error: Dispatch lifecycle command failed.\n" +
+            "Suggestion: Retry; if it persists, inspect daemon logs.",
+        );
+      }
+      expect(mock.requests().slice(before)).toHaveLength(0);
+    } finally {
+      writeProject();
+    }
+  });
+});
+
 describe("safe agent dispatch lifecycle CLI", () => {
   beforeEach(() => {
     vi.mocked(getRunningDaemonClient).mockReturnValue({
@@ -218,6 +415,8 @@ describe("safe agent dispatch lifecycle CLI", () => {
   });
 
   // AC: @cli-agent-commands ac-start-reports-authority
+  // AC: @cli-agent-commands ac-pause-reports-authority
+  // AC: @cli-agent-commands ac-resume-reports-authority
   // AC: @cli-agent-commands ac-lifecycle-command-reports-projection
   // AC: @trait-semantic-exit-codes ac-1
   it.each([
@@ -226,7 +425,7 @@ describe("safe agent dispatch lifecycle CLI", () => {
     ["resume", "running"],
   ])("POSTs canonical global %s and renders authority/projection", async (action, authority) => {
     const requests = recordLifecycleRequest(controlSuccess(action));
-    const result = await runLifecycleCli(["dispatch", action]);
+    const result = await runLifecycleHandler(["dispatch", action]);
 
     expect(result.exitCode).toBe(0);
     expect(result.stdout).toBe(`Dispatch ${action}: ${authority} (${authority})`);
@@ -245,7 +444,7 @@ describe("safe agent dispatch lifecycle CLI", () => {
         task_ref: "@task-alias",
       }),
     );
-    const result = await runLifecycleCli([
+    const result = await runLifecycleHandler([
       "dispatch",
       "task",
       "pause",
@@ -307,7 +506,7 @@ describe("safe agent dispatch lifecycle CLI", () => {
         ].map(({ scope: _scope, ...row }) => row),
       });
       const requests = recordLifecycleRequest(status);
-      const result = await runLifecycleCli(args, true);
+      const result = await runLifecycleHandler(args, true);
 
       expect(result.exitCode).toBe(0);
       expect(JSON.parse(result.stdout)).toEqual(expect.objectContaining(status));
@@ -331,7 +530,7 @@ describe("safe agent dispatch lifecycle CLI", () => {
         },
         500,
       );
-      const result = await runLifecycleCli(["dispatch", "pause"], true);
+      const result = await runLifecycleHandler(["dispatch", "pause"], true);
 
       expect(result.exitCode).toBe(exitCode);
       expect(JSON.parse(result.stderr)).toEqual({
@@ -353,9 +552,9 @@ describe("safe agent dispatch lifecycle CLI", () => {
   // AC: @trait-semantic-exit-codes ac-3
   it("declining an interactive hard stop exits 2 without a request", async () => {
     const requests = recordLifecycleRequest(controlSuccess("stop"));
-    let result!: Awaited<ReturnType<typeof runLifecycleCli>>;
+    let result!: Awaited<ReturnType<typeof runLifecycleHandler>>;
     await withTtyInput("n", async () => {
-      result = await runLifecycleCli(["dispatch", "stop"]);
+      result = await runLifecycleHandler(["dispatch", "stop"]);
     });
     expect(result.exitCode).toBe(2);
     expect(result.stdout).toContain("Hard stop cancelled.");
@@ -365,7 +564,13 @@ describe("safe agent dispatch lifecycle CLI", () => {
   it("rejects dispatch-owned hard stop before prompting or requesting", async () => {
     process.env.KSPEC_SESSION_ID = "01KXH2PT5BATGSN8TNY7W7NE57";
     const requests = recordLifecycleRequest(controlSuccess("stop"));
-    const result = await runLifecycleCli(["dispatch", "task", "stop", `@${TASK_ID}`, "--force"]);
+    const result = await runLifecycleHandler([
+      "dispatch",
+      "task",
+      "stop",
+      `@${TASK_ID}`,
+      "--force",
+    ]);
     expect(result.exitCode).toBe(3);
     expect(result.stderr).toContain("A dispatch-owned session cannot hard-stop its host.");
     expect(requests).toHaveLength(0);
@@ -376,7 +581,7 @@ describe("safe agent dispatch lifecycle CLI", () => {
     [["dispatch", "stop"], true],
   ] as const)("requires --force for non-interactive or JSON hard stop", async (args, json) => {
     const requests = recordLifecycleRequest(controlSuccess("stop"));
-    const result = await runLifecycleCli([...args], json);
+    const result = await runLifecycleHandler([...args], json);
     expect(result.exitCode).toBe(1);
     expect(result.stderr).toContain("Hard stop requires --force when stdin is not a TTY.");
     expect(requests).toHaveLength(0);
@@ -408,7 +613,7 @@ describe("safe agent dispatch lifecycle CLI", () => {
     }),
   ])("fails closed on malformed status rows rather than rendering them", async (malformed) => {
     recordLifecycleRequest(malformed);
-    const result = await runLifecycleCli(["dispatch", "status"], true);
+    const result = await runLifecycleHandler(["dispatch", "status"], true);
     expect(result.exitCode).toBe(3);
     expect(result.stderr).not.toContain(JSON.stringify(malformed));
   });

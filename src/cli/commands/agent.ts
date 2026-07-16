@@ -388,6 +388,14 @@ function lifecycleHeaders(ctx: Awaited<ReturnType<typeof initContext>>): Record<
   return headers;
 }
 
+async function resolveLifecycleContext(): Promise<Awaited<ReturnType<typeof initContext>>> {
+  try {
+    return await initContext();
+  } catch {
+    return failLifecycle("internal_error");
+  }
+}
+
 async function parseJsonResponse(response: Response): Promise<unknown> {
   try {
     return await response.json();
@@ -404,7 +412,7 @@ async function requestLifecycleControl(input: {
 }): Promise<LifecycleControlSuccess> {
   const daemon = getRunningDaemonClient();
   if (!daemon) return failDaemonUnavailable();
-  const ctx = await initContext();
+  const ctx = await resolveLifecycleContext();
   const body = {
     scope: input.scope,
     action: input.action,
@@ -480,10 +488,12 @@ async function preflightHardStop(force: boolean): Promise<void> {
   }
 }
 
-async function fetchInternalLifecycleStatus(): Promise<InternalLifecycleStatus> {
+async function fetchInternalLifecycleStatus(
+  context?: Awaited<ReturnType<typeof initContext>>,
+): Promise<InternalLifecycleStatus> {
   const daemon = getRunningDaemonClient();
   if (!daemon) return failDaemonUnavailable();
-  const ctx = await initContext();
+  const ctx = context ?? (await resolveLifecycleContext());
   const headers = lifecycleHeaders(ctx);
   delete headers["Content-Type"];
   let response: Response;
@@ -1655,8 +1665,7 @@ export function registerAgentCommands(program: Command): void {
         });
       } catch (err) {
         if (err instanceof Error && err.message === "unreachable") throw err;
-        error("Failed to get agent status", err);
-        process.exit(EXIT_CODES.ERROR);
+        return failLifecycle("internal_error");
       }
     });
 
@@ -1775,8 +1784,8 @@ export function registerAgentCommands(program: Command): void {
           });
           return;
         }
-        const ctx = await initContext();
-        const statusData = await fetchInternalLifecycleStatus();
+        const ctx = await resolveLifecycleContext();
+        const statusData = await fetchInternalLifecycleStatus(ctx);
 
         // Get loaded agents
         let agents: Array<{ id: string; name: string }> = [];
@@ -1827,8 +1836,7 @@ export function registerAgentCommands(program: Command): void {
         });
       } catch (err) {
         if (err instanceof Error && err.message === "unreachable") throw err;
-        error("Failed to get dispatch status", err);
-        process.exit(EXIT_CODES.ERROR);
+        return failLifecycle("internal_error");
       }
     });
 
