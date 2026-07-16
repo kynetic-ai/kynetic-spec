@@ -9,9 +9,9 @@
 ## Binding Scope and Freshness Rules
 
 - This plan owns documentation, documentation fixtures/tests, source-owned package guidance, generated documentation outputs, and non-behavioral setup/upgrade scaffold comments or links. It does **not** alter lifecycle schemas, parser/store, engine/admission gates, sessions/process ownership, API routes, CLI handlers/help, UI controls, event contracts, workspace management, remote sync, or task readiness.
-- Source inspection on 2026-07-16 establishes that `dev` and the local lifecycle plan branch are at `0fceed5aa3a2bc93c9bd0ab504df4f48b84494d9`; `origin/dev` is two unrelated daemon timing-test commits ahead at `87ba5a40db4a3a66c21c89c9ff90b28d9177727c`. The completed lifecycle implementation is integrated on the lifecycle plan's remote target branch at inspected tip `3f22e6c93c68115d77e1bde062f7cd12034f91d8`, for which `0fceed5a` is an ancestor. It is not yet an ancestor of local `dev`. The lifecycle plan remains `active` while final implementation review is pending.
-- The preceding fact is not an unconditional “lifecycle work is not merged” blocker. Before Task 1 starts, the maintainer/dispatcher records the **final reviewed lifecycle tip** (including any review-fix commits), confirms that tip is contained in the branch chosen as this plan's integration target, and creates the task branch from that target. If final review is still open, or the chosen task base does not contain the reviewed tip, Task 1 waits. After final review closes, no stale hard-coded commit in this document overrides the reviewed tip.
-- Task 1 repeats the ancestry check and refreshes every dispatch/bootstrap/workspace/lifecycle claim from the final integrated schemas, parser/store, engine, session ownership, API, CLI help, UI adapter/components, events, setup/defaults, generated guidance, and passing tests. Later prose consumes that structured evidence. Task 7 repeats the source comparison after all page slices; Task 8 compares help/render/browser surfaces. Any final-review fix that changes a public fact must be reflected before page work proceeds.
+- Source inspection on 2026-07-16 establishes that `dev` and the local lifecycle plan branch are at `0fceed5aa3a2bc93c9bd0ab504df4f48b84494d9`; `origin/dev` is two unrelated daemon timing-test commits ahead at `87ba5a40db4a3a66c21c89c9ff90b28d9177727c`. Final task review `@01KXPCP5Y3Y0BEY2KP8KDFXNS8` approved examined commit `b28c29557d3ec15ee1cfc0b14c6d2ee5a57b86aa`; the completed task was merged at the lifecycle plan's remote target tip `3f22e6c93c68115d77e1bde062f7cd12034f91d8`, which contains both `b28c2955` and `0fceed5a`. No lifecycle review is open. The reviewed lifecycle tip is not yet an ancestor of local or `origin/dev`; the lifecycle plan may remain administratively `active` without changing that review evidence.
+- The preceding fact is not an unconditional “lifecycle work is not merged” blocker. Before Task 1 starts, the maintainer/dispatcher confirms that the branch chosen as this plan's integration target contains approved reviewed lifecycle tip `3f22e6c93c68115d77e1bde062f7cd12034f91d8` and creates the task branch from that target. If a genuinely later lifecycle fix/review appears before execution, record its approved reviewed tip and use that instead. Task 1 waits only when its chosen base does not contain the applicable approved reviewed tip; no stale hard-coded commit in this document overrides newer approved evidence.
+- Task 1 repeats the ancestry check and refreshes every dispatch/bootstrap/workspace/lifecycle claim from the approved integrated schemas, parser/store, engine, session ownership, API, CLI help, UI adapter/components, events, setup/defaults, generated guidance, and passing tests. Later prose consumes that structured evidence. Task 7 repeats the source comparison after all page slices; Task 8 compares help/render/browser surfaces. Any genuinely later approved fix that changes a public fact must be reflected before page work proceeds.
 - The integrated CLI surface is `kspec agent dispatch start|pause|resume|stop|status|watch`, `kspec agent dispatch task pause|resume|stop <task>`, and `kspec agent status`. Lifecycle control commands are distinct from workspace management. There is still no workspace list/show/reset/cleanup command; no page may invent `kspec dispatch workspace ...` or `kspec agent dispatch workspace ...`.
 - `@dispatch-remote-branch-sync` remains `in_progress`. Schema or tests for one path are not proof that every remote-sync behavior is complete. Remote-sync prose describes only behavior confirmed on the fresh reviewed target and labels incomplete behavior as limited, experimental, or unavailable.
 - Existing workspace facts still requiring refresh include project-before-agent bootstrap ordering; role filtering and reviewer reuse/rerun behavior; tracked-file mutation guard; dispatch-only bootstrap scope; base-branch and plan-target precedence; relative/absolute `worktree_root`; publication modes; remote-sync defaults/limits; worker/reviewer workspace distinction; registry/cleanup ownership; agent-rule `on`/`filter`; and event-specific automation filtering.
@@ -20,7 +20,7 @@
 
 ## Integrated Lifecycle Facts the Documentation Must Preserve
 
-Task 1 freezes these as structured, source-cited facts and refreshes them after final review rather than copying this plan or the lifecycle plan prose:
+Task 1 freezes these as structured, source-cited facts from the approved reviewed lifecycle tip, refreshing them for any genuinely later approved fix rather than copying this plan or the lifecycle plan prose:
 
 1. **Authority and scope:** global durable authority is `stopped | running | paused`; per-canonical-task records are `paused | stopped`. `draining` is a status projection for paused authority with active work, not another durable authority. Controls do not mutate semantic task readiness or degraded-target state.
 2. **Transitions:** global `start` leaves cleanup-idle stopped; `resume` leaves paused; pause allows active dispatch invocations/sessions to finish naturally; hard stop commits no-start authority before cancelling matching dispatch-owned work and closing its sessions. Task controls affect one canonical task and do not bypass global authority. Repeated valid/no-op actions are idempotent; invalid transitions fail without substituting another action.
@@ -53,7 +53,7 @@ Task 1 creates `tests/fixtures/public-documentation-surfaces.json` and `tests/pu
    - `kind: "scaffold"`, stable ids `setup-project-config` and `upgrade-project-config`, with producer source paths and rendering tests.
    - `kind: "generated-artifact"` for ignored plugin skill output, docs-search output, and packaged/web-rendered docs, each with source owner, destination, and build command.
    - `kind: "documentation-test"` for link, README, render, search, E2E, scaffold, generated-guidance, inventory, and lifecycle docs gates.
-4. The completeness test independently derives tracked Markdown, Commander help nodes, required API/UI/scaffold ids, generated destinations, and documentation tests; it rejects duplicates/missing/extra records, requires reasons for exclusions, and validates source/generated pairings.
+4. The completeness test independently derives tracked Markdown, Commander help nodes, required API/UI/scaffold ids, generated destinations, and documentation tests; in strict closure mode it rejects duplicates/missing/extra records, requires reasons for exclusions, and validates source/generated pairings. Task 1's manifest is exact for the tracked Markdown universe at its creation point. Until Task 7 updates it, the shared test keeps full-suite verification satisfiable through an explicit construction-phase allowance for only the six planned pages created by Tasks 2-5; those paths are reported as expected pending additions rather than accepted as reviewed records. Task 7 adds their records/evidence/dispositions and removes that temporary allowance before strict closure.
 5. Every record receives `audit_status`, evidence/source, and correction or exclusion disposition by Task 7. No record is “reviewed by implication.”
 
 ## Tasks
@@ -78,8 +78,8 @@ derive_from_specs: false
     - @ui-agent-dispatch ac-2, ac-3, ac-status-projection, ac-status-active-work-visible, ac-status-queued-work-visible, ac-status-held-work-visible
 
     Preconditions:
-    - Record the final implementation-review disposition and reviewed lifecycle tip. Confirm that tip is contained in this task's integration target and create the task branch from that target. The revision-time remote lifecycle tip is evidence of integration, not a substitute for the final reviewed tip.
-    - If review fixes land, refresh all facts after those fixes. Do not rely on the prior documentation-plan approvals as review of this revision.
+    - Current evidence is final task review `@01KXPCP5Y3Y0BEY2KP8KDFXNS8`, which approved examined commit `b28c29557d3ec15ee1cfc0b14c6d2ee5a57b86aa`; the completed task is merged at remote lifecycle tip `3f22e6c93c68115d77e1bde062f7cd12034f91d8`, and no lifecycle review is open. Confirm that reviewed tip is contained in this task's integration target and create the task branch from that target.
+    - If a genuinely later lifecycle fix/review appears before execution, record its approved reviewed tip, prove the task target contains it, and refresh all facts from it. Do not rely on the prior documentation-plan approvals as review of this revision.
 
     What:
     Build a structured fact fixture from the final integrated schemas, public helpers, CLI tree/help, API/UI fixtures, and passing behavior tests. Create the deterministic public-surface manifest and comparison test before prose tasks consume them.
@@ -94,7 +94,7 @@ derive_from_specs: false
     Required facts and tests:
     - Cover workspace/bootstrap/remote-sync/default-agent facts retained by this plan plus all ten lifecycle fact groups above: command tree; global/task matrices; alias canonicalization; durable default/restart/admission behavior; status/held/task-control/cleanup projections; API and UI mapping; accessibility/static mode; events only when selected for public docs; safety/errors; evidence and limitations.
     - Use `tests/helpers/cli.ts` with explicit fixture cwd for command help. Validate configuration/control/status through exported schemas, public conversion helpers, route fixtures, or black-box command fixtures. Never regex function bodies.
-    - Derive tracked Markdown and non-file records independently. Negative fixture checks cover a missing/duplicate manifest record, unreasoned exclusion, unpaired generated output, missing command node, omitted API/UI/scaffold id, and stale fact fixture.
+    - Derive tracked Markdown and non-file records independently. The manifest must exactly match the tracked Markdown universe when Task 1 lands. The inventory test may temporarily classify only `docs/guides/configuring-dispatch-workspaces.md`, `docs/guides/controlling-dispatch-lifecycle.md`, `docs/concepts/dispatch-workspaces.md`, `docs/troubleshooting/dispatch-bootstrap-failures.md`, `docs/troubleshooting/dispatch-workspace-sync-and-cleanup.md`, and `docs/troubleshooting/dispatch-lifecycle-control-failures.md` as reported pending additions so intervening full-suite and selected verification remain satisfiable; all other extras fail, and Task 7 must remove this construction allowance while adding those six records. Negative fixture checks cover a missing/duplicate manifest record, an unexpected extra, unreasoned exclusion, unpaired generated output, missing command node, omitted API/UI/scaffold id, and stale fact fixture.
 
     Verification:
     - `npm test -- tests/public-documentation-inventory.test.ts tests/dispatch-operator-docs.test.ts tests/plan-document-parser.test.ts`
@@ -345,18 +345,19 @@ derive_from_specs: false
     Complete the factual pass over every declared surface not owned by Tasks 2-6, refresh all dispatch facts after page slices, and close every inventory record without style-only churn.
 
     Exact owned file sets:
+    - Modify `tests/fixtures/public-documentation-surfaces.json` to add the six pages created by Tasks 2-5 with their evidence/dispositions.
     - All existing `docs/getting-started/**/*.md`.
     - Existing `docs/guides/**/*.md` excluding `configuring-dispatch-workspaces.md`, `controlling-dispatch-lifecycle.md`, `configuring-agent-runners.md`, and `guides/index.md`.
     - Existing `docs/concepts/**/*.md` excluding `dispatch-workspaces.md`, `agents-and-dispatch.md`, and `concepts/index.md`.
     - Existing `docs/troubleshooting/**/*.md` excluding the three created recovery pages, `dispatch-refuses-to-assign.md`, and `troubleshooting/index.md`.
     - `docs/release-notes/index.md` and remaining active-public `docs/**/*.md` not historical/internal-eval.
     - Historical/internal-eval/internal-agent-guidance/fixture records receive their declared limited checks/disposition only.
-    - Modify `tests/public-documentation-inventory.test.ts`; do not modify `tests/dispatch-operator-docs.test.ts` or prior-task prose.
+    - Modify `tests/public-documentation-inventory.test.ts` to remove the six-path construction allowance and enforce strict closure; do not modify `tests/dispatch-operator-docs.test.ts` or prior-task prose.
 
     Source-of-truth checks:
     - Commands against captured Commander help; YAML/defaults/enums against exported schemas/resolved config; lifecycle/API/UI statements against Task 1 facts and public fixtures; setup/upgrade against scaffold tests; navigation/link/anchor claims against rendering; release notes against canonical source.
-    - Recheck final-review lifecycle fixes and current remote-sync status. Correct owned documentation; record product contradictions as limitations/follow-up evidence, not implementation.
-    - Assign evidence/disposition to every manifest record. Preserve historical text except dangerous unsupported current instructions.
+    - Recheck approved reviewed lifecycle tip `3f22e6c93c68115d77e1bde062f7cd12034f91d8`, any genuinely later approved lifecycle fix, and current remote-sync status. Correct owned documentation; record product contradictions as limitations/follow-up evidence, not implementation.
+    - Add the six pages created by Tasks 2-5 to `tests/fixtures/public-documentation-surfaces.json`, assign evidence/disposition to them and every other manifest record, and remove the temporary pending-addition allowance. Preserve historical text except dangerous unsupported current instructions.
 
     Required tests:
     - Full manifest closure; relative links/anchors; landing membership/order; release-note single-source equivalence; tagged snippet validation; generated-source ownership.
@@ -396,6 +397,7 @@ derive_from_specs: false
     Files:
     - Modify: `tests/public-documentation-inventory.test.ts`, `tests/dispatch-operator-docs.test.ts`, `tests/web-ui-docs-rendering.test.ts`, `tests/web-ui-docs-search.test.ts`, `tests/e2e/docs.spec.ts`
     - Modify `scripts/build-docs-search.cjs` only if a factual indexing defect is exposed.
+    - Validate `tests/fixtures/public-documentation-surfaces.json` as closed by Task 7; do not modify it in Task 8.
     - No prose edits except through the declared owner; do not repair prior files in parallel.
 
     Required gates:
@@ -407,8 +409,9 @@ derive_from_specs: false
     Baseline validation policy:
     - Changed/focused plan gates, formatting, lint, typecheck, tests, generation, search, web build, and docs E2E must pass.
     - Run `kspec validate --alignment --warnings-ok` and `kspec validate --completeness --warnings-ok` as focused state checks.
-    - Run `kspec validate --refs --warnings-ok` only to capture/compare baseline. At plan revision time the known baseline is exit 4 with seven unrelated ambiguous-reference errors involving duplicate `@observations` and `@spec-plan-import` slugs. This plan does not fix them. Completion requires no new/changed refs errors and an exact diff against a freshly captured baseline; it must not claim project-wide refs green.
-    - If those external errors are resolved before execution, record the fresh result rather than preserving a fictional failure. Project-wide green may be claimed only from an independently passing fresh refs validation.
+    - At plan revision time, a fresh verbose `kspec validate --refs --warnings-ok` exits 0 with `References: OK` and six deprecation warnings: `@session-summary-cache` from tasks `01KKB3PHA6MSJDZS7AZ1Z2VN6A`, `01KKSRDQY1HZBENKBD06V6KDGW`, and `01KMMB3WY8E1JYRGHBHZ4RMH9E`; and `@task-activity-git-query` from tasks `01KKW4VPB0MV22C92JHNR7APJZ`, `01KKW6PK9QFXKH69HE6KY8Q40Y`, and `01KKWG44FR0W955X7EFVBHPX6B`.
+    - Run a fresh execution-time refs validation under the chosen warnings policy. Require no new or changed reference errors, compare every warning to that fresh baseline, and either preserve an evidenced pre-existing disposition or record an intentional plan-owned disposition. Do not add unrelated deprecation-warning cleanup to this documentation plan; fix a warning here only if this plan introduces or changes it.
+    - Claim project-wide refs green only when that fresh execution-time run passes under the explicitly chosen warnings policy; do not infer green from revision-time evidence or from focused documentation gates.
 
     Verification:
     - `npm test -- tests/dispatch-operator-docs.test.ts tests/public-documentation-inventory.test.ts tests/docs-readme-structure.test.ts tests/web-ui-docs-rendering.test.ts tests/web-ui-docs-search.test.ts`
@@ -424,7 +427,7 @@ derive_from_specs: false
     - `npm test`
     - `kspec validate --alignment --warnings-ok`
     - `kspec validate --completeness --warnings-ok`
-    - `kspec validate --refs --warnings-ok` (baseline comparison unless independently green)
+    - `kspec validate --refs --warnings-ok` (fresh comparison under the chosen warnings policy)
 
     Review handoff:
     Supply inventory diff, final-reviewed-tip source facts, focused/full tests, generated-clean proof, desktop/mobile/static evidence, accessibility evidence, and exact refs-baseline comparison. Claim only this plan's gates, not review approval or project-wide green.
@@ -434,20 +437,20 @@ derive_from_specs: false
 
 ### Slice and page ownership order
 
-1. Task 1 is the sole creator of the manifest, fact fixture, and two shared documentation tests. It starts only from the final reviewed integrated lifecycle target and refreshes after review fixes.
+1. Task 1 is the sole creator of the manifest, fact fixture, and two shared documentation tests. It starts only from the approved reviewed integrated lifecycle target and refreshes only for a genuinely later approved lifecycle fix/review.
 2. Task 2 owns workspace configuration and runner-example correction. Task 3 depends on it, owns the dedicated lifecycle guide and the guide index, and adds both guide links only after both targets exist.
 3. Task 4 owns the workspace concept, concept index, and short overview. Task 5 owns three recovery pages, troubleshooting index, and assignment correction. Shared-test writes are transitively serialized.
-4. Task 6 owns non-`docs/` public/package/scaffold/generated corrections. Task 7 owns the explicit remainder of `docs/` and inventory closure. Their file sets exclude Tasks 2-5.
-5. Task 8 modifies shared gates only after all content exists. A prose correction returns to its declared owner instead of creating a parallel write. The graph is a single acyclic chain of eight standalone slices.
+4. Task 6 owns non-`docs/` public/package/scaffold/generated corrections. Task 7 owns the explicit remainder of `docs/`, adds the six Tasks 2-5 pages to `tests/fixtures/public-documentation-surfaces.json`, and closes the inventory. Its prose file sets exclude Tasks 2-5.
+5. Task 8 modifies shared gates only after all content exists and validates, but does not modify, Task 7's closed manifest. A prose correction returns to its declared owner instead of creating a parallel write. The graph is a single acyclic chain of eight standalone slices.
 
 ### Documentation versus product ownership
 
 No product spec patch is proposed. Lifecycle refs and ACs appear only under “Factual source authorities” so workers know which implemented contracts to verify; `Covers` lists only documentation/spec owners for documentation work. If source review reveals missing product behavior or a genuinely ownerless documentation contract, stop and obtain separate approval rather than adding product scope here.
 
-### Current integration and review uncertainty
+### Current integration and conditional freshness
 
-The inspected lifecycle implementation and its focused test history are integrated on the remote lifecycle target, while local `dev` does not yet contain that tip and the lifecycle plan remains active. Final implementation review may add commits or alter documented details. Therefore the exact reviewed commit and final public facts are intentionally late-bound in Task 1. The earlier approved documentation reviews `@01KXH7G6DBP8RRS39VKMPWE28M` and `@01KXH7BNXKV4KXA7AVSJ14GGB3` predate this revision and do not approve it.
+Final task review `@01KXPCP5Y3Y0BEY2KP8KDFXNS8` approved examined commit `b28c29557d3ec15ee1cfc0b14c6d2ee5a57b86aa`, and the completed task is integrated at remote lifecycle target tip `3f22e6c93c68115d77e1bde062f7cd12034f91d8`; no lifecycle review is open. Local and `origin/dev` do not yet contain that reviewed tip, and the lifecycle plan may remain administratively `active`, so Task 1 must start from a target that does contain it. Only a genuinely later approved lifecycle fix/review supersedes this evidence and triggers another fact refresh. The earlier approved documentation reviews `@01KXH7G6DBP8RRS39VKMPWE28M` and `@01KXH7BNXKV4KXA7AVSJ14GGB3` predate this revision and do not approve it.
 
 ### Completion claim
 
-Completion means the documentation plan's changed/focused gates pass and every declared public-surface record has evidence. It does not mean this revised plan has been reviewed or approved, the lifecycle final review is complete at drafting time, remote sync is complete, the seven pre-existing refs ambiguities are fixed, or project-wide validation is green.
+Completion means the documentation plan's changed/focused gates pass and every declared public-surface record has evidence. It does not mean this revised plan has been reviewed or approved, remote sync is complete, unrelated deprecation warnings are fixed, or project-wide refs are green without a fresh passing execution-time run under the chosen warnings policy.
