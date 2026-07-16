@@ -81019,7 +81019,7 @@ runs:
     completed_at: 2026-07-16T12:22:35.184Z
   - _ulid: 01KXNFFY7090BH5WED0YGGYADF
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -81032,7 +81032,20 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-07-16T12:48:22.802Z
-        completed_at: 2026-07-16T12:48:22.802Z
+        completed_at: 2026-07-16T12:49:34.853Z
+        notes: "High-confidence candidates and duplicate checks: (1) real built-CLI subprocess plus child
+          mock daemon is effective at exposing root parsing/output gaps, but this pattern is already
+          specified by @daemon-test-mode-boundaries and implemented by completed
+          @task-standardize-mock-daemon-client-fixtures; (2) misleading full-suite long-tail/quiet
+          periods are already tracked by
+          @task-investigate-npm-test-teardown-hang-after-green-suite-run with matching evidence; (3)
+          duplicate review-thread friction is already captured by observation @01KPQQKXG; (4) shadow
+          sync conflict/write verification friction is already captured by observation @01KNK2AX1.
+          No unique high-confidence candidate remains."
+      - status: completed
+        step_index: 2
+        started_at: 2026-07-16T12:49:34.853Z
+        completed_at: 2026-07-16T12:49:34.853Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-07-16T12:47:43.840Z
