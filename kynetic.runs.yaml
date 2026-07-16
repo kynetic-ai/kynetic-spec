@@ -81451,7 +81451,7 @@ runs:
     completed_at: 2026-07-16T15:36:39.272Z
   - _ulid: 01KXNSCZG7DSB3FSB62DQVS5YZ
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -81464,7 +81464,18 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-07-16T15:42:06.769Z
-        completed_at: 2026-07-16T15:42:06.769Z
+        completed_at: 2026-07-16T15:45:12.113Z
+        notes: "Identified one unique high-confidence systemic friction: kspec batch does not apply the
+          direct review-comment command's default kind=nit, so an omitted kind reaches the handler
+          as undefined and fails atomically with 'Invalid thread kind: undefined'. Duplicate
+          candidates were excluded: reflection baseline noise is already tracked by
+          @01KQ8TTN/@01KSDZFN and observations; workflow-show run-ref friction by @01KKBD52 and
+          related records; review-only reflection gating by @01KSEEJCD/@01KREQEJ; green-suite
+          teardown hangs by @01KM4A3W. No new success item met the uniqueness bar."
+      - status: completed
+        step_index: 2
+        started_at: 2026-07-16T15:45:12.113Z
+        completed_at: 2026-07-16T15:45:12.113Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-07-16T15:40:52.615Z
