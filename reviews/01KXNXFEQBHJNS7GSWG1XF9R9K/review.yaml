@@ -2,7 +2,108 @@ _ulid: 01KXNXFEQBHJNS7GSWG1XF9R9K
 slugs: []
 title: Review lifecycle UI consumers and controls (cycle 5)
 author: Jacob Chapel
-checks: []
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: 1055 files checked; all files use Prettier formatting.
+    name: format
+    required: true
+    runner: npm run format:check
+    created_at: 2026-07-16T17:13:00.668Z
+    completed_at: 2026-07-16T17:13:00.668Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Repo lint completed with 0 errors (696 warning baseline). Focused oxlint across every
+      changed TypeScript/test/CJS file completed with 0 errors; its 37 warnings were verified on
+      unchanged lines already present at integration base f98c880.
+    name: lint
+    required: true
+    runner: npm run lint -- --quiet
+    created_at: 2026-07-16T17:13:05.151Z
+    completed_at: 2026-07-16T17:13:05.151Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Root and shared-package TypeScript checks passed.
+    name: typecheck
+    required: true
+    runner: npm run typecheck
+    created_at: 2026-07-16T17:13:08.803Z
+    completed_at: 2026-07-16T17:13:08.803Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Fresh run: 10,921 passed and 3 skipped. One /proc lstat race in
+      tests/agent-invocation.test.ts was triaged as the existing tracked flake
+      @stabilize-agent-invocation-process-identity: the affected test and
+      src/agent-runtime/invocation.ts are unchanged from the integration base, and two immediate
+      fresh isolated reruns passed 14/14. All lifecycle-focused suites passed, including 44
+      dispatch-control, 31 websocket-invalidation, 25 fleet-buffer, 54 daemon lifecycle, 47 CLI
+      lifecycle, and 85 CLI agent-command tests."
+    name: full test suite
+    required: true
+    runner: npm test -- --fresh
+    created_at: 2026-07-16T17:13:12.450Z
+    completed_at: 2026-07-16T17:13:12.450Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Reference validation passed with the repository's 6 warning baseline.
+    name: kspec validate refs
+    required: true
+    runner: kspec validate --refs --warnings-ok
+    created_at: 2026-07-16T17:13:16.397Z
+    completed_at: 2026-07-16T17:13:16.397Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Alignment validation passed with the repository's 55 warning baseline.
+    name: kspec validate alignment
+    required: true
+    runner: kspec validate --alignment --warnings-ok
+    created_at: 2026-07-16T17:13:20.015Z
+    completed_at: 2026-07-16T17:13:20.015Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Completeness validation passed with the repository's 325 warning baseline; every
+      task-assigned lifecycle AC has a matching behavioral annotation.
+    name: kspec validate completeness
+    required: true
+    runner: kspec validate --completeness --warnings-ok
+    created_at: 2026-07-16T17:13:23.839Z
+    completed_at: 2026-07-16T17:13:23.839Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: 51/51 Chromium scenarios passed after a production web/daemon build, including
+      confirmation cancellation, focus retention, persistent live announcements, lifecycle
+      projection, and active/queued/held visibility.
+    name: agents browser e2e
+    required: true
+    runner: npm run test:e2e -- tests/e2e/agents.spec.ts
+    created_at: 2026-07-16T17:13:27.582Z
+    completed_at: 2026-07-16T17:13:27.582Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: No whitespace errors; detached snapshot and canonical task branch both resolve to 5730514449aa.
+    name: diff hygiene
+    required: true
+    runner: git diff --check f98c880..HEAD
+    created_at: 2026-07-16T17:13:31.384Z
+    completed_at: 2026-07-16T17:13:31.384Z
 events:
   - _ulid: 01KXNXFEQA7CMHYNGWDGNSB1SH
     actor: Jacob Chapel
@@ -17,6 +118,69 @@ events:
       from: draft
       to: open
     timestamp: 2026-07-16T16:52:21.946Z
+  - _ulid: 01KXNYNPDP62MR741SW9JHW5PX
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: format
+    timestamp: 2026-07-16T17:13:01.110Z
+  - _ulid: 01KXNYNTMD97530R1W3ZXBSR3H
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: lint
+    timestamp: 2026-07-16T17:13:05.421Z
+  - _ulid: 01KXNYNY6MQCFNWSRTQCPXVV0F
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: typecheck
+    timestamp: 2026-07-16T17:13:09.077Z
+  - _ulid: 01KXNYP1S45XBEPQVCR743R84M
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: full test suite
+    timestamp: 2026-07-16T17:13:12.740Z
+  - _ulid: 01KXNYP5MX2CDGR9PW8Q4H8HWB
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate refs
+    timestamp: 2026-07-16T17:13:16.701Z
+  - _ulid: 01KXNYP959A1BC4QDRN8AKWYCJ
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate alignment
+    timestamp: 2026-07-16T17:13:20.298Z
+  - _ulid: 01KXNYPCXB8WQ1SJ2S8BW14E8B
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate completeness
+    timestamp: 2026-07-16T17:13:24.139Z
+  - _ulid: 01KXNYPGHTRP0FHSJGXT0FSAPD
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: agents browser e2e
+    timestamp: 2026-07-16T17:13:27.866Z
+  - _ulid: 01KXNYPM9FBCETAS55HK1B98YR
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: diff hygiene
+    timestamp: 2026-07-16T17:13:31.695Z
 examined_commit: 5730514449aa2ac0f80f87e29201897efb9248c2
 external_links: []
 lifecycle_state: open
@@ -29,5 +193,5 @@ subject:
 threads: []
 verdicts: []
 created_at: 2026-07-16T16:52:08.042Z
-updated_at: 2026-07-16T16:52:21.664Z
+updated_at: 2026-07-16T17:13:31.384Z
 notes: []
