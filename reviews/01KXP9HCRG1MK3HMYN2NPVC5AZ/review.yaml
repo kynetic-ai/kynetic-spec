@@ -390,6 +390,12 @@ events:
     payload:
       thread_ulid: 01KXPAM6BX5C1KZE8VHJY5165J
     timestamp: 2026-07-16T21:09:18.675Z
+  - _ulid: 01KXPC6HMR338GPV5HNB026CPS
+    actor: Jacob Chapel
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KXPAMA10AGG32NS2VXCXQXVR
+    timestamp: 2026-07-16T21:09:24.760Z
 examined_commit: 4bedaff5093dbef95ea81efb52b33c53be08a837
 external_links: []
 lifecycle_state: closed
@@ -474,6 +480,14 @@ threads:
           identity through browser-visible behavior. Add a confirmed task hard-stop flow whose
           request and rendered result fail if canonical response identity is absent or unmapped."
         created_at: 2026-07-16T20:41:58.560Z
+      - _ulid: 01KXPC6HCJQYJ0BBC6PSXGFAA8
+        author: Jacob Chapel
+        body: "Fixed in b28c29557d: the task flow now activates Hard-stop task with Enter, confirms the
+          dialog once, asserts the exact task-scoped stop request and submitted task_ref, then
+          requires the held row to become a canonical task-control-ID row with the canonical task
+          link and valid Resume task action. Missing or unmapped top-level response identity rejects
+          the mutation, while missing nested canonical identity prevents this rendered result."
+        created_at: 2026-07-16T21:09:24.497Z
     kind: blocker
   - _ulid: 01KXPAMDPEXZAV2NY1N27JN52M
     anchor:
@@ -538,5 +552,5 @@ verdicts:
     role: reviewer
     created_at: 2026-07-16T20:43:50.975Z
 created_at: 2026-07-16T20:22:54.480Z
-updated_at: 2026-07-16T21:09:18.403Z
+updated_at: 2026-07-16T21:09:24.497Z
 notes: []
