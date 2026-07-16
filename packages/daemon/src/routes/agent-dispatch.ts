@@ -86,6 +86,10 @@ const engines: Map<string, DispatchEngine> = new Map();
 // In-flight startup is shared per project and is not published through engines
 // until every runtime companion is ready.
 const engineInitializations: Map<string, Promise<DispatchEngine>> = new Map();
+// Route lifecycle operations are serialized per project so a caller joining a
+// cold startup cannot mutate an engine until the startup owner has either
+// committed its lifecycle transition or completed rollback.
+const lifecycleTransactions: Map<string, Promise<void>> = new Map();
 // Singleton schedule engine per project path (started alongside dispatch)
 const scheduleEngines: Map<string, ScheduleEngine> = new Map();
 // Singleton hook executor per project path (started alongside dispatch)
@@ -863,6 +867,29 @@ async function ensureDispatchEngine(
   }
 }
 
+async function runLifecycleTransaction<T>(
+  projectDir: string,
+  operation: () => Promise<T>,
+): Promise<T> {
+  const previous = lifecycleTransactions.get(projectDir) ?? Promise.resolve();
+  let release!: () => void;
+  const current = new Promise<void>((resolve) => {
+    release = resolve;
+  });
+  const tail = previous.catch(() => undefined).then(() => current);
+  lifecycleTransactions.set(projectDir, tail);
+
+  await previous.catch(() => undefined);
+  try {
+    return await operation();
+  } finally {
+    release();
+    if (lifecycleTransactions.get(projectDir) === tail) {
+      lifecycleTransactions.delete(projectDir);
+    }
+  }
+}
+
 async function preflightLifecycleAction(
   projectDir: string,
   input:
@@ -990,136 +1017,138 @@ export function createAgentDispatchRoutes(options: AgentDispatchRouteOptions = {
         "/dispatch/control",
         async ({ body, projectContext, request, set }) => {
           const projectDir = projectContext.path;
-          let engine = engines.get(projectDir);
-          let createdEngine = false;
-          let preflightIdentity: CanonicalTaskIdentity | null = null;
-          try {
-            if (
-              (body.scope === "global" &&
-                (body.task_id !== undefined || body.task_ref !== undefined)) ||
-              (body.scope === "task" &&
-                (body.action === "start" ||
-                  (body.task_id === undefined && body.task_ref === undefined)))
-            ) {
-              const current = await serializeLifecycleStatus(projectDir, engine);
-              const copy = CONTROL_ERROR_COPY.validation_failed;
-              set.status = 400;
-              return {
-                ok: false,
-                data: current,
-                error: { code: "validation_failed" as const, ...copy },
-              };
-            }
-            let requestedCwd: string;
+          return runLifecycleTransaction(projectDir, async () => {
+            let engine = engines.get(projectDir);
+            let createdEngine = false;
+            let preflightIdentity: CanonicalTaskIdentity | null = null;
             try {
-              requestedCwd = resolveDispatchCwd(projectDir, request.headers.get("X-Kspec-Cwd"));
-            } catch {
-              const current = await serializeLifecycleStatus(projectDir, engine);
-              set.status = 400;
-              return {
-                ok: false,
-                data: current,
-                error: {
-                  code: "validation_failed" as const,
-                  ...CONTROL_ERROR_COPY.validation_failed,
-                },
-              };
-            }
-            if (engine && engine.getCwd() !== requestedCwd) {
-              const current = await serializeLifecycleStatus(projectDir, engine);
-              const copy = CONTROL_ERROR_COPY.invalid_transition;
-              set.status = 409;
-              return {
-                ok: false,
-                data: current,
-                error: { code: "invalid_transition" as const, ...copy },
-              };
-            }
-            if (!engine) {
-              preflightIdentity = await preflightLifecycleAction(
-                projectDir,
+              if (
+                (body.scope === "global" &&
+                  (body.task_id !== undefined || body.task_ref !== undefined)) ||
+                (body.scope === "task" &&
+                  (body.action === "start" ||
+                    (body.task_id === undefined && body.task_ref === undefined)))
+              ) {
+                const current = await serializeLifecycleStatus(projectDir, engine);
+                const copy = CONTROL_ERROR_COPY.validation_failed;
+                set.status = 400;
+                return {
+                  ok: false,
+                  data: current,
+                  error: { code: "validation_failed" as const, ...copy },
+                };
+              }
+              let requestedCwd: string;
+              try {
+                requestedCwd = resolveDispatchCwd(projectDir, request.headers.get("X-Kspec-Cwd"));
+              } catch {
+                const current = await serializeLifecycleStatus(projectDir, engine);
+                set.status = 400;
+                return {
+                  ok: false,
+                  data: current,
+                  error: {
+                    code: "validation_failed" as const,
+                    ...CONTROL_ERROR_COPY.validation_failed,
+                  },
+                };
+              }
+              if (engine && engine.getCwd() !== requestedCwd) {
+                const current = await serializeLifecycleStatus(projectDir, engine);
+                const copy = CONTROL_ERROR_COPY.invalid_transition;
+                set.status = 409;
+                return {
+                  ok: false,
+                  data: current,
+                  error: { code: "invalid_transition" as const, ...copy },
+                };
+              }
+              if (!engine) {
+                preflightIdentity = await preflightLifecycleAction(
+                  projectDir,
+                  body.scope === "global"
+                    ? { scope: "global", action: body.action }
+                    : {
+                        scope: "task",
+                        action: body.action,
+                        taskId: body.task_id,
+                        taskRef: body.task_ref,
+                      },
+                );
+              }
+              const ensured = await ensureDispatchEngine(projectDir, requestedCwd, pubsub);
+              engine = ensured.engine;
+              createdEngine = ensured.created;
+              if (engine.getCwd() !== requestedCwd) {
+                const current = await serializeLifecycleStatus(projectDir, engine);
+                const copy = CONTROL_ERROR_COPY.invalid_transition;
+                set.status = 409;
+                return {
+                  ok: false,
+                  data: current,
+                  error: { code: "invalid_transition" as const, ...copy },
+                };
+              }
+              const result =
                 body.scope === "global"
-                  ? { scope: "global", action: body.action }
-                  : {
-                      scope: "task",
-                      action: body.action,
-                      taskId: body.task_id,
-                      taskRef: body.task_ref,
-                    },
-              );
-            }
-            const ensured = await ensureDispatchEngine(projectDir, requestedCwd, pubsub);
-            engine = ensured.engine;
-            createdEngine = ensured.created;
-            if (engine.getCwd() !== requestedCwd) {
-              const current = await serializeLifecycleStatus(projectDir, engine);
-              const copy = CONTROL_ERROR_COPY.invalid_transition;
-              set.status = 409;
+                  ? await engine.applyGlobalLifecycleAction(body.action, {
+                      reason: body.reason,
+                      actor: "api",
+                      source: "api",
+                    })
+                  : await engine.applyTaskLifecycleAction(body.action, {
+                      taskId: preflightIdentity?.taskId ?? body.task_id,
+                      taskRef: preflightIdentity?.displayRef ?? body.task_ref,
+                      reason: body.reason,
+                      actor: "api",
+                      source: "api",
+                    });
+              const status = await serializeLifecycleStatus(projectDir, engine);
               return {
-                ok: false,
-                data: current,
-                error: { code: "invalid_transition" as const, ...copy },
+                ok: true,
+                data: {
+                  ...status,
+                  outcome: result.outcome,
+                  ...(body.scope === "task"
+                    ? {
+                        task_id: result.taskId,
+                        task_ref: result.taskRef ?? null,
+                      }
+                    : {}),
+                },
+                error: null,
               };
+            } catch (error) {
+              const code = lifecycleErrorCode(error, projectDir);
+              if (
+                createdEngine &&
+                engine &&
+                body.scope === "global" &&
+                body.action === "start" &&
+                COLD_ENGINE_ROLLBACK_CODES.has(code)
+              ) {
+                await rollbackColdDispatchEngine(projectDir, engine).catch(() => undefined);
+                engine = undefined;
+              }
+              const copy = CONTROL_ERROR_COPY[code];
+              set.status = CONTROL_ERROR_STATUS[code];
+              const current = await serializeLifecycleStatus(projectDir, engine).catch(async () => {
+                const snapshot = await getOrCreateDispatchControlStore(projectDir).loadCommitted();
+                return {
+                  global_authority: snapshot.snapshot.global.authority,
+                  projection: snapshot.snapshot.global.authority,
+                  cleanup_state: projectDispatchCleanupState(snapshot.snapshot),
+                  active_count: 0,
+                  queue_depth: 0,
+                  held_count: 0,
+                  held_tasks: [],
+                  task_controls: [],
+                  degraded_targets: [],
+                } satisfies DispatchLifecycleStatus;
+              });
+              return { ok: false, data: current, error: { code, ...copy } };
             }
-            const result =
-              body.scope === "global"
-                ? await engine.applyGlobalLifecycleAction(body.action, {
-                    reason: body.reason,
-                    actor: "api",
-                    source: "api",
-                  })
-                : await engine.applyTaskLifecycleAction(body.action, {
-                    taskId: preflightIdentity?.taskId ?? body.task_id,
-                    taskRef: preflightIdentity?.displayRef ?? body.task_ref,
-                    reason: body.reason,
-                    actor: "api",
-                    source: "api",
-                  });
-            const status = await serializeLifecycleStatus(projectDir, engine);
-            return {
-              ok: true,
-              data: {
-                ...status,
-                outcome: result.outcome,
-                ...(body.scope === "task"
-                  ? {
-                      task_id: result.taskId,
-                      task_ref: result.taskRef ?? null,
-                    }
-                  : {}),
-              },
-              error: null,
-            };
-          } catch (error) {
-            const code = lifecycleErrorCode(error, projectDir);
-            if (
-              createdEngine &&
-              engine &&
-              body.scope === "global" &&
-              body.action === "start" &&
-              COLD_ENGINE_ROLLBACK_CODES.has(code)
-            ) {
-              await rollbackColdDispatchEngine(projectDir, engine).catch(() => undefined);
-              engine = undefined;
-            }
-            const copy = CONTROL_ERROR_COPY[code];
-            set.status = CONTROL_ERROR_STATUS[code];
-            const current = await serializeLifecycleStatus(projectDir, engine).catch(async () => {
-              const snapshot = await getOrCreateDispatchControlStore(projectDir).loadCommitted();
-              return {
-                global_authority: snapshot.snapshot.global.authority,
-                projection: snapshot.snapshot.global.authority,
-                cleanup_state: projectDispatchCleanupState(snapshot.snapshot),
-                active_count: 0,
-                queue_depth: 0,
-                held_count: 0,
-                held_tasks: [],
-                task_controls: [],
-                degraded_targets: [],
-              } satisfies DispatchLifecycleStatus;
-            });
-            return { ok: false, data: current, error: { code, ...copy } };
-          }
+          });
         },
         { body: lifecycleControlBodySchema },
       )
@@ -1129,103 +1158,104 @@ export function createAgentDispatchRoutes(options: AgentDispatchRouteOptions = {
         "/dispatch",
         async ({ body, projectContext, request, set }) => {
           const projectDir = projectContext.path;
-
-          if (body.action === "start") {
-            let requestedCwd: string;
-            try {
-              requestedCwd = resolveDispatchCwd(projectDir, request.headers.get("X-Kspec-Cwd"));
-            } catch {
-              set.status = 400;
-              return {
-                dispatch_enabled: false,
-                error: "Invalid dispatch working directory",
-              };
-            }
-
-            let engine = engines.get(projectDir);
-            if (engine?.getStatus().running) {
-              if (engine.getCwd() !== requestedCwd) {
-                set.status = 409;
+          return runLifecycleTransaction(projectDir, async () => {
+            if (body.action === "start") {
+              let requestedCwd: string;
+              try {
+                requestedCwd = resolveDispatchCwd(projectDir, request.headers.get("X-Kspec-Cwd"));
+              } catch {
+                set.status = 400;
                 return {
-                  dispatch_enabled: true,
-                  error: "Dispatch is already running for another project",
+                  dispatch_enabled: false,
+                  error: "Invalid dispatch working directory",
                 };
               }
-              if (!hasRealShadowWorktree(projectDir)) {
-                return { dispatch_enabled: true, reason: "Already running" };
-              }
-            }
 
-            const priorRunning = engine?.getStatus().running ?? false;
-            let createdEngine = false;
-            try {
-              if (!engine) {
-                await preflightLifecycleAction(projectDir, {
-                  scope: "global",
-                  action: "start",
-                });
+              let engine = engines.get(projectDir);
+              if (engine?.getStatus().running) {
+                if (engine.getCwd() !== requestedCwd) {
+                  set.status = 409;
+                  return {
+                    dispatch_enabled: true,
+                    error: "Dispatch is already running for another project",
+                  };
+                }
+                if (!hasRealShadowWorktree(projectDir)) {
+                  return { dispatch_enabled: true, reason: "Already running" };
+                }
               }
-              const ensured = await ensureDispatchEngine(projectDir, requestedCwd, pubsub);
-              engine = ensured.engine;
-              createdEngine = ensured.created;
-              if (engine.getCwd() !== requestedCwd) {
-                set.status = 409;
+
+              const priorRunning = engine?.getStatus().running ?? false;
+              let createdEngine = false;
+              try {
+                if (!engine) {
+                  await preflightLifecycleAction(projectDir, {
+                    scope: "global",
+                    action: "start",
+                  });
+                }
+                const ensured = await ensureDispatchEngine(projectDir, requestedCwd, pubsub);
+                engine = ensured.engine;
+                createdEngine = ensured.created;
+                if (engine.getCwd() !== requestedCwd) {
+                  set.status = 409;
+                  return {
+                    dispatch_enabled: true,
+                    error: "Dispatch is already running for another project",
+                  };
+                }
+                if (hasRealShadowWorktree(projectDir)) {
+                  const result = await engine.applyGlobalLifecycleAction("start", {
+                    actor: "api",
+                    source: "api",
+                  });
+                  return result.outcome === "noop"
+                    ? { dispatch_enabled: true, reason: "Already running" }
+                    : { dispatch_enabled: true };
+                }
+                return { dispatch_enabled: true };
+              } catch (error) {
+                const code = lifecycleErrorCode(error, projectDir);
+                if (createdEngine && engine && COLD_ENGINE_ROLLBACK_CODES.has(code)) {
+                  await rollbackColdDispatchEngine(projectDir, engine).catch(() => undefined);
+                  engine = undefined;
+                }
+                set.status = CONTROL_ERROR_STATUS[code];
                 return {
-                  dispatch_enabled: true,
-                  error: "Dispatch is already running for another project",
-                };
-              }
-              if (hasRealShadowWorktree(projectDir)) {
-                const result = await engine.applyGlobalLifecycleAction("start", {
-                  actor: "api",
-                  source: "api",
-                });
-                return result.outcome === "noop"
-                  ? { dispatch_enabled: true, reason: "Already running" }
-                  : { dispatch_enabled: true };
-              }
-              return { dispatch_enabled: true };
-            } catch (error) {
-              const code = lifecycleErrorCode(error, projectDir);
-              if (createdEngine && engine && COLD_ENGINE_ROLLBACK_CODES.has(code)) {
-                await rollbackColdDispatchEngine(projectDir, engine).catch(() => undefined);
-                engine = undefined;
-              }
-              set.status = CONTROL_ERROR_STATUS[code];
-              return {
-                dispatch_enabled: priorRunning,
-                ...(code === "invalid_transition"
-                  ? { error: "Invalid dispatch lifecycle transition" }
-                  : {}),
-                error_code: code,
-              };
-            }
-          } else {
-            const engine = engines.get(projectDir);
-            if (!engine) {
-              return { dispatch_enabled: false, reason: "No engine running" };
-            }
-
-            const priorRunning = engine.getStatus().running;
-            try {
-              await stopDispatchEngine(projectDir, engine, false);
-              engines.delete(projectDir);
-              return { dispatch_enabled: false };
-            } catch (error) {
-              const code = lifecycleErrorCode(error, projectDir);
-              const cleanupPending = error instanceof DispatchCleanupError;
-              set.status = CONTROL_ERROR_STATUS[code];
-              return {
-                dispatch_enabled: cleanupPending ? false : priorRunning,
-                ...(code === "invalid_transition"
-                  ? { error: "Invalid dispatch lifecycle transition" }
-                  : cleanupPending
-                    ? { reason: "cleanup_pending" }
+                  dispatch_enabled: priorRunning,
+                  ...(code === "invalid_transition"
+                    ? { error: "Invalid dispatch lifecycle transition" }
                     : {}),
-                error_code: code,
-              };
+                  error_code: code,
+                };
+              }
+            } else {
+              const engine = engines.get(projectDir);
+              if (!engine) {
+                return { dispatch_enabled: false, reason: "No engine running" };
+              }
+
+              const priorRunning = engine.getStatus().running;
+              try {
+                await stopDispatchEngine(projectDir, engine, false);
+                engines.delete(projectDir);
+                return { dispatch_enabled: false };
+              } catch (error) {
+                const code = lifecycleErrorCode(error, projectDir);
+                const cleanupPending = error instanceof DispatchCleanupError;
+                set.status = CONTROL_ERROR_STATUS[code];
+                return {
+                  dispatch_enabled: cleanupPending ? false : priorRunning,
+                  ...(code === "invalid_transition"
+                    ? { error: "Invalid dispatch lifecycle transition" }
+                    : cleanupPending
+                      ? { reason: "cleanup_pending" }
+                      : {}),
+                  error_code: code,
+                };
+              }
             }
-          }
+          });
         },
         {
           body: t.Object({
@@ -1237,118 +1267,122 @@ export function createAgentDispatchRoutes(options: AgentDispatchRouteOptions = {
       // Start dispatch engine (legacy route)
       .post("/dispatch/start", async ({ projectContext, request, set }) => {
         const projectDir = projectContext.path;
-        let requestedCwd: string;
-        let createdEngine = false;
-        try {
-          requestedCwd = resolveDispatchCwd(projectDir, request.headers.get("X-Kspec-Cwd"));
-        } catch {
-          set.status = 400;
-          return {
-            started: false,
-            error: "Invalid dispatch working directory",
-          };
-        }
+        return runLifecycleTransaction(projectDir, async () => {
+          let requestedCwd: string;
+          let createdEngine = false;
+          try {
+            requestedCwd = resolveDispatchCwd(projectDir, request.headers.get("X-Kspec-Cwd"));
+          } catch {
+            set.status = 400;
+            return {
+              started: false,
+              error: "Invalid dispatch working directory",
+            };
+          }
 
-        let engine = engines.get(projectDir);
-        if (engine?.getStatus().running) {
-          if (engine.getCwd() !== requestedCwd) {
-            set.status = 409;
-            return {
-              started: false,
-              error: "Dispatch is already running for another project",
-              status: await serializeInternalStatus(projectDir, engine),
-            };
+          let engine = engines.get(projectDir);
+          if (engine?.getStatus().running) {
+            if (engine.getCwd() !== requestedCwd) {
+              set.status = 409;
+              return {
+                started: false,
+                error: "Dispatch is already running for another project",
+                status: await serializeInternalStatus(projectDir, engine),
+              };
+            }
+            if (!hasRealShadowWorktree(projectDir)) {
+              return {
+                started: false,
+                reason: "Already running",
+                status: await serializeInternalStatus(projectDir, engine),
+              };
+            }
           }
-          if (!hasRealShadowWorktree(projectDir)) {
-            return {
-              started: false,
-              reason: "Already running",
-              status: await serializeInternalStatus(projectDir, engine),
-            };
-          }
-        }
 
-        try {
-          if (!engine) {
-            await preflightLifecycleAction(projectDir, {
-              scope: "global",
-              action: "start",
-            });
-          }
-          const ensured = await ensureDispatchEngine(projectDir, requestedCwd, pubsub);
-          engine = ensured.engine;
-          createdEngine = ensured.created;
-          if (engine.getCwd() !== requestedCwd) {
-            set.status = 409;
+          try {
+            if (!engine) {
+              await preflightLifecycleAction(projectDir, {
+                scope: "global",
+                action: "start",
+              });
+            }
+            const ensured = await ensureDispatchEngine(projectDir, requestedCwd, pubsub);
+            engine = ensured.engine;
+            createdEngine = ensured.created;
+            if (engine.getCwd() !== requestedCwd) {
+              set.status = 409;
+              return {
+                started: false,
+                error: "Dispatch is already running for another project",
+                status: await serializeInternalStatus(projectDir, engine),
+              };
+            }
+            if (hasRealShadowWorktree(projectDir)) {
+              const result = await engine.applyGlobalLifecycleAction("start", {
+                actor: "api",
+                source: "api",
+              });
+              return result.outcome === "noop"
+                ? {
+                    started: false,
+                    reason: "Already running",
+                    status: await serializeInternalStatus(projectDir, engine),
+                  }
+                : { started: true, status: await serializeInternalStatus(projectDir, engine) };
+            }
+            return { started: true, status: await serializeInternalStatus(projectDir, engine) };
+          } catch (error) {
+            const code = lifecycleErrorCode(error, projectDir);
+            if (createdEngine && engine && COLD_ENGINE_ROLLBACK_CODES.has(code)) {
+              await rollbackColdDispatchEngine(projectDir, engine).catch(() => undefined);
+              engine = undefined;
+            }
+            set.status = CONTROL_ERROR_STATUS[code];
             return {
               started: false,
-              error: "Dispatch is already running for another project",
-              status: await serializeInternalStatus(projectDir, engine),
+              ...(code === "invalid_transition"
+                ? {
+                    error: "Invalid dispatch lifecycle transition",
+                    status: engine
+                      ? await serializeInternalStatus(projectDir, engine)
+                      : await serializeInternalStatusWithoutEngine(projectDir),
+                  }
+                : {}),
+              error_code: code,
             };
           }
-          if (hasRealShadowWorktree(projectDir)) {
-            const result = await engine.applyGlobalLifecycleAction("start", {
-              actor: "api",
-              source: "api",
-            });
-            return result.outcome === "noop"
-              ? {
-                  started: false,
-                  reason: "Already running",
-                  status: await serializeInternalStatus(projectDir, engine),
-                }
-              : { started: true, status: await serializeInternalStatus(projectDir, engine) };
-          }
-          return { started: true, status: await serializeInternalStatus(projectDir, engine) };
-        } catch (error) {
-          const code = lifecycleErrorCode(error, projectDir);
-          if (createdEngine && engine && COLD_ENGINE_ROLLBACK_CODES.has(code)) {
-            await rollbackColdDispatchEngine(projectDir, engine).catch(() => undefined);
-            engine = undefined;
-          }
-          set.status = CONTROL_ERROR_STATUS[code];
-          return {
-            started: false,
-            ...(code === "invalid_transition"
-              ? {
-                  error: "Invalid dispatch lifecycle transition",
-                  status: engine
-                    ? await serializeInternalStatus(projectDir, engine)
-                    : await serializeInternalStatusWithoutEngine(projectDir),
-                }
-              : {}),
-            error_code: code,
-          };
-        }
+        });
       })
 
       // Stop dispatch engine (legacy route)
       .post("/dispatch/stop", async ({ projectContext, set }) => {
         const projectDir = projectContext.path;
-        const engine = engines.get(projectDir);
+        return runLifecycleTransaction(projectDir, async () => {
+          const engine = engines.get(projectDir);
 
-        if (!engine) {
-          return { stopped: false, reason: "No engine running" };
-        }
+          if (!engine) {
+            return { stopped: false, reason: "No engine running" };
+          }
 
-        try {
-          await stopDispatchEngine(projectDir, engine, true);
-          engines.delete(projectDir);
-          return { stopped: true };
-        } catch (error) {
-          const code = lifecycleErrorCode(error, projectDir);
-          const cleanupPending = error instanceof DispatchCleanupError;
-          set.status = CONTROL_ERROR_STATUS[code];
-          return {
-            stopped: false,
-            ...(code === "invalid_transition"
-              ? { reason: "invalid_transition" }
-              : cleanupPending
-                ? { reason: "cleanup_pending" }
-                : {}),
-            error_code: code,
-          };
-        }
+          try {
+            await stopDispatchEngine(projectDir, engine, true);
+            engines.delete(projectDir);
+            return { stopped: true };
+          } catch (error) {
+            const code = lifecycleErrorCode(error, projectDir);
+            const cleanupPending = error instanceof DispatchCleanupError;
+            set.status = CONTROL_ERROR_STATUS[code];
+            return {
+              stopped: false,
+              ...(code === "invalid_transition"
+                ? { reason: "invalid_transition" }
+                : cleanupPending
+                  ? { reason: "cleanup_pending" }
+                  : {}),
+              error_code: code,
+            };
+          }
+        });
       })
 
       // Get dispatch engine status (internal format)
@@ -1690,6 +1724,9 @@ export function getSessionRegistry(projectDir: string): SessionRegistry | undefi
  * AC: @agent-dispatch-engine ac-11 - daemon shutdown stops active engines
  */
 export async function stopAllEngines(): Promise<void> {
+  // Let route-owned lifecycle transactions settle before collecting runtime
+  // maps, including any rollback after a failed cold-start mutation.
+  await Promise.allSettled(lifecycleTransactions.values());
   // A daemon shutdown racing cold startup must not let that startup publish an
   // engine after the teardown pass has already collected its runtime maps.
   await Promise.allSettled(engineInitializations.values());

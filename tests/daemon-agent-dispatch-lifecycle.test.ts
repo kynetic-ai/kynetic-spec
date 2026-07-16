@@ -185,6 +185,16 @@ function rejectShadowCommits(fixture: Awaited<ReturnType<typeof createLifecycleR
   chmodSync(hookPath, 0o755);
 }
 
+function rejectNextShadowCommit(fixture: Awaited<ReturnType<typeof createLifecycleRouteFixture>>) {
+  const hookPath = execSync("git rev-parse --git-path hooks/pre-commit", {
+    cwd: path.join(fixture.projectDir, ".kspec"),
+  })
+    .toString()
+    .trim();
+  writeFileSync(hookPath, '#!/bin/sh\nrm -f -- "$0"\nexit 1\n');
+  chmodSync(hookPath, 0o755);
+}
+
 function lifecycleControl(
   authority: "stopped" | "running" | "paused" = "stopped",
 ): Parameters<typeof commitLifecycleControl>[1] {
@@ -1053,22 +1063,8 @@ describe("canonical dispatch lifecycle routes", () => {
 
 describe("legacy lifecycle compatibility adapters", () => {
   // AC: @daemon-agent-dispatch ac-control-failure-no-success
-  it("shares cold startup failure across concurrent canonical controls", async () => {
+  it("settles cold startup failure before a concurrent canonical control retries", async () => {
     const fixture = await createLifecycleRouteFixture();
-    const store = getOrCreateDispatchControlStore(fixture.projectDir);
-    const originalLoadCommitted = store.loadCommitted.bind(store);
-    let loadCount = 0;
-    let secondPreflight!: () => void;
-    const secondPreflightReached = new Promise<void>((resolve) => {
-      secondPreflight = resolve;
-    });
-    vi.spyOn(store, "loadCommitted").mockImplementation(async () => {
-      const publication = await originalLoadCommitted();
-      loadCount += 1;
-      if (loadCount === 2) secondPreflight();
-      return publication;
-    });
-
     let startEntered!: () => void;
     let rejectStart!: (reason: unknown) => void;
     const startupEntered = new Promise<void>((resolve) => {
@@ -1091,28 +1087,107 @@ describe("legacy lifecycle compatibility adapters", () => {
       scope: "global",
       action: "start",
     });
-    await secondPreflightReached;
+    await new Promise<void>((resolve) => setImmediate(resolve));
     rejectStart(new Error("injected startup failure"));
 
-    const responses = await Promise.all([firstRequest, secondRequest]);
-    for (const response of responses) {
-      expect(response.status).toBe(500);
-      expect(await response.json()).toEqual({
-        ok: false,
-        data: expect.objectContaining({
-          global_authority: "stopped",
-          projection: "stopped",
-        }),
-        error: {
-          code: "internal_error",
-          message: "Dispatch lifecycle operation failed",
-          suggestion: "Retry after checking daemon health.",
-        },
-      });
-    }
-    expect(getDispatchEngine(fixture.projectDir)).toBeUndefined();
-    expect((await originalLoadCommitted()).snapshot.global.authority).toBe("stopped");
+    const [firstResponse, secondResponse] = await Promise.all([firstRequest, secondRequest]);
+    expect(firstResponse.status).toBe(500);
+    expect(await firstResponse.json()).toEqual({
+      ok: false,
+      data: expect.objectContaining({
+        global_authority: "stopped",
+        projection: "stopped",
+      }),
+      error: {
+        code: "internal_error",
+        message: "Dispatch lifecycle operation failed",
+        suggestion: "Retry after checking daemon health.",
+      },
+    });
+    expect(secondResponse.status).toBe(200);
+    expect(await secondResponse.json()).toEqual({
+      ok: true,
+      data: expect.objectContaining({
+        global_authority: "running",
+        projection: "running",
+        outcome: "applied",
+      }),
+      error: null,
+    });
+    expect(getDispatchEngine(fixture.projectDir)).toBeDefined();
+    expect(
+      (await getOrCreateDispatchControlStore(fixture.projectDir).loadCommitted()).snapshot.global
+        .authority,
+    ).toBe("running");
   });
+
+  // AC: @daemon-agent-dispatch ac-control-failure-no-success
+  it.each([
+    ["canonical control", "/api/agent/dispatch/control", { scope: "global", action: "start" }],
+    ["unified alias", "/api/agent/dispatch", { action: "start" }],
+    ["start alias", "/api/agent/dispatch/start", {}],
+  ])(
+    "settles cold-start rollback before a concurrent %s request proceeds",
+    async (_name, route, body) => {
+      const fixture = await createLifecycleRouteFixture();
+      rejectNextShadowCommit(fixture);
+
+      let startEntered!: () => void;
+      let releaseStart!: () => void;
+      const startupEntered = new Promise<void>((resolve) => {
+        startEntered = resolve;
+      });
+      const startupGate = new Promise<void>((resolve) => {
+        releaseStart = resolve;
+      });
+      const originalStart = DispatchEngine.prototype.start;
+      vi.spyOn(DispatchEngine.prototype, "start").mockImplementationOnce(async function () {
+        startEntered();
+        await startupGate;
+        return originalStart.call(this);
+      });
+
+      const firstRequest = requestLifecycleRoute(fixture, route, body);
+      await startupEntered;
+      const secondRequest = requestLifecycleRoute(fixture, route, body);
+      await new Promise<void>((resolve) => setImmediate(resolve));
+      releaseStart();
+
+      const responses = await Promise.all([firstRequest, secondRequest]);
+      const expectedCodes = ["control_commit_failed", "control_store_unavailable"];
+      for (const [index, response] of responses.entries()) {
+        expect(response.status).toBe(503);
+        const responseBody = await response.json();
+        if (route.endsWith("/control")) {
+          expect(responseBody).toEqual({
+            ok: false,
+            data: expect.objectContaining({
+              global_authority: "stopped",
+              projection: "stopped",
+            }),
+            error: expect.objectContaining({
+              code: expectedCodes[index],
+            }),
+          });
+        } else if (route.endsWith("/start")) {
+          expect(responseBody).toEqual({
+            started: false,
+            error_code: expectedCodes[index],
+          });
+        } else {
+          expect(responseBody).toEqual({
+            dispatch_enabled: false,
+            error_code: expectedCodes[index],
+          });
+        }
+      }
+      expect(getDispatchEngine(fixture.projectDir)).toBeUndefined();
+      expect(
+        (await getOrCreateDispatchControlStore(fixture.projectDir).loadCommitted()).snapshot.global
+          .authority,
+      ).toBe("stopped");
+    },
+  );
 
   // AC: @daemon-agent-dispatch ac-control-failure-no-success
   it.each([
