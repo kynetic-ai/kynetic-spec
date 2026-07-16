@@ -15,3 +15,21 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-07-16T11:43:36.297Z
+  - _ulid: 01KXNDSS8CHMJ1CWTX5HJCX14D
+    content: "Implemented the complete lifecycle UI migration. Consumer inventory: API boundary, agents
+      route/status/active/queued/held rows, dashboard, task board fleet, automation
+      triggers/status/event log, and centralized agents-topic invalidation. Fallbacks: exact stopped
+      static model and legacy absent-authority false+active projection as Legacy unknown/stopping
+      while preserving active evidence. Control matrix: global running pause/stop; paused
+      resume/stop; stopped idle start; stopped matching global cleanup retry stop; task absent
+      pause/stop, paused resume/stop, stopped idle resume, stopped matching cleanup retry stop.
+      Accessibility: fixed hard-stop dialog copy, labelled controls, canonical held-task test IDs,
+      polite atomic announcements, focus restoration, disabled static controls, and
+      reduced-motion-safe loader. Invalidation: non-stream agents lifecycle/status events refresh
+      agents.all and automation.events; invocation events also refresh sessions. Failures use the
+      closed fixed copy map and retain returned evidence. Verification: focused UI 96 tests; daemon
+      lifecycle 54 tests; full suite 10869 passed/3 skipped; format, repo lint, focused lint,
+      typecheck, build, diff check, refs/alignment/completeness validations all green."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-07-16T12:18:09.293Z
