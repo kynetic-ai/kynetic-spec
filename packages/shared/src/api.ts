@@ -7,6 +7,205 @@
 
 import { z } from "zod";
 
+// ─── Dispatch Lifecycle Wire Contract ──────────────────────────────────────
+
+const CanonicalDispatchUlidSchema = z
+  .string()
+  .regex(/^[0-9A-HJKMNP-TV-Z]{26}$/, "Expected canonical uppercase Crockford ULID");
+
+export const DispatchCleanupErrorCodeSchema = z.enum([
+  "cancellation_timeout",
+  "cancellation_failed",
+  "session_closure_failed",
+  "cleanup_ownership_mismatch",
+  "cleanup_process_birth_mismatch",
+  "cleanup_leader_missing_group_alive",
+  "cleanup_identity_unverifiable",
+  "cleanup_group_unverifiable",
+  "internal_error",
+]);
+
+export const DispatchControlErrorCodeSchema = z.enum([
+  "validation_failed",
+  "task_not_found",
+  "task_identity_ambiguous",
+  "task_identity_mismatch",
+  "invalid_transition",
+  "control_store_unavailable",
+  "control_store_corrupt",
+  "control_commit_failed",
+  ...DispatchCleanupErrorCodeSchema.options,
+]);
+
+export const DispatchCleanupEntryStatusSchema = z
+  .object({
+    cleanup_id: CanonicalDispatchUlidSchema,
+    scope: z.enum(["global", "task"]),
+    task_id: CanonicalDispatchUlidSchema.optional(),
+    status: z.enum(["pending", "failed"]),
+    phase: z.enum(["owned", "signals_sent", "sessions_closed"]),
+    error_code: DispatchCleanupErrorCodeSchema.optional(),
+  })
+  .strict()
+  .superRefine((entry, ctx) => {
+    if ((entry.scope === "task") !== (entry.task_id !== undefined)) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        path: ["task_id"],
+        message: "task_id is required exactly for task scope",
+      });
+    }
+    if ((entry.status === "failed") !== (entry.error_code !== undefined)) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        path: ["error_code"],
+        message: "error_code is required exactly for failed cleanup",
+      });
+    }
+  });
+
+export const DispatchCleanupStateSchema = z
+  .object({
+    status: z.enum(["idle", "pending", "failed"]),
+    entries: z.array(DispatchCleanupEntryStatusSchema),
+  })
+  .strict()
+  .superRefine((state, ctx) => {
+    const expected =
+      state.entries.length === 0
+        ? "idle"
+        : state.entries.some((entry) => entry.status === "failed")
+          ? "failed"
+          : "pending";
+    if (state.status !== expected) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        path: ["status"],
+        message: `Expected ${expected} status`,
+      });
+    }
+    const cleanupIds = new Set<string>();
+    const owners = new Set<string>();
+    let previousKey: string | undefined;
+    state.entries.forEach((entry, index) => {
+      const owner = entry.scope === "global" ? "global" : `task:${entry.task_id}`;
+      const key = `${entry.scope === "global" ? "0" : `1:${entry.task_id}`}:${entry.cleanup_id}`;
+      if (cleanupIds.has(entry.cleanup_id) || owners.has(owner)) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          path: ["entries", index],
+          message: "Cleanup entries must have unique cleanup and owner identities",
+        });
+      }
+      if (previousKey !== undefined && previousKey.localeCompare(key) > 0) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          path: ["entries", index],
+          message: "Cleanup entries must be sorted",
+        });
+      }
+      cleanupIds.add(entry.cleanup_id);
+      owners.add(owner);
+      previousKey = key;
+    });
+  });
+
+const DispatchControlMetadataSchema = z.object({
+  reason: z.string(),
+  actor: z.string(),
+  source: z.enum(["cli", "api", "ui", "daemon_startup", "daemon_shutdown", "recovery"]),
+  controlled_at: z.string().datetime({ offset: true }),
+  updated_at: z.string().datetime({ offset: true }),
+});
+
+export const DispatchHeldTaskSchema = DispatchControlMetadataSchema.extend({
+  task_id: CanonicalDispatchUlidSchema,
+  task_ref: z.string().nullable(),
+  title: z.string().nullable(),
+  scope: z.enum(["global", "task"]),
+  mode: z.enum(["paused", "stopped"]),
+}).strict();
+
+export const DispatchTaskControlStatusSchema = DispatchControlMetadataSchema.extend({
+  task_id: CanonicalDispatchUlidSchema,
+  task_ref: z.string().nullable(),
+  title: z.string().nullable(),
+  mode: z.enum(["paused", "stopped"]),
+  cleanup_state: DispatchCleanupStateSchema,
+})
+  .strict()
+  .superRefine((control, ctx) => {
+    if (
+      control.cleanup_state.entries.some(
+        (entry) => entry.scope !== "task" || entry.task_id !== control.task_id,
+      )
+    ) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        path: ["cleanup_state", "entries"],
+        message: "Task cleanup entries must match the task control identity",
+      });
+    }
+  });
+
+const DispatchDegradedTargetSchema = z
+  .object({
+    branch: z.string(),
+    reason: z.string(),
+    enteredAt: z.string(),
+    kind: z.string(),
+  })
+  .strict();
+
+function addSortedUniqueTaskIssues(
+  rows: ReadonlyArray<{ task_id: string }>,
+  path: string,
+  ctx: z.RefinementCtx,
+): void {
+  rows.forEach((row, index) => {
+    if (index > 0 && rows[index - 1]!.task_id >= row.task_id) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        path: [path, index, "task_id"],
+        message: "Task rows must be strictly sorted with no duplicates",
+      });
+    }
+  });
+}
+
+export const DispatchLifecycleStatusSchema = z
+  .object({
+    global_authority: z.enum(["stopped", "running", "paused"]),
+    projection: z.enum(["running", "paused", "draining", "stopped"]),
+    cleanup_state: DispatchCleanupStateSchema,
+    active_count: z.number().int().nonnegative(),
+    queue_depth: z.number().int().nonnegative(),
+    held_count: z.number().int().nonnegative(),
+    held_tasks: z.array(DispatchHeldTaskSchema),
+    task_controls: z.array(DispatchTaskControlStatusSchema),
+    degraded_targets: z.array(DispatchDegradedTargetSchema),
+  })
+  .strict()
+  .superRefine((status, ctx) => {
+    if (status.held_count !== status.held_tasks.length) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        path: ["held_count"],
+        message: "held_count must equal held_tasks length",
+      });
+    }
+    addSortedUniqueTaskIssues(status.held_tasks, "held_tasks", ctx);
+    addSortedUniqueTaskIssues(status.task_controls, "task_controls", ctx);
+  });
+
+export type DispatchCleanupErrorCode = z.infer<typeof DispatchCleanupErrorCodeSchema>;
+export type DispatchLifecycleControlErrorCode = z.infer<typeof DispatchControlErrorCodeSchema>;
+export type DispatchCleanupEntryStatus = z.infer<typeof DispatchCleanupEntryStatusSchema>;
+export type DispatchCleanupState = z.infer<typeof DispatchCleanupStateSchema>;
+export type DispatchHeldTask = z.infer<typeof DispatchHeldTaskSchema>;
+export type DispatchTaskControlStatus = z.infer<typeof DispatchTaskControlStatusSchema>;
+export type DispatchLifecycleStatus = z.infer<typeof DispatchLifecycleStatusSchema>;
+
 // ─── Unified Response Envelope ──────────────────────────────────────────────
 // AC: @api-contract ac-envelope
 // AC: @api-contract ac-cache-status-field

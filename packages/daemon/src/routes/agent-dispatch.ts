@@ -20,6 +20,7 @@
  */
 
 import path from "node:path";
+import { existsSync, readFileSync } from "node:fs";
 import { Elysia, t } from "elysia";
 import { DispatchEngine } from "../../agent-runtime/dispatch.js";
 import type {
@@ -29,13 +30,26 @@ import type {
   SyncStateEvent,
   DispatchControlLifecycleEvent,
 } from "../../agent-runtime/dispatch.js";
+import {
+  DispatchCleanupError,
+  DispatchLifecycleTransitionError,
+} from "../../agent-runtime/dispatch.js";
+import {
+  getOrCreateDispatchControlStore,
+  projectDispatchCleanupState,
+} from "../../agent-runtime/dispatch-control-store.js";
+import { DispatchShadowTransactionError } from "../../agent-runtime/dispatch-shadow-transaction.js";
 import { ScheduleEngine } from "../../agent-runtime/schedule-engine.js";
 import { HookExecutor } from "../../agent-runtime/hook-executor.js";
 import { JoinAccumulator } from "../../agent-runtime/join-accumulator.js";
 import { ActionExecutor, type AgentSpawner } from "../../agent-runtime/action-executor.js";
 import { SessionRegistry } from "../../agent-runtime/session-registry.js";
 import { DEFAULT_KSPEC_CLI_PATH, runInvocation } from "../../agent-runtime/invocation.js";
-import { normalizeTaskIdentity, buildTaskRefResolver } from "../../agent-runtime/task-identity.js";
+import {
+  normalizeTaskIdentity,
+  buildTaskRefResolver,
+  TaskIdentityResolutionError,
+} from "../../agent-runtime/task-identity.js";
 import { ulid } from "ulid";
 import {
   initContext,
@@ -49,6 +63,7 @@ import { getCompletedSessionCountsByAgent } from "../../sessions/store.js";
 import { TaskStatusSchema } from "../../schema/common.js";
 import type { PubSubManager } from "../websocket/pubsub.js";
 import type { SessionEventData } from "@kynetic-ai/shared";
+import type { DispatchControlErrorCode, DispatchLifecycleStatus } from "@kynetic-ai/shared";
 import { enumUnion } from "./enum-utils.js";
 import {
   resolveEffectiveRunners,
@@ -162,6 +177,247 @@ function serializeDegradedSummary(
     active: true,
     reason: firstTarget.reason,
     enteredAt: firstTarget.enteredAt,
+  };
+}
+
+const CONTROL_ERROR_STATUS: Record<DispatchControlErrorCode, number> = {
+  validation_failed: 400,
+  task_not_found: 404,
+  task_identity_ambiguous: 409,
+  task_identity_mismatch: 409,
+  invalid_transition: 409,
+  control_store_unavailable: 503,
+  control_store_corrupt: 503,
+  control_commit_failed: 503,
+  cancellation_timeout: 500,
+  cancellation_failed: 500,
+  session_closure_failed: 500,
+  cleanup_ownership_mismatch: 409,
+  cleanup_process_birth_mismatch: 409,
+  cleanup_leader_missing_group_alive: 409,
+  cleanup_identity_unverifiable: 503,
+  cleanup_group_unverifiable: 503,
+  internal_error: 500,
+};
+
+const CONTROL_ERROR_COPY: Record<
+  DispatchControlErrorCode,
+  { message: string; suggestion: string }
+> = {
+  validation_failed: {
+    message: "Invalid lifecycle control request",
+    suggestion: "Correct the typed request fields and retry.",
+  },
+  task_not_found: {
+    message: "Task not found",
+    suggestion: "Use an existing canonical task identifier or resolvable task reference.",
+  },
+  task_identity_ambiguous: {
+    message: "Task identity is ambiguous",
+    suggestion: "Retry with the canonical task identifier.",
+  },
+  task_identity_mismatch: {
+    message: "Task identity fields do not agree",
+    suggestion: "Use matching task_id and task_ref values.",
+  },
+  invalid_transition: {
+    message: "Invalid dispatch lifecycle transition",
+    suggestion: "Refresh lifecycle status and choose an allowed action.",
+  },
+  control_store_unavailable: {
+    message: "Dispatch control store is unavailable",
+    suggestion: "Restore the project shadow worktree and retry.",
+  },
+  control_store_corrupt: {
+    message: "Dispatch control store is corrupt",
+    suggestion: "Repair the committed dispatch control data and retry.",
+  },
+  control_commit_failed: {
+    message: "Dispatch control commit failed",
+    suggestion: "Resolve the shadow worktree commit failure and retry.",
+  },
+  cancellation_timeout: {
+    message: "Dispatch cancellation timed out",
+    suggestion: "Retry hard stop after inspecting the controlled process.",
+  },
+  cancellation_failed: {
+    message: "Dispatch cancellation failed",
+    suggestion: "Inspect durable cleanup evidence and retry hard stop.",
+  },
+  session_closure_failed: {
+    message: "Dispatch session closure failed",
+    suggestion: "Inspect durable session evidence and retry hard stop.",
+  },
+  cleanup_ownership_mismatch: {
+    message: "Dispatch cleanup ownership does not match",
+    suggestion: "Verify the recorded invocation ownership before retrying.",
+  },
+  cleanup_process_birth_mismatch: {
+    message: "Dispatch cleanup process identity does not match",
+    suggestion: "Verify the recorded process identity before retrying.",
+  },
+  cleanup_leader_missing_group_alive: {
+    message: "Dispatch cleanup process group remains alive",
+    suggestion: "Inspect the recorded process group before retrying.",
+  },
+  cleanup_identity_unverifiable: {
+    message: "Dispatch cleanup identity cannot be verified",
+    suggestion: "Restore process identity evidence before retrying.",
+  },
+  cleanup_group_unverifiable: {
+    message: "Dispatch cleanup process group cannot be verified",
+    suggestion: "Restore process-group evidence before retrying.",
+  },
+  internal_error: {
+    message: "Dispatch lifecycle operation failed",
+    suggestion: "Retry after checking daemon health.",
+  },
+};
+
+function lifecycleErrorCode(error: unknown, projectDir?: string): DispatchControlErrorCode {
+  if (error instanceof DispatchLifecycleTransitionError) return "invalid_transition";
+  if (error instanceof TaskIdentityResolutionError) {
+    switch (error.code) {
+      case "missing-task-identity":
+        return "validation_failed";
+      case "unresolved-task-ref":
+        return "task_not_found";
+      case "ambiguous-task-ref":
+      case "duplicate-task-slug":
+        return "task_identity_ambiguous";
+      case "task-id-ref-mismatch":
+        return "task_identity_mismatch";
+      case "task-identity-unavailable":
+        return "control_store_unavailable";
+    }
+  }
+  if (error instanceof DispatchCleanupError) return error.code;
+  if (error instanceof DispatchShadowTransactionError) return "control_commit_failed";
+  const degraded = projectDir
+    ? getOrCreateDispatchControlStore(projectDir).getDegradedReason()
+    : null;
+  if (degraded?.includes("parse") || degraded?.includes("invalid")) return "control_store_corrupt";
+  if (degraded) return "control_store_unavailable";
+  return "internal_error";
+}
+
+function preferredTaskRef(task: { _ulid: string; slugs?: string[] } | undefined): string | null {
+  const slug = task?.slugs?.[0];
+  return slug ? `@${slug}` : task ? `@${task._ulid}` : null;
+}
+
+function hasRealShadowWorktree(projectDir: string): boolean {
+  try {
+    const marker = readFileSync(path.join(projectDir, ".kspec", ".git"), "utf8").trim();
+    if (!marker.startsWith("gitdir:")) return false;
+    const gitDir = marker.slice("gitdir:".length).trim();
+    const resolved = path.isAbsolute(gitDir) ? gitDir : path.resolve(projectDir, ".kspec", gitDir);
+    return existsSync(path.join(resolved, "HEAD")) && existsSync(path.join(resolved, "commondir"));
+  } catch {
+    return false;
+  }
+}
+
+async function serializeLifecycleStatus(
+  projectDir: string,
+  engine: DispatchEngine | undefined,
+  degradedTargets = engine ? serializeDegradedTargets(engine) : [],
+): Promise<DispatchLifecycleStatus> {
+  const engineLifecycle = engine?.getLifecycleStatus();
+  const snapshot = hasRealShadowWorktree(projectDir)
+    ? (engine
+        ? getOrCreateDispatchControlStore(projectDir).getPublication()
+        : await getOrCreateDispatchControlStore(projectDir).loadCommitted()
+      ).snapshot
+    : {
+        version: 1 as const,
+        revision: 0,
+        global: { authority: engineLifecycle?.globalAuthority ?? ("stopped" as const) },
+        tasks: {},
+        pending_cleanup: {},
+      };
+  const base = engineLifecycle ?? {
+    globalAuthority: snapshot.global.authority,
+    projection: snapshot.global.authority,
+    activeCount: 0,
+    queueDepth: 0,
+    heldCount: 0,
+    heldTaskIds: [],
+    cleanupState: projectDispatchCleanupState(snapshot),
+  };
+  const tasks = await (async () => {
+    if (!hasRealShadowWorktree(projectDir)) return [];
+    const ctx = await initContext(projectDir);
+    return resolveTaskDataManager(ctx).loadAllTasks(ctx);
+  })();
+  const tasksById = new Map(tasks.map((task) => [task._ulid, task]));
+  const taskControls = Object.entries(snapshot.tasks)
+    .map(([taskId, control]) => {
+      const task = tasksById.get(taskId);
+      return {
+        task_id: taskId,
+        task_ref: preferredTaskRef(task),
+        title: task?.title ?? null,
+        mode: control.mode,
+        reason: control.reason,
+        actor: control.actor,
+        source: control.source,
+        controlled_at: control.controlled_at,
+        updated_at: control.updated_at,
+        cleanup_state: projectDispatchCleanupState(snapshot, { scope: "task", task_id: taskId }),
+      };
+    })
+    .toSorted((left, right) => left.task_id.localeCompare(right.task_id));
+  const heldTasks = base.heldTaskIds
+    .map((taskId) => {
+      const task = tasksById.get(taskId);
+      const taskControl = snapshot.tasks[taskId];
+      const globalHolds = snapshot.global.authority !== "running";
+      const control = globalHolds ? snapshot.global : taskControl;
+      if (!control || (globalHolds && snapshot.global.authority === "running")) return null;
+      const fallbackTimestamp = task?.created_at ?? "1970-01-01T00:00:00.000Z";
+      return {
+        task_id: taskId,
+        task_ref: preferredTaskRef(task),
+        title: task?.title ?? null,
+        scope: globalHolds ? ("global" as const) : ("task" as const),
+        mode: globalHolds ? snapshot.global.authority : taskControl!.mode,
+        reason: control.reason ?? "dispatch stopped",
+        actor: control.actor ?? "dispatch-engine",
+        source: control.source ?? ("recovery" as const),
+        controlled_at: control.controlled_at ?? fallbackTimestamp,
+        updated_at: control.updated_at ?? fallbackTimestamp,
+      };
+    })
+    .filter((row): row is NonNullable<typeof row> => row !== null)
+    .toSorted((left, right) => left.task_id.localeCompare(right.task_id));
+  return {
+    global_authority: base.globalAuthority,
+    projection: base.projection,
+    cleanup_state: base.cleanupState,
+    active_count: base.activeCount,
+    queue_depth: base.queueDepth,
+    held_count: heldTasks.length,
+    held_tasks: heldTasks,
+    task_controls: taskControls,
+    degraded_targets: degradedTargets,
+  };
+}
+
+async function serializeInternalStatus(projectDir: string, engine: DispatchEngine) {
+  const status = engine.getStatus();
+  const degradedTargets = serializeDegradedTargets(engine);
+  const lifecycle = await serializeLifecycleStatus(projectDir, engine, degradedTargets);
+  return {
+    ...status,
+    degraded: serializeDegradedSummary(degradedTargets),
+    degradedTargets,
+    globalAuthority: lifecycle.global_authority,
+    projection: lifecycle.projection,
+    cleanupState: lifecycle.cleanup_state,
+    heldCount: lifecycle.held_count,
+    heldTasks: lifecycle.held_tasks,
+    taskControls: lifecycle.task_controls,
   };
 }
 
@@ -534,6 +790,35 @@ export function resolveDispatchCwd(projectDir: string, requestedCwd: string | nu
   return cwd;
 }
 
+async function ensureDispatchEngine(
+  projectDir: string,
+  requestedCwd: string,
+  pubsub?: PubSubManager,
+): Promise<{ engine: DispatchEngine; created: boolean }> {
+  const existing = engines.get(projectDir);
+  if (existing) return { engine: existing, created: false };
+  const engine = createEngine(projectDir, requestedCwd, pubsub);
+  engines.set(projectDir, engine);
+  try {
+    await engine.start();
+    await startScheduleEngine(projectDir, engine, pubsub);
+    await startHookExecutor(projectDir, engine, pubsub);
+    await startJoinAccumulator(projectDir, engine, pubsub);
+    return { engine, created: true };
+  } catch (error) {
+    engines.delete(projectDir);
+    throw error;
+  }
+}
+
+const lifecycleControlBodySchema = t.Object({
+  scope: t.Union([t.Literal("global"), t.Literal("task")]),
+  action: t.Union([t.Literal("start"), t.Literal("pause"), t.Literal("resume"), t.Literal("stop")]),
+  task_ref: t.Optional(t.String()),
+  task_id: t.Optional(t.String()),
+  reason: t.Optional(t.String()),
+});
+
 export function createAgentDispatchRoutes(options: AgentDispatchRouteOptions = {}) {
   const { pubsub } = options;
 
@@ -559,6 +844,115 @@ export function createAgentDispatchRoutes(options: AgentDispatchRouteOptions = {
         { body: stateChangeBodySchema },
       )
 
+      // Canonical lifecycle control boundary.
+      // AC: @daemon-agent-dispatch ac-6
+      // AC: @daemon-agent-dispatch ac-control-error-current-status
+      // AC: @daemon-agent-dispatch ac-control-missing-identity
+      // AC: @daemon-agent-dispatch ac-control-ref-canonicalization
+      // AC: @daemon-agent-dispatch ac-control-identity-mismatch
+      // AC: @daemon-agent-dispatch ac-control-failure-no-success
+      // AC: @daemon-agent-dispatch ac-cleanup-failure-no-success
+      .post(
+        "/dispatch/control",
+        async ({ body, projectContext, request, set }) => {
+          const projectDir = projectContext.path;
+          let engine = engines.get(projectDir);
+          try {
+            if (
+              (body.scope === "global" &&
+                (body.task_id !== undefined || body.task_ref !== undefined)) ||
+              (body.scope === "task" &&
+                (body.action === "start" ||
+                  (body.task_id === undefined && body.task_ref === undefined)))
+            ) {
+              const current = await serializeLifecycleStatus(projectDir, engine);
+              const copy = CONTROL_ERROR_COPY.validation_failed;
+              set.status = 400;
+              return {
+                ok: false,
+                data: current,
+                error: { code: "validation_failed" as const, ...copy },
+              };
+            }
+            let requestedCwd: string;
+            try {
+              requestedCwd = resolveDispatchCwd(projectDir, request.headers.get("X-Kspec-Cwd"));
+            } catch {
+              const current = await serializeLifecycleStatus(projectDir, engine);
+              set.status = 400;
+              return {
+                ok: false,
+                data: current,
+                error: {
+                  code: "validation_failed" as const,
+                  ...CONTROL_ERROR_COPY.validation_failed,
+                },
+              };
+            }
+            if (engine && engine.getCwd() !== requestedCwd) {
+              const current = await serializeLifecycleStatus(projectDir, engine);
+              const copy = CONTROL_ERROR_COPY.invalid_transition;
+              set.status = 409;
+              return {
+                ok: false,
+                data: current,
+                error: { code: "invalid_transition" as const, ...copy },
+              };
+            }
+            ({ engine } = await ensureDispatchEngine(projectDir, requestedCwd, pubsub));
+            const result =
+              body.scope === "global"
+                ? await engine.applyGlobalLifecycleAction(body.action, {
+                    reason: body.reason,
+                    actor: "api",
+                    source: "api",
+                  })
+                : await engine.applyTaskLifecycleAction(body.action, {
+                    taskId: body.task_id,
+                    taskRef: body.task_ref,
+                    reason: body.reason,
+                    actor: "api",
+                    source: "api",
+                  });
+            const status = await serializeLifecycleStatus(projectDir, engine);
+            return {
+              ok: true,
+              data: {
+                ...status,
+                outcome: result.outcome,
+                ...(body.scope === "task"
+                  ? {
+                      task_id: result.taskId,
+                      task_ref: result.taskRef ?? null,
+                    }
+                  : {}),
+              },
+              error: null,
+            };
+          } catch (error) {
+            const code = lifecycleErrorCode(error, projectDir);
+            const copy = CONTROL_ERROR_COPY[code];
+            set.status = CONTROL_ERROR_STATUS[code];
+            const current = await serializeLifecycleStatus(projectDir, engine).catch(async () => {
+              const snapshot = await getOrCreateDispatchControlStore(projectDir).loadCommitted();
+              return {
+                global_authority: snapshot.snapshot.global.authority,
+                projection: snapshot.snapshot.global.authority,
+                cleanup_state: projectDispatchCleanupState(snapshot.snapshot),
+                active_count: 0,
+                queue_depth: 0,
+                held_count: 0,
+                held_tasks: [],
+                task_controls: [],
+                degraded_targets: [],
+              } satisfies DispatchLifecycleStatus;
+            });
+            return { ok: false, data: current, error: { code, ...copy } };
+          }
+        },
+        { body: lifecycleControlBodySchema },
+      )
+
       // AC: @daemon-agent-dispatch ac-6 - Unified dispatch start/stop via action field
       .post(
         "/dispatch",
@@ -569,11 +963,11 @@ export function createAgentDispatchRoutes(options: AgentDispatchRouteOptions = {
             let requestedCwd: string;
             try {
               requestedCwd = resolveDispatchCwd(projectDir, request.headers.get("X-Kspec-Cwd"));
-            } catch (err) {
+            } catch {
               set.status = 400;
               return {
                 dispatch_enabled: false,
-                error: err instanceof Error ? err.message : String(err),
+                error: "Invalid dispatch working directory",
               };
             }
 
@@ -583,20 +977,38 @@ export function createAgentDispatchRoutes(options: AgentDispatchRouteOptions = {
                 set.status = 409;
                 return {
                   dispatch_enabled: true,
-                  error: `Dispatch engine already running for ${projectDir} with cwd ${engine.getCwd()}`,
+                  error: "Dispatch is already running for another project",
                 };
               }
-              return { dispatch_enabled: true, reason: "Already running" };
+              if (!hasRealShadowWorktree(projectDir)) {
+                return { dispatch_enabled: true, reason: "Already running" };
+              }
             }
 
-            engine = createEngine(projectDir, requestedCwd, pubsub);
-            engines.set(projectDir, engine);
-            await engine.start();
-            await startScheduleEngine(projectDir, engine, pubsub);
-            await startHookExecutor(projectDir, engine, pubsub);
-            await startJoinAccumulator(projectDir, engine, pubsub);
-
-            return { dispatch_enabled: true };
+            const priorRunning = engine?.getStatus().running ?? false;
+            try {
+              ({ engine } = await ensureDispatchEngine(projectDir, requestedCwd, pubsub));
+              if (hasRealShadowWorktree(projectDir)) {
+                const result = await engine.applyGlobalLifecycleAction("start", {
+                  actor: "api",
+                  source: "api",
+                });
+                return result.outcome === "noop"
+                  ? { dispatch_enabled: true, reason: "Already running" }
+                  : { dispatch_enabled: true };
+              }
+              return { dispatch_enabled: true };
+            } catch (error) {
+              const code = lifecycleErrorCode(error, projectDir);
+              set.status = CONTROL_ERROR_STATUS[code];
+              return {
+                dispatch_enabled: priorRunning,
+                ...(code === "invalid_transition"
+                  ? { error: "Invalid dispatch lifecycle transition" }
+                  : {}),
+                error_code: code,
+              };
+            }
           } else {
             const engine = engines.get(projectDir);
             if (!engine) {
@@ -606,10 +1018,19 @@ export function createAgentDispatchRoutes(options: AgentDispatchRouteOptions = {
             stopJoinAccumulator(projectDir);
             stopHookExecutor(projectDir);
             await stopScheduleEngine(projectDir);
-            await engine.stop();
-            engines.delete(projectDir);
-
-            return { dispatch_enabled: false };
+            try {
+              await engine.stop();
+              engines.delete(projectDir);
+              return { dispatch_enabled: false };
+            } catch (error) {
+              const code = lifecycleErrorCode(error, projectDir);
+              set.status = CONTROL_ERROR_STATUS[code];
+              return {
+                dispatch_enabled: false,
+                reason: "cleanup_pending",
+                error_code: code,
+              };
+            }
           }
         },
         {
@@ -625,11 +1046,11 @@ export function createAgentDispatchRoutes(options: AgentDispatchRouteOptions = {
         let requestedCwd: string;
         try {
           requestedCwd = resolveDispatchCwd(projectDir, request.headers.get("X-Kspec-Cwd"));
-        } catch (err) {
+        } catch {
           set.status = 400;
           return {
             started: false,
-            error: err instanceof Error ? err.message : String(err),
+            error: "Invalid dispatch working directory",
           };
         }
 
@@ -639,27 +1060,53 @@ export function createAgentDispatchRoutes(options: AgentDispatchRouteOptions = {
             set.status = 409;
             return {
               started: false,
-              error: `Dispatch engine already running for ${projectDir} with cwd ${engine.getCwd()}`,
-              status: engine.getStatus(),
+              error: "Dispatch is already running for another project",
+              status: await serializeInternalStatus(projectDir, engine),
             };
           }
-          return { started: false, reason: "Already running", status: engine.getStatus() };
+          if (!hasRealShadowWorktree(projectDir)) {
+            return {
+              started: false,
+              reason: "Already running",
+              status: await serializeInternalStatus(projectDir, engine),
+            };
+          }
         }
 
-        // AC: @agent-dispatch-engine ac-10 - pass kspecCliPath so task notes work from daemon-started engine
-        engine = createEngine(projectDir, requestedCwd, pubsub);
-        engines.set(projectDir, engine);
-
-        await engine.start();
-        await startScheduleEngine(projectDir, engine, pubsub);
-        await startHookExecutor(projectDir, engine, pubsub);
-        await startJoinAccumulator(projectDir, engine, pubsub);
-
-        return { started: true, status: engine.getStatus() };
+        try {
+          ({ engine } = await ensureDispatchEngine(projectDir, requestedCwd, pubsub));
+          if (hasRealShadowWorktree(projectDir)) {
+            const result = await engine.applyGlobalLifecycleAction("start", {
+              actor: "api",
+              source: "api",
+            });
+            return result.outcome === "noop"
+              ? {
+                  started: false,
+                  reason: "Already running",
+                  status: await serializeInternalStatus(projectDir, engine),
+                }
+              : { started: true, status: await serializeInternalStatus(projectDir, engine) };
+          }
+          return { started: true, status: await serializeInternalStatus(projectDir, engine) };
+        } catch (error) {
+          const code = lifecycleErrorCode(error, projectDir);
+          set.status = CONTROL_ERROR_STATUS[code];
+          return {
+            started: false,
+            ...(code === "invalid_transition"
+              ? {
+                  error: "Invalid dispatch lifecycle transition",
+                  ...(engine ? { status: await serializeInternalStatus(projectDir, engine) } : {}),
+                }
+              : {}),
+            error_code: code,
+          };
+        }
       })
 
       // Stop dispatch engine (legacy route)
-      .post("/dispatch/stop", async ({ projectContext }) => {
+      .post("/dispatch/stop", async ({ projectContext, set }) => {
         const projectDir = projectContext.path;
         const engine = engines.get(projectDir);
 
@@ -671,19 +1118,28 @@ export function createAgentDispatchRoutes(options: AgentDispatchRouteOptions = {
         stopHookExecutor(projectDir);
         await stopScheduleEngine(projectDir);
         stopSessionRegistry(projectDir);
-        await engine.stop();
-        engines.delete(projectDir);
-
-        return { stopped: true };
+        try {
+          await engine.stop();
+          engines.delete(projectDir);
+          return { stopped: true };
+        } catch (error) {
+          const code = lifecycleErrorCode(error, projectDir);
+          set.status = CONTROL_ERROR_STATUS[code];
+          return {
+            stopped: false,
+            reason: code === "invalid_transition" ? "invalid_transition" : "cleanup_pending",
+            error_code: code,
+          };
+        }
       })
 
       // Get dispatch engine status (internal format)
       // AC: @dispatch-remote-branch-sync ac-degraded-status-api
-      .get("/dispatch/status", ({ projectContext }) => {
+      .get("/dispatch/status", async ({ projectContext, set }) => {
         const engine = engines.get(projectContext.path);
 
         if (!engine) {
-          return {
+          const base = {
             running: false,
             activeInvocations: 0,
             queuedInvocations: 0,
@@ -691,14 +1147,77 @@ export function createAgentDispatchRoutes(options: AgentDispatchRouteOptions = {
             degraded: { active: false, reason: "", enteredAt: null },
             degradedTargets: [],
           };
+          try {
+            const lifecycle = await serializeLifecycleStatus(projectContext.path, undefined);
+            const store = getOrCreateDispatchControlStore(projectContext.path);
+            if (hasRealShadowWorktree(projectContext.path) && store.getDegradedReason()) {
+              set.status = 503;
+              return {
+                ...base,
+                globalAuthority: lifecycle.global_authority,
+                projection: lifecycle.projection,
+                cleanupState: lifecycle.cleanup_state,
+                heldCount: lifecycle.held_count,
+                heldTasks: lifecycle.held_tasks,
+                taskControls: lifecycle.task_controls,
+                error_code: "control_store_unavailable" as const,
+              };
+            }
+            return {
+              ...base,
+              globalAuthority: lifecycle.global_authority,
+              projection: lifecycle.projection,
+              cleanupState: lifecycle.cleanup_state,
+              heldCount: lifecycle.held_count,
+              heldTasks: lifecycle.held_tasks,
+              taskControls: lifecycle.task_controls,
+            };
+          } catch {
+            set.status = 500;
+            return {
+              ...base,
+              globalAuthority: "stopped" as const,
+              projection: "stopped" as const,
+              cleanupState: { status: "idle" as const, entries: [] },
+              heldCount: 0,
+              heldTasks: [],
+              taskControls: [],
+              error_code: "internal_error" as const,
+            };
+          }
         }
 
         const status = engine.getStatus();
         const degradedTargets = serializeDegradedTargets(engine);
+        let lifecycle: DispatchLifecycleStatus;
+        try {
+          lifecycle = await serializeLifecycleStatus(projectContext.path, engine, degradedTargets);
+        } catch {
+          const current = engine.getLifecycleStatus();
+          set.status = 500;
+          return {
+            ...status,
+            degraded: serializeDegradedSummary(degradedTargets),
+            degradedTargets,
+            globalAuthority: current.globalAuthority,
+            projection: current.projection,
+            cleanupState: current.cleanupState,
+            heldCount: 0,
+            heldTasks: [],
+            taskControls: [],
+            error_code: "internal_error" as const,
+          };
+        }
         return {
           ...status,
           degraded: serializeDegradedSummary(degradedTargets),
           degradedTargets,
+          globalAuthority: lifecycle.global_authority,
+          projection: lifecycle.projection,
+          cleanupState: lifecycle.cleanup_state,
+          heldCount: lifecycle.held_count,
+          heldTasks: lifecycle.held_tasks,
+          taskControls: lifecycle.task_controls,
         };
       })
 
@@ -707,7 +1226,7 @@ export function createAgentDispatchRoutes(options: AgentDispatchRouteOptions = {
       // AC: @dispatch-remote-branch-sync ac-degraded-status-api
       // AC: @runner-operator-surfaces ac-daemon-dispatch-active-api-includes-runner
       // AC: @runner-operator-surfaces ac-daemon-dispatch-queued-api-includes-runner
-      .get("/status", async ({ projectContext }) => {
+      .get("/status", async ({ projectContext, set }) => {
         const projectDir = projectContext.path;
         const engine = engines.get(projectDir);
         const engineStatus = engine?.getStatus();
@@ -804,7 +1323,30 @@ export function createAgentDispatchRoutes(options: AgentDispatchRouteOptions = {
         }
 
         const degradedTargets = engine ? serializeDegradedTargets(engine) : [];
-        return {
+        let lifecycle: DispatchLifecycleStatus;
+        try {
+          lifecycle = await serializeLifecycleStatus(projectDir, engine, degradedTargets);
+        } catch {
+          const current = engine?.getLifecycleStatus();
+          const data: DispatchLifecycleStatus = {
+            global_authority: current?.globalAuthority ?? "stopped",
+            projection: current?.projection ?? "stopped",
+            cleanup_state: current?.cleanupState ?? { status: "idle", entries: [] },
+            active_count: current?.activeCount ?? 0,
+            queue_depth: current?.queueDepth ?? 0,
+            held_count: 0,
+            held_tasks: [],
+            task_controls: [],
+            degraded_targets: degradedTargets,
+          };
+          set.status = 500;
+          return {
+            ok: false,
+            data,
+            error: { code: "internal_error" as const, ...CONTROL_ERROR_COPY.internal_error },
+          };
+        }
+        const publicStatus = {
           dispatch_enabled: engineStatus?.running ?? false,
           active_invocations:
             engineStatus?.invocations?.map((inv) => {
@@ -852,7 +1394,26 @@ export function createAgentDispatchRoutes(options: AgentDispatchRouteOptions = {
           // AC: @dispatch-remote-branch-sync ac-degraded-status-api
           degraded: serializeDegradedSummary(degradedTargets),
           degraded_targets: degradedTargets,
+          global_authority: lifecycle.global_authority,
+          projection: lifecycle.projection,
+          cleanup_state: lifecycle.cleanup_state,
+          held_count: lifecycle.held_count,
+          held_tasks: lifecycle.held_tasks,
+          task_controls: lifecycle.task_controls,
         };
+        const store = getOrCreateDispatchControlStore(projectDir);
+        if (hasRealShadowWorktree(projectDir) && store.getDegradedReason()) {
+          set.status = 503;
+          return {
+            ok: false,
+            data: lifecycle,
+            error: {
+              code: "control_store_unavailable" as const,
+              ...CONTROL_ERROR_COPY.control_store_unavailable,
+            },
+          };
+        }
+        return publicStatus;
       })
   );
 }
