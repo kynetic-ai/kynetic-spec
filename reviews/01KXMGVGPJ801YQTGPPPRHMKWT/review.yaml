@@ -118,6 +118,57 @@ checks:
     runner: manual adversarial review
     created_at: 2026-07-16T04:10:26.354Z
     completed_at: 2026-07-16T04:10:26.354Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: All 1050 matched files formatted correctly.
+    name: format
+    required: true
+    runner: npm run format:check
+    created_at: 2026-07-16T04:10:51.951Z
+    completed_at: 2026-07-16T04:10:51.951Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: 0 errors; repository baseline 702 warnings. Focused changed-file lint found 0 warnings and
+      0 errors.
+    name: lint
+    required: true
+    runner: npm run lint -- --quiet
+    created_at: 2026-07-16T04:10:55.297Z
+    completed_at: 2026-07-16T04:10:55.297Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: 0 warnings and 0 errors across all 3 changed files.
+    name: focused-lint
+    required: false
+    runner: npx oxlint changed test files
+    created_at: 2026-07-16T04:10:58.977Z
+    completed_at: 2026-07-16T04:10:58.977Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Shared package build and TypeScript noEmit check passed.
+    name: typecheck
+    required: true
+    runner: npm run typecheck
+    created_at: 2026-07-16T04:11:02.481Z
+    completed_at: 2026-07-16T04:11:02.481Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Fresh run: 2811 suites passed; 10739 tests passed, 3 skipped, 0 failed."
+    name: full test suite
+    required: true
+    runner: npm test -- --fresh
+    created_at: 2026-07-16T04:11:05.756Z
+    completed_at: 2026-07-16T04:11:05.756Z
 events:
   - _ulid: 01KXMGVGPHZH6B4J1E99N16H98
     actor: Jacob Chapel
@@ -202,6 +253,41 @@ events:
       status: pass
       name: review evidence log
     timestamp: 2026-07-16T04:10:27.008Z
+  - _ulid: 01KXMHXHDC96HT2JX7AR3P5V15
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: format
+    timestamp: 2026-07-16T04:10:52.204Z
+  - _ulid: 01KXMHXMP3FR2D0ECT33JJ20HN
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: lint
+    timestamp: 2026-07-16T04:10:55.555Z
+  - _ulid: 01KXMHXR9BCDYPKHQ3W2GPMMY9
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: focused-lint
+    timestamp: 2026-07-16T04:10:59.243Z
+  - _ulid: 01KXMHXVPCAT6SVV0GGK9HRYJX
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: typecheck
+    timestamp: 2026-07-16T04:11:02.732Z
+  - _ulid: 01KXMHXYWR3MS6VW0ZW4T315WP
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: full test suite
+    timestamp: 2026-07-16T04:11:06.008Z
 examined_commit: f38eb47aa73c3ed032195fea02fdfa0210dbfa24
 external_links: []
 lifecycle_state: open
@@ -214,5 +300,5 @@ subject:
 threads: []
 verdicts: []
 created_at: 2026-07-16T03:52:17.362Z
-updated_at: 2026-07-16T04:10:26.354Z
+updated_at: 2026-07-16T04:11:05.756Z
 notes: []
