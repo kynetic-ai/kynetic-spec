@@ -2,7 +2,141 @@ _ulid: 01KXN4RDS4Z5PDBW06KEWHD81H
 slugs: []
 title: Review canonical dispatch lifecycle API (cycle 6)
 author: Jacob Chapel
-checks: []
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: All 1052 files matched the formatter.
+    name: format
+    required: true
+    runner: npm run format:check
+    created_at: 2026-07-16T09:58:56.320Z
+    completed_at: 2026-07-16T09:58:56.320Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Repo-wide lint completed with 0 errors and 702 baseline warnings; focused oxlint over all
+      8 changed TypeScript/test files completed with 0 warnings and 0 errors.
+    name: lint
+    required: true
+    runner: npm run lint -- --quiet
+    created_at: 2026-07-16T09:58:59.700Z
+    completed_at: 2026-07-16T09:58:59.700Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Shared package build and TypeScript typecheck passed.
+    name: typecheck
+    required: true
+    runner: npm run typecheck
+    created_at: 2026-07-16T09:59:02.948Z
+    completed_at: 2026-07-16T09:59:02.948Z
+  - status: skipped
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Every observed suite completed green, including lifecycle (51), control events (34),
+      global lifecycle (23), task lifecycle (16), stop recovery (37), publication/admission (13),
+      spawn race (12), blackbox (6), engine (147), and meta (196 with 1 skipped). The wrapper again
+      did not exit after all suites finished and was interrupted after two quiet polls; this known
+      teardown issue is already tracked as
+      @task-investigate-npm-test-teardown-hang-after-green-suite-run. No test failures were
+      observed.
+    name: full test suite
+    required: true
+    runner: npm test -- --fresh
+    created_at: 2026-07-16T09:59:06.098Z
+    completed_at: 2026-07-16T09:59:06.098Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Reference validation passed with 6 existing deprecation warnings.
+    name: kspec validate refs
+    required: true
+    runner: kspec validate --refs --warnings-ok
+    created_at: 2026-07-16T09:59:09.264Z
+    completed_at: 2026-07-16T09:59:09.264Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Alignment validation passed with the repository baseline of 55 warnings (45 orphan, 10
+      mismatch).
+    name: kspec validate alignment
+    required: true
+    runner: kspec validate --alignment --warnings-ok
+    created_at: 2026-07-16T09:59:12.186Z
+    completed_at: 2026-07-16T09:59:12.186Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Completeness validation passed with the repository baseline of 327 warnings; task-owned
+      and inherited AC annotations were also manually audited against their criterion text.
+    name: kspec validate completeness
+    required: true
+    runner: kspec validate --completeness --warnings-ok
+    created_at: 2026-07-16T09:59:15.302Z
+    completed_at: 2026-07-16T09:59:15.302Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: 19 focused suites passed, 110 tests total, including all 51
+      daemon-agent-dispatch-lifecycle tests.
+    name: focused lifecycle tests
+    required: false
+    runner: npm test -- --fresh <focused dispatch suites>
+    created_at: 2026-07-16T09:59:18.464Z
+    completed_at: 2026-07-16T09:59:18.464Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: No whitespace errors.
+    name: diff whitespace
+    required: false
+    runner: git diff --check
+      89a72367b80e3c0e51fd4259d40f6abeac6bf447..cd4d2f46e13e390617ae1fe9e09ee74af8af4e43
+    created_at: 2026-07-16T09:59:22.565Z
+    completed_at: 2026-07-16T09:59:22.565Z
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Two concurrent canonical global-start requests shared startup; a one-shot first control
+      commit failure made the creator return 503 and roll back, while the joiner returned 200
+      applied. Final state had no published engine but durable global authority running.
+    name: concurrent cold-start persistence
+    required: true
+    runner: real-shadow in-process route probe
+    created_at: 2026-07-16T09:59:25.816Z
+    completed_at: 2026-07-16T09:59:25.816Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Files read: all 8 changed files plus surrounding dispatch-engine startup/stop/lifecycle
+      guards, control store/schema/shadow transaction code, task identity, task/spec/plan, and all 5
+      prior review cycles. Commands run: exact base/head diff and history; kspec lookups; format,
+      repo and focused lint, typecheck; refs/alignment/completeness validation; diff check; focused
+      and fresh full tests; deterministic real-shadow two-request probe. Claims verified: cycle-5
+      startup failure remains shared and unpublished; request tracing, error mapping, identity
+      normalization, schemas, and compatibility rows were inspected and exercised. Categories
+      searched: correctness, concurrency, edge cases, error handling, raw/path exposure and
+      security, test quality, integration/compatibility, and regressions. Finding: a post-start
+      one-shot commit failure lets a joined caller succeed after creator rollback, leaving durable
+      running authority and no engine. Shared/package guidance surfaces touched: none; neutrality
+      and artifact-regeneration checks are not applicable."
+    name: review evidence log
+    required: false
+    runner: manual review
+    created_at: 2026-07-16T09:59:29.003Z
+    completed_at: 2026-07-16T09:59:29.003Z
 events:
   - _ulid: 01KXN4RDRV0SVDRFYFEG0HP01D
     actor: Jacob Chapel
@@ -17,6 +151,90 @@ events:
       from: draft
       to: open
     timestamp: 2026-07-16T09:40:20.984Z
+  - _ulid: 01KXN5TS3A4MQ90XF99SXHGRE6
+    actor: codex-reviewer
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KXN5TRTNKTT5RH005M2MSTBB
+    timestamp: 2026-07-16T09:58:53.290Z
+  - _ulid: 01KXN5TWBNW8HPGVDEPE7FS4Y3
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: format
+    timestamp: 2026-07-16T09:58:56.629Z
+  - _ulid: 01KXN5TZN38PW5R4CEW1JD4TW3
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: lint
+    timestamp: 2026-07-16T09:59:00.003Z
+  - _ulid: 01KXN5V2RBX95VZSQHKCB91KE4
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: typecheck
+    timestamp: 2026-07-16T09:59:03.179Z
+  - _ulid: 01KXN5V5V0MS6NRMWEZGVNBMK5
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: skipped
+      name: full test suite
+    timestamp: 2026-07-16T09:59:06.336Z
+  - _ulid: 01KXN5V8XK26PS7PF76FB0QYHC
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate refs
+    timestamp: 2026-07-16T09:59:09.491Z
+  - _ulid: 01KXN5VBRVTPJBQE4DB5AZM6YE
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate alignment
+    timestamp: 2026-07-16T09:59:12.411Z
+  - _ulid: 01KXN5VETZF79MT0KP84VQD2Q4
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate completeness
+    timestamp: 2026-07-16T09:59:15.551Z
+  - _ulid: 01KXN5VHXE13RE9WKGM4DABPRQ
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: focused lifecycle tests
+    timestamp: 2026-07-16T09:59:18.702Z
+  - _ulid: 01KXN5VNXCE3A3YBTK2Z8BXHXN
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: diff whitespace
+    timestamp: 2026-07-16T09:59:22.796Z
+  - _ulid: 01KXN5VS3E3EKSHR8FRECG2ZNP
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: fail
+      name: concurrent cold-start persistence
+    timestamp: 2026-07-16T09:59:26.062Z
+  - _ulid: 01KXN5VW6K2Z6CK97WHNY1XE7R
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: review evidence log
+    timestamp: 2026-07-16T09:59:29.235Z
 examined_commit: cd4d2f46e13e390617ae1fe9e09ee74af8af4e43
 external_links: []
 lifecycle_state: open
@@ -26,8 +244,33 @@ subject:
   content_hash: ""
   ref: "@01KXH2PSQY6GK4S66S4TB6JVV3"
   shadow_commit: ""
-threads: []
+threads:
+  - _ulid: 01KXN5TRTNKTT5RH005M2MSTBB
+    anchor:
+      type: code
+      commit: cd4d2f46e13e390617ae1fe9e09ee74af8af4e43
+      line_end: 858
+      line_start: 838
+      path: packages/daemon/src/routes/agent-dispatch.ts
+      side: head
+    entries:
+      - _ulid: 01KXN5TRTN3XE10VE466JV7JDD
+        author: codex-reviewer
+        body: "MUST-FIX: startup is single-flight, but the post-start lifecycle action and rollback are not.
+          `ensureDispatchEngine` gives only the creator `created: true`; joined callers resume after
+          the same initialization and mutate the shared engine independently. A real-shadow
+          two-request probe held shared startup and injected a one-shot `control_commit_failed` for
+          the creator's first global-start mutation. The creator returned HTTP 503 and rolled the
+          engine back, while the joined caller returned HTTP 200 with `outcome: applied`; afterward
+          `getDispatchEngine(projectDir)` was undefined and committed global authority was
+          `running`. This violates the no-success-on-control-failure and cold-start rollback
+          guarantees, and affects the canonical route plus both start aliases. Serialize the entire
+          cold-start lifecycle transaction (including post-start mutation and rollback), or
+          otherwise prevent joiners from using an engine while rollback ownership is unsettled, and
+          add a behavioral concurrent post-start persistence-failure regression."
+        created_at: 2026-07-16T09:58:53.013Z
+    kind: blocker
 verdicts: []
 created_at: 2026-07-16T09:40:07.588Z
-updated_at: 2026-07-16T09:40:20.751Z
+updated_at: 2026-07-16T09:59:29.003Z
 notes: []
