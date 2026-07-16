@@ -24163,6 +24163,19 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-07-16T14:24:50.902Z
+  - _ulid: 01KXNQQYJT7FX8BK4XA6MKQEBE
+    type: friction
+    content: Verification tasks can be dispatched as dependency-satisfied while a surface they
+      explicitly require is owned by an unfinished task that is not in depends_on or the integration
+      target. In @task-verify-api-cli-projection, required UI conversion verification was
+      unavailable because @task-ui-dispatch-lifecycle-controls was needs_work and undeclared as a
+      dependency. This forces workers to choose between duplicating unreviewed owner work and
+      submitting incomplete surface coverage; plan derivation or readiness checks should detect
+      required-but-unavailable owner tasks.
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    created_at: 2026-07-16T15:11:54.970Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
