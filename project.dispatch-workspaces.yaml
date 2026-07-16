@@ -10149,12 +10149,12 @@ workspaces:
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-07-16T12:50:19.713Z
+      updated_at: 2026-07-16T12:50:38.396Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-07-16T12:50:19.713Z
+      updated_at: 2026-07-16T12:50:38.396Z
     integration:
       status: pending
       detail: null
@@ -10162,8 +10162,8 @@ workspaces:
       publication_mode: manual_merge
       target_branch: plan/plan-dispatch-lifecycle-pause-resume-and-stop-controls/01kxc2vx
       target_commit: f98c880ce3e3a884ef5af2161a87ff90f06f4146
-      updated_at: 2026-07-16T12:50:19.713Z
-    lifecycle_state: ready
+      updated_at: 2026-07-16T12:50:38.396Z
+    lifecycle_state: integrating
     resolved_base_branch: plan/plan-dispatch-lifecycle-pause-resume-and-stop-controls/01kxc2vx
     task_id: 01KXH2PT5BATGSN8TNY7W7NE55
     task_ref: "@01KXH2PT5BATGSN8TNY7W7NE55"
@@ -10171,18 +10171,23 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-07-16T12:23:43.376Z
-      last_reconciled_at: 2026-07-16T12:50:19.713Z
+      last_reconciled_at: 2026-07-16T12:50:38.396Z
       created_at: 2026-07-16T10:55:38.101Z
-      updated_at: 2026-07-16T12:50:19.713Z
+      updated_at: 2026-07-16T12:50:38.396Z
     workspace_id: dispatch-workspace-01KXH2PT5BATGSN8TNY7W7NE55
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
-      reviewer: null
+      reviewer:
+        branch_mode: detached
+        branch_ref: null
+        head: 83d11f75b9f53d2d822669cb37f56f77b9f4b017
+        last_seen_at: 2026-07-16T12:50:38.396Z
+        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-cli-dispatch-lifecycle-controls-01kxh2pt-review
       worker:
         branch_mode: branch
         branch_ref: dispatch/task/task-cli-dispatch-lifecycle-controls/01kxh2pt
-        head: ef7ffa06f604363415e906b2db0ccfbc3abb4afb
-        last_seen_at: 2026-07-16T12:23:12.309Z
+        head: 83d11f75b9f53d2d822669cb37f56f77b9f4b017
+        last_seen_at: 2026-07-16T12:50:38.396Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-cli-dispatch-lifecycle-controls-01kxh2pt
   - active_role: reviewer
     base_branch_point: f98c880ce3e3a884ef5af2161a87ff90f06f4146
