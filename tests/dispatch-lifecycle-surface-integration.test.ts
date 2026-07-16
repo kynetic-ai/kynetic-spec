@@ -232,6 +232,21 @@ describe("dispatch lifecycle API/CLI surface projection", { timeout: 90_000 }, (
     const capture = await captureSurfaceEvents(fixture);
     onTestFinished(capture.close);
 
+    const invalidBody = await requestSurface(fixture, "/api/agent/dispatch/control", {
+      scope: "global",
+      action: "restart",
+    });
+    expect(invalidBody.status, "invalid action API validation status").toBe(400);
+    expect(await invalidBody.json(), "invalid action API validation details").toEqual({
+      error: "validation_error",
+      details: [
+        {
+          field: "action",
+          message: expect.any(String),
+        },
+      ],
+    });
+
     const start = await requestSurface(fixture, "/api/agent/dispatch/control", {
       scope: "global",
       action: "start",
@@ -954,9 +969,56 @@ describe("dispatch lifecycle API/CLI surface projection", { timeout: 90_000 }, (
       task_ref: fixture.taskRef,
     });
     expect(taskResume.status, "matching task cleanup rejects task resume").toBe(409);
-    expect((await taskResume.json()).error.code, "matching task cleanup error code").toBe(
-      "invalid_transition",
-    );
+    expect(
+      await taskResume.json(),
+      "matching task cleanup failure includes current lifecycle status",
+    ).toEqual({
+      ok: false,
+      data: expect.objectContaining({
+        global_authority: "stopped",
+        projection: "stopped",
+        cleanup_state: {
+          status: "failed",
+          entries: [
+            {
+              cleanup_id: GLOBAL_CLEANUP_ID,
+              scope: "global",
+              status: "failed",
+              phase: "signals_sent",
+              error_code: "cancellation_failed",
+            },
+            {
+              cleanup_id: TASK_CLEANUP_ID,
+              scope: "task",
+              task_id: fixture.taskId,
+              status: "pending",
+              phase: "owned",
+            },
+          ],
+        },
+        task_controls: [
+          expect.objectContaining({
+            task_id: fixture.taskId,
+            mode: "stopped",
+            cleanup_state: {
+              status: "pending",
+              entries: [
+                expect.objectContaining({
+                  cleanup_id: TASK_CLEANUP_ID,
+                  task_id: fixture.taskId,
+                  status: "pending",
+                }),
+              ],
+            },
+          }),
+        ],
+      }),
+      error: {
+        code: "invalid_transition",
+        message: "Invalid dispatch lifecycle transition",
+        suggestion: "Refresh lifecycle status and choose an allowed action.",
+      },
+    });
 
     writeFileSync(
       join(fixture.project.kspecDir, "dispatch-control.yaml"),
