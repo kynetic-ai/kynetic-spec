@@ -155,6 +155,16 @@ checks:
     runner: kspec validate --completeness --warnings-ok
     created_at: 2026-07-16T20:42:56.687Z
     completed_at: 2026-07-16T20:42:56.687Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Chromium Playwright run passed 12 of 12 tests in 8.9 seconds after build.
+    name: focused browser suite
+    required: true
+    runner: npm run test:e2e -- tests/e2e/dispatch-lifecycle.spec.ts
+    created_at: 2026-07-16T20:43:02.432Z
+    completed_at: 2026-07-16T20:43:02.432Z
 events:
   - _ulid: 01KXP9HCR5RXH7NE50P26WHG71
     actor: Jacob Chapel
@@ -316,6 +326,13 @@ events:
       status: pass
       name: kspec validate completeness
     timestamp: 2026-07-16T20:42:56.944Z
+  - _ulid: 01KXPAP8NKWHFFZ5E81SP2HZEJ
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: focused browser suite
+    timestamp: 2026-07-16T20:43:02.707Z
 examined_commit: 4bedaff5093dbef95ea81efb52b33c53be08a837
 external_links: []
 lifecycle_state: open
@@ -440,5 +457,5 @@ threads:
     kind: nit
 verdicts: []
 created_at: 2026-07-16T20:22:54.480Z
-updated_at: 2026-07-16T20:42:56.687Z
+updated_at: 2026-07-16T20:43:02.432Z
 notes: []
