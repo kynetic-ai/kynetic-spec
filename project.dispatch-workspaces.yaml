@@ -10710,3 +10710,80 @@ workspaces:
         head: da3bae8d95d5c41771751ce68f54e04cdd21a15b
         last_seen_at: 2026-07-16T13:24:38.706Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-ui-dispatch-lifecycle-controls-01kxh2pv
+  - active_role: null
+    base_branch_point: 87ba5a40db4a3a66c21c89c9ff90b28d9177727c
+    bootstrap:
+      status: not_run
+      canonicalBranchHead: null
+      configHash: null
+      failureMessage: null
+      invalidationReasons: []
+      lastRole: null
+      lastRunAt: null
+      roleStates:
+        reviewer:
+          status: not_run
+          canonicalBranchHead: null
+          configHash: null
+          failureMessage: null
+          invalidationReasons: []
+          lastRunAt: null
+          steps: []
+        worker:
+          status: not_run
+          canonicalBranchHead: null
+          configHash: null
+          failureMessage: null
+          invalidationReasons: []
+          lastRunAt: null
+          steps: []
+      steps: []
+    branch_provenance:
+      adopted_at: null
+      adopted_from: null
+      ownership: dispatcher-managed
+      rehydrated: null
+      remote_ref: null
+      source: provisioned
+    canonical_branch: dispatch/task/stabilize-resistant-process-exit-test/01kxnjtv
+    canonical_branch_head: 87ba5a40db4a3a66c21c89c9ff90b28d9177727c
+    cleanup:
+      status: not_scheduled
+      detail: null
+      eligible: false
+      reason: null
+      updated_at: 2026-07-16T13:53:45.616Z
+    health:
+      status: healthy
+      issues: []
+      summary: Workspace record matches current git branch and worktree state.
+      updated_at: 2026-07-16T13:53:45.616Z
+    integration:
+      status: pending
+      detail: null
+      outcome: manual_merge
+      publication_mode: manual_merge
+      target_branch: dev
+      target_commit: 87ba5a40db4a3a66c21c89c9ff90b28d9177727c
+      updated_at: 2026-07-16T13:53:45.616Z
+    lifecycle_state: ready
+    resolved_base_branch: dev
+    task_id: 01KXNJTVMJHY7FWVZ3SFVDGACM
+    task_ref: "@01KXNJTVMJHY7FWVZ3SFVDGACM"
+    task_slug: stabilize-resistant-process-exit-test
+    timestamps:
+      closed_at: null
+      last_active_at: null
+      last_reconciled_at: 2026-07-16T13:53:45.616Z
+      created_at: 2026-07-16T13:53:45.616Z
+      updated_at: 2026-07-16T13:53:45.616Z
+    workspace_id: dispatch-workspace-01KXNJTVMJHY7FWVZ3SFVDGACM
+    worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
+    worktrees:
+      reviewer: null
+      worker:
+        branch_mode: branch
+        branch_ref: dispatch/task/stabilize-resistant-process-exit-test/01kxnjtv
+        head: 87ba5a40db4a3a66c21c89c9ff90b28d9177727c
+        last_seen_at: 2026-07-16T13:53:45.616Z
+        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/stabilize-resistant-process-exit-test-01kxnjtv
