@@ -80820,7 +80820,7 @@ runs:
     started_at: 2026-07-16T10:30:08.567Z
     completed_at: 2026-07-16T10:32:25.718Z
   - _ulid: 01KXN93SG8HDYBFH4YP1A41Q58
-    status: active
+    status: completed
     current_step: 3
     initiated_by: Jacob Chapel
     step_results:
@@ -80855,7 +80855,11 @@ runs:
       - status: completed
         step_index: 3
         started_at: 2026-07-16T10:58:32.579Z
-        completed_at: 2026-07-16T10:58:32.579Z
+        completed_at: 2026-07-16T10:58:41.248Z
+        notes: No captures created. Every high-confidence item was already tracked, and the only potentially
+          novel issue did not meet the repeatability/certainty threshold. Avoided duplicate inbox
+          items, tasks, and observations.
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-07-16T10:56:14.344Z
+    completed_at: 2026-07-16T10:58:41.248Z
