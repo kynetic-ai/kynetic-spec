@@ -30,6 +30,19 @@ checks:
     runner: canonical-plan-review
     created_at: 2026-07-16T22:43:02.858Z
     completed_at: 2026-07-16T22:43:02.858Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: CLI registration at 3f22e6c9 contains lifecycle start pause resume stop status watch and
+      canonical task controls. Repository-wide command search found no workspace list show reset or
+      cleanup command. The plan keeps workspace configuration and evidence cleanup separate from
+      lifecycle admission and cancellation.
+    name: Lifecycle and workspace boundary
+    required: true
+    runner: canonical-plan-review
+    created_at: 2026-07-16T22:43:12.628Z
+    completed_at: 2026-07-16T22:43:12.628Z
 events:
   - _ulid: 01KXPHB4W525RSJNXKZZMG0HTJ
     actor: Jacob Chapel
@@ -117,6 +130,13 @@ events:
       status: pass
       name: Lifecycle source accuracy
     timestamp: 2026-07-16T22:43:03.209Z
+  - _ulid: 01KXPHJA1SZD3BDEQ27B5TQQFX
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: Lifecycle and workspace boundary
+    timestamp: 2026-07-16T22:43:13.081Z
 examined_commit: null
 external_links: []
 lifecycle_state: open
@@ -549,5 +569,5 @@ threads:
     kind: blocker
 verdicts: []
 created_at: 2026-07-16T22:39:18.405Z
-updated_at: 2026-07-16T22:43:02.858Z
+updated_at: 2026-07-16T22:43:12.628Z
 notes: []
