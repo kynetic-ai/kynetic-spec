@@ -80048,7 +80048,7 @@ runs:
     completed_at: 2026-07-16T02:53:11.965Z
   - _ulid: 01KXMDZK5KZ8S40FK21CW2HARR
     status: active
-    current_step: 3
+    current_step: 4
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -80091,7 +80091,23 @@ runs:
       - status: completed
         step_index: 3
         started_at: 2026-07-16T03:03:45.692Z
-        completed_at: 2026-07-16T03:03:45.692Z
+        completed_at: 2026-07-16T03:04:23.548Z
+        notes: "Proposals: A (medium, inbox): add idempotent review-write support or semantic duplicate
+          detection for checks, verdicts, and threads within one review/version, preventing repeated
+          reviewer invocations from leaving indistinguishable open copies. B (small spec
+          clarification, requires approval): define the payload scope/identity contract for
+          task-control failures that occur before canonical task identity exists; explicitly
+          standardize the identity-neutral event used by this fix or choose another representable
+          model. C (small/medium task): harden resistant-descendant process inspection so /proc
+          disappearance between enumeration and lstat is treated as normal process exit, with a
+          deterministic race regression test. D (success observation): record the injectable
+          store-settlement barrier plus engine EventBus/callback capture as the preferred proof for
+          durable exactly-once emission ordering. Stale workflow runs need no new capture because
+          pruning/cleanup work is already tracked."
+      - status: completed
+        step_index: 4
+        started_at: 2026-07-16T03:04:23.548Z
+        completed_at: 2026-07-16T03:04:23.548Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-07-16T03:02:05.235Z
