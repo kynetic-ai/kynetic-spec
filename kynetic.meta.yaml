@@ -24257,6 +24257,25 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-07-16T20:18:30.967Z
+  - _ulid: 01KXPCEF85A962GPAKXZDMP2MD
+    type: success
+    content: State-machine UI regression matrices are strongest when every scenario asserts the exact
+      scoped control set and related counts, not only that allowed controls are visible. Exact-set
+      assertions made extra prohibited actions fail and exposed incomplete lifecycle coverage during
+      review.
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    created_at: 2026-07-16T21:13:44.453Z
+  - _ulid: 01KXPCEFJVE4D67EF7J4Z2D1S0
+    type: success
+    content: Dimension-specific Playwright coverage should set the viewport explicitly and assert
+      page.viewportSize() at runtime. Relying on a named desktop device silently ran the lifecycle
+      desktop matrix at 1280x720 instead of the required 1440x900.
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    created_at: 2026-07-16T21:13:44.795Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
