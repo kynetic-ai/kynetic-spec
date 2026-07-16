@@ -420,6 +420,12 @@ events:
     payload:
       thread_ulid: 01KXPAMH1KCRT2F1NSSY9KPA9B
     timestamp: 2026-07-16T21:09:48.148Z
+  - _ulid: 01KXPC7C9KVE7HE2QSRCRX1H60
+    actor: Jacob Chapel
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KXPAMDPEXZAV2NY1N27JN52M
+    timestamp: 2026-07-16T21:09:52.051Z
 examined_commit: 4bedaff5093dbef95ea81efb52b33c53be08a837
 external_links: []
 lifecycle_state: closed
@@ -538,6 +544,12 @@ threads:
           matrix asserts page.viewportSize() exactly; narrow cases continue to override it with
           390x844."
         created_at: 2026-07-16T21:09:36.093Z
+      - _ulid: 01KXPC7C0CD1X9PEX46M649G2M
+        author: Jacob Chapel
+        body: "Fixed in b28c29557d: the describe uses an explicit 1440x900 desktop viewport and the desktop
+          matrix asserts page.viewportSize() exactly; narrow cases continue to override it with
+          390x844."
+        created_at: 2026-07-16T21:09:51.756Z
     kind: blocker
     resolved_at: 2026-07-16T21:09:41.959Z
     resolved_by: Jacob Chapel
@@ -591,5 +603,5 @@ verdicts:
     role: reviewer
     created_at: 2026-07-16T20:43:50.975Z
 created_at: 2026-07-16T20:22:54.480Z
-updated_at: 2026-07-16T21:09:47.897Z
+updated_at: 2026-07-16T21:09:51.756Z
 notes: []
