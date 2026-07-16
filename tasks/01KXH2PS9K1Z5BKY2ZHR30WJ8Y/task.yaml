@@ -131,7 +131,7 @@ tags:
   - events
   - schema
 vcs_refs: []
-review_ref: "@01KXM9QJPK2AEF4NSMVN5SMRJ2"
+review_ref: "@01KXMEE5104DV3HNC56B94W19Z"
 submission_linkage:
   review_url: null
   branch: dispatch/task/task-dispatch-lifecycle-events/01kxh2ps
@@ -239,6 +239,13 @@ history:
         previous: 2026-07-16T01:38:27.757Z
     command: task-submit
     timestamp: 2026-07-16T03:01:18.707Z
+  - author: Jacob Chapel
+    changes:
+      review_ref:
+        new: "@01KXMEE5104DV3HNC56B94W19Z"
+        previous: "@01KXM9QJPK2AEF4NSMVN5SMRJ2"
+    command: review-link
+    timestamp: 2026-07-16T03:10:04.706Z
 created_at: 2026-07-14T19:47:18.963Z
 started_at: 2026-07-16T02:23:22.704Z
 submitted_at: 2026-07-16T03:01:18.707Z
