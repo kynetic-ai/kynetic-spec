@@ -241,7 +241,7 @@
 
 		<!-- Active Invocations Section -->
 		<!-- AC: @ui-agent-dispatch ac-2 -->
-		{#if dispatchStatus && dispatchStatus.activeInvocations.length > 0}
+		{#if dispatchStatus && (dispatchStatus.globalAuthority === 'running' || dispatchStatus.activeInvocations.length > 0)}
 			<section data-testid="active-invocations-section" aria-live="polite" aria-relevant="additions removals">
 				<h2 class="text-lg font-semibold mb-3">Active Invocations</h2>
 				{#if dispatchStatus.activeInvocations.length > 0}

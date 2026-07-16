@@ -35,7 +35,6 @@ import {
   type AgentDispatchStatus,
 } from "../../packages/web-ui/src/lib/api";
 import {
-  HARD_STOP_CONFIRMATION,
   getGlobalLifecycleActions,
   getTaskLifecycleActions,
   getLifecycleBadge,
@@ -127,6 +126,20 @@ export function lifecycleStatusFixture(overrides: Record<string, unknown> = {}) 
   };
 }
 
+function lifecycleMutationData(status = lifecycleStatusFixture()) {
+  return {
+    global_authority: status.global_authority,
+    projection: status.projection,
+    cleanup_state: status.cleanup_state,
+    active_count: status.active_count,
+    queue_depth: status.queue_depth,
+    held_count: status.held_count,
+    held_tasks: status.held_tasks,
+    task_controls: status.task_controls,
+    degraded_targets: status.degraded_targets,
+  };
+}
+
 export function renderLifecycleConsumer(status: AgentDispatchStatus) {
   return {
     badge: getLifecycleBadge(status),
@@ -152,7 +165,7 @@ export function recordControlRequest(responseBody = lifecycleStatusFixture()) {
         json: async () => ({
           ok: true,
           data: {
-            ...responseBody,
+            ...lifecycleMutationData(responseBody),
             outcome: "applied",
             ...(body?.scope === "task" ? { task_id: taskB, task_ref: "@task-b" } : {}),
           },
@@ -347,6 +360,14 @@ describe("dispatch lifecycle wire conversion", () => {
     expect(() => parseAgentDispatchStatusWire(lifecycleStatusFixture(overrides))).toThrow();
   });
 
+  it("rejects unknown public status root fields before lifecycle projection", () => {
+    expect(() =>
+      parseAgentDispatchStatusWire(
+        lifecycleStatusFixture({ unexpected_lifecycle_detail: "must not be discarded" }),
+      ),
+    ).toThrow();
+  });
+
   it.each([
     {
       status: "pending",
@@ -515,7 +536,6 @@ describe("matching-scope lifecycle controls", () => {
 });
 
 describe("lifecycle API behavior", () => {
-  // AC: @ui-agent-dispatch ac-lifecycle-controls-labelled
   it("sends canonical global and task requests and converts canonical task response identity", async () => {
     const requests = recordControlRequest();
     await controlDispatchLifecycle({ scope: "global", action: "pause" });
@@ -531,6 +551,32 @@ describe("lifecycle API behavior", () => {
     expect(taskResult.taskId).toBe(taskB);
     expect(taskResult.taskRef).toBe("@task-b");
     expect(taskResult.status.globalAuthority).toBe("paused");
+  });
+
+  it.each([
+    {
+      label: "response envelope",
+      mutate: (body: Record<string, unknown>) => ({ ...body, unexpected: true }),
+    },
+    {
+      label: "response data",
+      mutate: (body: Record<string, unknown>) => ({
+        ...body,
+        data: { ...(body.data as Record<string, unknown>), unexpected: true },
+      }),
+    },
+  ])("rejects unknown mutation $label fields", async ({ mutate }) => {
+    const body = {
+      ok: true,
+      data: { ...lifecycleMutationData(), outcome: "applied" },
+      error: null,
+    };
+    vi.stubGlobal(
+      "fetch",
+      vi.fn(async () => ({ ok: true, status: 200, json: async () => mutate(body) }) as Response),
+    );
+
+    await expect(controlDispatchLifecycle({ scope: "global", action: "pause" })).rejects.toThrow();
   });
 
   it("fetches and converts the public status response", async () => {
@@ -554,7 +600,7 @@ describe("lifecycle API behavior", () => {
             status: 409,
             json: async () => ({
               ok: false,
-              data: lifecycleStatusFixture(),
+              data: lifecycleMutationData(),
               error: { code: "invalid_transition", message: "private daemon detail" },
             }),
           }) as Response,
@@ -578,7 +624,7 @@ describe("lifecycle API behavior", () => {
             status: 409,
             json: async () => ({
               ok: false,
-              data: lifecycleStatusFixture(),
+              data: lifecycleMutationData(),
               error: {
                 code: "invalid_transition",
                 message: "/private/worktree/raw failure",
@@ -639,18 +685,5 @@ describe("lifecycle API behavior", () => {
     expect(status.projection).toBe("draining");
     expect(status.degradedTargets).toHaveLength(1);
     expect(status.heldTasks).toHaveLength(1);
-  });
-
-  // AC: @ui-agent-dispatch ac-hard-stop-confirmation-cancellation
-  // AC: @ui-agent-dispatch ac-hard-stop-confirmation-evidence
-  // AC: @ui-agent-dispatch ac-hard-stop-confirmation-cancelled
-  // AC: @ui-agent-dispatch ac-lifecycle-focus-retained
-  // AC: @ui-agent-dispatch ac-lifecycle-live-update
-  it("exposes the fixed sanitized hard-stop confirmation contract", () => {
-    expect(HARD_STOP_CONFIRMATION).toEqual({
-      title: "Confirm hard stop",
-      description:
-        "Active matching invocations will be cancelled. Session, branch, workspace, worktree, snapshot, and audit evidence will be preserved.",
-    });
   });
 });

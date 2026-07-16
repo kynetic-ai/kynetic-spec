@@ -24,6 +24,7 @@
 	let confirmationOpen = $state(false);
 	let pendingStop = $state(false);
 	let invokingControl = $state<HTMLButtonElement | null>(null);
+	let controlsElement = $state<HTMLDivElement | null>(null);
 	let liveStatus = $state('');
 	let actions = $derived(getGlobalLifecycleActions(status));
 	let badge = $derived(getLifecycleBadge(status));
@@ -39,6 +40,24 @@
 		await runAction(action);
 	}
 
+	async function restoreLifecycleFocus(preferInvoking = false) {
+		await tick();
+		requestAnimationFrame(() => {
+			const replacement = controlsElement?.isConnected
+				? controlsElement.querySelector<HTMLButtonElement>('button:not([disabled])')
+				: null;
+			const connectedInvoker = invokingControl?.isConnected ? invokingControl : null;
+			(preferInvoking ? connectedInvoker ?? replacement : replacement ?? connectedInvoker)?.focus();
+			invokingControl = null;
+		});
+	}
+
+	async function cancelConfirmation() {
+		confirmationOpen = false;
+		pendingStop = false;
+		await restoreLifecycleFocus(true);
+	}
+
 	async function runAction(action: GlobalLifecycleAction) {
 		try {
 			await onAction(action);
@@ -50,7 +69,7 @@
 		} finally {
 			confirmationOpen = false;
 			pendingStop = false;
-			requestAnimationFrame(() => invokingControl?.focus());
+			await restoreLifecycleFocus();
 		}
 	}
 </script>
@@ -79,7 +98,7 @@
 			</div>
 		</div>
 
-		<div class="flex flex-wrap gap-2" aria-label="Dispatch lifecycle controls">
+		<div bind:this={controlsElement} class="flex flex-wrap gap-2" aria-label="Dispatch lifecycle controls">
 			{#each actions as action}
 				<Button
 					size="sm"
@@ -87,6 +106,7 @@
 					disabled={isToggling || isStaticMode()}
 					onclick={(event) => invoke(action, event.currentTarget as HTMLButtonElement)}
 					aria-label={getGlobalActionLabel(status, action)}
+					data-lifecycle-control
 					data-testid={`dispatch-action-${action}`}
 				>
 					{#if isToggling}
@@ -131,11 +151,7 @@
 			<Button
 				variant="outline"
 				disabled={isToggling}
-				onclick={() => {
-					confirmationOpen = false;
-					pendingStop = false;
-					requestAnimationFrame(() => invokingControl?.focus());
-				}}
+				onclick={cancelConfirmation}
 				data-testid="dispatch-confirm-cancel"
 			>Cancel</Button>
 			<Button

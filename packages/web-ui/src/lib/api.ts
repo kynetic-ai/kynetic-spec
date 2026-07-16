@@ -1028,6 +1028,41 @@ const LIFECYCLE_CAMEL_KEYS = [
   "degradedTargets",
 ] as const;
 
+const AGENT_STATUS_WIRE_KEYS = [
+  "dispatch_enabled",
+  "active_invocations",
+  "queued_invocations",
+  "queue_depth",
+  "agent_definitions",
+  "degraded",
+  "global_authority",
+  "projection",
+  "cleanup_state",
+  "active_count",
+  "held_count",
+  "held_tasks",
+  "task_controls",
+  "degraded_targets",
+] as const;
+
+const LIFECYCLE_STATUS_WIRE_KEYS = [
+  "global_authority",
+  "projection",
+  "cleanup_state",
+  "active_count",
+  "queue_depth",
+  "held_count",
+  "held_tasks",
+  "task_controls",
+  "degraded_targets",
+] as const;
+
+function rejectUnknownKeys(record: WireRecord, keys: readonly string[], label: string): void {
+  const allowed = new Set(keys);
+  const unknown = Object.keys(record).find((key) => !allowed.has(key));
+  if (unknown) throw new Error(`Invalid ${label}: unknown field ${unknown}`);
+}
+
 function rejectCamelKeys(record: WireRecord, keys: readonly string[], label: string): void {
   for (const key of keys) {
     if (key in record) throw new Error(`Invalid dispatch status: mixed-case ${label}.${key}`);
@@ -1109,6 +1144,10 @@ function mapTaskControl(
   };
 }
 
+function lifecycleStatusWireFields(record: WireRecord): Record<string, unknown> {
+  return Object.fromEntries(LIFECYCLE_STATUS_WIRE_KEYS.map((key) => [key, record[key]]));
+}
+
 function parseLifecycleWire(record: WireRecord): DispatchLifecycleStatus | null {
   for (const key of LIFECYCLE_CAMEL_KEYS) {
     if (key in record) throw new Error(`Invalid dispatch status: mixed-case field ${key}`);
@@ -1186,6 +1225,7 @@ function mapAgentDefinition(value: unknown): AgentDispatchStatus["agentDefinitio
 
 export function parseAgentDispatchStatusWire(value: unknown): AgentDispatchStatus {
   const record = wireRecord(value, "root");
+  rejectUnknownKeys(record, AGENT_STATUS_WIRE_KEYS, "dispatch status");
   if (typeof record.dispatch_enabled !== "boolean") {
     throw new Error("Invalid dispatch status: dispatch_enabled");
   }
@@ -1404,17 +1444,23 @@ export function formatDispatchLifecycleError(error: unknown): string {
 
 function throwLifecycleError(body: unknown): never {
   const envelope = wireRecord(body, "lifecycle error");
+  rejectUnknownKeys(envelope, ["ok", "data", "error"], "lifecycle error envelope");
   const error = wireRecord(envelope.error ?? {}, "lifecycle error detail");
+  rejectUnknownKeys(error, ["code", "message", "suggestion"], "lifecycle error detail");
   const parsedCode = DispatchControlErrorCodeSchema.safeParse(error.code);
   const code = parsedCode.success ? parsedCode.data : "internal_error";
   const status = envelope.data
-    ? parseAgentDispatchStatusWire({
-        dispatch_enabled: false,
-        active_invocations: [],
-        queued_invocations: [],
-        agent_definitions: [],
-        ...wireRecord(envelope.data, "lifecycle error status"),
-      })
+    ? (() => {
+        const data = wireRecord(envelope.data, "lifecycle error status");
+        rejectUnknownKeys(data, LIFECYCLE_STATUS_WIRE_KEYS, "lifecycle error status");
+        return parseAgentDispatchStatusWire({
+          dispatch_enabled: false,
+          active_invocations: [],
+          queued_invocations: [],
+          agent_definitions: [],
+          ...data,
+        });
+      })()
     : undefined;
   const copy = LIFECYCLE_ERROR_COPY[code];
   throw new DispatchLifecycleApiError(code, copy.suggestion, status);
@@ -1459,13 +1505,22 @@ export async function controlDispatchLifecycle(
     throwLifecycleError(body);
   }
   const envelope = wireRecord(body, "lifecycle response");
+  rejectUnknownKeys(envelope, ["ok", "data", "error"], "lifecycle response envelope");
+  if (envelope.ok !== true || envelope.error !== null) {
+    throw new Error("Invalid lifecycle response: envelope");
+  }
   const data = wireRecord(envelope.data, "lifecycle response data");
+  rejectUnknownKeys(
+    data,
+    [...LIFECYCLE_STATUS_WIRE_KEYS, "outcome", "task_id", "task_ref"],
+    "lifecycle response data",
+  );
   const status = parseAgentDispatchStatusWire({
     dispatch_enabled: data.global_authority === "running",
     active_invocations: [],
     queued_invocations: [],
     agent_definitions: [],
-    ...data,
+    ...lifecycleStatusWireFields(data),
   });
   if (data.outcome !== "applied" && data.outcome !== "noop") {
     throw new Error("Invalid lifecycle response: outcome");

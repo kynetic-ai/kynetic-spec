@@ -16,6 +16,65 @@
 
 import { test, expect } from "./fixtures/test-base";
 
+async function routeLifecycleControls(
+  page: import("@playwright/test").Page,
+  initialAuthority: "stopped" | "running" | "paused",
+) {
+  let authority = initialAuthority;
+
+  await page.route("**/api/agent/status", async (route) => {
+    await route.fulfill({
+      status: 200,
+      contentType: "application/json",
+      body: JSON.stringify({
+        dispatch_enabled: authority === "running",
+        active_invocations: [],
+        queued_invocations: [],
+        agent_definitions: [],
+        degraded: { active: false, reason: "", enteredAt: null },
+        global_authority: authority,
+        projection: authority,
+        cleanup_state: { status: "idle", entries: [] },
+        active_count: 0,
+        queue_depth: 0,
+        held_count: 0,
+        held_tasks: [],
+        task_controls: [],
+        degraded_targets: [],
+      }),
+    });
+  });
+  await page.route("**/api/agent/dispatch/control", async (route) => {
+    const body = route.request().postDataJSON() as { action: string };
+    authority =
+      body.action === "start" || body.action === "resume"
+        ? "running"
+        : body.action === "pause"
+          ? "paused"
+          : "stopped";
+    await route.fulfill({
+      status: 200,
+      contentType: "application/json",
+      body: JSON.stringify({
+        ok: true,
+        data: {
+          global_authority: authority,
+          projection: authority,
+          cleanup_state: { status: "idle", entries: [] },
+          active_count: 0,
+          queue_depth: 0,
+          held_count: 0,
+          held_tasks: [],
+          task_controls: [],
+          degraded_targets: [],
+          outcome: "applied",
+        },
+        error: null,
+      }),
+    });
+  });
+}
+
 test.describe("Agent and Dispatch View", () => {
   test.describe("Dispatch Stopped State (AC-3)", () => {
     // AC: @ui-agent-dispatch ac-3
@@ -36,8 +95,7 @@ test.describe("Agent and Dispatch View", () => {
     }) => {
       await page.goto("/agents");
 
-      const indicator = page.getByTestId("dispatch-indicator-stopped");
-      await expect(indicator).toBeVisible();
+      await expect(page.getByTestId("dispatch-authority")).toHaveText("stopped");
     });
 
     // AC: @ui-agent-dispatch ac-3
@@ -168,8 +226,7 @@ test.describe("Agent and Dispatch View", () => {
       const badge = page.getByTestId("dispatch-status-badge");
       await expect(badge).toContainText("Running");
 
-      const indicator = page.getByTestId("dispatch-indicator-running");
-      await expect(indicator).toBeVisible();
+      await expect(page.getByTestId("dispatch-authority")).toHaveText("running");
 
       // Clean up
       await request.post(`${daemon.baseUrl}/api/agent/dispatch`, {
@@ -188,9 +245,8 @@ test.describe("Agent and Dispatch View", () => {
       await page.goto("/agents");
       await expect(page.getByTestId("agents-loading")).toHaveCount(0);
 
-      const toggleButton = page.getByTestId("dispatch-toggle-button");
-      await expect(toggleButton).toBeVisible();
-      await expect(toggleButton).toContainText("Stop");
+      await expect(page.getByTestId("dispatch-action-stop")).toBeVisible();
+      await expect(page.getByTestId("dispatch-action-pause")).toBeVisible();
 
       // Clean up
       await request.post(`${daemon.baseUrl}/api/agent/dispatch`, {
@@ -205,14 +261,14 @@ test.describe("Agent and Dispatch View", () => {
         data: { action: "start" },
         headers: { "Content-Type": "application/json" },
       });
+      await routeLifecycleControls(page, "running");
 
       await page.goto("/agents");
       await expect(page.getByTestId("agents-loading")).toHaveCount(0);
 
       // Click stop
-      const toggleButton = page.getByTestId("dispatch-toggle-button");
-      await expect(toggleButton).toBeVisible();
-      await toggleButton.click();
+      await page.getByTestId("dispatch-action-stop").click();
+      await page.getByRole("button", { name: "Confirm" }).click();
 
       // Wait for status to update
       const badge = page.getByTestId("dispatch-status-badge");
@@ -221,21 +277,78 @@ test.describe("Agent and Dispatch View", () => {
 
     // AC: @ui-agent-dispatch ac-2
     test("clicking start button starts dispatch", async ({ page, daemon: _daemon }) => {
+      await routeLifecycleControls(page, "stopped");
       await page.goto("/agents");
       await expect(page.getByTestId("agents-loading")).toHaveCount(0);
 
-      const toggleButton = page.getByTestId("dispatch-toggle-button");
-      await expect(toggleButton).toContainText("Start");
+      const startButton = page.getByTestId("dispatch-action-start");
+      await expect(startButton).toContainText("Start");
 
-      await toggleButton.click();
+      await startButton.click();
 
       // Wait for status to update
       const badge = page.getByTestId("dispatch-status-badge");
       await expect(badge).toContainText("Running");
 
       // Clean up - stop dispatch
-      await toggleButton.click();
+      await page.getByTestId("dispatch-action-stop").click();
+      await page.getByRole("button", { name: "Confirm" }).click();
       await expect(badge).toContainText("Stopped");
+    });
+
+    // AC: @ui-agent-dispatch ac-hard-stop-confirmation-cancellation
+    // AC: @ui-agent-dispatch ac-hard-stop-confirmation-evidence
+    // AC: @ui-agent-dispatch ac-hard-stop-confirmation-cancelled
+    // AC: @ui-agent-dispatch ac-lifecycle-controls-labelled
+    // AC: @ui-agent-dispatch ac-lifecycle-focus-retained
+    // AC: @ui-agent-dispatch ac-lifecycle-live-update
+    test("provides behavioral confirmation, cancellation, focus, and live updates", async ({
+      page,
+      daemon,
+      request,
+    }) => {
+      await request.post(`${daemon.baseUrl}/api/agent/dispatch`, {
+        data: { action: "start" },
+        headers: { "Content-Type": "application/json" },
+      });
+      await routeLifecycleControls(page, "running");
+      let controlRequests = 0;
+      page.on("request", (interceptedRequest) => {
+        if (
+          interceptedRequest.method() === "POST" &&
+          new URL(interceptedRequest.url()).pathname === "/api/agent/dispatch/control"
+        ) {
+          controlRequests += 1;
+        }
+      });
+
+      await page.goto("/agents");
+      await expect(page.getByTestId("agents-loading")).toHaveCount(0);
+
+      const stopButton = page.getByRole("button", { name: "Hard stop", exact: true });
+      await stopButton.click();
+      const dialog = page.getByRole("dialog", { name: "Confirm hard stop" });
+      await expect(dialog).toContainText("Active matching invocations will be cancelled.");
+      await expect(dialog).toContainText(
+        "Session, branch, workspace, worktree, snapshot, and audit evidence will be preserved.",
+      );
+      await dialog.getByRole("button", { name: "Cancel" }).click();
+      await expect(dialog).toHaveCount(0);
+      await expect(stopButton).toBeFocused();
+      expect(controlRequests).toBe(0);
+
+      await page.getByRole("button", { name: "Pause", exact: true }).click();
+      const resumeButton = page.getByRole("button", { name: "Resume", exact: true });
+      await expect(resumeButton).toBeFocused();
+      await expect(page.getByTestId("dispatch-live-status")).toContainText(
+        "Dispatch status changed: Paused",
+      );
+      expect(controlRequests).toBe(1);
+
+      await request.post(`${daemon.baseUrl}/api/agent/dispatch`, {
+        data: { action: "stop" },
+        headers: { "Content-Type": "application/json" },
+      });
     });
   });
 
@@ -280,10 +393,13 @@ test.describe("Agent and Dispatch View", () => {
 
       await page.goto("/agents");
 
-      // Error message should be displayed with API error message
+      // Raw daemon details must not cross the lifecycle UI boundary.
       const errorMessage = page.getByTestId("error-message");
       await expect(errorMessage).toBeVisible();
-      await expect(errorMessage).toContainText("Daemon unavailable");
+      await expect(errorMessage).toContainText(
+        "Dispatch lifecycle operation failed. Retry after checking daemon health.",
+      );
+      await expect(errorMessage).not.toContainText("Daemon unavailable");
     });
   });
 

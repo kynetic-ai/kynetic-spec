@@ -23,6 +23,7 @@
 	let { status, task, onAction, isToggling }: Props = $props();
 	let confirmationOpen = $state(false);
 	let invokingControl = $state<HTMLButtonElement | null>(null);
+	let rowElement = $state<HTMLDivElement | null>(null);
 	let liveStatus = $state('');
 	let actions = $derived(getTaskLifecycleActions(status, task.taskId));
 	let isHeld = $derived('scope' in task);
@@ -37,6 +38,29 @@
 		await runAction(action);
 	}
 
+	async function restoreLifecycleFocus(preferInvoking = false) {
+		await tick();
+		requestAnimationFrame(() => {
+			const replacement = rowElement?.isConnected
+				? rowElement.querySelector<HTMLButtonElement>('button[data-lifecycle-control]:not([disabled])')
+				: null;
+			const fallback = document.querySelector<HTMLButtonElement>(
+				'[data-testid="dispatch-status"] button[data-lifecycle-control]:not([disabled])'
+			);
+			const connectedInvoker = invokingControl?.isConnected ? invokingControl : null;
+			(preferInvoking
+				? connectedInvoker ?? replacement ?? fallback
+				: replacement ?? connectedInvoker ?? fallback
+			)?.focus();
+			invokingControl = null;
+		});
+	}
+
+	async function cancelConfirmation() {
+		confirmationOpen = false;
+		await restoreLifecycleFocus(true);
+	}
+
 	async function runAction(action: TaskLifecycleAction) {
 		try {
 			await onAction(action, task);
@@ -47,12 +71,12 @@
 			liveStatus = `Task lifecycle unchanged: ${task.title ?? task.taskId}`;
 		} finally {
 			confirmationOpen = false;
-			requestAnimationFrame(() => invokingControl?.focus());
+			await restoreLifecycleFocus();
 		}
 	}
 </script>
 
-<div class="flex flex-wrap items-center justify-between gap-3 rounded-md border px-3 py-2" data-testid={`${isHeld ? 'held-task' : 'task-control'}-${task.taskId}`}>
+<div bind:this={rowElement} class="flex flex-wrap items-center justify-between gap-3 rounded-md border px-3 py-2" data-testid={`${isHeld ? 'held-task' : 'task-control'}-${task.taskId}`}>
 	<div class="min-w-0">
 		<div class="flex flex-wrap items-center gap-2">
 			<Badge variant="secondary">{task.mode}</Badge>
@@ -74,6 +98,8 @@
 				disabled={isToggling || isStaticMode()}
 				onclick={(event) => invoke(action, event.currentTarget as HTMLButtonElement)}
 				aria-label={getTaskActionLabel(status, task.taskId, action)}
+				data-lifecycle-control
+				data-testid={`task-lifecycle-${task.taskId}-${action}`}
 			>
 				{getTaskActionLabel(status, task.taskId, action)}
 			</Button>
@@ -90,7 +116,7 @@
 			<Dialog.Description>{HARD_STOP_CONFIRMATION.description}</Dialog.Description>
 		</Dialog.Header>
 		<Dialog.Footer>
-			<Button variant="outline" onclick={() => (confirmationOpen = false)}>Cancel</Button>
+			<Button variant="outline" onclick={cancelConfirmation}>Cancel</Button>
 			<Button variant="destructive" disabled={isToggling} onclick={() => runAction('stop')}>Confirm</Button>
 		</Dialog.Footer>
 	</Dialog.Content>
