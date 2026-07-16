@@ -157,6 +157,48 @@ checks:
     runner: kspec validate --alignment --warnings-ok
     created_at: 2026-07-16T21:38:03.792Z
     completed_at: 2026-07-16T21:38:03.792Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Completeness validation passed with the repository warning baseline; all ui-agent-dispatch
+      ACs have behavioral browser annotations.
+    name: kspec validate completeness
+    required: true
+    runner: kspec validate --completeness --warnings-ok
+    created_at: 2026-07-16T21:38:33.697Z
+    completed_at: 2026-07-16T21:38:33.697Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Chromium Playwright run passed 12 of 12 cases at explicit 1440x900 and 390x844 viewports.
+    name: focused browser suite
+    required: true
+    runner: npm run test:e2e -- tests/e2e/dispatch-lifecycle.spec.ts
+    created_at: 2026-07-16T21:38:36.909Z
+    completed_at: 2026-07-16T21:38:36.909Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Base-to-head diff has no whitespace errors.
+    name: git diff check
+    required: true
+    runner: git diff --check
+    created_at: 2026-07-16T21:38:40.184Z
+    completed_at: 2026-07-16T21:38:40.184Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Dispatch lifecycle controls, WebSocket cache invalidation, and fleet buffer slice passed
+      100 of 100 tests.
+    name: focused lifecycle regression slice
+    required: false
+    runner: npm test -- lifecycle web-ui slice
+    created_at: 2026-07-16T21:38:43.397Z
+    completed_at: 2026-07-16T21:38:43.397Z
 events:
   - _ulid: 01KXPCP5XSQ9Q03VQWMJP2G2QN
     actor: Jacob Chapel
@@ -283,6 +325,41 @@ events:
       status: pass
       name: kspec validate alignment
     timestamp: 2026-07-16T21:38:04.118Z
+  - _ulid: 01KXPDVXTVFGXRW71QX90XY518
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate completeness
+    timestamp: 2026-07-16T21:38:33.947Z
+  - _ulid: 01KXPDW0Z3WGTN5N5JKQ57SSQ5
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: focused browser suite
+    timestamp: 2026-07-16T21:38:37.155Z
+  - _ulid: 01KXPDW46WP4K86D0X8VAVSACX
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: git diff check
+    timestamp: 2026-07-16T21:38:40.476Z
+  - _ulid: 01KXPDW79N7R3H1GY7DYM830N0
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: focused lifecycle regression slice
+    timestamp: 2026-07-16T21:38:43.637Z
+  - _ulid: 01KXPDWAN35BNE42B43KD2WCEX
+    actor: pr-reviewer
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KXPDWACR5TQCQNRNCQ2G01YT
+    timestamp: 2026-07-16T21:38:47.076Z
 examined_commit: b28c29557d3ec15ee1cfc0b14c6d2ee5a57b86aa
 external_links: []
 lifecycle_state: open
@@ -317,7 +394,31 @@ threads:
           resolved. No product-code or shared-guidance surfaces changed."
         created_at: 2026-07-16T21:37:32.484Z
     kind: nit
+  - _ulid: 01KXPDWACR5TQCQNRNCQ2G01YT
+    entries:
+      - _ulid: 01KXPDWACRKVNZQTA4K4VQS1DF
+        author: pr-reviewer
+        body: "Review evidence log (informational; zero findings). Files read:
+          tests/e2e/dispatch-lifecycle.spec.ts; tests/e2e/fixtures/test-base.ts;
+          tests/e2e/agents.spec.ts; playwright.config.ts;
+          packages/web-ui/src/routes/agents/+page.svelte;
+          packages/web-ui/src/lib/components/agents/DispatchStatus.svelte;
+          packages/web-ui/src/lib/components/agents/HeldTaskRow.svelte;
+          packages/web-ui/src/lib/api.ts; task, spec, plan, and prior-review context. Commands run:
+          exact base-to-head and fix-cycle diffs/logs; focused Playwright suite; focused lifecycle
+          regression slice; format; repo and focused lint; typecheck; fresh full npm test;
+          refs/alignment/completeness validation; git diff check; AC/source-scanning audit. Claims
+          verified: shared isolated daemon fixture is used; all 12 Chromium cases pass; explicit
+          1440x900 and 390x844 coverage is exercised; exact global/task action matrices, canonical
+          response identity, confirmation cancellation, keyboard focus, polite live regions, mapped
+          errors, static read-only behavior, and console/page-error outcomes are behaviorally
+          asserted; full suite passes 10926 with 3 expected skips. Categories searched: correctness,
+          edge cases, error handling, security/data exposure, test quality, accessibility,
+          integration, regression risk. Prior five blockers were independently rechecked and are
+          resolved. No product-code or shared-guidance surfaces changed."
+        created_at: 2026-07-16T21:38:46.808Z
+    kind: nit
 verdicts: []
 created_at: 2026-07-16T21:17:57.059Z
-updated_at: 2026-07-16T21:38:03.792Z
+updated_at: 2026-07-16T21:38:46.808Z
 notes: []
