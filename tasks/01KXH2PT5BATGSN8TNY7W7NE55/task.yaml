@@ -76,7 +76,7 @@ description: |
 spec_ref: "@cli-agent-commands"
 plan_ref: "@plan-dispatch-lifecycle-pause-resume-and-stop-controls"
 origin: derived
-status: pending_review
+status: needs_work
 blocked_by: []
 depends_on:
   - "@task-patch-dispatch-cli-specs"
@@ -97,7 +97,7 @@ submission_linkage:
   remote: null
   remote_url: null
   upstream_ref: plan/plan-dispatch-lifecycle-pause-resume-and-stop-controls/01kxc2vx
-session_id: 01KXN93G9J390Q5RNAK6P5S16W
+session_id: null
 history:
   - author: Jacob Chapel
     changes:
@@ -146,6 +146,16 @@ history:
         previous: null
     command: review-link
     timestamp: 2026-07-16T11:41:13.649Z
+  - author: Jacob Chapel
+    changes:
+      status:
+        new: needs_work
+        previous: pending_review
+      session_id:
+        new: null
+        previous: 01KXN93G9J390Q5RNAK6P5S16W
+    command: review-verdict-needs-work
+    timestamp: 2026-07-16T12:06:07.245Z
 created_at: 2026-07-14T19:47:19.851Z
 started_at: 2026-07-16T10:56:55.621Z
 submitted_at: 2026-07-16T11:34:38.684Z

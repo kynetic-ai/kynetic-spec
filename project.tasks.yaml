@@ -33927,7 +33927,7 @@
   type: task
   spec_ref: "@cli-agent-commands"
   plan_ref: "@plan-dispatch-lifecycle-pause-resume-and-stop-controls"
-  status: pending_review
+  status: needs_work
   blocked_by: []
   depends_on:
     - "@task-patch-dispatch-cli-specs"
@@ -33938,7 +33938,7 @@
     - cli
     - safety
   review_ref: "@01KXNBP38KMTGGDZGGJ3RMENAW"
-  notes_count: 2
+  notes_count: 3
   todos_count: 0
   created_at: 2026-07-14T19:47:19.851Z
   started_at: 2026-07-16T10:56:55.621Z

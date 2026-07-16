@@ -415,9 +415,25 @@ events:
     payload:
       thread_ulid: 01KXND0RKYQHVV409GZ8W34ECV
     timestamp: 2026-07-16T12:05:42.037Z
+  - _ulid: 01KXND3N855MDYD03VJR3CG8PF
+    actor: pr-reviewer
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: request_changes
+    timestamp: 2026-07-16T12:06:04.293Z
+  - _ulid: 01KXND3N85T357G2GY5W4YNPXG
+    actor: pr-reviewer
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-07-16T12:06:04.293Z
 examined_commit: ef7ffa06f604363415e906b2db0ccfbc3abb4afb
 external_links: []
-lifecycle_state: open
+lifecycle_state: closed
 related_refs: []
 subject:
   type: task
@@ -587,7 +603,14 @@ threads:
     kind: nit
     resolved_at: 2026-07-16T12:05:41.737Z
     resolved_by: Jacob Chapel
-verdicts: []
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: request_changes
+    reviewer: pr-reviewer
+    role: reviewer
+    created_at: 2026-07-16T12:06:04.293Z
 created_at: 2026-07-16T11:41:11.315Z
-updated_at: 2026-07-16T12:05:41.737Z
+updated_at: 2026-07-16T12:06:04.293Z
 notes: []
