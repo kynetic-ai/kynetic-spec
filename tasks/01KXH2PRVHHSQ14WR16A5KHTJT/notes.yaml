@@ -33,3 +33,54 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-07-15T22:40:00.972Z
+  - _ulid: 01KXM75WFNF41DXC5M811NQZEP
+    content: >-
+      Reviewer handoff for dd9e182d59.
+
+
+      Protection-state matrix:
+
+      - Active and final-gate in-flight canonical identities: task ref, closing registry record,
+      local/remote branch, worker worktree, reviewer snapshot, and dispatch-root overlap all
+      preserve.
+
+      - Paused-held task controls: physical reap and artifact reconciliation preserve session
+      metadata, worker workspace/worktree, reviewer snapshot, local/remote branch, and non-closed
+      registry audit evidence.
+
+      - Stopped pending-cleanup controls (task scope and target identities, including global cleanup
+      targets): same preservation surfaces; terminal reconciliation cannot self-heal missing
+      artifacts to completed/closed.
+
+      - Untrusted/degraded control state: dispatcher-managed task/branch/in-root path deletion
+      blocks; unrelated non-dispatch/out-of-root artifacts are unaffected.
+
+      - Unrelated integrated terminal workspace: cleanup still removes its worktree and branch.
+
+
+      Verification:
+
+      - Focused five-suite command: 69/69 tests passed.
+
+      - Strengthened controlled-evidence suite: 9/9 tests passed with real session and registry
+      assertions.
+
+      - npm run format:check passed.
+
+      - npm run lint -- --quiet: 0 errors (702 existing repo warnings); focused oxlint: 0
+      warnings/errors.
+
+      - npm run typecheck passed.
+
+      - git diff --check passed.
+
+      - kspec refs/alignment/completeness validations passed with --warnings-ok; only repository
+      baseline warnings reported.
+
+      - Full npm test executed every visible suite successfully, including integration.test.ts
+      191/191, then reproduced the known post-green Vitest teardown hang tracked by
+      @task-investigate-npm-test-teardown-hang-after-green-suite-run. Shard 1 reproduced the same
+      post-green teardown behavior and was terminated after tests completed.
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-07-16T01:03:11.349Z
