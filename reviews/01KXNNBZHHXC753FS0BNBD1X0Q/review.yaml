@@ -206,6 +206,13 @@ events:
     payload:
       thread_ulid: 01KXNPMHFSGKCG2VQRDP7H4VQ8
     timestamp: 2026-07-16T14:53:06.250Z
+  - _ulid: 01KXNPNPWSCDHAMMBJEGES9TRF
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KXNPNPJY04NAEGWRPKJC7YDT
+    timestamp: 2026-07-16T14:53:12.985Z
 examined_commit: 4094f8d891fa081dad353ba75d1ba270ae5ce541
 external_links: []
 lifecycle_state: open
@@ -244,7 +251,28 @@ threads:
           in implementation or tests."
         created_at: 2026-07-16T14:53:05.842Z
     kind: blocker
+  - _ulid: 01KXNPNPJY04NAEGWRPKJC7YDT
+    entries:
+      - _ulid: 01KXNPNPJYX3YP013DW1GMFSA6
+        author: Jacob Chapel
+        body: "Review evidence log\\nFiles read: all 19 files changed from f98c880ce3e3 to 4094f8d891fa,
+          plus interacting lifecycle helpers, API/query code, task/spec/plan records, and both prior
+          review-cycle records.\\nCommands run: git diff and diff-check; ripgrep annotation/consumer
+          searches; npm run format:check; npm run lint -- --quiet; focused oxlint; npm run
+          typecheck; focused Vitest run; npm test -- --fresh; npm run test:e2e --
+          tests/e2e/agents.spec.ts; kspec validate refs, alignment, and completeness.\\nClaims
+          verified: prior failed-action focus restoration fixes now retain connected invokers; new
+          browser cases behaviorally render active, queued, held, degraded, blocked, and evidence
+          states; raw daemon details are mapped to fixed safe UI copy; all lifecycle consumers use
+          the normalized camel-case API model.\\nCategories searched: correctness, lifecycle/action
+          matrices, edge states, failure handling and raw-error exposure, focus/accessibility, test
+          quality and AC annotations, websocket integration, authorization boundaries, and
+          regressions. One blocker found: missing exact annotation for the task-assigned raw-error
+          AC.\\nShared package guidance surfaces touched: none; shared-guidance-neutrality checklist
+          not applicable."
+        created_at: 2026-07-16T14:53:12.670Z
+    kind: nit
 verdicts: []
 created_at: 2026-07-16T14:30:25.585Z
-updated_at: 2026-07-16T14:53:05.842Z
+updated_at: 2026-07-16T14:53:12.670Z
 notes: []
