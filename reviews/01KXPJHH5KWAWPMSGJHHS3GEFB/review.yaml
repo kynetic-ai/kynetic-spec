@@ -2,7 +2,150 @@ _ulid: 01KXPJHH5KWAWPMSGJHHS3GEFB
 slugs: []
 title: "Canonical closure re-review: Documentation Completeness and Dispatch Workspaces"
 author: Jacob Chapel
-checks: []
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Final task review @01KXPCP5Y3Y0BEY2KP8KDFXNS8 is closed, approved, gate passing, examined
+      b28c29557d3e; task @01KXH2PY7C0W6GDQAFZN12HMC4 is completed with merge reason 3f22e6c93c68.
+      After git fetch, origin lifecycle branch is exactly 3f22e6c9 and contains b28c2955 plus
+      0fceed5a; origin/dev does not contain it (2 left/63 right). Both task reviews are closed and
+      no lifecycle review is open. Stored Task 1 requires its chosen integration target to contain
+      the applicable reviewed tip.
+    name: Lifecycle review closure and target containment
+    required: true
+    runner: canonical-closure-plan-review
+    created_at: 2026-07-16T23:01:30.988Z
+    completed_at: 2026-07-16T23:01:30.988Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Fresh verbose kspec validate --refs --warnings-ok exited 0 with References: OK and
+      exactly six deprecated-reference warnings: @session-summary-cache on
+      01KKB3PHA6MSJDZS7AZ1Z2VN6A, 01KKSRDQY1HZBENKBD06V6KDGW, 01KMMB3WY8E1JYRGHBHZ4RMH9E;
+      @task-activity-git-query on 01KKW4VPB0MV22C92JHNR7APJZ, 01KKW6PK9QFXKH69HE6KY8Q40Y,
+      01KKWG44FR0W955X7EFVBHPX6B. Task 8 records this baseline, requires a fresh execution-time
+      comparison, and explicitly excludes unrelated warning cleanup."
+    name: References baseline closure
+    required: true
+    runner: canonical-closure-plan-review
+    created_at: 2026-07-16T23:01:34.749Z
+    completed_at: 2026-07-16T23:01:34.749Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Task 1 creates the manifest and inventory test, permits only the six named Tasks 2-5 pages
+      as reported pending additions during construction, and rejects every other extra. Task 7
+      explicitly modifies tests/fixtures/public-documentation-surfaces.json to add all six with
+      evidence/dispositions and removes the allowance. Task 8 validates the closed manifest and
+      explicitly must not modify it.
+    name: Manifest construction and closure ownership
+    required: true
+    runner: canonical-closure-plan-review
+    created_at: 2026-07-16T23:01:38.306Z
+    completed_at: 2026-07-16T23:01:38.306Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: The remote lifecycle tip remains the previously reviewed 3f22e6c9. Targeted source
+      regression inspection confirms stopped/running/paused authority, draining projection, global
+      start/pause/resume/stop/status/watch, task pause/resume/stop, canonical API/status routes,
+      snake-case UI adapter boundary, six registered dispatch_control events, browser
+      accessibility/static coverage, and no workspace list/show/reset/cleanup CLI. The plan keeps
+      lifecycle control separate from workspace and readiness/cleanup ownership.
+    name: Lifecycle source accuracy and workspace separation regression
+    required: true
+    runner: canonical-closure-plan-review
+    created_at: 2026-07-16T23:01:42.061Z
+    completed_at: 2026-07-16T23:01:42.061Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: At 3f22e6c9 the six planned pages are absent while the short agents overview, runner
+      guide, assignment troubleshooting, and three section indexes exist. The plan gives separate
+      owners to workspace configuration, lifecycle operations, a durable workspace concept, and
+      three symptom-first recovery pages, with index/cross-link responsibilities serialized.
+    name: Documentation information architecture regression
+    required: true
+    runner: canonical-closure-plan-review
+    created_at: 2026-07-16T23:01:45.648Z
+    completed_at: 2026-07-16T23:01:45.648Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Parsed the complete stored task block: 8 tasks form one chain, priorities are
+      1,1,1,1,1,2,2,2, all local dependencies resolve, and all 7 task spec_ref values resolve.
+      Across 44 cited AC lines, 19 existing refs and 127 unique AC ids resolve with zero missing
+      ids. Prose/index/shared-test ownership remains serial; Task 7 manifest ownership and Task 8
+      validation-only ownership close the prior collision."
+    name: AC resolution dependency and ownership regression
+    required: true
+    runner: canonical-closure-plan-review
+    created_at: 2026-07-16T23:01:49.515Z
+    completed_at: 2026-07-16T23:01:49.515Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: At remote tip 3f22e6c9 all pre-existing tests, helpers, setup/upgrade sources, docs search
+      script, createProgram export, and package scripts named by the plan exist. Proposed gates use
+      CLI execution with explicit cwd, exported schemas/helpers, route fixtures, rendering and
+      Playwright behavior, include negative fixtures, and forbid implementation-body regex/source
+      scanning.
+    name: Behavioral tests commands and files regression
+    required: true
+    runner: canonical-closure-plan-review
+    created_at: 2026-07-16T23:01:53.207Z
+    completed_at: 2026-07-16T23:01:53.207Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Lifecycle tip has 140 tracked Markdown files; the plan independently derives that universe
+      plus recursive Commander help, API/UI/scaffold/generated/test records, rejects
+      omissions/extras, and pairs sources with generated outputs. Task 6 edits shared guidance at
+      template sources only, applies neutrality in both directions, and regenerates twice. Current
+      runner docs contain legacy trigger/filters while source schemas require on/filter; project
+      config supports manual_merge/pull_request/auto. @dispatch-remote-branch-sync remains
+      in_progress and the plan limits its claims accordingly.
+    name: Inventory neutrality corrections and remote sync regression
+    required: true
+    runner: canonical-closure-plan-review
+    created_at: 2026-07-16T23:01:57.120Z
+    completed_at: 2026-07-16T23:01:57.120Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: The task-only plan proposes no specs or product AC closure. Scope is documentation,
+      fixtures/tests, source-owned generated guidance, and non-behavioral setup/upgrade comments or
+      links; it explicitly forbids lifecycle, API, CLI, UI, workspace, remote-sync, readiness, and
+      product/default changes. The deterministic inventory and eight standalone slices bound the
+      audit and prohibit style-only churn.
+    name: Documentation-only scope and proportional buildability
+    required: true
+    runner: canonical-closure-plan-review
+    created_at: 2026-07-16T23:02:00.800Z
+    completed_at: 2026-07-16T23:02:00.800Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: kspec validate --alignment --warnings-ok and --completeness --warnings-ok both exit 0
+      under the plan-specified warnings policy; their existing 55 and 330 warning baselines are
+      reported rather than misclaimed as clean. Fresh refs validation is independently captured in
+      its closure check.
+    name: Current kspec state validation
+    required: true
+    runner: canonical-closure-plan-review
+    created_at: 2026-07-16T23:02:04.314Z
+    completed_at: 2026-07-16T23:02:04.314Z
 events:
   - _ulid: 01KXPJHH5B1KMEVRRX27490CAA
     actor: Jacob Chapel
@@ -10,17 +153,134 @@ events:
     payload:
       to: draft
     timestamp: 2026-07-16T23:00:16.171Z
+  - _ulid: 01KXPJKPW9QSFGAEV44TKZS311
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-07-16T23:01:27.561Z
+  - _ulid: 01KXPJKTGEGQ9TY0NHP8092ERW
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: Lifecycle review closure and target containment
+    timestamp: 2026-07-16T23:01:31.278Z
+  - _ulid: 01KXPJKY64DHH7PYX78HSEXDK8
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: References baseline closure
+    timestamp: 2026-07-16T23:01:35.044Z
+  - _ulid: 01KXPJM1N3MK4YAJ3R9ZYMP6H1
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: Manifest construction and closure ownership
+    timestamp: 2026-07-16T23:01:38.595Z
+  - _ulid: 01KXPJM59KG3MRN1NQ4E6J3NBN
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: Lifecycle source accuracy and workspace separation regression
+    timestamp: 2026-07-16T23:01:42.323Z
+  - _ulid: 01KXPJM8W43K2RC15S458FMJQP
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: Documentation information architecture regression
+    timestamp: 2026-07-16T23:01:45.988Z
+  - _ulid: 01KXPJMCM6YF8KHWRJZ82K304F
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: AC resolution dependency and ownership regression
+    timestamp: 2026-07-16T23:01:49.830Z
+  - _ulid: 01KXPJMG76PEYW3DKKPZ9XBMSB
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: Behavioral tests commands and files regression
+    timestamp: 2026-07-16T23:01:53.510Z
+  - _ulid: 01KXPJMM0XE3S35WW7HQ3X52DV
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: Inventory neutrality corrections and remote sync regression
+    timestamp: 2026-07-16T23:01:57.405Z
+  - _ulid: 01KXPJMQK6RYWDFX4RWVX30ETF
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: Documentation-only scope and proportional buildability
+    timestamp: 2026-07-16T23:02:01.062Z
+  - _ulid: 01KXPJMV38V1TPGCYKM6TGR0WY
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: Current kspec state validation
+    timestamp: 2026-07-16T23:02:04.648Z
+  - _ulid: 01KXPJMYYKM1365KKEA6VSZCVA
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KXPJMYP86KM0FP7H7HXE5WDG
+    timestamp: 2026-07-16T23:02:08.595Z
 examined_commit: null
 external_links: []
-lifecycle_state: draft
+lifecycle_state: open
 related_refs: []
 subject:
   type: plan
   content_hash: ""
   ref: "@plan-documentation-completeness-and-dispatch-workspaces"
   shadow_commit: ""
-threads: []
+threads:
+  - _ulid: 01KXPJMYP86KM0FP7H7HXE5WDG
+    anchor:
+      type: structured
+      field: closure-review-evidence
+      ref: "@plan-documentation-completeness-and-dispatch-workspaces"
+      section: context
+    entries:
+      - _ulid: 01KXPJMYP861BQ4D5AW4PY402F
+        author: Jacob Chapel
+        body: "Evidence log (informational; zero findings). Stored plan version: shadow tip
+          bb205668d5d7a8c698df070be6cb705c343fc65c before review creation; full 457-line content
+          SHA-256 09a3f35e8d03bc8e65b52997e44280d3e01b4a76a95a2a6ab22a7c9fc109aa9b. Files/surfaces
+          read: complete stored plan; prior review @01KXPHB4W5RN8PDAF09V5J5YQ5; final lifecycle
+          review/task/plan records; AGENTS.md plus complete kspec-agents.md;
+          plan/review/spec/neutrality/review-gates/work-gates and supplied boundary skills;
+          lifecycle-tip CLI registration, package scripts, schemas, API/UI/event/test surfaces;
+          current docs tree and tracked Markdown inventory. Commands run: git
+          fetch/status/worktree/branch/merge-base/rev-list/show/ls-tree/cat-file/grep; kspec
+          plan/review/task/item lookups; programmatic stored-task parsing and AC resolution; verbose
+          refs plus alignment/completeness validation. Claims verified: all three prior blockers,
+          unchanged lifecycle facts, workspace separation, IA, exact refs/ACs, dependency/file
+          ownership, behavioral buildability, deterministic inventory, trigger/filter and
+          publication corrections, remote-sync caution, shared neutrality/source ownership,
+          docs-only scope, and proportionality. Categories searched: factual correctness, freshness,
+          references, dependencies, ownership, test quality, integration, recovery safety,
+          neutrality, generated artifacts, and scope. Shared surfaces planned:
+          templates/agents-sections, templates/skills, templates/skills/manifest and their generated
+          copies only when evidence shows drift. Direction 1 and 2 neutrality requirements are
+          explicit; Kynetic-only policy remains in AGENTS.md, project meta, or project-local skills,
+          with twice-run regeneration required. Local dev had unrelated dirty agent-runner files and
+          was not modified."
+        created_at: 2026-07-16T23:02:08.329Z
+    kind: nit
 verdicts: []
 created_at: 2026-07-16T23:00:16.179Z
-updated_at: null
+updated_at: 2026-07-16T23:02:08.329Z
 notes: []
