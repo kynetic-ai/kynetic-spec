@@ -30114,3 +30114,21 @@ reviews:
     verdict_count: 1
     created_at: 2026-07-16T10:37:08.259Z
     updated_at: 2026-07-16T10:54:14.239Z
+  - _ulid: 01KXNBP38KMTGGDZGGJ3RMENAW
+    slugs: []
+    title: Review safe lifecycle CLI commands
+    disposition: pending
+    author: Jacob Chapel
+    check_count: 0
+    examined_commit: ef7ffa06f604363415e906b2db0ccfbc3abb4afb
+    lifecycle_state: draft
+    related_refs: []
+    subject:
+      type: task
+      content_hash: ""
+      ref: "@01KXH2PT5BATGSN8TNY7W7NE55"
+      shadow_commit: ""
+    thread_count: 0
+    unresolved_blocker_count: 0
+    verdict_count: 0
+    created_at: 2026-07-16T11:41:11.315Z
