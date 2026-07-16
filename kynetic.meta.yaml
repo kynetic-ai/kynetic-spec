@@ -24201,6 +24201,30 @@ observations:
     resolved_at: 2026-07-16T16:14:30.092Z
     resolved_by: Jacob Chapel
     created_at: 2026-07-16T16:10:11.529Z
+  - _ulid: 01KXNX54QC2WCA8JS1QE9HYQZB
+    type: friction
+    content: Endpoint-specific strict response parsing can bypass cross-cutting invalid-project recovery
+      when it consumes non-2xx bodies before the shared error path. In the lifecycle UI, both status
+      and control helpers rejected the middleware string-error body as a malformed canonical
+      envelope without clearing the stale project selection. Run invalid-project detection and
+      selection recovery before specialized envelope validation, and cover each custom parser
+      behaviorally.
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    workflow_ref: "@session-reflect-loop"
+    created_at: 2026-07-16T16:46:30.124Z
+  - _ulid: 01KXNX5530YXP1SD08A7BYTC8D
+    type: success
+    content: For asynchronous controls that can remove their own keyed row, keep status announcements in
+      a persistent parent polite/atomic live region. A browser test should perform the row-removing
+      action, assert the child disappears, and then assert the surviving live region announces the
+      outcome; this directly catches announcements lost during component unmount.
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    workflow_ref: "@session-reflect-loop"
+    created_at: 2026-07-16T16:46:30.496Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
