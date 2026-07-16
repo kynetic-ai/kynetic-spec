@@ -17,6 +17,13 @@ events:
       from: draft
       to: open
     timestamp: 2026-07-16T22:39:39.534Z
+  - _ulid: 01KXPHCSDBVM930FGPZ8C9NNFC
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KXPHCS1RXBRB22T78F58PYTH
+    timestamp: 2026-07-16T22:40:12.203Z
 examined_commit: null
 external_links: []
 lifecycle_state: open
@@ -26,8 +33,29 @@ subject:
   content_hash: ""
   ref: "@plan-documentation-completeness-and-dispatch-workspaces"
   shadow_commit: ""
-threads: []
+threads:
+  - _ulid: 01KXPHCS1RXBRB22T78F58PYTH
+    anchor:
+      type: structured
+      field: current-integration-and-review-uncertainty
+      ref: "@plan-documentation-completeness-and-dispatch-workspaces"
+      section: context
+    entries:
+      - _ulid: 01KXPHCS1R1GJZ15WB9WHC43BC
+        author: Jacob Chapel
+        body: The stored revision is stale about implementation review state. It was imported at meta commit
+          f639f10d72 (2026-07-16 15:22 -07:00), after @01KXPCP5Y3Y0BEY2KP8KDFXNS8 approved the final
+          UI lifecycle task at 14:39; @task-verify-ui-lifecycle-browser is completed, its examined
+          b28c29557d3ec15ee1cfc0b14c6d2ee5a57b86aa is merged by remote lifecycle tip
+          3f22e6c93c68115d77e1bde062f7cd12034f91d8, and no lifecycle review is open. The plan still
+          says final implementation review is pending/may add commits and that completion does not
+          mean it was complete at drafting time. This makes the revision-time facts untrue and can
+          misorient Task 1. Update the current-state/uncertainty text to record the approved full
+          review and merged tip; keep the final-tip ancestry check and conditional late-binding only
+          for any later review or fix cycle that actually appears.
+        created_at: 2026-07-16T22:40:11.832Z
+    kind: blocker
 verdicts: []
 created_at: 2026-07-16T22:39:18.405Z
-updated_at: 2026-07-16T22:39:39.179Z
+updated_at: 2026-07-16T22:40:11.832Z
 notes: []

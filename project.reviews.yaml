@@ -30382,7 +30382,7 @@ reviews:
   - _ulid: 01KXPHB4W5RN8PDAF09V5J5YQ5
     slugs: []
     title: "Fresh canonical plan review: Documentation Completeness and Dispatch Workspaces"
-    disposition: pending
+    disposition: changes_requested
     author: Jacob Chapel
     check_count: 0
     lifecycle_state: open
@@ -30392,8 +30392,8 @@ reviews:
       content_hash: ""
       ref: "@plan-documentation-completeness-and-dispatch-workspaces"
       shadow_commit: ""
-    thread_count: 0
-    unresolved_blocker_count: 0
+    thread_count: 1
+    unresolved_blocker_count: 1
     verdict_count: 0
     created_at: 2026-07-16T22:39:18.405Z
-    updated_at: 2026-07-16T22:39:39.179Z
+    updated_at: 2026-07-16T22:40:11.832Z
