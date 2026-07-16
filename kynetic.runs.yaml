@@ -80463,7 +80463,7 @@ runs:
     completed_at: 2026-07-16T06:07:56.128Z
   - _ulid: 01KXMT095ZF4AZX99F1APW284E
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -80477,7 +80477,17 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-07-16T06:35:33.594Z
-        completed_at: 2026-07-16T06:35:33.594Z
+        completed_at: 2026-07-16T06:35:37.999Z
+        notes: "High-confidence session lessons: (1) diff-first adversarial review plus focused runtime
+          repros exposed lifecycle and corrupt-store bugs despite green focused tests; (2) the full
+          test suite again reported green suites but did not exit; (3) reflection baseline output
+          was too broad; (4) workflow commands require the full run ref. Targeted searches were run
+          for runtime probes, fault injection, teardown hangs, baseline dumps, workflow show,
+          reviewer entrypoint, and related terms."
+      - status: completed
+        step_index: 2
+        started_at: 2026-07-16T06:35:37.999Z
+        completed_at: 2026-07-16T06:35:37.999Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-07-16T06:32:10.687Z
