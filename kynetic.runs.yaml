@@ -81977,7 +81977,7 @@ runs:
     completed_at: 2026-07-16T21:13:55.019Z
   - _ulid: 01KXPE06S8JY09T35BS7NB0Q08
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -81992,7 +81992,17 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-07-16T21:42:11.487Z
-        completed_at: 2026-07-16T21:42:11.487Z
+        completed_at: 2026-07-16T21:42:20.385Z
+        notes: "Friction candidates: (1) the full fresh test suite had a long post-test/runtime tail during
+          detached review; (2) workflow show requires an explicit run ref although the reflection
+          guidance presents it without one, and listing all runs produces excessive output; (3)
+          batched review-check writes exposed delayed/stale read behavior that led to duplicate
+          evidence records. These appear systemic, but all were observed in earlier reflections and
+          require search-first deduplication before any capture."
+      - status: completed
+        step_index: 2
+        started_at: 2026-07-16T21:42:20.385Z
+        completed_at: 2026-07-16T21:42:20.385Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-07-16T21:40:54.184Z
