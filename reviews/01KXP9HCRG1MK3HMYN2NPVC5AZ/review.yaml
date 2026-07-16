@@ -366,6 +366,12 @@ events:
       from: open
       to: closed
     timestamp: 2026-07-16T20:43:50.997Z
+  - _ulid: 01KXPC5T5FCVD5VNBG1J44YQ55
+    actor: Jacob Chapel
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KXPAM2Y5VHRPSBR93CPTX5E9
+    timestamp: 2026-07-16T21:09:00.719Z
 examined_commit: 4bedaff5093dbef95ea81efb52b33c53be08a837
 external_links: []
 lifecycle_state: closed
@@ -395,6 +401,13 @@ threads:
           forbidden controls/counts per scenario, including denial of matching task work for
           unrelated task cleanup."
         created_at: 2026-07-16T20:41:51.301Z
+      - _ulid: 01KXPC5SX07MTR3699FZSE8CE7
+        author: Jacob Chapel
+        body: "Fixed in b28c29557d: every desktop scenario now asserts the exact global action list, exact
+          scoped task action list or absence of a task row, and active/queued/held counts. This
+          proves prohibited controls are absent, including global Start with only unrelated task
+          cleanup and task-only Retry hard stop for the matching cleanup."
+        created_at: 2026-07-16T21:09:00.445Z
     kind: blocker
   - _ulid: 01KXPAM6BX5C1KZE8VHJY5165J
     anchor:
@@ -497,5 +510,5 @@ verdicts:
     role: reviewer
     created_at: 2026-07-16T20:43:50.975Z
 created_at: 2026-07-16T20:22:54.480Z
-updated_at: 2026-07-16T20:43:50.997Z
+updated_at: 2026-07-16T21:09:00.445Z
 notes: []
