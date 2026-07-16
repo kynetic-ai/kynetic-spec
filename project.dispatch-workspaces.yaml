@@ -8282,7 +8282,7 @@ workspaces:
         head: 227eb5005923d64b52ea7d7f53f8107c2a7d5224
         last_seen_at: 2026-07-16T04:16:34.179Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-dispatch-lifecycle-events-01kxh2ps
-  - active_role: reviewer
+  - active_role: null
     base_branch_point: 0e014e61d8f3b4804be4f3f6dce2bc8439fcc4b9
     bootstrap:
       status: succeeded
@@ -8781,9 +8781,9 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-07-16T03:50:51.156Z
-      last_reconciled_at: 2026-07-16T04:15:05.141Z
+      last_reconciled_at: 2026-07-16T04:18:22.872Z
       created_at: 2026-07-16T03:07:25.837Z
-      updated_at: 2026-07-16T04:15:05.141Z
+      updated_at: 2026-07-16T04:18:22.872Z
     workspace_id: dispatch-workspace-01KXH2PXA2YQJEGTQ3A3H9N4FQ
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
