@@ -2,7 +2,122 @@ _ulid: 01KXMGVGPJ801YQTGPPPRHMKWT
 slugs: []
 title: Review lifecycle engine restart, recovery, and evidence behavior
 author: Jacob Chapel
-checks: []
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: All 1050 matched files formatted correctly.
+    name: format
+    required: true
+    runner: npm run format:check
+    created_at: 2026-07-16T04:09:47.768Z
+    completed_at: 2026-07-16T04:09:47.768Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: 0 errors; repository baseline 702 warnings. Focused changed-file lint separately found 0
+      warnings and 0 errors.
+    name: lint
+    required: true
+    runner: npm run lint -- --quiet
+    created_at: 2026-07-16T04:09:51.249Z
+    completed_at: 2026-07-16T04:09:51.249Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: 0 warnings and 0 errors across all 3 changed files.
+    name: focused-lint
+    required: false
+    runner: npx oxlint changed test files
+    created_at: 2026-07-16T04:09:56.734Z
+    completed_at: 2026-07-16T04:09:56.734Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Shared package build and TypeScript noEmit check passed.
+    name: typecheck
+    required: true
+    runner: npm run typecheck
+    created_at: 2026-07-16T04:10:00.579Z
+    completed_at: 2026-07-16T04:10:00.579Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Fresh run: 2811 suites passed; 10739 tests passed, 3 skipped, 0 failed."
+    name: full test suite
+    required: true
+    runner: npm test -- --fresh
+    created_at: 2026-07-16T04:10:04.113Z
+    completed_at: 2026-07-16T04:10:04.113Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: 55/55 focused tests passed across 8 suites.
+    name: focused lifecycle tests
+    required: false
+    runner: npm test -- --fresh tests/dispatch-lifecycle-blackbox.test.ts
+      tests/dispatch-stop-recovery.test.ts tests/dispatch-controlled-evidence-protection.test.ts
+    created_at: 2026-07-16T04:10:08.369Z
+    completed_at: 2026-07-16T04:10:08.369Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Passed; 6 known deprecated-reference warnings accepted by warnings-ok.
+    name: kspec validate refs
+    required: true
+    runner: kspec validate --refs --warnings-ok
+    created_at: 2026-07-16T04:10:12.919Z
+    completed_at: 2026-07-16T04:10:12.919Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Passed under repository warning baseline; no task-specific alignment errors.
+    name: kspec validate alignment
+    required: true
+    runner: kspec validate --alignment --warnings-ok
+    created_at: 2026-07-16T04:10:17.606Z
+    completed_at: 2026-07-16T04:10:17.606Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Passed under repository warning baseline; changed AC annotations resolve and behavioral
+      tests cover the task scenarios.
+    name: kspec validate completeness
+    required: true
+    runner: kspec validate --completeness --warnings-ok
+    created_at: 2026-07-16T04:10:21.655Z
+    completed_at: 2026-07-16T04:10:21.655Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Files read: full diff for tests/dispatch-lifecycle-blackbox.test.ts,
+      tests/dispatch-stop-recovery.test.ts, tests/dispatch-controlled-evidence-protection.test.ts;
+      surrounding src/agent-runtime/dispatch.ts and src/agent-runtime/workspace.ts; task, plan
+      handoff, linked spec, and prior coverage locations. Commands run: git
+      diff/status/log/diff-check; kspec task/item/plan/review lookups; format, repo/focused lint,
+      typecheck, focused fresh tests, full fresh tests, refs/alignment/completeness validation.
+      Claims verified: owned/signals_sent/sessions_closed barriers retain stopped pending state
+      until release; global/task retries select only matching entries; task B
+      process/session/control survives task A stop; controlled evidence is protected while unrelated
+      closing record remains reap-eligible; no production ownership changed. Categories searched:
+      correctness, concurrency/phase boundaries, scope isolation, error-code conditionals, evidence
+      cleanup, test integrity, source-scanning, integration, security/data exposure. Findings: none.
+      Shared/package guidance surfaces touched: none; neutrality checklist not applicable."
+    name: review evidence log
+    required: false
+    runner: manual adversarial review
+    created_at: 2026-07-16T04:10:26.354Z
+    completed_at: 2026-07-16T04:10:26.354Z
 events:
   - _ulid: 01KXMGVGPHZH6B4J1E99N16H98
     actor: Jacob Chapel
@@ -17,6 +132,76 @@ events:
       from: draft
       to: open
     timestamp: 2026-07-16T03:52:31.423Z
+  - _ulid: 01KXMHVJR2QA878QN0NPAGTTP6
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: format
+    timestamp: 2026-07-16T04:09:48.035Z
+  - _ulid: 01KXMHVP4A71FZRHXFT31GZWX0
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: lint
+    timestamp: 2026-07-16T04:09:51.498Z
+  - _ulid: 01KXMHVVHGWT2XF16YEX2QXZFN
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: focused-lint
+    timestamp: 2026-07-16T04:09:57.041Z
+  - _ulid: 01KXMHVZ85MJF51W67K8R67652
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: typecheck
+    timestamp: 2026-07-16T04:10:00.837Z
+  - _ulid: 01KXMHW2PZZ503QB0AV1VZNA9K
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: full test suite
+    timestamp: 2026-07-16T04:10:04.383Z
+  - _ulid: 01KXMHW6Y07C0XN2FRZ5MTXN51
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: focused lifecycle tests
+    timestamp: 2026-07-16T04:10:08.704Z
+  - _ulid: 01KXMHWB9YXAHP4FEG3H510XRN
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate refs
+    timestamp: 2026-07-16T04:10:13.182Z
+  - _ulid: 01KXMHWG6KD897ZF8KGXNRP8FT
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate alignment
+    timestamp: 2026-07-16T04:10:18.195Z
+  - _ulid: 01KXMHWKT8WTKECMG3NHAGMCP9
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate completeness
+    timestamp: 2026-07-16T04:10:21.896Z
+  - _ulid: 01KXMHWRT0TZ9D9XQV3KEM807T
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: review evidence log
+    timestamp: 2026-07-16T04:10:27.008Z
 examined_commit: f38eb47aa73c3ed032195fea02fdfa0210dbfa24
 external_links: []
 lifecycle_state: open
@@ -29,5 +214,5 @@ subject:
 threads: []
 verdicts: []
 created_at: 2026-07-16T03:52:17.362Z
-updated_at: 2026-07-16T03:52:31.138Z
+updated_at: 2026-07-16T04:10:26.354Z
 notes: []
