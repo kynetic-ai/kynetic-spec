@@ -5,11 +5,26 @@ import { describe, expect, it, onTestFinished, vi } from "vitest";
 import WsClient from "ws";
 import YAML from "yaml";
 
+vi.mock("../packages/web-ui/src/lib/stores/mode.svelte", () => ({
+  isStaticMode: () => false,
+  assertWritable: () => undefined,
+}));
+vi.mock("../packages/web-ui/src/lib/stores/project.svelte", () => ({
+  getSelectedProjectPath: () => null,
+  clearInvalidSelection: () => undefined,
+  isInvalidProjectError: () => false,
+}));
+vi.mock("../packages/web-ui/src/lib/api-static", () => ({}));
+vi.mock("../packages/web-ui/src/lib/constants", () => ({
+  DAEMON_API_BASE: "http://localhost:3456",
+}));
+
 import {
   DispatchControlErrorCodeSchema,
   DispatchLifecycleStatusSchema,
   type DispatchLifecycleControlErrorCode,
 } from "../packages/shared/src/api.js";
+import { parseAgentDispatchStatusWire } from "../packages/web-ui/src/lib/api.js";
 import { boundedDaemonFetch } from "./helpers/daemon-fetch.js";
 import {
   createTestDaemonProject,
@@ -739,6 +754,143 @@ describe("dispatch lifecycle API/CLI surface projection", { timeout: 90_000 }, (
       },
       { timeout: 10_000 },
     );
+    const allFailedPublicResponse = await requestSurface(fixture, "/api/agent/status");
+    expect(allFailedPublicResponse.status, "all-failed public status").toBe(200);
+    const allFailedPublicBody = await allFailedPublicResponse.json();
+    const publicLifecycle = DispatchLifecycleStatusSchema.parse({
+      global_authority: allFailedPublicBody.global_authority,
+      projection: allFailedPublicBody.projection,
+      cleanup_state: allFailedPublicBody.cleanup_state,
+      active_count: allFailedPublicBody.active_count,
+      queue_depth: allFailedPublicBody.queue_depth,
+      held_count: allFailedPublicBody.held_count,
+      held_tasks: allFailedPublicBody.held_tasks,
+      task_controls: allFailedPublicBody.task_controls,
+      degraded_targets: allFailedPublicBody.degraded_targets,
+    });
+    const uiStatus = parseAgentDispatchStatusWire(allFailedPublicBody);
+    expect(
+      {
+        globalAuthority: uiStatus.globalAuthority,
+        projection: uiStatus.projection,
+        cleanupState: uiStatus.cleanupState,
+        activeCount: uiStatus.activeCount,
+        queueDepth: uiStatus.queueDepth,
+        heldCount: uiStatus.heldCount,
+        heldTasks: uiStatus.heldTasks,
+        taskControls: uiStatus.taskControls,
+        degradedTargets: uiStatus.degradedTargets,
+      },
+      "real public wire deep-converts to the exact UI lifecycle model",
+    ).toEqual({
+      globalAuthority: publicLifecycle.global_authority,
+      projection: publicLifecycle.projection,
+      cleanupState: {
+        status: publicLifecycle.cleanup_state.status,
+        entries: publicLifecycle.cleanup_state.entries.map((entry) => ({
+          cleanupId: entry.cleanup_id,
+          scope: entry.scope,
+          ...(entry.task_id === undefined ? {} : { taskId: entry.task_id }),
+          status: entry.status,
+          phase: entry.phase,
+          ...(entry.error_code === undefined ? {} : { errorCode: entry.error_code }),
+        })),
+      },
+      activeCount: publicLifecycle.active_count,
+      queueDepth: publicLifecycle.queue_depth,
+      heldCount: publicLifecycle.held_count,
+      heldTasks: publicLifecycle.held_tasks.map((task) => ({
+        taskId: task.task_id,
+        taskRef: task.task_ref,
+        title: task.title,
+        scope: task.scope,
+        mode: task.mode,
+        reason: task.reason,
+        actor: task.actor,
+        source: task.source,
+        controlledAt: task.controlled_at,
+        updatedAt: task.updated_at,
+      })),
+      taskControls: publicLifecycle.task_controls.map((control) => ({
+        taskId: control.task_id,
+        taskRef: control.task_ref,
+        title: control.title,
+        mode: control.mode,
+        reason: control.reason,
+        actor: control.actor,
+        source: control.source,
+        controlledAt: control.controlled_at,
+        updatedAt: control.updated_at,
+        cleanupState: {
+          status: control.cleanup_state.status,
+          entries: control.cleanup_state.entries.map((entry) => ({
+            cleanupId: entry.cleanup_id,
+            scope: entry.scope,
+            ...(entry.task_id === undefined ? {} : { taskId: entry.task_id }),
+            status: entry.status,
+            phase: entry.phase,
+            ...(entry.error_code === undefined ? {} : { errorCode: entry.error_code }),
+          })),
+        },
+      })),
+      degradedTargets: publicLifecycle.degraded_targets,
+    });
+    expect(
+      DispatchLifecycleStatusSchema.parse({
+        global_authority: uiStatus.globalAuthority,
+        projection: uiStatus.projection,
+        cleanup_state: {
+          status: uiStatus.cleanupState.status,
+          entries: uiStatus.cleanupState.entries.map((entry) => ({
+            cleanup_id: entry.cleanupId,
+            scope: entry.scope,
+            ...(entry.taskId === undefined ? {} : { task_id: entry.taskId }),
+            status: entry.status,
+            phase: entry.phase,
+            ...(entry.errorCode === undefined ? {} : { error_code: entry.errorCode }),
+          })),
+        },
+        active_count: uiStatus.activeCount,
+        queue_depth: uiStatus.queueDepth,
+        held_count: uiStatus.heldCount,
+        held_tasks: uiStatus.heldTasks.map((task) => ({
+          task_id: task.taskId,
+          task_ref: task.taskRef,
+          title: task.title,
+          scope: task.scope,
+          mode: task.mode,
+          reason: task.reason,
+          actor: task.actor,
+          source: task.source,
+          controlled_at: task.controlledAt,
+          updated_at: task.updatedAt,
+        })),
+        task_controls: uiStatus.taskControls.map((control) => ({
+          task_id: control.taskId,
+          task_ref: control.taskRef,
+          title: control.title,
+          mode: control.mode,
+          reason: control.reason,
+          actor: control.actor,
+          source: control.source,
+          controlled_at: control.controlledAt,
+          updated_at: control.updatedAt,
+          cleanup_state: {
+            status: control.cleanupState.status,
+            entries: control.cleanupState.entries.map((entry) => ({
+              cleanup_id: entry.cleanupId,
+              scope: entry.scope,
+              ...(entry.taskId === undefined ? {} : { task_id: entry.taskId }),
+              status: entry.status,
+              phase: entry.phase,
+              ...(entry.errorCode === undefined ? {} : { error_code: entry.errorCode }),
+            })),
+          },
+        })),
+        degraded_targets: uiStatus.degradedTargets,
+      }),
+      "UI lifecycle data round-trips to the original public wire semantics",
+    ).toEqual(publicLifecycle);
     const allFailedCli = runSurfaceCli(fixture, "agent dispatch status --json");
     expect(allFailedCli.exitCode, "all-failed CLI status exit").toBe(0);
     expect(
