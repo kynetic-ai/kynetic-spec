@@ -24031,6 +24031,31 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-07-16T03:44:43.208Z
+  - _ulid: 01KXMJ9RWW3CTAX312T7744C6J
+    type: friction
+    content: Concurrent fresh full-suite npm test runs in separate dispatch worktrees bypass the
+      per-worktree build/test lock and can heavily contend for host resources. During review of
+      @task-verify-engine-restart-races, process inspection confirmed another worktree running its
+      own full Vitest tree while this required gate stretched to roughly fourteen minutes despite
+      all tests passing. Existing fixes cover same-worktree serialization, not cross-worktree
+      dispatch-wide concurrency; triage should consider host-level test admission or reviewer
+      scheduling guidance.
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    created_at: 2026-07-16T04:17:33.084Z
+  - _ulid: 01KXMJ9S6PSV245573WCCC5Y83
+    type: success
+    content: For verification-only concurrency work, an exact task handoff naming test-only helpers and
+      spelling each scenario as trigger → barrier → mutation → observation → outcome made the review
+      independently falsifiable without moving production ownership. In
+      @task-verify-engine-restart-races, this structure enabled direct checks of all three recovery
+      phases, task-scope isolation, conditional cleanup errors, and evidence preservation while
+      keeping the diff test-only.
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    created_at: 2026-07-16T04:17:33.398Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
