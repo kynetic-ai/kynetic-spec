@@ -13,3 +13,19 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-07-16T03:10:42.159Z
+  - _ulid: 01KXMGDRR1HAEDB39V1HGYP05W
+    content: "Implemented verification-only black-box coverage. Scenario evidence: spawn-winner stop
+      remains task-scoped pending/owned at the recovery barrier, then signals once and closes the
+      matching session; restart fixtures preserve stopped authority at
+      owned/signals_sent/sessions_closed and advance only after release; task A stop leaves task B
+      process/session/control unchanged; controlled active/in-flight/held/pending-cleanup evidence
+      is rejected across task, registry, branch, worker, and reviewer destructive surfaces while
+      unrelated terminal registry cleanup remains eligible. Added mixed cleanup retry assertions
+      proving global and task selectors preserve unrelated entries and pending entries forbid
+      error_code while failed entries require the closed code. No production ownership or behavior
+      changed. Gates: focused 55/55; format, repo lint, changed-file lint (0 warnings), typecheck,
+      refs/alignment/completeness validation, diff check; fresh full suite 2811/2811 suites and
+      10739 passed (3 skipped)."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-07-16T03:44:46.849Z
