@@ -30,9 +30,44 @@ import {
   SCHEDULE_TICK_PAYLOAD_FIELDS,
   ACTION_STARTED_PAYLOAD_FIELDS,
   ACTION_TERMINAL_PAYLOAD_FIELDS,
+  DISPATCH_CONTROL_PAYLOAD_FIELDS,
+  DispatchControlEventPayloadSchema,
 } from "../src/schema/event-payloads.js";
 import { EVENT_REGISTRY, PAYLOAD_FIELDS_BY_EVENT_TYPE } from "../src/schema/event-registry.js";
 import { EventBus } from "../src/agent-runtime/event-bus.js";
+import { testUlid } from "./helpers/cli.js";
+
+// AC: @dispatch-event-payload ac-dispatch-control-common-fields
+// AC: @dispatch-event-payload ac-dispatch-control-failure-error-code-presence
+describe("dispatch_control payload schema registration", () => {
+  it("uses the strict payload schema for all six identifiers", () => {
+    const payload = {
+      scope: "task",
+      action: "stop",
+      authority: "stopped",
+      projection: "stopped",
+      outcome: "failed",
+      reason: "operator request",
+      actor: "operator",
+      source: "api",
+      timestamp: "2026-07-15T12:00:00.000Z",
+      task_id: testUlid(),
+      error_code: "cancellation_timeout",
+    };
+    expect(DispatchControlEventPayloadSchema.parse(payload)).toEqual(payload);
+    for (const eventType of [
+      "dispatch_control.start_applied",
+      "dispatch_control.pause_applied",
+      "dispatch_control.resume_applied",
+      "dispatch_control.stop_applied",
+      "dispatch_control.noop",
+      "dispatch_control.failed",
+    ]) {
+      expect(EVENT_PAYLOAD_SCHEMAS[eventType]).toBe(DispatchControlEventPayloadSchema);
+      expect(PAYLOAD_FIELDS_BY_EVENT_TYPE[eventType]).toEqual(DISPATCH_CONTROL_PAYLOAD_FIELDS);
+    }
+  });
+});
 
 // ─── AC-1: Task event payloads ──────────────────────────────────────────────
 
@@ -826,6 +861,39 @@ describe("event payload schemas align with registry", () => {
     samplePayloads["session.idle_timeout"] = samplePayloads["session.ended"];
     samplePayloads["session.cancelled"] = samplePayloads["session.ended"];
     samplePayloads["action.failed"] = samplePayloads["action.completed"];
+    const dispatchControlPayload = {
+      scope: "global",
+      action: "start",
+      authority: "running",
+      projection: "running",
+      outcome: "applied",
+      reason: "operator request",
+      actor: "operator",
+      source: "api",
+      timestamp: "2026-07-15T12:00:00.000Z",
+    };
+    samplePayloads["dispatch_control.start_applied"] = dispatchControlPayload;
+    samplePayloads["dispatch_control.pause_applied"] = {
+      ...dispatchControlPayload,
+      action: "pause",
+    };
+    samplePayloads["dispatch_control.resume_applied"] = {
+      ...dispatchControlPayload,
+      action: "resume",
+    };
+    samplePayloads["dispatch_control.stop_applied"] = {
+      ...dispatchControlPayload,
+      action: "stop",
+    };
+    samplePayloads["dispatch_control.noop"] = {
+      ...dispatchControlPayload,
+      outcome: "noop",
+    };
+    samplePayloads["dispatch_control.failed"] = {
+      ...dispatchControlPayload,
+      outcome: "failed",
+      error_code: "internal_error",
+    };
 
     for (const entry of EVENT_REGISTRY) {
       const payload = samplePayloads[entry.event_type];

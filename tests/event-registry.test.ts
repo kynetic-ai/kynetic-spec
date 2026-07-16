@@ -197,6 +197,23 @@ describe("ac-3: invalid event type validation", () => {
     expect(result.success).toBe(false);
   });
 
+  // AC: @dispatch-event-taxonomy ac-dispatch-control-domain
+  it("registers only the six closed dispatch control identifiers", () => {
+    const expected = [
+      "dispatch_control.start_applied",
+      "dispatch_control.pause_applied",
+      "dispatch_control.resume_applied",
+      "dispatch_control.stop_applied",
+      "dispatch_control.noop",
+      "dispatch_control.failed",
+    ];
+    expect(EVENT_DOMAINS).toContain("dispatch_control");
+    expect(EVENTS_BY_DOMAIN.dispatch_control.map((entry) => entry.event_type)).toEqual(expected);
+    for (const eventType of expected)
+      expect(DispatchEventTypeSchema.parse(eventType)).toBe(eventType);
+    expect(DispatchEventTypeSchema.safeParse("dispatch_control.applied").success).toBe(false);
+  });
+
   it("should identify invalid event and list valid events in known domain", () => {
     const result = validateEventType("task.unknown");
     expect(result.valid).toBe(false);
@@ -391,7 +408,7 @@ describe("Event Registry structure", () => {
     expect(EVENT_DOMAINS).toContain("session");
     expect(EVENT_DOMAINS).toContain("schedule");
     expect(EVENT_DOMAINS).toContain("action");
-    expect(EVENT_DOMAINS).toHaveLength(5);
+    expect(EVENT_DOMAINS).toHaveLength(6);
   });
 
   it("should group events by domain correctly", () => {
@@ -412,8 +429,8 @@ describe("Event Registry structure", () => {
   });
 
   it("should register exactly 16 event types", () => {
-    expect(REGISTERED_EVENT_TYPES).toHaveLength(16);
-    expect(REGISTERED_EVENT_TYPE_SET.size).toBe(16);
+    expect(REGISTERED_EVENT_TYPES).toHaveLength(22);
+    expect(REGISTERED_EVENT_TYPE_SET.size).toBe(22);
   });
 
   it("should have consistent PAYLOAD_FIELDS_BY_EVENT_TYPE for all registered events", () => {
