@@ -52,3 +52,17 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-07-16T15:39:41.554Z
+  - _ulid: 01KXNT04772ZK3TSBX9EYTZC7D
+    content: "Fix-cycle approach: address all three blockers in one pass. Expand the existing
+      real-daemon fixture/helper matrix so every closed failure code is compared across HTTP
+      response, CLI exit/copy, and sanitized event; add the omitted global-cleanup/task-metadata
+      admission, matching-scope retry, and alias-scope branches; validate the complete raw public
+      status key set without filtering forbidden casing; and verify the public-wire to UI-camel
+      conversion against the UI owner implementation. Edge cases: validation_failed exits 1 while
+      other lifecycle failures exit 3, exact error/status/event parity, unknown and mixed-case
+      rejection, retry after matching cleanup clears, and aliases inspect global scope only. Test
+      plan: behavioral surface tests first, focused lifecycle suites, focused lint, then all
+      required repo gates and three kspec validations."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-07-16T15:51:20.039Z
