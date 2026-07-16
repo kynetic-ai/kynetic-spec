@@ -16,3 +16,15 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-07-16T10:57:44.599Z
+  - _ulid: 01KXNB9NX1BT9G15M0VJWBKDVN
+    content: "Implemented safe dispatch lifecycle CLI controls: global start/pause/resume/stop, task
+      pause/resume/stop, daemon-backed status for both command families, strict lifecycle response
+      validation, fixed exit-code/error mappings, and guarded hard-stop confirmation behavior. Added
+      behavioral coverage for routing and exact payloads, all lifecycle error codes,
+      malformed/duplicate cleanup data, full task/held rows, prompt/force/non-TTY behavior, offline
+      compatibility, and endpoint regressions. Verification: format, repo/focused lint, typecheck,
+      full npm test (2823 suites; 10861 passed, 3 skipped), refs/alignment/completeness validation,
+      and diff checks all passed."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-07-16T11:34:24.418Z
