@@ -7841,7 +7841,7 @@ workspaces:
         head: 5f77a5ccc7b8d2f2ea48581d08f06797c0ea56c3
         last_seen_at: 2026-07-15T15:09:12.111Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/stabilize-daemon-command-api-overlap-timing-test-01kxk05h
-  - active_role: null
+  - active_role: reviewer
     base_branch_point: 958c482d258844ba156717bd1878a5e821263488
     bootstrap:
       status: succeeded
@@ -8326,7 +8326,7 @@ workspaces:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-07-16T02:22:30.830Z
+      updated_at: 2026-07-16T02:23:43.883Z
     integration:
       status: pending
       detail: null
@@ -8342,10 +8342,10 @@ workspaces:
     task_slug: task-protect-controlled-dispatch-evidence
     timestamps:
       closed_at: null
-      last_active_at: 2026-07-16T01:45:35.889Z
-      last_reconciled_at: 2026-07-16T02:22:16.551Z
+      last_active_at: 2026-07-16T02:23:43.883Z
+      last_reconciled_at: 2026-07-16T02:23:43.883Z
       created_at: 2026-07-15T22:24:20.888Z
-      updated_at: 2026-07-16T02:22:48.969Z
+      updated_at: 2026-07-16T02:23:43.883Z
     workspace_id: dispatch-workspace-01KXH2PRVHHSQ14WR16A5KHTJT
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
