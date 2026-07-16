@@ -46,8 +46,12 @@ description: |
 spec_ref: "@daemon-agent-dispatch"
 plan_ref: "@plan-dispatch-lifecycle-pause-resume-and-stop-controls"
 origin: derived
-status: pending_review
+status: completed
 blocked_by: []
+closed_reason: Merged approved lifecycle surface verification into
+  plan/plan-dispatch-lifecycle-pause-resume-and-stop-controls/01kxc2vx at 2b1916dc1b0a. Verified
+  exact API, CLI, UI conversion, cleanup, failure-code, and event projections; focused 139-test
+  lifecycle slice and fresh 10,926-test full suite passed.
 depends_on:
   - "@task-cli-dispatch-lifecycle-controls"
   - "@task-verify-engine-restart-races"
@@ -284,9 +288,26 @@ history:
         previous: "@01KXP26Q29B2MQTY8Q339QXBGG"
     command: review-link
     timestamp: 2026-07-16T19:20:08.638Z
+  - author: Jacob Chapel
+    changes:
+      status:
+        new: completed
+        previous: pending_review
+      closed_reason:
+        new: Merged approved lifecycle surface verification into
+          plan/plan-dispatch-lifecycle-pause-resume-and-stop-controls/01kxc2vx at 2b1916dc1b0a.
+          Verified exact API, CLI, UI conversion, cleanup, failure-code, and event projections;
+          focused 139-test lifecycle slice and fresh 10,926-test full suite passed.
+        previous: null
+      completed_at:
+        new: 2026-07-16T19:43:40.793Z
+        previous: null
+    command: task-complete
+    timestamp: 2026-07-16T19:43:40.816Z
 prior_status: null
 created_at: 2026-07-14T19:47:23.592Z
 started_at: 2026-07-16T18:42:49.011Z
 submitted_at: 2026-07-16T19:09:04.283Z
+completed_at: 2026-07-16T19:43:40.793Z
 todos: []
 automation: eligible
