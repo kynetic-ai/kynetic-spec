@@ -78,7 +78,7 @@ class MemoryControlStore implements DispatchLifecycleAuthorityStore {
   }
 }
 
-export function recoveryBarrier() {
+function stopRecoveryBarrier() {
   let release!: () => void;
   let enter!: () => void;
   const entered = new Promise<void>((resolve) => (enter = resolve));
@@ -104,6 +104,13 @@ export function sessionCloseRecorder() {
       closed.push(sessionId);
       await closeSession(_sessionsDir, sessionId, "failed", "hard stop test");
     },
+  };
+}
+
+function durableCleanupTarget(target: DispatchOwnership) {
+  return {
+    ...target,
+    session_metadata_path: `.kspec-sessions/${target.session_id}/session.yaml`,
   };
 }
 
@@ -882,11 +889,109 @@ describe("verified dispatch hard-stop recovery", () => {
     });
   });
 
+  // AC: @dispatch-lifecycle-control-authority ac-interrupted-stop-recovers-on-retry
+  // AC: @dispatch-lifecycle-control-authority ac-task-interrupted-stop-recovers-on-retry
+  // AC: @dispatch-lifecycle-control-authority ac-task-stop-preserves-unrelated-invocations
+  it.each(["global", "task"] as const)(
+    "retries only the matching %s cleanup and preserves mixed aggregate evidence",
+    async (scope) => {
+      const harness = await createStopRecoveryHarness();
+      const targetA = await harness.seedOwnership(1, harness.taskA);
+      const targetB = await harness.seedOwnership(2, harness.taskB);
+      const current = harness.store.getPublication().snapshot;
+      const timestamp = new Date().toISOString();
+      const stoppedTask = {
+        mode: "stopped" as const,
+        reason: "fixture",
+        actor: "test",
+        source: "recovery" as const,
+        controlled_at: timestamp,
+        updated_at: timestamp,
+      };
+      await harness.store.mutate("seed-mixed-cleanup", () => ({
+        ...current,
+        revision: current.revision + 1,
+        global: { authority: "stopped" },
+        tasks: {
+          [harness.taskA]: stoppedTask,
+          [harness.taskB]: stoppedTask,
+        },
+        pending_cleanup:
+          scope === "global"
+            ? {
+                global: {
+                  cleanup_id: testUlid("CLNP", 10),
+                  status: "pending",
+                  phase: "owned",
+                  targets: [durableCleanupTarget(targetA)],
+                },
+                [harness.taskB]: {
+                  cleanup_id: testUlid("CLNP", 11),
+                  status: "failed",
+                  error_code: "cancellation_timeout",
+                  phase: "owned",
+                  targets: [durableCleanupTarget(targetB)],
+                },
+              }
+            : {
+                global: {
+                  cleanup_id: testUlid("CLNP", 12),
+                  status: "pending",
+                  phase: "owned",
+                  targets: [durableCleanupTarget(targetB)],
+                },
+                [harness.taskA]: {
+                  cleanup_id: testUlid("CLNP", 13),
+                  status: "pending",
+                  phase: "owned",
+                  targets: [durableCleanupTarget(targetA)],
+                },
+                [harness.taskB]: {
+                  cleanup_id: testUlid("CLNP", 14),
+                  status: "failed",
+                  error_code: "cancellation_timeout",
+                  phase: "owned",
+                  targets: [durableCleanupTarget(targetB)],
+                },
+              },
+      }));
+
+      if (scope === "global") {
+        await harness.engine.applyGlobalLifecycleAction("stop");
+      } else {
+        await harness.engine.applyTaskLifecycleAction("stop", { taskId: harness.taskA });
+      }
+
+      expect(harness.signals).toEqual([targetA.pgid]);
+      expect(harness.proc.evidence.has(targetB.pid!)).toBe(true);
+      expect(
+        await getSession(path.join(harness.projectDir, ".kspec-sessions"), targetB.session_id),
+      ).toMatchObject({ status: "active", dispatch_ownership: targetB });
+      expect(harness.engine.getLifecycleStatus().cleanupState).toMatchObject({
+        status: "failed",
+        entries: [
+          ...(scope === "task" ? [{ scope: "global", status: "pending", phase: "owned" }] : []),
+          {
+            scope: "task",
+            task_id: harness.taskB,
+            status: "failed",
+            phase: "owned",
+            error_code: "cancellation_timeout",
+          },
+        ],
+      });
+      for (const entry of harness.engine.getLifecycleStatus().cleanupState.entries) {
+        if (entry.status === "pending") expect(entry).not.toHaveProperty("error_code");
+        else expect(entry.error_code).toBe("cancellation_timeout");
+      }
+    },
+  );
+
   // AC: @dispatch-lifecycle-control-authority ac-task-stop-is-idempotent
   it("coalesces repeated task stop into one cleanup identity", async () => {
     const harness = await createStopRecoveryHarness();
     await harness.seedOwnership(1, harness.taskA);
-    const barrier = recoveryBarrier();
+    const barrier = stopRecoveryBarrier();
     harness.runtime.waitForProcessGroupExit = async () => {
       await barrier.wait();
       return true;
@@ -924,7 +1029,7 @@ describe("verified dispatch hard-stop recovery", () => {
   it("coalesces repeated global stop into one cleanup identity", async () => {
     const harness = await createStopRecoveryHarness();
     await harness.seedOwnership(1, harness.taskA);
-    const barrier = recoveryBarrier();
+    const barrier = stopRecoveryBarrier();
     harness.runtime.waitForProcessGroupExit = async () => {
       await barrier.wait();
       return true;

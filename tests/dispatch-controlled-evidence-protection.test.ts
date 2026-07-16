@@ -295,6 +295,12 @@ describe("controlled evidence physical cleanup", () => {
 
   // AC: @dispatch-workspace-cleanup-policy ac-controlled-evidence-protected
   // AC: @dispatch-workspace-cleanup-policy ac-protection-applies-to-every-destructive-surface
+  // AC: @dispatch-lifecycle-control-authority ac-session-evidence-survives-control
+  // AC: @dispatch-lifecycle-control-authority ac-branch-evidence-survives-control
+  // AC: @dispatch-lifecycle-control-authority ac-workspace-evidence-survives-control
+  // AC: @dispatch-lifecycle-control-authority ac-worktree-evidence-survives-control
+  // AC: @dispatch-lifecycle-control-authority ac-snapshot-evidence-survives-control
+  // AC: @dispatch-lifecycle-control-authority ac-audit-evidence-survives-control
   it.each(["paused", "pending_cleanup"] as const)(
     "preserves session workspace, reviewer snapshot, branch, and registry audit evidence for %s control",
     async (controlState) => {
