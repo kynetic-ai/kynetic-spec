@@ -410,6 +410,27 @@ events:
       status: pass
       name: review evidence log
     timestamp: 2026-07-16T06:29:03.904Z
+  - _ulid: 01KXMSV8WFS25SGMETST47H0XF
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KXMSV8MHBHXE6HAHN72BY4S6
+    timestamp: 2026-07-16T06:29:26.543Z
+  - _ulid: 01KXMSVC3E8DT0174PPHW66TKK
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KXMSVBTJ8Z3BRPZBY4K5139Q
+    timestamp: 2026-07-16T06:29:29.838Z
+  - _ulid: 01KXMSVFA4DN4GH43B5A43FCDY
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KXMSVF271NM7SMGVQJ6GZCAJ
+    timestamp: 2026-07-16T06:29:33.124Z
 examined_commit: 224ff0ef123337050be9107fab0dafa7d90ecfcf
 external_links: []
 lifecycle_state: open
@@ -484,7 +505,71 @@ threads:
           corrupt/unavailable cases."
         created_at: 2026-07-16T06:27:48.888Z
     kind: blocker
+  - _ulid: 01KXMSV8MHBHXE6HAHN72BY4S6
+    anchor:
+      type: code
+      commit: 224ff0ef123337050be9107fab0dafa7d90ecfcf
+      line_end: 1150
+      line_start: 1145
+      path: src/agent-runtime/dispatch.ts
+      side: head
+    entries:
+      - _ulid: 01KXMSV8MHA3PP7JP1A1VZ1J1C
+        author: Jacob Chapel
+        body: "MUST-FIX: Matching task cleanup does not gate both non-stop task actions. The contract
+          requires task pause and resume to return 409 invalid_transition whenever cleanup for that
+          canonical task is pending or failed, independent of the current task-control row. This
+          guard only rejects resume when the current mode is stopped and never rejects pause solely
+          for cleanup. A direct probe with a schema-valid paused task plus matching pending cleanup
+          printed pause:ALLOWED and resume:ALLOWED; resume can therefore delete the paused control
+          while cleanup is still outstanding. Reject either action whenever the matching cleanup
+          projection is non-idle, preserve unrelated-scope behavior, and add behavioral route cases
+          for paused or absent control rows with matching cleanup."
+        created_at: 2026-07-16T06:29:26.290Z
+    kind: blocker
+  - _ulid: 01KXMSVBTJ8Z3BRPZBY4K5139Q
+    anchor:
+      type: code
+      commit: 224ff0ef123337050be9107fab0dafa7d90ecfcf
+      line_end: 304
+      line_start: 300
+      path: packages/daemon/src/routes/agent-dispatch.ts
+      side: head
+    entries:
+      - _ulid: 01KXMSVBTJ60CJNRZMDZHSCN3Q
+        author: Jacob Chapel
+        body: "MUST-FIX: Canonical mutation errors misclassify a corrupt committed control store as
+          control_store_unavailable. DispatchControlStore records the real parser diagnostic with
+          capitalized text such as Invalid dispatch-control.yaml, but this classifier performs
+          case-sensitive lowercase substring checks. In a real shadow fixture committed with
+          version: 99, POST /api/agent/dispatch/control returned HTTP 503 with code
+          control_store_unavailable instead of the frozen control_store_corrupt code. Classify
+          corruption robustly from the degraded state or a typed failure and add a corrupt-store
+          control regression test."
+        created_at: 2026-07-16T06:29:29.554Z
+    kind: blocker
+  - _ulid: 01KXMSVF271NM7SMGVQJ6GZCAJ
+    anchor:
+      type: code
+      commit: 224ff0ef123337050be9107fab0dafa7d90ecfcf
+      line_end: 1513
+      line_start: 1504
+      path: packages/daemon/src/routes/agent-dispatch.ts
+      side: head
+    entries:
+      - _ulid: 01KXMSVF27RFGGJSPNRG2K0Y7R
+        author: Jacob Chapel
+        body: "MUST-FIX: The public status adapter hard-codes every degraded lifecycle store to
+          control_store_unavailable, so the required corrupt-store status is unreachable; the
+          internal status adapter has the same hard-coded mapping at line 1263. A real committed
+          version: 99 fixture produced HTTP 503 control_store_unavailable from both GET
+          /api/agent/status and GET /api/agent/dispatch/status. The frozen contract distinguishes
+          unavailable from corrupt and requires control_store_corrupt for malformed committed data.
+          Use the same reliable classification on both status surfaces and add deep-equal corrupt
+          and unavailable cases."
+        created_at: 2026-07-16T06:29:32.871Z
+    kind: blocker
 verdicts: []
 created_at: 2026-07-16T06:13:35.585Z
-updated_at: 2026-07-16T06:29:03.663Z
+updated_at: 2026-07-16T06:29:32.871Z
 notes: []
