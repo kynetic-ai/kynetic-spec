@@ -140,6 +140,49 @@ checks:
     runner: npm run lint -- --quiet
     created_at: 2026-07-16T06:28:12.861Z
     completed_at: 2026-07-16T06:28:12.861Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Shared package build and tsc --noEmit completed successfully.
+    name: typecheck
+    required: true
+    runner: npm run typecheck
+    created_at: 2026-07-16T06:28:38.663Z
+    completed_at: 2026-07-16T06:28:38.663Z
+  - status: skipped
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Every suite reported PASS through the final tests/agent-dispatch-engine.test.ts 147/147
+      result. The runner then reproduced the pre-existing post-green teardown hang tracked by
+      @task-investigate-npm-test-teardown-hang-after-green-suite-run and was terminated after a
+      quiet interval; no test failure was reported.
+    name: full test suite
+    required: true
+    runner: npm test -- --fresh
+    created_at: 2026-07-16T06:28:41.778Z
+    completed_at: 2026-07-16T06:28:41.778Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Validation passed with 6 repository baseline deprecation warnings.
+    name: kspec validate refs
+    required: true
+    runner: kspec validate --refs --warnings-ok
+    created_at: 2026-07-16T06:28:44.856Z
+    completed_at: 2026-07-16T06:28:44.856Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Validation passed with repository baseline orphan and status warnings.
+    name: kspec validate alignment
+    required: true
+    runner: kspec validate --alignment --warnings-ok
+    created_at: 2026-07-16T06:28:48.053Z
+    completed_at: 2026-07-16T06:28:48.053Z
 events:
   - _ulid: 01KXMRY86JZG0SFRX0BWZ92S1W
     actor: Jacob Chapel
@@ -259,6 +302,34 @@ events:
       status: pass
       name: lint
     timestamp: 2026-07-16T06:28:13.110Z
+  - _ulid: 01KXMSSTBD4R5EWSJENYG50NMX
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: typecheck
+    timestamp: 2026-07-16T06:28:38.893Z
+  - _ulid: 01KXMSSXCXRJXC2FH9K3VFXZ7Z
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: skipped
+      name: full test suite
+    timestamp: 2026-07-16T06:28:42.013Z
+  - _ulid: 01KXMST0DGDZRKEP0D50CBGWKF
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate refs
+    timestamp: 2026-07-16T06:28:45.104Z
+  - _ulid: 01KXMST3JMQA8BA0JQ99CN2HB7
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate alignment
+    timestamp: 2026-07-16T06:28:48.340Z
 examined_commit: 224ff0ef123337050be9107fab0dafa7d90ecfcf
 external_links: []
 lifecycle_state: open
@@ -335,5 +406,5 @@ threads:
     kind: blocker
 verdicts: []
 created_at: 2026-07-16T06:13:35.585Z
-updated_at: 2026-07-16T06:28:12.861Z
+updated_at: 2026-07-16T06:28:48.053Z
 notes: []

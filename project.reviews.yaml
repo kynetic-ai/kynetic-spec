@@ -30005,7 +30005,7 @@ reviews:
     title: Review canonical dispatch lifecycle API (cycle 2)
     disposition: changes_requested
     author: Jacob Chapel
-    check_count: 12
+    check_count: 16
     examined_commit: 224ff0ef123337050be9107fab0dafa7d90ecfcf
     lifecycle_state: open
     related_refs: []
@@ -30018,4 +30018,4 @@ reviews:
     unresolved_blocker_count: 3
     verdict_count: 0
     created_at: 2026-07-16T06:13:35.585Z
-    updated_at: 2026-07-16T06:28:12.861Z
+    updated_at: 2026-07-16T06:28:48.053Z
