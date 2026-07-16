@@ -80048,9 +80048,24 @@ runs:
     completed_at: 2026-07-16T02:53:11.965Z
   - _ulid: 01KXMDZK5KZ8S40FK21CW2HARR
     status: active
-    current_step: 0
+    current_step: 1
     initiated_by: Jacob Chapel
-    step_results: []
+    step_results:
+      - status: completed
+        step_index: 0
+        started_at: 2026-07-16T03:02:05.235Z
+        completed_at: 2026-07-16T03:02:33.982Z
+        notes: "Worked well: (1) reading the complete anchored review record before editing exposed all four
+          blockers and the duplicate-thread state; (2) reproducing the ref-only failure through the
+          public DispatchEngine boundary made the production gap concrete; (3) an injectable
+          lifecycle-store commit barrier produced deterministic zero-before/one-after behavioral
+          proof for applied and noop outcomes; (4) retaining the exact resolved identity avoided a
+          second-lookup race; (5) focused regression slices gave fast feedback before the full hard
+          gate."
+      - status: completed
+        step_index: 1
+        started_at: 2026-07-16T03:02:33.982Z
+        completed_at: 2026-07-16T03:02:33.982Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-07-16T03:02:05.235Z
