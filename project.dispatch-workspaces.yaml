@@ -9155,7 +9155,7 @@ workspaces:
         head: 87ba5a40db4a3a66c21c89c9ff90b28d9177727c
         last_seen_at: 2026-07-16T04:17:55.111Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/stabilize-agent-invocation-process-identity-01kxmfgz
-  - active_role: null
+  - active_role: worker
     base_branch_point: 89a72367b80e3c0e51fd4259d40f6abeac6bf447
     bootstrap:
       status: succeeded
@@ -9634,7 +9634,7 @@ workspaces:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-07-16T05:42:59.315Z
+      updated_at: 2026-07-16T05:43:46.369Z
     integration:
       status: pending
       detail: null
@@ -9643,17 +9643,17 @@ workspaces:
       target_branch: plan/plan-dispatch-lifecycle-pause-resume-and-stop-controls/01kxc2vx
       target_commit: 89a72367b80e3c0e51fd4259d40f6abeac6bf447
       updated_at: 2026-07-16T05:42:59.315Z
-    lifecycle_state: ready
+    lifecycle_state: active
     resolved_base_branch: plan/plan-dispatch-lifecycle-pause-resume-and-stop-controls/01kxc2vx
     task_id: 01KXH2PSQY6GK4S66S4TB6JVV3
     task_ref: "@01KXH2PSQY6GK4S66S4TB6JVV3"
     task_slug: task-daemon-dispatch-lifecycle-api
     timestamps:
       closed_at: null
-      last_active_at: 2026-07-16T05:15:23.783Z
-      last_reconciled_at: 2026-07-16T05:42:59.315Z
+      last_active_at: 2026-07-16T05:43:46.369Z
+      last_reconciled_at: 2026-07-16T05:43:46.369Z
       created_at: 2026-07-16T04:39:20.168Z
-      updated_at: 2026-07-16T05:43:33.390Z
+      updated_at: 2026-07-16T05:43:46.369Z
     workspace_id: dispatch-workspace-01KXH2PSQY6GK4S66S4TB6JVV3
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
