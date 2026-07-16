@@ -175,3 +175,19 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-07-16T09:20:32.147Z
+  - _ulid: 01KXN4BCAY7FJM81AYBRGDNWDK
+    content: "Fix cycle 5: resolved the startup-publication race in cd4d2f46e1. Dispatch engine
+      initialization is single-flight and unpublished until dispatch plus schedule/hook/join
+      readiness; concurrent callers share startup success/failure, partial startup is torn down,
+      shutdown waits for in-flight initialization, and joined callers preserve exact cwd conflict
+      rows. Added a behavioral concurrent held-start failure regression proving both canonical
+      requests fail, no engine remains, and durable authority stays stopped. Gates: format/diff
+      pass; focused lint 0 warnings/errors; repo lint 0 errors; typecheck pass; focused
+      lifecycle/compatibility/event/stop suites 147/147 pass; refs/alignment/completeness
+      validations pass with repository baselines. Fresh full suite reported every observed suite
+      PASS through final agent-dispatch-engine 147/147, then reproduced the separately tracked
+      post-green wrapper teardown hang and was terminated after two quiet intervals. Re-verified all
+      task-owned and inherited AC coverage."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-07-16T09:33:00.126Z

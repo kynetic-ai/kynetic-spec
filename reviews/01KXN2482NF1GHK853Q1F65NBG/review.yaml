@@ -247,6 +247,18 @@ events:
       from: open
       to: closed
     timestamp: 2026-07-16T09:13:26.689Z
+  - _ulid: 01KXN4B7ZPQDDA1NFRWPE44GR5
+    actor: Jacob Chapel
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KXN365RHSV37DTHZRADGEBJF
+    timestamp: 2026-07-16T09:32:55.670Z
+  - _ulid: 01KXN4BB6NK9QXQR11DBDFTSZT
+    actor: Jacob Chapel
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KXN365RHSV37DTHZRADGEBJF
+    timestamp: 2026-07-16T09:32:58.965Z
 examined_commit: f5628f46861b4183eccb74b1b9ca4b7526ff996c
 external_links: []
 lifecycle_state: closed
@@ -283,7 +295,18 @@ threads:
           callers must await the same readiness result, including rollback on failure) and add a
           behavioral concurrent-start/failure regression."
         created_at: 2026-07-16T09:12:40.978Z
+      - _ulid: 01KXN4B7P77ERY942QANQNG7XJ
+        author: Jacob Chapel
+        body: "Fixed in cd4d2f46e1: dispatch engine initialization is now single-flight per project, engines
+          are published only after the dispatch/schedule/hook/join startup chain settles, all
+          concurrent starters await the same readiness promise, and partial startup failure uses
+          runtime-only rollback. Added a deterministic real-shadow route regression proving two
+          concurrent canonical starts both return internal_error after held startup fails, no engine
+          remains published, and committed global authority stays stopped."
+        created_at: 2026-07-16T09:32:55.366Z
     kind: blocker
+    resolved_at: 2026-07-16T09:32:58.692Z
+    resolved_by: Jacob Chapel
 verdicts:
   - applies_to_version:
       type: entity_version
@@ -293,5 +316,5 @@ verdicts:
     role: reviewer
     created_at: 2026-07-16T09:13:26.682Z
 created_at: 2026-07-16T08:54:09.237Z
-updated_at: 2026-07-16T09:13:26.689Z
+updated_at: 2026-07-16T09:32:58.692Z
 notes: []
