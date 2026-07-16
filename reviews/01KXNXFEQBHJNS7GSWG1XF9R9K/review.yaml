@@ -181,17 +181,70 @@ events:
       status: pass
       name: diff hygiene
     timestamp: 2026-07-16T17:14:01.139Z
+  - _ulid: 01KXNYRB62JK5BDR8FEHY7P9CA
+    actor: pr-reviewer
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KXNYRAVF5J6B0YZHWFK633EF
+    timestamp: 2026-07-16T17:14:27.906Z
+  - _ulid: 01KXNYRGCQRNGS6V4W3WSWYM0J
+    actor: pr-reviewer
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: approve
+    timestamp: 2026-07-16T17:14:33.239Z
+  - _ulid: 01KXNYRGCQJ1VR9R1MDPJQB9XH
+    actor: pr-reviewer
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-07-16T17:14:33.239Z
 examined_commit: 5730514449aa2ac0f80f87e29201897efb9248c2
 external_links: []
-lifecycle_state: open
+lifecycle_state: closed
 related_refs: []
 subject:
   type: task
   content_hash: ""
   ref: "@01KXH2PVX606KVK5C4ERCB8WTY"
   shadow_commit: ""
-threads: []
-verdicts: []
+threads:
+  - _ulid: 01KXNYRAVF5J6B0YZHWFK633EF
+    entries:
+      - _ulid: 01KXNYRAVGTGYKTWQEDCY3R2EJ
+        author: pr-reviewer
+        body: "Review evidence log (no findings). Files read: all 27 changed files from f98c880..5730514,
+          including packages/daemon/src/routes/agent-dispatch.ts; web UI api.ts,
+          dispatch-lifecycle.ts, websocket invalidation, every changed agent/automation/board
+          component and route; CLI agent/output/exit-code changes; all changed unit, daemon,
+          websocket, helper, and Playwright tests. Also read interacting API schemas, query
+          keys/stores/middleware and cycle-4 review threads/fixes. Commands run: git
+          diff/log/merge-base/status/diff-check and targeted searches; kspec task/item/review
+          queries; all three kspec validate modes; format check; repo and focused lint; typecheck;
+          fresh full npm test; two fresh isolated invocation reruns; production-build-backed agents
+          Playwright E2E. Claims verified: exact lifecycle transport conversion and capability
+          derivation; invalid-project recovery precedes strict lifecycle parsing; successful
+          task-resume announcement survives row removal; rejected controls restore focus; all own
+          and assigned cross-spec AC annotations are behavioral rather than source-scanning.
+          Categories searched: correctness, lifecycle edge states, error sanitization/recovery,
+          accessibility and focus, test quality/AC alignment, websocket integration, and
+          regression/baseline status. No shared/package guidance surface was touched, so the
+          neutrality checklist was not applicable."
+        created_at: 2026-07-16T17:14:27.568Z
+    kind: nit
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: approve
+    reviewer: pr-reviewer
+    role: reviewer
+    created_at: 2026-07-16T17:14:33.239Z
 created_at: 2026-07-16T16:52:08.042Z
-updated_at: 2026-07-16T17:14:00.778Z
+updated_at: 2026-07-16T17:14:33.239Z
 notes: []
