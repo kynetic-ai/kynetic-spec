@@ -120,3 +120,14 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-07-16T18:35:18.838Z
+  - _ulid: 01KXP3V9M4N78MX3SY8Q6MVAVM
+    content: "Fix cycle 2 approach: preserve both challenged AC annotations and make them truthful with
+      behavioral assertions in the real-daemon surface suite. Add an invalid-body request proving
+      HTTP 400 plus the validation error/details shape for @trait-api-endpoint ac-3; strengthen the
+      matching-cleanup failure assertion to prove the structured response carries current lifecycle
+      status for @daemon-agent-dispatch ac-control-error-current-status. Re-verify all spec and
+      inherited AC coverage, focused lifecycle behavior, changed-file lint, full suite, and every
+      project gate before resubmission."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-07-16T18:43:27.492Z
