@@ -38,3 +38,17 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-07-16T20:43:53.318Z
+  - _ulid: 01KXPC8PRN5E36FV0RCTCSCY4T
+    content: "Fix cycle 1: addressed all five blocker threads in b28c29557d and resolved every review
+      thread. The 1440x900 desktop matrix now asserts exact allowed/forbidden global and task
+      actions plus active/queued/held counts for every scenario; paused/degraded/held labels are
+      proven separately; confirmed task hard stop proves the wire task_ref and canonical response
+      ID/ref through the rendered task-control row/link; and malformed responses now assert
+      console/page-error outcomes. Narrow coverage remains 390x844. Verification: focused Playwright
+      12/12, required UI slice 100/100, full suite 10,926 passed with 3 skipped, format,
+      focused/repo lint, typecheck, diff check, and refs/alignment/completeness validation all pass.
+      Console/page-error outcomes remain empty except the intentionally asserted 409 and 503
+      resource errors."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-07-16T21:10:35.541Z
