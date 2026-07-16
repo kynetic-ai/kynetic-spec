@@ -30133,3 +30133,21 @@ reviews:
     verdict_count: 1
     created_at: 2026-07-16T11:41:11.315Z
     updated_at: 2026-07-16T12:06:04.293Z
+  - _ulid: 01KXNE8JVR4V8A5C96MPGVA3RX
+    slugs: []
+    title: Review lifecycle UI consumers and controls
+    disposition: pending
+    author: Jacob Chapel
+    check_count: 0
+    examined_commit: 94bade5fd3b922dc5be743c479cbca710b5f864c
+    lifecycle_state: draft
+    related_refs: []
+    subject:
+      type: task
+      content_hash: ""
+      ref: "@01KXH2PVX606KVK5C4ERCB8WTY"
+      shadow_commit: ""
+    thread_count: 0
+    unresolved_blocker_count: 0
+    verdict_count: 0
+    created_at: 2026-07-16T12:26:14.264Z
