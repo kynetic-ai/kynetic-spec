@@ -14,3 +14,16 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-07-16T04:42:08.796Z
+  - _ulid: 01KXMN7VZF5VQ2B1B1GFNTPQX3
+    content: "Implemented canonical POST /api/agent/dispatch/control, durable lifecycle projections on
+      public/internal status routes, strict shared wire schemas, and exact path-free compatibility
+      errors. Added real-shadow behavioral tests for global success/status, task alias
+      canonicalization, identity mismatch/no mutation, closed errors/current status, lifecycle
+      events, and invalid schema/order/uniqueness/count matrices. Gates: format, repo/focused lint,
+      typecheck, focused 37-test slice, refs/alignment/completeness validation all pass. Full npm
+      test reported every suite green, including new lifecycle tests and final long-running
+      meta/agent-dispatch suites, then reproduced the separately tracked post-green runner teardown
+      hang; terminated after all suite results were reported."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-07-16T05:08:56.431Z
