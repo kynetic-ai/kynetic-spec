@@ -57,6 +57,16 @@ checks:
     runner: npm test
     created_at: 2026-07-16T14:51:40.529Z
     completed_at: 2026-07-16T14:51:40.529Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "PASS: production build completed and all 50 Chromium browser tests passed."
+    name: agents browser tests
+    required: true
+    runner: npm run test:e2e -- tests/e2e/agents.spec.ts
+    created_at: 2026-07-16T14:51:48.293Z
+    completed_at: 2026-07-16T14:51:48.293Z
 events:
   - _ulid: 01KXNNBZH9EH8XB3452DF7J13S
     actor: Jacob Chapel
@@ -106,6 +116,13 @@ events:
       status: pass
       name: focused lifecycle tests
     timestamp: 2026-07-16T14:51:40.876Z
+  - _ulid: 01KXNPK4H5GDABEBEVYM1G89J8
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: agents browser tests
+    timestamp: 2026-07-16T14:51:48.645Z
 examined_commit: 4094f8d891fa081dad353ba75d1ba270ae5ce541
 external_links: []
 lifecycle_state: open
@@ -118,5 +135,5 @@ subject:
 threads: []
 verdicts: []
 created_at: 2026-07-16T14:30:25.585Z
-updated_at: 2026-07-16T14:51:40.529Z
+updated_at: 2026-07-16T14:51:48.293Z
 notes: []
