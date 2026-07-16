@@ -24021,6 +24021,16 @@ observations:
     resolved: false
     workflow_ref: "@session-reflect-loop"
     created_at: 2026-07-16T03:37:32.757Z
+  - _ulid: 01KXMGDN676NJW7B93XVPBDWK6
+    type: friction
+    content: Concurrent full npm test runs across dispatch worktrees inflated one run to 48 minutes and
+      exposed a transient resistant-descendant /proc lstat ENOENT; the unchanged file passed
+      immediately in isolation and the fresh full suite passed once contention cleared. Full-suite
+      scheduling or this /proc assertion needs stronger cross-worktree isolation.
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    created_at: 2026-07-16T03:44:43.208Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
