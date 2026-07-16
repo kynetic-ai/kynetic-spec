@@ -7762,7 +7762,7 @@ workspaces:
         head: dd9e182d59521a161a6b5b383539cc4b70aac120
         last_seen_at: 2026-07-16T01:44:40.104Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-protect-controlled-dispatch-evidence-01kxh2pr
-  - active_role: null
+  - active_role: reviewer
     base_branch_point: 958c482d258844ba156717bd1878a5e821263488
     bootstrap:
       status: succeeded
@@ -8242,12 +8242,12 @@ workspaces:
       detail: integrated-into-base-branch
       eligible: true
       reason: integrated-into-base-branch
-      updated_at: 2026-07-16T04:38:44.066Z
+      updated_at: 2026-07-16T04:38:49.395Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-07-16T04:38:44.066Z
+      updated_at: 2026-07-16T04:38:49.395Z
     integration:
       status: merged
       detail: integration:merged
@@ -8255,7 +8255,7 @@ workspaces:
       publication_mode: manual_merge
       target_branch: plan/plan-dispatch-lifecycle-pause-resume-and-stop-controls/01kxc2vx
       target_commit: 958c482d258844ba156717bd1878a5e821263488
-      updated_at: 2026-07-16T04:38:44.066Z
+      updated_at: 2026-07-16T04:38:49.395Z
     lifecycle_state: closing
     resolved_base_branch: plan/plan-dispatch-lifecycle-pause-resume-and-stop-controls/01kxc2vx
     task_id: 01KXH2PS9K1Z5BKY2ZHR30WJ8Y
@@ -8264,9 +8264,9 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-07-16T04:17:46.400Z
-      last_reconciled_at: 2026-07-16T04:38:44.066Z
+      last_reconciled_at: 2026-07-16T04:38:49.395Z
       created_at: 2026-07-16T01:07:51.304Z
-      updated_at: 2026-07-16T04:38:44.066Z
+      updated_at: 2026-07-16T04:38:49.395Z
     workspace_id: dispatch-workspace-01KXH2PS9K1Z5BKY2ZHR30WJ8Y
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
