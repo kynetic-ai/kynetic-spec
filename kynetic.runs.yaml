@@ -79778,7 +79778,7 @@ runs:
     started_at: 2026-07-15T22:17:35.058Z
   - _ulid: 01KXM774DKB1DJ55PHNJBHQS0F
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -79790,7 +79790,16 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-07-16T01:05:11.893Z
-        completed_at: 2026-07-16T01:05:11.893Z
+        completed_at: 2026-07-16T01:05:52.748Z
+        notes: "High-confidence friction: full npm test and shard 1 both completed green test files but hung
+          in post-green Vitest teardown. High-confidence success: modeling cleanup protection as one
+          pure canonical-identity classifier enabled a compact protected-state × destructive-surface
+          matrix, while physical integration assertions verified session, worktree/snapshot, branch,
+          and registry evidence. No other systemic candidates met the confidence bar."
+      - status: completed
+        step_index: 2
+        started_at: 2026-07-16T01:05:52.748Z
+        completed_at: 2026-07-16T01:05:52.748Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-07-16T01:03:52.243Z
