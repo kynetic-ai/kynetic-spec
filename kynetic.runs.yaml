@@ -81976,7 +81976,7 @@ runs:
     started_at: 2026-07-16T21:11:22.148Z
     completed_at: 2026-07-16T21:13:55.019Z
   - _ulid: 01KXPE06S8JY09T35BS7NB0Q08
-    status: active
+    status: completed
     current_step: 5
     initiated_by: Jacob Chapel
     step_results:
@@ -82025,10 +82025,13 @@ runs:
         completed_at: 2026-07-16T21:44:40.894Z
         notes: No improvement candidates survived the search-first deduplication gate, so there is nothing
           to present for approval.
-      - status: completed
+      - status: skipped
         step_index: 5
         started_at: 2026-07-16T21:44:40.894Z
-        completed_at: 2026-07-16T21:44:40.894Z
+        completed_at: 2026-07-16T21:44:51.116Z
+        notes: "Captured no new items: every high-confidence success and friction point from this session
+          already has durable coverage in an existing task, inbox item, feature, or observation."
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-07-16T21:40:54.184Z
+    completed_at: 2026-07-16T21:44:51.116Z
