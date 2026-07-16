@@ -16,3 +16,19 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-07-16T14:30:32.298Z
+  - _ulid: 01KXNPP8PFENQ4JDZZXGQ5G4QM
+    content: "Implemented the real-daemon API/CLI/event surface suite and found/fixed a missing public
+      active_count projection. The fixture uses a real shadow worktree, ephemeral daemon endpoint,
+      bounded fetch, explicit-cwd built CLI, and WebSocket events. It covers global/task
+      transitions, alias canonicalization, idle/pending/failed/mixed cleanup rows, nested
+      matching-task cleanup, unrelated-scope gating, exact public snake/internal-CLI hybrid casing,
+      invalid transition/current status, injected commit failure, and sanitized event parity.
+      Existing API/CLI/event suites now assert active_count and all 17 unique closed failure codes.
+      Focused lifecycle slice: 138/138 passed. Full npm test and shard1 reported every selected file
+      green but reproduced the separately tracked post-green runner teardown hang and required
+      interruption; no test failure was reported. UI camel conversion remains owned by
+      @task-ui-dispatch-lifecycle-controls, which is currently needs_work and absent from this
+      integration target, so this branch does not import or duplicate that unreviewed converter."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-07-16T14:53:31.215Z
