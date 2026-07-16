@@ -160,6 +160,13 @@ events:
       status: pass
       name: diff check
     timestamp: 2026-07-16T04:37:29.630Z
+  - _ulid: 01KXMKETCAS6EGNJPTQA4NA3AW
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KXMKET1ETEMTDEYVMQV7QQNK
+    timestamp: 2026-07-16T04:37:47.019Z
 examined_commit: 227eb5005923d64b52ea7d7f53f8107c2a7d5224
 external_links: []
 lifecycle_state: open
@@ -169,8 +176,30 @@ subject:
   content_hash: ""
   ref: "@01KXH2PS9K1Z5BKY2ZHR30WJ8Y"
   shadow_commit: ""
-threads: []
+threads:
+  - _ulid: 01KXMKET1ETEMTDEYVMQV7QQNK
+    entries:
+      - _ulid: 01KXMKET1EQMKKJ4R8X87YKZF9
+        author: Jacob Chapel
+        body: "Review evidence log — Files read: all 11 task-changed files; surrounding EventBus, lifecycle
+          store and transaction, task identity, stop/start recovery, daemon PubSub, shared WebSocket
+          contract, agents invalidation, automation event-log subscription, prior review threads,
+          and task/plan/spec/trait context. Commands run: merge-base/task diff and history;
+          task/spec/plan/review lookups; AC annotation searches; format, repo lint, focused
+          changed-file lint, typecheck, fresh full suite, refs/alignment/completeness validation,
+          and diff check. Claims verified: cycle-2 callback isolation now preserves one committed
+          applied outcome when publication throws; startup recovery emits one failed event only
+          after cleanup status is durably failed; all 17 closed codes, sanitizer bounds, identity
+          rules, and forbidden-field omissions are behaviorally covered; agents-topic delivery
+          reaches queryKeys.agents.all invalidation and automation event refresh. Categories
+          searched: correctness, durable ordering, identity edge cases, recovery/error
+          classification, callback handling, sanitization/security exposure, test quality,
+          schema/registry/shared-type parity, daemon/WebSocket/UI integration, and merge-base
+          coherence. Shared-guidance neutrality: not applicable; no shared/package guidance surface
+          changed. Findings: none."
+        created_at: 2026-07-16T04:37:46.670Z
+    kind: nit
 verdicts: []
 created_at: 2026-07-16T04:21:35.006Z
-updated_at: 2026-07-16T04:37:29.373Z
+updated_at: 2026-07-16T04:37:46.670Z
 notes: []
