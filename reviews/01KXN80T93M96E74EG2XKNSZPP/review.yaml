@@ -2,7 +2,144 @@ _ulid: 01KXN80T93M96E74EG2XKNSZPP
 slugs: []
 title: Review canonical dispatch lifecycle API (cycle 7)
 author: Jacob Chapel
-checks: []
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: All 1052 files matched; exit 0.
+    name: format
+    required: true
+    runner: npm run format:check
+    created_at: 2026-07-16T10:51:44.639Z
+    completed_at: 2026-07-16T10:51:44.639Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Repo lint exit 0 with 0 errors; focused oxlint on all 8 changed files reported 0 warnings
+      and 0 errors.
+    name: lint
+    required: true
+    runner: npm run lint -- --quiet
+    created_at: 2026-07-16T10:51:47.914Z
+    completed_at: 2026-07-16T10:51:47.914Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Shared build and TypeScript noEmit completed with exit 0.
+    name: typecheck
+    required: true
+    runner: npm run typecheck
+    created_at: 2026-07-16T10:51:51.322Z
+    completed_at: 2026-07-16T10:51:51.322Z
+  - status: skipped
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Fresh full run reported all visible suites PASS, including lifecycle 54/54 and
+      agent-dispatch-engine 147/147, then entered the pre-existing wrapper long-tail/hang tracked by
+      @task-investigate-npm-test-teardown-hang-after-green-suite-run. The only incomplete silent
+      long-tail suite was rerun directly and passed: tests/meta.test.ts 195 passed, 1 skipped, exit
+      0. Focused changed-route slice also passed 79/79."
+    name: full test suite
+    required: true
+    runner: npm test -- --fresh
+    created_at: 2026-07-16T10:51:54.855Z
+    completed_at: 2026-07-16T10:51:54.855Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Exit 0; schema and references OK; 6 documented repository warnings.
+    name: kspec validate refs
+    required: true
+    runner: kspec validate --refs --warnings-ok
+    created_at: 2026-07-16T10:51:58.193Z
+    completed_at: 2026-07-16T10:51:58.193Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Exit 0; schema and references OK; repository baseline alignment warnings only.
+    name: kspec validate alignment
+    required: true
+    runner: kspec validate --alignment --warnings-ok
+    created_at: 2026-07-16T10:52:01.467Z
+    completed_at: 2026-07-16T10:52:01.467Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Exit 0; schema and references OK; repository baseline completeness warnings only.
+    name: kspec validate completeness
+    required: true
+    runner: kspec validate --completeness --warnings-ok
+    created_at: 2026-07-16T10:52:04.691Z
+    completed_at: 2026-07-16T10:52:04.691Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: 14 suites, 79 tests passed; includes canonical routes, compatibility adapters, and
+      concurrent cold-start failure/rollback behavior.
+    name: focused lifecycle tests
+    required: true
+    runner: npm test -- --fresh changed lifecycle route files
+    created_at: 2026-07-16T10:52:07.705Z
+    completed_at: 2026-07-16T10:52:07.705Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Verified prior blocker independently: serialized canonical, unified alias, and legacy
+      start races return settled failures without publishing an engine or mutating stopped
+      authority; generic startup failure permits the queued retry after rollback."
+    name: concurrent cold-start persistence
+    required: true
+    runner: behavioral in-process route tests
+    created_at: 2026-07-16T10:52:10.846Z
+    completed_at: 2026-07-16T10:52:10.846Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Own lifecycle ACs and task-owned authority status/error ACs have behavioral annotations;
+      inherited API endpoint coverage is behavioral; localhost/WebSocket trait coverage remains in
+      existing server/protocol suites. No source-scanning tests found.
+    name: AC coverage
+    required: true
+    runner: kspec item get plus rg annotation audit
+    created_at: 2026-07-16T10:52:13.996Z
+    completed_at: 2026-07-16T10:52:13.996Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: No whitespace errors.
+    name: diff whitespace
+    required: true
+    runner: git diff --check
+    created_at: 2026-07-16T10:52:17.221Z
+    completed_at: 2026-07-16T10:52:17.221Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Files read: all 8 changed files plus surrounding dispatch engine, task identity, control
+      store, shadow transaction, parser, prior review, task and specs. Commands: full diffs,
+      item/trait/review lookups, annotation searches, format/lint/focused lint/typecheck, three
+      validations, focused 79-test run, fresh full run, direct meta 195-pass completion, diff check.
+      Claims verified: cycle-6 cold-start persistence race is serialized through rollback and
+      reproduced behaviorally. Categories searched: correctness, edge cases, error handling,
+      security/path leakage, test quality, compatibility, concurrency, integration. Findings: none.
+      Shared guidance surfaces touched: none; neutrality checklist not applicable."
+    name: review evidence log
+    required: true
+    runner: manual review
+    created_at: 2026-07-16T10:52:20.351Z
+    completed_at: 2026-07-16T10:52:20.351Z
 events:
   - _ulid: 01KXN80T8W5B91KWP2BR13A6RX
     actor: Jacob Chapel
@@ -17,6 +154,90 @@ events:
       from: draft
       to: open
     timestamp: 2026-07-16T10:37:32.339Z
+  - _ulid: 01KXN8VJD5HCH6YVHPBHE79RZ4
+    actor: codex-reviewer
+    event_type: check_added
+    payload:
+      status: pass
+      name: format
+    timestamp: 2026-07-16T10:51:44.933Z
+  - _ulid: 01KXN8VNHN22PKCJWZMT9S8E6K
+    actor: codex-reviewer
+    event_type: check_added
+    payload:
+      status: pass
+      name: lint
+    timestamp: 2026-07-16T10:51:48.149Z
+  - _ulid: 01KXN8VRXTVPM24416EMP9FT9S
+    actor: codex-reviewer
+    event_type: check_added
+    payload:
+      status: pass
+      name: typecheck
+    timestamp: 2026-07-16T10:51:51.611Z
+  - _ulid: 01KXN8VWCPC4TCED4AS8J95WJ7
+    actor: codex-reviewer
+    event_type: check_added
+    payload:
+      status: skipped
+      name: full test suite
+    timestamp: 2026-07-16T10:51:55.158Z
+  - _ulid: 01KXN8VZJYXC4FKC1RC9AVH2T0
+    actor: codex-reviewer
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate refs
+    timestamp: 2026-07-16T10:51:58.430Z
+  - _ulid: 01KXN8W2SDM2B7KV5AEJ5NRKAB
+    actor: codex-reviewer
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate alignment
+    timestamp: 2026-07-16T10:52:01.709Z
+  - _ulid: 01KXN8W5YR13F8T2NCAVHZAE1K
+    actor: codex-reviewer
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate completeness
+    timestamp: 2026-07-16T10:52:04.952Z
+  - _ulid: 01KXN8W8WHHGXASYVBPMQK591T
+    actor: codex-reviewer
+    event_type: check_added
+    payload:
+      status: pass
+      name: focused lifecycle tests
+    timestamp: 2026-07-16T10:52:07.953Z
+  - _ulid: 01KXN8WBXZQC3EC60ABYJ0JA5Q
+    actor: codex-reviewer
+    event_type: check_added
+    payload:
+      status: pass
+      name: concurrent cold-start persistence
+    timestamp: 2026-07-16T10:52:11.071Z
+  - _ulid: 01KXN8WF1EH7X4AP9TXVX3Q23D
+    actor: codex-reviewer
+    event_type: check_added
+    payload:
+      status: pass
+      name: AC coverage
+    timestamp: 2026-07-16T10:52:14.254Z
+  - _ulid: 01KXN8WJ5HPBNX53CSG4K7KNAF
+    actor: codex-reviewer
+    event_type: check_added
+    payload:
+      status: pass
+      name: diff whitespace
+    timestamp: 2026-07-16T10:52:17.457Z
+  - _ulid: 01KXN8WN8GT9EXQKGMKQRDAB3A
+    actor: codex-reviewer
+    event_type: check_added
+    payload:
+      status: pass
+      name: review evidence log
+    timestamp: 2026-07-16T10:52:20.624Z
 examined_commit: 6f9462a6c73e15e96c1f013e5a2067034d02e397
 external_links: []
 lifecycle_state: open
@@ -29,5 +250,5 @@ subject:
 threads: []
 verdicts: []
 created_at: 2026-07-16T10:37:08.259Z
-updated_at: 2026-07-16T10:37:32.085Z
+updated_at: 2026-07-16T10:52:20.351Z
 notes: []
