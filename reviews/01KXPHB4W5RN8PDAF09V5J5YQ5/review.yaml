@@ -93,6 +93,19 @@ checks:
     runner: canonical-plan-review
     created_at: 2026-07-16T22:43:50.664Z
     completed_at: 2026-07-16T22:43:50.664Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: The plan preserves semantic package neutrality in both directions, source-first template
+      editing, twice-run generation, full tracked Markdown and non-file inventories, trigger and
+      filter correction, publication-mode correction, remote-sync caution, negative omission tests,
+      and generated-source pairing.
+    name: Neutrality generated ownership and audit closure
+    required: true
+    runner: canonical-plan-review
+    created_at: 2026-07-16T22:43:58.596Z
+    completed_at: 2026-07-16T22:43:58.596Z
 events:
   - _ulid: 01KXPHB4W525RSJNXKZZMG0HTJ
     actor: Jacob Chapel
@@ -215,6 +228,13 @@ events:
       status: pass
       name: Behavioral test executability
     timestamp: 2026-07-16T22:43:51.315Z
+  - _ulid: 01KXPHKPVZQTVNQ01MEHJNK6TZ
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: Neutrality generated ownership and audit closure
+    timestamp: 2026-07-16T22:43:58.975Z
 examined_commit: null
 external_links: []
 lifecycle_state: open
@@ -647,5 +667,5 @@ threads:
     kind: blocker
 verdicts: []
 created_at: 2026-07-16T22:39:18.405Z
-updated_at: 2026-07-16T22:43:50.664Z
+updated_at: 2026-07-16T22:43:58.596Z
 notes: []
