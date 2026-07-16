@@ -11576,7 +11576,7 @@ workspaces:
         head: 8364599a91cd18587254d378c3a6c8f45922a00b
         last_seen_at: 2026-07-16T19:14:42.374Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-verify-api-cli-projection-01kxh2px
-  - active_role: reviewer
+  - active_role: null
     base_branch_point: 2b1916dc1b0a272e6cd022d7c4687d0bbbd14173
     bootstrap:
       status: succeeded
@@ -12051,12 +12051,12 @@ workspaces:
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-07-16T20:20:21.235Z
+      updated_at: 2026-07-16T20:48:18.961Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-07-16T20:21:07.699Z
+      updated_at: 2026-07-16T20:48:18.961Z
     integration:
       status: pending
       detail: null
@@ -12064,7 +12064,7 @@ workspaces:
       publication_mode: manual_merge
       target_branch: plan/plan-dispatch-lifecycle-pause-resume-and-stop-controls/01kxc2vx
       target_commit: 2b1916dc1b0a272e6cd022d7c4687d0bbbd14173
-      updated_at: 2026-07-16T20:20:21.235Z
+      updated_at: 2026-07-16T20:48:18.961Z
     lifecycle_state: integrating
     resolved_base_branch: plan/plan-dispatch-lifecycle-pause-resume-and-stop-controls/01kxc2vx
     task_id: 01KXH2PY7C0W6GDQAFZN12HMC4
@@ -12073,9 +12073,9 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-07-16T20:21:07.699Z
-      last_reconciled_at: 2026-07-16T20:21:07.699Z
+      last_reconciled_at: 2026-07-16T20:48:18.961Z
       created_at: 2026-07-16T19:46:01.318Z
-      updated_at: 2026-07-16T20:21:07.699Z
+      updated_at: 2026-07-16T20:48:18.961Z
     workspace_id: dispatch-workspace-01KXH2PY7C0W6GDQAFZN12HMC4
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
