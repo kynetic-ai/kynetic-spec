@@ -431,6 +431,54 @@ events:
       from: open
       to: closed
     timestamp: 2026-07-16T12:06:04.293Z
+  - _ulid: 01KXNFD2RAK51J070T8VD5PYYX
+    actor: Jacob Chapel
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KXNCWMWFGEJKNPKP4NT11N5Y
+    timestamp: 2026-07-16T12:46:10.186Z
+  - _ulid: 01KXNFD64M2HSKNBQFCK1EG2MX
+    actor: Jacob Chapel
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KXNCWMWFGEJKNPKP4NT11N5Y
+    timestamp: 2026-07-16T12:46:13.652Z
+  - _ulid: 01KXNFD9EE8ZG38ACGCRYGF6VA
+    actor: Jacob Chapel
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KXNCWQZVVMZJ0E6S6ACP8AZS
+    timestamp: 2026-07-16T12:46:17.038Z
+  - _ulid: 01KXNFDCMN1SWYEMF5WZ3NAWJW
+    actor: Jacob Chapel
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KXNCWQZVVMZJ0E6S6ACP8AZS
+    timestamp: 2026-07-16T12:46:20.309Z
+  - _ulid: 01KXNFDFWY2TWKC61GK2B8W38N
+    actor: Jacob Chapel
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KXNCWV7YCH8FQXGN928Z8SYG
+    timestamp: 2026-07-16T12:46:23.646Z
+  - _ulid: 01KXNFDK6BJ8XRDND6BF8D6F9N
+    actor: Jacob Chapel
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KXNCWV7YCH8FQXGN928Z8SYG
+    timestamp: 2026-07-16T12:46:27.019Z
+  - _ulid: 01KXNFDP8TV756GWBQ354EDKFW
+    actor: Jacob Chapel
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KXNCWYD4HT48MYAFT8D2Q0R8
+    timestamp: 2026-07-16T12:46:30.170Z
+  - _ulid: 01KXNFDSJMKWZGRH6QNK7S9249
+    actor: Jacob Chapel
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KXNCWYD4HT48MYAFT8D2Q0R8
+    timestamp: 2026-07-16T12:46:33.556Z
 examined_commit: ef7ffa06f604363415e906b2db0ccfbc3abb4afb
 external_links: []
 lifecycle_state: closed
@@ -458,7 +506,16 @@ threads:
           ac-resume-reports-authority as uncovered. Add standalone annotations for both criteria and
           ensure the associated assertions prove each authority result.
         created_at: 2026-07-16T12:02:14.543Z
+      - _ulid: 01KXNFD2GGMDFCQ4AM29V91CND
+        author: Jacob Chapel
+        body: "Fixed in 83d11f75b9: added standalone ac-pause-reports-authority and
+          ac-resume-reports-authority annotations to the parameterized authority test; each row
+          asserts the exact resulting authority and projection. Completeness validation no longer
+          reports either AC."
+        created_at: 2026-07-16T12:46:09.932Z
     kind: blocker
+    resolved_at: 2026-07-16T12:46:13.387Z
+    resolved_by: Jacob Chapel
   - _ulid: 01KXNCWQZVVMZJ0E6S6ACP8AZS
     anchor:
       type: code
@@ -479,7 +536,17 @@ threads:
           this harness with the task-required subprocess helper and exercise the real flags for
           every grammar row.
         created_at: 2026-07-16T12:02:17.723Z
+      - _ulid: 01KXNFD96H8AZ5N0TDZ8W1TZHM
+        author: Jacob Chapel
+        body: "Fixed in 83d11f75b9: runLifecycleCli now calls tests/helpers/cli.ts kspec with an explicit
+          temp-project cwd and isolated/sanitized environment. The built-CLI suite exercises all
+          four global, all three task, and both status grammar rows with real trailing --json flags,
+          then asserts process exit/output and recorded canonical requests. The focused handler
+          harness remains only for fine-grained response and TTY injection."
+        created_at: 2026-07-16T12:46:16.785Z
     kind: blocker
+    resolved_at: 2026-07-16T12:46:20.011Z
+    resolved_by: Jacob Chapel
   - _ulid: 01KXNCWV7YCH8FQXGN928Z8SYG
     anchor:
       type: code
@@ -501,7 +568,17 @@ threads:
           behavioral coverage with a distinctive thrown error that must not appear in either human
           or JSON output.
         created_at: 2026-07-16T12:02:21.054Z
+      - _ulid: 01KXNFDFNF8BTTXSD51WXX90MW
+        author: Jacob Chapel
+        body: "Fixed in 83d11f75b9: all lifecycle context resolution now runs through
+          resolveLifecycleContext and maps thrown errors to the fixed internal_error copy. Both
+          status catches also fail through the closed mapping. Real built-CLI human/JSON tests force
+          a distinctive format-version context exception for mutation and both status families,
+          assert exact sanitized output/exit 3, and prove no HTTP request occurs."
+        created_at: 2026-07-16T12:46:23.407Z
     kind: blocker
+    resolved_at: 2026-07-16T12:46:26.742Z
+    resolved_by: Jacob Chapel
   - _ulid: 01KXNCWYD4HT48MYAFT8D2Q0R8
     entries:
       - _ulid: 01KXNCWYD4KYA5MFAY2SWW31EY
@@ -519,7 +596,15 @@ threads:
           daemon integration. Shared/package guidance surfaces touched: none; neutrality review not
           applicable."
         created_at: 2026-07-16T12:02:24.292Z
+      - _ulid: 01KXNFDP1FC03CYG2XKM1FK6BH
+        author: Jacob Chapel
+        body: Acknowledged. Fix-cycle verification independently reran formatting, repo/focused lint,
+          typecheck, the 164-test lifecycle/agent/endpoint slice, a fresh full suite (2824 suites;
+          10874 passed, 3 skipped), refs/alignment/completeness validation, and diff checks.
+        created_at: 2026-07-16T12:46:29.935Z
     kind: nit
+    resolved_at: 2026-07-16T12:46:33.302Z
+    resolved_by: Jacob Chapel
   - _ulid: 01KXNCZX325B1SNBYF3ZVRPSJE
     anchor:
       type: code
@@ -612,5 +697,5 @@ verdicts:
     role: reviewer
     created_at: 2026-07-16T12:06:04.293Z
 created_at: 2026-07-16T11:41:11.315Z
-updated_at: 2026-07-16T12:06:04.293Z
+updated_at: 2026-07-16T12:46:33.302Z
 notes: []

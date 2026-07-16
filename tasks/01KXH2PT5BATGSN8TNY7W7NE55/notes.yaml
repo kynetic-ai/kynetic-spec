@@ -33,3 +33,16 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-07-16T12:06:07.244Z
+  - _ulid: 01KXNFDTNSGENFT8XAEANME0SC
+    content: "Fix cycle 1: addressed every review thread in commit 83d11f75b9. Added missing
+      pause/resume authority AC annotations; replaced the named lifecycle CLI harness with an
+      explicit-cwd, sanitized real subprocess boundary for every global/task/status grammar row and
+      actual --json flags; retained focused handler injection for closed-code/schema/TTY cases; and
+      moved mutation plus both status context resolution behind the fixed internal_error mapping
+      with human/JSON no-raw-detail coverage. Verification: format and focused/repo lint clean (0
+      errors; 0 changed-file warnings), typecheck passed, focused slice 164/164 passed, fresh full
+      suite 10874 passed/3 skipped, refs/alignment/completeness validations exited 0, task AC gaps
+      cleared, and git diff checks passed."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-07-16T12:46:34.681Z
