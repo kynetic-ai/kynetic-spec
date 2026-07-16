@@ -9,3 +9,13 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-07-16T04:22:46.366Z
+  - _ulid: 01KXNCKMF3QB4F4B3TEMR3TK6X
+    content: "Repeated during review of @01KXH2PT5BATGSN8TNY7W7NE55 on 2026-07-16: fresh full suite
+      failed the same test at tests/agent-invocation.test.ts:340 (expected spawned process
+      stillRunning true to be false), while two immediate isolated fresh reruns passed 14/14. The
+      reviewed diff does not modify tests/agent-invocation.test.ts or
+      src/agent-runtime/invocation.ts relative to plan base f98c880ce3e3, confirming the existing
+      flaky-load classification."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-07-16T11:57:19.203Z
