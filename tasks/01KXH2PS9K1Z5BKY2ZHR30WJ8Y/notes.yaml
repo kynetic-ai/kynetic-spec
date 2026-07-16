@@ -17,3 +17,15 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-07-16T01:13:19.850Z
+  - _ulid: 01KXM8BQ21EF97YRYM0HVQ9WSK
+    content: "Implemented the lifecycle audit pipeline: six registry identifiers, strict
+      dispatch-control payload schema in core/shared owners, exhaustive 17-predicate closed mapper,
+      Unicode/control-safe whitelist emitter, engine success/failure emission after durable action
+      settlement, EventBus retention, and agents-topic callback wiring. The existing centralized
+      agents invalidation already refreshes queryKeys.agents.all, while the automation page's agents
+      listener refreshes its recent-event query, so no UI code change was needed. Focused event
+      tests pass 190/190; broader global/task/stop lifecycle, daemon dispatch, and WebSocket
+      invalidation regression slices pass 103/103."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-07-16T01:23:50.977Z
