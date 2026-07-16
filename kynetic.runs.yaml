@@ -81842,7 +81842,7 @@ runs:
     completed_at: 2026-07-16T19:48:47.009Z
   - _ulid: 01KXP91EX295Q02S3FQ3P9XEJV
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -81855,7 +81855,19 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-07-16T20:15:11.785Z
-        completed_at: 2026-07-16T20:15:11.785Z
+        completed_at: 2026-07-16T20:18:13.619Z
+        notes: "High-confidence candidates: (1) success — intercepting browser routes at the exact public
+          snake_case boundary exercised validation, recursive camelCase conversion, action
+          derivation, and DOM behavior together without mocking product helpers; this caught
+          cross-layer fixture/action issues while preserving real browser rendering. (2) friction —
+          intentional HTTP 409/503 route fixtures generate browser resource-error console messages,
+          so E2E error recording must classify expected transport logs instead of asserting an
+          unconditional empty console list. (3) friction — the required full npm suite took 2952.7s
+          for an E2E-only change."
+      - status: completed
+        step_index: 2
+        started_at: 2026-07-16T20:18:13.619Z
+        completed_at: 2026-07-16T20:18:13.619Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-07-16T20:14:12.386Z
