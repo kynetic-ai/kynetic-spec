@@ -24137,6 +24137,16 @@ observations:
     resolved: false
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     created_at: 2026-07-16T13:22:51.265Z
+  - _ulid: 01KXNKECP82BS500Y7HY936VMR
+    type: friction
+    content: Dispatch dependency preflight reported satisfied for a stabilization task whose affected
+      test and supporting implementation existed only on an unmerged plan branch, while the task had
+      plan_ref=null and targeted dev. Branch ancestry or plan linkage should be validated before
+      declaring such follow-up tasks dispatch-ready.
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    created_at: 2026-07-16T13:56:47.432Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:

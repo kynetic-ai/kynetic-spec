@@ -14,8 +14,13 @@ description: Fresh full-suite review run failed tests/agent-invocation.test.ts c
 spec_ref: "@agent-invocation-lifecycle"
 meta_ref: null
 plan_ref: null
-status: in_progress
-blocked_by: []
+status: blocked
+blocked_by:
+  - The affected resistant-process test and supporting implementation exist only on unmerged plan
+    branch plan/plan-dispatch-lifecycle-pause-resume-and-stop-controls/01kxc2vx (introduced by
+    eabcdee53e, extended by 0898f3a8e0), but this task is mandated to target dev and has
+    plan_ref=null. Retarget/link this task to that plan branch or integrate the prerequisite work
+    into dev, then unblock.
 depends_on: []
 context: []
 priority: 3
@@ -38,6 +43,25 @@ history:
         previous: null
     command: task-start
     timestamp: 2026-07-16T13:55:08.448Z
+  - author: Jacob Chapel
+    changes:
+      status:
+        new: blocked
+        previous: in_progress
+      blocked_by:
+        new:
+          - The affected resistant-process test and supporting implementation exist only on unmerged
+            plan branch plan/plan-dispatch-lifecycle-pause-resume-and-stop-controls/01kxc2vx
+            (introduced by eabcdee53e, extended by 0898f3a8e0), but this task is mandated to target
+            dev and has plan_ref=null. Retarget/link this task to that plan branch or integrate the
+            prerequisite work into dev, then unblock.
+        previous: []
+      prior_status:
+        new: in_progress
+        previous: null
+    command: task-block
+    timestamp: 2026-07-16T13:56:47.049Z
+prior_status: in_progress
 created_at: 2026-07-16T13:46:07.377Z
 started_at: 2026-07-16T13:55:08.447Z
 todos: []

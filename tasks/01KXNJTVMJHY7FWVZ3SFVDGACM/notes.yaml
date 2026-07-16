@@ -1,1 +1,11 @@
-notes: []
+notes:
+  - _ulid: 01KXNKEBD8HZHGXM1WA8QJGJCK
+    content: Investigation found the failing test is not present on this task's mandated dev baseline.
+      It was introduced by eabcdee53e and extended by 0898f3a8e0; both commits are reachable only
+      from plan/plan-dispatch-lifecycle-pause-resume-and-stop-controls/01kxc2vx (and its child task
+      branches), and neither is an ancestor of origin/dev. The supporting verified process-group
+      cleanup behavior is likewise absent from dev, so a deterministic stabilization cannot be
+      implemented here without importing unrelated unmerged plan work.
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-07-16T13:56:46.121Z
