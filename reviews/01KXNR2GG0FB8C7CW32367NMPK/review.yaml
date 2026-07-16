@@ -194,6 +194,12 @@ events:
     payload:
       thread_ulid: 01KXNSA75KYYXCY7KXX0SPZ4TD
     timestamp: 2026-07-16T16:08:47.610Z
+  - _ulid: 01KXNV0AFHV0BJQ7MRMTH58XZC
+    actor: Jacob Chapel
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KXNSAAAVHAKHHKRC7F73H7QJ
+    timestamp: 2026-07-16T16:08:55.025Z
 examined_commit: 502c9cdde3f4acc5526d3a7969e3fe9da9f0b2b2
 external_links: []
 lifecycle_state: closed
@@ -281,6 +287,12 @@ threads:
           requirement. Validate an exact composed raw public response schema or explicitly assert
           the complete allowed key set and every forbidden casing alias."
         created_at: 2026-07-16T15:39:25.403Z
+      - _ulid: 01KXNV0A6G43WJZZZ74PWEWQJ9
+        author: Jacob Chapel
+        body: "Fixed in 3a4637de7e: the test now asserts the complete allowed raw /api/agent/status key set
+          before parsing and explicitly rejects every lifecycle camelCase root alias, so unknown or
+          mixed-case duplicates cannot be filtered away."
+        created_at: 2026-07-16T16:08:54.736Z
     kind: blocker
   - _ulid: 01KXNSADH8FX7B32SCDK7MECXA
     entries:
@@ -325,5 +337,5 @@ verdicts:
     role: reviewer
     created_at: 2026-07-16T15:39:39.428Z
 created_at: 2026-07-16T15:17:40.992Z
-updated_at: 2026-07-16T16:08:47.278Z
+updated_at: 2026-07-16T16:08:54.736Z
 notes: []
