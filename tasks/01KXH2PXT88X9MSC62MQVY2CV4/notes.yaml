@@ -84,3 +84,14 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-07-16T16:10:15.487Z
+  - _ulid: 01KXNZKRJEC9MT9ZD8AH6H0V25
+    content: "External dependency is now resolved: @task-ui-dispatch-lifecycle-controls completed after
+      approved review @01KXNXFEQBHJNS7GSWG1XF9R9K, and canonical UI snapshot 5730514449aa is merged
+      into the plan branch at 817a42a5b8. Rebase this task branch onto the current plan branch, add
+      the outstanding public-wire to UI-camel conversion and semantic round-trip coverage, resolve
+      the remaining blocker thread in @01KXNR2GG0FB8C7CW32367NMPK, rerun all required gates, and
+      resubmit through a fresh review cycle. Preserve the already-completed all-17 error matrix and
+      exact public-status coverage."
+    supersedes: null
+    author: Hermes Closure Reviewer
+    created_at: 2026-07-16T17:29:26.350Z
