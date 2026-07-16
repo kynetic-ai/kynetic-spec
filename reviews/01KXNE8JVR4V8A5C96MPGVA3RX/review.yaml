@@ -109,6 +109,112 @@ checks:
       f98c880ce3e3a884ef5af2161a87ff90f06f4146..94bade5fd3b922dc5be743c479cbca710b5f864c
     created_at: 2026-07-16T12:46:47.545Z
     completed_at: 2026-07-16T12:46:47.545Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: All 1054 files passed formatting checks.
+    name: format
+    required: true
+    runner: npm run format:check
+    created_at: 2026-07-16T12:47:30.733Z
+    completed_at: 2026-07-16T12:47:30.733Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Repo-wide lint completed with 0 errors. Focused oxlint over changed TypeScript/test files
+      also exited 0; its four warnings are on unchanged pre-existing lines in
+      tests/web-ui/ws-cache-invalidation.test.ts.
+    name: lint
+    required: true
+    runner: npm run lint -- --quiet
+    created_at: 2026-07-16T12:47:34.070Z
+    completed_at: 2026-07-16T12:47:34.070Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: TypeScript/Svelte typecheck passed.
+    name: typecheck
+    required: true
+    runner: npm run typecheck
+    created_at: 2026-07-16T12:47:37.341Z
+    completed_at: 2026-07-16T12:47:37.341Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: 2825 suites passed; 10871 tests passed and 3 skipped (10874 total).
+    name: full test suite
+    required: true
+    runner: npm test
+    created_at: 2026-07-16T12:47:40.652Z
+    completed_at: 2026-07-16T12:47:40.652Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: 96 focused tests passed.
+    name: focused lifecycle tests
+    required: true
+    runner: npm test -- tests/web-ui/dispatch-lifecycle-controls.test.ts
+      tests/web-ui/ws-cache-invalidation.test.ts tests/web-ui/fleet-buffer.test.ts
+    created_at: 2026-07-16T12:47:43.951Z
+    completed_at: 2026-07-16T12:47:43.951Z
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: 38 passed and 8 failed. Failures include removed lifecycle selectors/stale error-copy
+      expectations plus the running-with-zero-active section and aria-live regressions. A targeted
+      rerun of the two zero-active tests failed again.
+    name: agents browser regression suite
+    required: true
+    runner: npm run test:e2e -- tests/e2e/agents.spec.ts
+    created_at: 2026-07-16T12:47:47.221Z
+    completed_at: 2026-07-16T12:47:47.221Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Reference validation passed with 6 accepted baseline warnings.
+    name: kspec validate refs
+    required: true
+    runner: kspec validate --refs --warnings-ok
+    created_at: 2026-07-16T12:47:50.443Z
+    completed_at: 2026-07-16T12:47:50.443Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Alignment validation passed with 55 accepted baseline warnings.
+    name: kspec validate alignment
+    required: true
+    runner: kspec validate --alignment --warnings-ok
+    created_at: 2026-07-16T12:47:53.880Z
+    completed_at: 2026-07-16T12:47:53.880Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Completeness validation passed with 326 accepted baseline warnings.
+    name: kspec validate completeness
+    required: true
+    runner: kspec validate --completeness --warnings-ok
+    created_at: 2026-07-16T12:47:57.313Z
+    completed_at: 2026-07-16T12:47:57.313Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: No whitespace errors.
+    name: diff whitespace
+    required: true
+    runner: git diff --check
+      f98c880ce3e3a884ef5af2161a87ff90f06f4146..94bade5fd3b922dc5be743c479cbca710b5f864c
+    created_at: 2026-07-16T12:48:00.544Z
+    completed_at: 2026-07-16T12:48:00.544Z
 events:
   - _ulid: 01KXNE8JVMK0YP5HKP3DFZQ2CV
     actor: Jacob Chapel
@@ -235,6 +341,76 @@ events:
       kind: nit
       thread_ulid: 01KXNFETSNSM0GMMWFCRQN2GJ7
     timestamp: 2026-07-16T12:47:07.837Z
+  - _ulid: 01KXNFFHNA4ZBVMSDKCPK0KFQ9
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: format
+    timestamp: 2026-07-16T12:47:30.986Z
+  - _ulid: 01KXNFFMY4AWNCCVWC01W4GS6D
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: lint
+    timestamp: 2026-07-16T12:47:34.340Z
+  - _ulid: 01KXNFFR3DZA9RNJNKDJ72EVR2
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: typecheck
+    timestamp: 2026-07-16T12:47:37.581Z
+  - _ulid: 01KXNFFVBJZPFRBGRMV4H418SZ
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: full test suite
+    timestamp: 2026-07-16T12:47:40.914Z
+  - _ulid: 01KXNFFYK2928H6PH6TB1WMZ02
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: focused lifecycle tests
+    timestamp: 2026-07-16T12:47:44.226Z
+  - _ulid: 01KXNFG1QZAANDXDFHMQWT5VS0
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: fail
+      name: agents browser regression suite
+    timestamp: 2026-07-16T12:47:47.455Z
+  - _ulid: 01KXNFG4YWGBXGAEDCSC27432D
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate refs
+    timestamp: 2026-07-16T12:47:50.748Z
+  - _ulid: 01KXNFG88X19NVEVM2QEVCG974
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate alignment
+    timestamp: 2026-07-16T12:47:54.141Z
+  - _ulid: 01KXNFGBM9JN5HDQXEV0N5MZKJ
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate completeness
+    timestamp: 2026-07-16T12:47:57.577Z
+  - _ulid: 01KXNFGERD1FN098J7M5AJK1FC
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: diff whitespace
+    timestamp: 2026-07-16T12:48:00.781Z
 examined_commit: 94bade5fd3b922dc5be743c479cbca710b5f864c
 external_links: []
 lifecycle_state: open
@@ -366,5 +542,5 @@ threads:
     kind: nit
 verdicts: []
 created_at: 2026-07-16T12:26:14.264Z
-updated_at: 2026-07-16T12:47:07.573Z
+updated_at: 2026-07-16T12:48:00.544Z
 notes: []

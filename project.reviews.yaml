@@ -30138,7 +30138,7 @@ reviews:
     title: Review lifecycle UI consumers and controls
     disposition: changes_requested
     author: Jacob Chapel
-    check_count: 10
+    check_count: 20
     examined_commit: 94bade5fd3b922dc5be743c479cbca710b5f864c
     lifecycle_state: open
     related_refs: []
@@ -30151,4 +30151,4 @@ reviews:
     unresolved_blocker_count: 5
     verdict_count: 0
     created_at: 2026-07-16T12:26:14.264Z
-    updated_at: 2026-07-16T12:47:07.573Z
+    updated_at: 2026-07-16T12:48:00.544Z
