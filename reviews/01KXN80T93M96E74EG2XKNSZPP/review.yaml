@@ -215,6 +215,17 @@ checks:
     runner: kspec validate --completeness --warnings-ok
     created_at: 2026-07-16T10:53:23.315Z
     completed_at: 2026-07-16T10:53:23.315Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: 14 suites, 79 tests passed; includes canonical routes, compatibility adapters, and
+      concurrent cold-start failure/rollback behavior.
+    name: focused lifecycle tests
+    required: false
+    runner: npm test -- --fresh changed lifecycle route files
+    created_at: 2026-07-16T10:53:28.953Z
+    completed_at: 2026-07-16T10:53:28.953Z
 events:
   - _ulid: 01KXN80T8W5B91KWP2BR13A6RX
     actor: Jacob Chapel
@@ -362,6 +373,13 @@ events:
       status: pass
       name: kspec validate completeness
     timestamp: 2026-07-16T10:53:23.556Z
+  - _ulid: 01KXN8YR7EVYTP9QJ5E43ZH0YT
+    actor: codex-reviewer
+    event_type: check_added
+    payload:
+      status: pass
+      name: focused lifecycle tests
+    timestamp: 2026-07-16T10:53:29.198Z
 examined_commit: 6f9462a6c73e15e96c1f013e5a2067034d02e397
 external_links: []
 lifecycle_state: open
@@ -374,5 +392,5 @@ subject:
 threads: []
 verdicts: []
 created_at: 2026-07-16T10:37:08.259Z
-updated_at: 2026-07-16T10:53:23.315Z
+updated_at: 2026-07-16T10:53:28.953Z
 notes: []
