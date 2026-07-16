@@ -466,6 +466,12 @@ events:
     payload:
       thread_ulid: 01KXMWTR5M1FWYNA3DBKAZ4XAH
     timestamp: 2026-07-16T07:23:01.894Z
+  - _ulid: 01KXMY0ZS65AYZ7VWEDD1TX8AB
+    actor: Jacob Chapel
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KXMWQR2NJSXMPK9TTWDY64RB
+    timestamp: 2026-07-16T07:42:28.134Z
 examined_commit: 30da557ff43c38e74c3933c432824b58ce3d4827
 external_links: []
 lifecycle_state: closed
@@ -497,6 +503,13 @@ threads:
           ref/id mismatch handling, and add exact behavioral task_not_found/ambiguous cases that
           prove no mutation and no raw alias exposure."
         created_at: 2026-07-16T07:19:56.758Z
+      - _ulid: 01KXMY0ZH77K4PVE0NMBKXW87C
+        author: Jacob Chapel
+        body: "Fixed in dc53f97405: strict lifecycle identity resolution now requires the canonical ULID to
+          exist in the loaded task index before preflight or locked engine mutation. Behavioral
+          route tests cover exact 404 task_not_found and 409 ambiguity rows, no mutation/engine
+          creation, and no raw alias exposure."
+        created_at: 2026-07-16T07:42:27.879Z
     kind: blocker
   - _ulid: 01KXMWQVDBS6YXSKJ1MF90W8Y6
     anchor:
@@ -621,5 +634,5 @@ verdicts:
     role: reviewer
     created_at: 2026-07-16T07:21:52.377Z
 created_at: 2026-07-16T07:05:26.538Z
-updated_at: 2026-07-16T07:23:01.636Z
+updated_at: 2026-07-16T07:42:27.879Z
 notes: []
