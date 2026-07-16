@@ -196,3 +196,16 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-07-16T10:01:25.561Z
+  - _ulid: 01KXN6EY2M3WGTMQ9WBRPMJ0W4
+    content: "Fix cycle 6 approach: serialize each project's route-level dispatch lifecycle transaction
+      across preflight, cold engine startup, durable lifecycle mutation, and rollback. A joined
+      cold-start caller will wait until the prior caller either publishes a complete successful
+      transaction or finishes rollback, then retry against the settled engine/store state. Tests
+      first: real-shadow concurrent request pairs for canonical control, unified start, and legacy
+      start use a self-removing pre-commit hook so the first post-start persistence attempt fails
+      and the queued request succeeds only after rollback; assert the failure never reports success,
+      the later success leaves a published running engine, and committed authority is running.
+      Re-verify all daemon-agent-dispatch and inherited AC coverage plus full project gates."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-07-16T10:09:53.748Z
