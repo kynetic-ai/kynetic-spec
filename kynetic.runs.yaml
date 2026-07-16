@@ -81274,7 +81274,7 @@ runs:
     completed_at: 2026-07-16T13:59:22.666Z
   - _ulid: 01KXNMJREDYKXPRSZTKQSPS19R
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -81287,7 +81287,15 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-07-16T14:19:21.592Z
-        completed_at: 2026-07-16T14:19:21.592Z
+        completed_at: 2026-07-16T14:19:26.071Z
+        notes: "High-confidence candidates: the review's adversarial boundary probe plus fresh gates and
+          detached merge helper worked well; reflection documentation omits the run-ref required by
+          workflow show. A possible cross-worktree full-suite contention issue was observed but is
+          not yet clearly systemic."
+      - status: completed
+        step_index: 2
+        started_at: 2026-07-16T14:19:26.071Z
+        completed_at: 2026-07-16T14:19:26.071Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-07-16T14:16:39.117Z
