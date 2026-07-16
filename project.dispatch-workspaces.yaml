@@ -10155,7 +10155,7 @@ workspaces:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-07-16T14:15:57.584Z
+      updated_at: 2026-07-16T14:20:39.200Z
     integration:
       status: merged
       detail: integration:merged
@@ -10172,18 +10172,13 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-07-16T13:53:36.566Z
-      last_reconciled_at: 2026-07-16T14:20:03.913Z
+      last_reconciled_at: 2026-07-16T14:20:39.200Z
       created_at: 2026-07-16T10:55:38.101Z
-      updated_at: 2026-07-16T14:20:03.913Z
+      updated_at: 2026-07-16T14:20:39.200Z
     workspace_id: dispatch-workspace-01KXH2PT5BATGSN8TNY7W7NE55
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
-      reviewer:
-        branch_mode: detached
-        branch_ref: null
-        head: f84a91662f82218f14c9a14fd6c75672b6f271cc
-        last_seen_at: 2026-07-16T13:52:44.126Z
-        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-cli-dispatch-lifecycle-controls-01kxh2pt-review
+      reviewer: null
       worker:
         branch_mode: branch
         branch_ref: dispatch/task/task-cli-dispatch-lifecycle-controls/01kxh2pt
