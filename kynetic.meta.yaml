@@ -24056,6 +24056,16 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-07-16T04:17:33.398Z
+  - _ulid: 01KXMJKDSW3F670TPX4JBE0JTP
+    type: friction
+    content: A defect task created from review of an unmerged plan branch was dispatched against dev
+      with plan_ref=null, leaving the affected code absent from the task workspace. Defect
+      follow-ups need to inherit the reviewed task's plan branch or depend on its integration before
+      becoming automation-eligible.
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    created_at: 2026-07-16T04:22:49.404Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
