@@ -475,6 +475,24 @@ events:
       from: open
       to: closed
     timestamp: 2026-07-16T10:01:23.579Z
+  - _ulid: 01KXN7F7A89AKKTYKXAHKZXVH2
+    actor: Jacob Chapel
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KXN5TRTNKTT5RH005M2MSTBB
+    timestamp: 2026-07-16T10:27:31.784Z
+  - _ulid: 01KXN7FAADDH0JQZ8Z4CY0QQ0C
+    actor: Jacob Chapel
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KXN5XFE45F3YZQ7BFY3P5VS5
+    timestamp: 2026-07-16T10:27:34.861Z
+  - _ulid: 01KXN7FD69KAMPEBTAGB2JDQGX
+    actor: Jacob Chapel
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KXN5XFE45F3YZQ7BFY3P5VS5
+    timestamp: 2026-07-16T10:27:37.801Z
 examined_commit: cd4d2f46e13e390617ae1fe9e09ee74af8af4e43
 external_links: []
 lifecycle_state: closed
@@ -509,6 +527,12 @@ threads:
           otherwise prevent joiners from using an engine while rollback ownership is unsettled, and
           add a behavioral concurrent post-start persistence-failure regression."
         created_at: 2026-07-16T09:58:53.013Z
+      - _ulid: 01KXN7F72HNPDAEFGN3G67MVND
+        author: Jacob Chapel
+        body: "Fixed in 6f9462a6c7: route-level lifecycle operations are now serialized per project across
+          preflight, cold startup, durable transition, and rollback. Concurrent startup failures
+          settle before a queued caller retries."
+        created_at: 2026-07-16T10:27:31.537Z
     kind: blocker
     resolved_at: 2026-07-16T10:01:20.105Z
     resolved_by: codex-reviewer
@@ -536,7 +560,18 @@ threads:
           otherwise prevent joiners from using an engine while rollback ownership is unsettled, and
           add a behavioral concurrent post-start persistence-failure regression."
         created_at: 2026-07-16T10:00:21.701Z
+      - _ulid: 01KXN7FA2ZZ74Y1GRKMA3TBHMR
+        author: Jacob Chapel
+        body: "Fixed in 6f9462a6c7: added a per-project lifecycle transaction queue covering canonical
+          control and both start aliases, with shutdown waiting for transactions to settle. A
+          real-shadow one-shot commit-failure regression proves the creator returns
+          control_commit_failed, the queued caller observes control_store_unavailable rather than
+          the rolled-back engine, both return 503, no engine remains published, and committed
+          authority stays stopped across all three routes."
+        created_at: 2026-07-16T10:27:34.623Z
     kind: blocker
+    resolved_at: 2026-07-16T10:27:37.557Z
+    resolved_by: Jacob Chapel
 verdicts:
   - applies_to_version:
       type: entity_version
@@ -546,5 +581,5 @@ verdicts:
     role: reviewer
     created_at: 2026-07-16T10:01:23.579Z
 created_at: 2026-07-16T09:40:07.588Z
-updated_at: 2026-07-16T10:01:23.579Z
+updated_at: 2026-07-16T10:27:37.557Z
 notes: []
