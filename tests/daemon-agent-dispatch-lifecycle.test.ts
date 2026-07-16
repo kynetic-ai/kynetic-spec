@@ -349,6 +349,7 @@ describe("canonical dispatch lifecycle routes", () => {
         global_authority: "running",
         projection: "running",
         cleanup_state: { status: "idle", entries: [] },
+        active_count: 0,
         held_tasks: expect.any(Array),
         task_controls: [],
       }),
