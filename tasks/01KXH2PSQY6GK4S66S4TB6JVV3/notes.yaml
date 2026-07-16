@@ -1,1 +1,16 @@
-notes: []
+notes:
+  - _ulid: 01KXMKPT0W693YGX4VDY21VR72
+    content: "Approach: reuse DispatchEngine.applyGlobalLifecycleAction/applyTaskLifecycleAction and
+      committed dispatch-control publication; add strict shared wire schemas plus route serializers,
+      canonical control error translation, and compatibility adapters without changing engine
+      transition logic. Edge cases: no-engine status, matching-scope cleanup gates, task alias
+      canonicalization/mismatch, store load/commit and cleanup failures, conditional runner fields,
+      fixed path-free cwd errors, omission-vs-null rules, and complete status on every canonical
+      failure. Test plan: create behavioral in-process route fixtures covering all task-owned
+      lifecycle ACs and closed-schema rejection matrices; extend existing public/internal/legacy
+      route tests for exact deep-equal compatibility rows; annotate the new daemon-agent-dispatch
+      ACs and applicable trait ACs, retaining existing N/A coverage for unrelated inherited
+      behavior."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-07-16T04:42:08.796Z
