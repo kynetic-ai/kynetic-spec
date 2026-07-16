@@ -384,6 +384,12 @@ events:
     payload:
       thread_ulid: 01KXPAM6BX5C1KZE8VHJY5165J
     timestamp: 2026-07-16T21:09:13.005Z
+  - _ulid: 01KXPC6BPKHG6T1DM7JACZ75VC
+    actor: Jacob Chapel
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KXPAM6BX5C1KZE8VHJY5165J
+    timestamp: 2026-07-16T21:09:18.675Z
 examined_commit: 4bedaff5093dbef95ea81efb52b33c53be08a837
 external_links: []
 lifecycle_state: closed
@@ -447,6 +453,8 @@ threads:
           projection, Degraded state/reason, Held Tasks, and the Held by global authority reason."
         created_at: 2026-07-16T21:09:12.749Z
     kind: blocker
+    resolved_at: 2026-07-16T21:09:18.403Z
+    resolved_by: Jacob Chapel
   - _ulid: 01KXPAMA10AGG32NS2VXCXQXVR
     anchor:
       type: code
@@ -530,5 +538,5 @@ verdicts:
     role: reviewer
     created_at: 2026-07-16T20:43:50.975Z
 created_at: 2026-07-16T20:22:54.480Z
-updated_at: 2026-07-16T21:09:12.749Z
+updated_at: 2026-07-16T21:09:18.403Z
 notes: []
