@@ -66,3 +66,21 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-07-16T15:51:20.039Z
+  - _ulid: 01KXNV2S1ZK15J78ECS41417VA
+    content: "Fix cycle 1 partial completion in 3a4637de7e: resolved the all-17 matrix blocker and
+      exact-public-status blocker. The real daemon now compares HTTP status/body, CLI exit/fixed
+      copy (validation_failed=1; all others=3), and sanitized failed events for every closed code;
+      added global-cleanup/task-metadata isolation, matching-scope retry, and legacy alias scope
+      coverage; raw public status now enforces the complete allowed key set and rejects every
+      camelCase lifecycle alias. Focused lifecycle: 139/139 passed. Format, repo lint, focused lint
+      (0 warnings/errors), typecheck, diff check, and all three kspec validations passed. Full suite
+      had one detached-start metadata timing failure in cli-serve while 10k+ other tests including
+      all changed surfaces passed; an immediate fresh cli-serve rerun passed 47/47, confirming an
+      unrelated intermittent. Added formal dependency @task-ui-dispatch-lifecycle-controls. Its
+      cycle-4 review returned changes_requested and its converter remains absent from plan target
+      d207e138c1, so UI conversion/semantic round-trip coverage cannot be added without conflating
+      unapproved task work. Canonical branch pushed at 3a4637de7e; two fixed review threads
+      replied/resolved, UI thread replied and remains open."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-07-16T16:10:15.487Z
