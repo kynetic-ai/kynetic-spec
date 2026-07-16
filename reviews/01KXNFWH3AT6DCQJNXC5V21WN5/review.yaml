@@ -202,6 +202,20 @@ events:
       status: pass
       name: diff check
     timestamp: 2026-07-16T13:15:30.078Z
+  - _ulid: 01KXNH2ZQVAHQKBJMRPBZ6CQXP
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KXNH2ZFV5WR53CFDK2GZ7CG6
+    timestamp: 2026-07-16T13:15:36.571Z
+  - _ulid: 01KXNH32Z7MDK3SSTZ24DWM7ZP
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KXNH32Q21YBTCA3MSRZH4CNF
+    timestamp: 2026-07-16T13:15:39.879Z
 examined_commit: 83d11f75b9f53d2d822669cb37f56f77b9f4b017
 external_links: []
 lifecycle_state: open
@@ -253,7 +267,48 @@ threads:
           surfaces touched: none; neutrality review not applicable."
         created_at: 2026-07-16T13:14:55.544Z
     kind: nit
+  - _ulid: 01KXNH2ZFV5WR53CFDK2GZ7CG6
+    anchor:
+      type: code
+      commit: 83d11f75b9f53d2d822669cb37f56f77b9f4b017
+      line_end: 215
+      line_start: 200
+      path: src/cli/commands/agent.ts
+      side: head
+    entries:
+      - _ulid: 01KXNH2ZFV7YBG7MG8C20MF7Y2
+        author: Jacob Chapel
+        body: "MUST-FIX — The internal status validator is not fail-closed: invocations and queued accept
+          arbitrary values and the top-level schema uses passthrough. Both JSON status commands then
+          spread the parsed object, so daemon-supplied paths or raw error text are emitted verbatim.
+          Impact: this violates the exact internal-status contract and the task guarantee that
+          response paths, cwd values, and raw daemon errors never cross the CLI boundary. Evidence:
+          an executable status probe returned exit 0 and printed injected fields cwd=/secret/raw and
+          error=raw daemon detail. Define and preserve the known existing status fields explicitly,
+          reject unknown/malformed fields, and add a regression proving both status commands map
+          such a response to the closed internal_error envelope without rendering the injected
+          values."
+        created_at: 2026-07-16T13:15:36.315Z
+    kind: blocker
+  - _ulid: 01KXNH32Q21YBTCA3MSRZH4CNF
+    entries:
+      - _ulid: 01KXNH32Q2CGYB63B70XCVT59F
+        author: Jacob Chapel
+        body: "Review evidence log — Files read: all eight changed files and complete diffs; surrounding CLI
+          registration/output/daemon-client code; daemon canonical control and internal-status
+          serializers/routes; task, plan, linked specs/traits, and prior review threads. Commands
+          run: git diff/log/status; task/plan/item/review lookups; AC annotation searches; format,
+          repo lint, focused lint, typecheck, focused tests, fresh full tests,
+          refs/alignment/completeness validation, diff check; executable malformed-status probe.
+          Claims verified: all three prior blockers are fixed; canonical control/status routing
+          matches daemon implementations; fresh full suite passed 2824 suites/10874 tests with 3
+          skipped. Categories searched: correctness, edge cases, error handling and data exposure,
+          security boundary, test quality, AC coverage, and integration. Finding: arbitrary
+          successful status fields leak through passthrough validation. Shared/package guidance
+          surfaces touched: none; neutrality review not applicable."
+        created_at: 2026-07-16T13:15:39.618Z
+    kind: nit
 verdicts: []
 created_at: 2026-07-16T12:54:36.394Z
-updated_at: 2026-07-16T13:15:29.841Z
+updated_at: 2026-07-16T13:15:39.618Z
 notes: []
