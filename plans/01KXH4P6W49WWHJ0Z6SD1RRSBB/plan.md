@@ -1,82 +1,108 @@
 # Documentation Completeness and Dispatch Workspaces
 
-**Goal:** Correct and complete Kynetic Spec's active public documentation, with a source-bound dispatch/bootstrap/workspace operator story and a deterministic whole-public-surface audit.
+**Goal:** Correct and complete Kynetic Spec's active public documentation, with source-bound dispatch workspace and lifecycle-control operator guidance plus a deterministic whole-public-surface audit.
 
-**Architecture:** This is a documentation correction plan, not a dispatch product-expansion plan. It documents behavior present on the integrated target branch, names explicit limitations or unavailable/experimental surfaces, adds one configuration guide, one workspace concept page, and two symptom-first recovery pages, then closes the bounded public-surface inventory with structured drift tests and rendered-doc validation.
+**Architecture:** This is a documentation correction plan, not a dispatch product-expansion plan. It documents behavior on the final reviewed integrated lifecycle target, keeps workspace configuration separate from lifecycle control, adds a dedicated lifecycle-control guide because the implemented CLI/API/UI surface is larger than an overview section, adds one workspace concept page and three symptom-first recovery pages, then closes the bounded public-surface inventory with structured drift tests and rendered/browser validation.
 
-**Plan shape:** This task-only document intentionally omits `## Specs` and uses `derive_from_specs: false`. It proposes no product ACs and no spec patches. Documentation work maps to existing behavioral owners verified with `kspec item get`: `@docs-guides-section`, `@docs-concepts-section`, `@docs-troubleshooting-section`, `@docs-section-taxonomy`, `@docs-getting-started-section`, `@docs-navigation-shape`, `@docs-search`, `@docs-reachability`, `@docs-release-notes-availability`, `@readme-landing-page`, `@default-project-agents-and-conventions`, and `@auto-cli-docs`. `@user-documentation` is a module with no ACs and is not claimed as an AC owner.
+**Plan shape:** This task-only document intentionally omits `## Specs` and uses `derive_from_specs: false`. It proposes no product ACs, no spec patches, and no product changes. Documentation work maps to existing documentation owners verified with `kspec item get`: `@docs-guides-section`, `@docs-concepts-section`, `@docs-troubleshooting-section`, `@docs-section-taxonomy`, `@docs-getting-started-section`, `@docs-navigation-shape`, `@docs-search`, `@docs-reachability`, `@docs-release-notes-availability`, `@readme-landing-page`, `@default-project-agents-and-conventions`, and `@auto-cli-docs`. Lifecycle specs and ACs named below are factual source authorities only; tasks do not claim to implement or close them. `@user-documentation` is a module with no ACs and is not claimed as an AC owner.
 
 ## Binding Scope and Freshness Rules
 
-- This plan owns documentation, documentation fixtures/tests, source-owned package guidance, generated documentation outputs, and non-behavioral setup/upgrade scaffold comments only. It does **not** add bootstrap timeout/process-group/shell-preflight contracts, workspace CLI commands, destructive reset/cleanup behavior, dispatch-root ownership validation, new status projections, or remote-sync implementation.
-- Current CLI help has `kspec agent dispatch start|stop|status|watch` and no workspace list/show/reset/cleanup command. Documentation must not invent one. In particular, no page may recommend the nonexistent `kspec dispatch workspace reset` or `kspec agent dispatch workspace reset`; recovery must use currently supported status/help, configuration correction, normal retry/reconciliation behavior proven by tests, and escalation/manual observation that does not mutate dispatcher-managed metadata or worktrees.
-- `@dispatch-remote-branch-sync` is currently `in_progress`. Schema presence is not proof of support. Remote-sync prose must describe only behavior confirmed on the fresh integrated branch and must label incomplete behavior as experimental, limited, or unavailable; this plan does not make the feature complete.
-- The active `@plan-dispatch-lifecycle-pause-resume-and-stop-controls` owns dispatch runtime, cleanup, status, API, CLI, and UI behavior on its own plan branch. No task below edits those product surfaces. Before any task branch for this plan is created, a maintainer/dispatcher must confirm the lifecycle plan's relevant work is merged into this plan's integration target and the task starts from that fresh target. If it is not integrated, the task blocks; adding cross-plan `depends_on` refs is not a substitute for branch availability.
-- Task 1 refreshes every dispatch/bootstrap/workspace claim from the integrated source, schemas, tests, generated defaults, and live CLI help. Later prose uses that evidence, not the stale pre-integration snapshot. Task 6 repeats the source-fact comparison after all page slices land.
-- Existing source facts to verify rather than reinterpret include project-before-agent bootstrap ordering; role filtering and reviewer reuse/rerun behavior; tracked-file mutation guard; dispatch-only bootstrap scope; base-branch and plan-target precedence; relative/absolute `worktree_root`; publication modes; remote-sync defaults and limitations; worker/reviewer workspace distinction; registry/cleanup ownership; agent-rule `on`/`filter`; and event-specific automation filtering.
+- This plan owns documentation, documentation fixtures/tests, source-owned package guidance, generated documentation outputs, and non-behavioral setup/upgrade scaffold comments or links. It does **not** alter lifecycle schemas, parser/store, engine/admission gates, sessions/process ownership, API routes, CLI handlers/help, UI controls, event contracts, workspace management, remote sync, or task readiness.
+- Source inspection on 2026-07-16 establishes that `dev` and the local lifecycle plan branch are at `0fceed5aa3a2bc93c9bd0ab504df4f48b84494d9`; `origin/dev` is two unrelated daemon timing-test commits ahead at `87ba5a40db4a3a66c21c89c9ff90b28d9177727c`. The completed lifecycle implementation is integrated on the lifecycle plan's remote target branch at inspected tip `3f22e6c93c68115d77e1bde062f7cd12034f91d8`, for which `0fceed5a` is an ancestor. It is not yet an ancestor of local `dev`. The lifecycle plan remains `active` while final implementation review is pending.
+- The preceding fact is not an unconditional “lifecycle work is not merged” blocker. Before Task 1 starts, the maintainer/dispatcher records the **final reviewed lifecycle tip** (including any review-fix commits), confirms that tip is contained in the branch chosen as this plan's integration target, and creates the task branch from that target. If final review is still open, or the chosen task base does not contain the reviewed tip, Task 1 waits. After final review closes, no stale hard-coded commit in this document overrides the reviewed tip.
+- Task 1 repeats the ancestry check and refreshes every dispatch/bootstrap/workspace/lifecycle claim from the final integrated schemas, parser/store, engine, session ownership, API, CLI help, UI adapter/components, events, setup/defaults, generated guidance, and passing tests. Later prose consumes that structured evidence. Task 7 repeats the source comparison after all page slices; Task 8 compares help/render/browser surfaces. Any final-review fix that changes a public fact must be reflected before page work proceeds.
+- The integrated CLI surface is `kspec agent dispatch start|pause|resume|stop|status|watch`, `kspec agent dispatch task pause|resume|stop <task>`, and `kspec agent status`. Lifecycle control commands are distinct from workspace management. There is still no workspace list/show/reset/cleanup command; no page may invent `kspec dispatch workspace ...` or `kspec agent dispatch workspace ...`.
+- `@dispatch-remote-branch-sync` remains `in_progress`. Schema or tests for one path are not proof that every remote-sync behavior is complete. Remote-sync prose describes only behavior confirmed on the fresh reviewed target and labels incomplete behavior as limited, experimental, or unavailable.
+- Existing workspace facts still requiring refresh include project-before-agent bootstrap ordering; role filtering and reviewer reuse/rerun behavior; tracked-file mutation guard; dispatch-only bootstrap scope; base-branch and plan-target precedence; relative/absolute `worktree_root`; publication modes; remote-sync defaults/limits; worker/reviewer workspace distinction; registry/cleanup ownership; agent-rule `on`/`filter`; and event-specific automation filtering.
 - Package sources remain universal. Kynetic-only branch names, agent ids, quality gates, generated-artifact policy, and review policy remain in `AGENTS.md`, project meta, or project-local skills.
-- Documentation tests compare structured facts, links, examples, ownership, and generated output. They do not police tone/style or use broad string deny-lists as the primary package-neutrality proof.
+- Documentation tests compare structured facts, links, examples, ownership, accessibility behavior, and generated output. They use public schemas/helpers/fixtures and observable command/API/UI behavior. They do not regex implementation bodies, police style/tone, or use broad deny-lists as primary package-neutrality proof.
+
+## Integrated Lifecycle Facts the Documentation Must Preserve
+
+Task 1 freezes these as structured, source-cited facts and refreshes them after final review rather than copying this plan or the lifecycle plan prose:
+
+1. **Authority and scope:** global durable authority is `stopped | running | paused`; per-canonical-task records are `paused | stopped`. `draining` is a status projection for paused authority with active work, not another durable authority. Controls do not mutate semantic task readiness or degraded-target state.
+2. **Transitions:** global `start` leaves cleanup-idle stopped; `resume` leaves paused; pause allows active dispatch invocations/sessions to finish naturally; hard stop commits no-start authority before cancelling matching dispatch-owned work and closing its sessions. Task controls affect one canonical task and do not bypass global authority. Repeated valid/no-op actions are idempotent; invalid transitions fail without substituting another action.
+3. **Canonical identity:** task commands accept a resolvable ref alias, canonicalize to the task ULID, reject missing/ambiguous/not-found identity and ref/id disagreement, and keep unrelated task controls/cleanup independent.
+4. **Admission and durability:** `.kspec/dispatch-control.yaml` is committed shadow-state authority; missing state defaults stopped. Startup loads durable control and retries matching pending cleanup before bootstrap scheduling. Final admission gates recheck global and task authority before process/session creation.
+5. **Status and cleanup observability:** status reports authority, projection, active/queued counts, held count and canonical held-task rows, task-control rows, cleanup `idle|pending|failed` with scoped entries/phases/codes, and degraded targets. Global operations inspect global cleanup only; task operations inspect matching task cleanup only. Aggregate cleanup is observability, not a blanket transition gate.
+6. **Recovery and evidence:** hard stop targets only dispatch-owned sessions/processes whose durable ownership and process identity can be verified. Timeout, ownership/birth/group uncertainty, signalling failure, or session-closure failure remains stopped with retryable pending/failed cleanup and never reports false success. Session, branch, workspace, worktree, snapshot, and audit evidence remain governed by existing cleanup policy; lifecycle control does not delete workspaces.
+7. **Public surfaces:** canonical mutation is `POST /api/agent/dispatch/control`; public status is `GET /api/agent/status`; compatibility routes/status remain additive. CLI status consumes the internal dispatch status contract. The web adapter validates snake-case public wire data and maps to camelCase UI data. The agents UI exposes only valid global/task actions, confirms hard stop, retains focus, announces status/failures, keeps active/queued/held/cleanup evidence visible, and is stopped/read-only in static mode.
+8. **Safety:** interactive hard stop confirms active cancellation and evidence preservation; noninteractive and JSON stop require `--force`; dispatch-owned contexts reject global/task hard stop so an agent cannot stop its host; fixed closed error codes/messages do not expose raw errors or paths.
+9. **Events:** if public docs expose lifecycle events, the exact registered names are `dispatch_control.start_applied`, `dispatch_control.pause_applied`, `dispatch_control.resume_applied`, `dispatch_control.stop_applied`, `dispatch_control.noop`, and `dispatch_control.failed`. Task events use canonical task identity; failure uses a closed code. Event details are documented only where useful to public trigger/filter authoring, not as an internal payload dump.
+10. **Supported limitations:** pause is the graceful admission hold and stop is hard stop; there is no checkpointing, distributed scheduler, exact durable FIFO promise, workspace deletion/reset command, or control of arbitrary one-shot processes. One-shot `kspec agent run` remains outside lifecycle control unless it is dispatch-owned. Recovery may remain pending when process ownership cannot be proven, especially where equivalent process-birth/group verification is unavailable.
 
 ## Deterministic Public-Surface Universe
 
 Task 1 creates `tests/fixtures/public-documentation-surfaces.json` and `tests/public-documentation-inventory.test.ts`. The manifest is the declared universe, not a hand-picked list:
 
-1. **Tracked Markdown universe:** start from the exact sorted result of `git ls-files '*.md'`. Every result must have one manifest record; no tracked Markdown may be silently omitted. File records use `kind: "markdown-file"`, stable `id` equal to the repository-relative path, `path`, `classification`, `source_of_truth`, `audit_topics`, and, when excluded from active-public rewriting, a non-empty `exclusion_reason`.
+1. **Tracked Markdown universe:** start from the exact sorted result of `git ls-files '*.md'`. Every result has one manifest record. File records use `kind: "markdown-file"`, stable repository-relative `id`, `path`, `classification`, `source_of_truth`, `audit_topics`, and, when excluded from active-public rewriting, a non-empty `exclusion_reason`.
 2. **Required classifications and explicit exclusions:**
-   - `active-public`: `docs/` pages except the historical/internal sets below; root `README.md`, `INSTALL.md`, `CONTRIBUTING.md`, `SECURITY.md`, `RELEASE_NOTES.md`; `packages/web-ui/README.md`; and `.github/ISSUE_TEMPLATE/maintainer-approved-issues-and-features.md`.
-   - `historical`: `docs/history/**`; verify historical labeling and absence of dangerous current recovery instructions, but do not rewrite history as current guidance.
-   - `internal-eval`: `docs/agents-eval-scenarios.md` and `docs/prime-mock.md`; exclude because they are evaluation/design inputs, not user instructions.
-   - `source-template`: `templates/agents-sections/**/*.md` and `templates/skills/**/*.md`; these are package-shipped authoring sources and require package-neutral factual review.
-   - `generated`: tracked `kspec-agents.md` and rendered package-core skill outputs under `.agents/skills/**` and `.factory/skills/**`; each record names its source template and regeneration command. Project-local rendered skills that do not originate in `templates/skills/` are classified `internal-agent-guidance` instead.
-   - `internal-agent-guidance`: root `AGENTS.md`, root `CLAUDE.md`, `.claude/**/*.md`, and project-local `.agents/**/*.md`/`.factory/**/*.md`; exclude from the public-doc rewrite because they govern this repository or local agents, while still recording owner and reason.
-   - `fixture`: `tests/**/fixtures/**/*.md`; exclude because it is test input, with the owning test recorded.
-3. **Non-file public and generated surfaces:** records do not require `path`. They use a stable `kind` plus `id` and authority fields:
-   - `kind: "cli-help"`, `id` and `command` for `kspec --help`, `kspec help --all`, `kspec help --json`, and every public command-family/subcommand help node discovered from the exported Commander command tree. Completeness compares records to that tree rather than a frozen prose list.
-   - `kind: "scaffold"`, stable ids `setup-project-config` and `upgrade-project-config`, with producer source paths and the command/test that renders each surface.
-   - `kind: "generated-artifact"` for ignored plugin skill output, docs-search output, and packaged/web-rendered docs; each records source owner, destination, and build command. Ignored plugin files are not treated as tracked Markdown but cannot disappear from the generated-surface set.
-   - `kind: "documentation-test"` for link, README, render, search, E2E, scaffold, generated-guidance, and inventory gates, with stable repository-relative test ids.
-4. The completeness test independently derives tracked Markdown, the Commander help tree, required scaffold ids, generated destinations, and documentation tests; it compares each derived set to the manifest, rejects duplicates/missing/extra records, requires reasons for every excluded classification, and validates source/generated pairings.
+   - `active-public`: `docs/` pages except historical/internal sets below; root `README.md`, `INSTALL.md`, `CONTRIBUTING.md`, `SECURITY.md`, `RELEASE_NOTES.md`; `packages/web-ui/README.md`; and `.github/ISSUE_TEMPLATE/maintainer-approved-issues-and-features.md`.
+   - `historical`: `docs/history/**`; verify labeling and absence of dangerous current recovery instructions without rewriting history as current guidance.
+   - `internal-eval`: `docs/agents-eval-scenarios.md` and `docs/prime-mock.md`; exclude because they are evaluation/design inputs.
+   - `source-template`: `templates/agents-sections/**/*.md` and `templates/skills/**/*.md`; package-shipped authoring sources requiring package-neutral factual review.
+   - `generated`: tracked `kspec-agents.md` and rendered package-core skills under `.agents/skills/**` and `.factory/skills/**`; each names its source and regeneration command. Project-local rendered skills remain `internal-agent-guidance`.
+   - `internal-agent-guidance`: root `AGENTS.md`, `CLAUDE.md`, `.claude/**/*.md`, and project-local `.agents/**/*.md`/`.factory/**/*.md`; record owner/reason but exclude from public rewriting.
+   - `fixture`: `tests/**/fixtures/**/*.md`; exclude as test input and record the owning test.
+3. **Non-file public/generated surfaces:**
+   - `kind: "cli-help"` for `kspec --help`, `kspec help --all`, `kspec help --json`, and every public command-family/subcommand node recursively derived from the exported Commander tree, including lifecycle global/task nodes.
+   - `kind: "api-surface"` for publicly documented lifecycle status/control endpoints, with schema/helper/test authority; this is an inventory record, not a new hand-maintained API reference.
+   - `kind: "ui-surface"` for writable and static/read-only lifecycle projections and accessibility behavior on the agents view.
+   - `kind: "scaffold"`, stable ids `setup-project-config` and `upgrade-project-config`, with producer source paths and rendering tests.
+   - `kind: "generated-artifact"` for ignored plugin skill output, docs-search output, and packaged/web-rendered docs, each with source owner, destination, and build command.
+   - `kind: "documentation-test"` for link, README, render, search, E2E, scaffold, generated-guidance, inventory, and lifecycle docs gates.
+4. The completeness test independently derives tracked Markdown, Commander help nodes, required API/UI/scaffold ids, generated destinations, and documentation tests; it rejects duplicates/missing/extra records, requires reasons for exclusions, and validates source/generated pairings.
+5. Every record receives `audit_status`, evidence/source, and correction or exclusion disposition by Task 7. No record is “reviewed by implication.”
 
 ## Tasks
 
 derive_from_specs: false
 
 ```yaml
-- title: Freeze integrated documentation facts and create the public-surface inventory gate
+- title: Freeze final integrated dispatch facts and create the public-surface inventory gate
   slug: task-freeze-doc-facts-and-inventory
   priority: 1
   spec_ref: "@docs-section-taxonomy"
   tags: [docs, audit, testing]
   description: |
-    Covers:
+    Covers (documentation ownership only):
     - @docs-section-taxonomy ac-1, ac-2
     - @auto-cli-docs ac-1, ac-3, ac-4, ac-5
 
+    Factual source authorities (read-only; no product AC closure):
+    - @dispatch-lifecycle-control-authority ac-controls-survive-restart, ac-controls-do-not-change-readiness, ac-status-reports-authority, ac-status-reports-projection, ac-status-reports-active-count, ac-status-reports-queued-count, ac-status-reports-held-count, ac-status-reports-held-task-identity, ac-status-reports-held-task-scope, ac-status-reports-held-task-mode, ac-status-reports-held-task-reason
+    - @cli-agent-commands ac-4, ac-5, ac-6, ac-9, ac-13, ac-start-reports-authority, ac-pause-reports-authority, ac-resume-reports-authority, ac-lifecycle-command-reports-projection, ac-task-control-canonicalization, ac-lifecycle-status-authority, ac-lifecycle-status-projection, ac-lifecycle-status-active-count, ac-lifecycle-status-queued-count, ac-lifecycle-status-held-count
+    - @daemon-agent-dispatch ac-5, ac-6, ac-public-status-lifecycle-additions, ac-control-error-current-status
+    - @ui-agent-dispatch ac-2, ac-3, ac-status-projection, ac-status-active-work-visible, ac-status-queued-work-visible, ac-status-held-work-visible
+
     Preconditions:
-    - Confirm `@plan-dispatch-lifecycle-pause-resume-and-stop-controls` changes relevant to runtime, cleanup, status, CLI, and public projections are merged into this plan's integration target and this task starts from a fresh target checkout. Block if not; cross-plan task completion alone is not branch integration evidence.
+    - Record the final implementation-review disposition and reviewed lifecycle tip. Confirm that tip is contained in this task's integration target and create the task branch from that target. The revision-time remote lifecycle tip is evidence of integration, not a substitute for the final reviewed tip.
+    - If review fixes land, refresh all facts after those fixes. Do not rely on the prior documentation-plan approvals as review of this revision.
 
     What:
-    Refresh the binding dispatch/bootstrap/workspace fact sheet from integrated schemas, runtime tests, setup defaults, and captured CLI help. Create the deterministic manifest and its comparison test before any page task consumes them.
+    Build a structured fact fixture from the final integrated schemas, public helpers, CLI tree/help, API/UI fixtures, and passing behavior tests. Create the deterministic public-surface manifest and comparison test before prose tasks consume them.
 
     Files:
     - Create: `tests/fixtures/public-documentation-surfaces.json`
+    - Create: `tests/fixtures/dispatch-operator-facts.json`
     - Create: `tests/public-documentation-inventory.test.ts`
-    - Create: `tests/dispatch-workspace-docs.test.ts`
+    - Create: `tests/dispatch-operator-docs.test.ts`
     - Do not modify prose or product/runtime files.
 
-    Required content and tests:
-    - Implement the complete tracked/non-file universe and classification rules in this plan, including package README, `.github` template, AGENTS/CLAUDE, `.claude`, project-local skills, fixture Markdown, historical/internal-eval docs, ignored plugin output, scaffolds, generated docs/search, and recursively discovered CLI help.
-    - Record source-of-truth locations and audit topics for bootstrap, workspace, remote sync, automation filters, setup/upgrade, generated guidance, navigation, search, and rendering. Record exact limitations, including absence of workspace commands and the current `@dispatch-remote-branch-sync` status.
-    - Capture CLI help through `tests/helpers/cli.ts` with explicit fixture cwd. Validate schemas/defaults through exported public types or focused fixtures, never source-body regexes.
-    - The inventory test fails for one removed record, one duplicate id, one unreasoned exclusion, one unpaired generated output, one missing command-tree node, and one omitted scaffold.
+    Required facts and tests:
+    - Cover workspace/bootstrap/remote-sync/default-agent facts retained by this plan plus all ten lifecycle fact groups above: command tree; global/task matrices; alias canonicalization; durable default/restart/admission behavior; status/held/task-control/cleanup projections; API and UI mapping; accessibility/static mode; events only when selected for public docs; safety/errors; evidence and limitations.
+    - Use `tests/helpers/cli.ts` with explicit fixture cwd for command help. Validate configuration/control/status through exported schemas, public conversion helpers, route fixtures, or black-box command fixtures. Never regex function bodies.
+    - Derive tracked Markdown and non-file records independently. Negative fixture checks cover a missing/duplicate manifest record, unreasoned exclusion, unpaired generated output, missing command node, omitted API/UI/scaffold id, and stale fact fixture.
 
     Verification:
-    - `npm test -- tests/public-documentation-inventory.test.ts tests/dispatch-workspace-docs.test.ts tests/plan-document-parser.test.ts`
+    - `npm test -- tests/public-documentation-inventory.test.ts tests/dispatch-operator-docs.test.ts tests/plan-document-parser.test.ts`
     - `npm run format:check`
     - `npm run typecheck`
 
     Review handoff:
-    Reviewer independently runs `git ls-files '*.md'`, samples every classification/kind, compares CLI records to the exported command tree, and verifies the freshness prerequisite evidence. Unclassified surfaces or stale pre-integration facts are blockers.
+    Provide final-reviewed-tip ancestry, the fact-source matrix, independently derived universes, and negative-fixture results. A stale review-time commit, unclassified surface, or implementation-body regex is a blocker.
 
 - title: Publish the source-bound dispatch workspace configuration guide
   slug: task-document-dispatch-workspace-configuration
@@ -86,151 +112,216 @@ derive_from_specs: false
   depends_on:
     - "@task-freeze-doc-facts-and-inventory"
   description: |
-    Covers:
-    - @docs-guides-section ac-1, ac-2, ac-3
+    Covers (documentation ownership only):
+    - @docs-guides-section ac-2, ac-3
+
+    Factual source authorities (read-only):
+    - @dispatch-remote-branch-sync ac-no-remote, ac-degraded-status-api, ac-degraded-status-api-reason, ac-degraded-status-api-timestamp, ac-pull-ff-only, ac-pull-target-periodic-deferred
+    - @dispatch-workspace-cleanup-policy ac-1, ac-2, ac-3, ac-4, ac-5, ac-controlled-evidence-protected
 
     What:
-    Create `docs/guides/configuring-dispatch-workspaces.md`, add it to `docs/guides/index.md`, and correct the two dispatch-rule examples in `docs/guides/configuring-agent-runners.md` from legacy `trigger`/`filters` to schema-valid `on`/`filter`.
+    Create the workspace/bootstrap configuration guide and correct schema-invalid dispatch-rule examples. Keep lifecycle operations out of bootstrap step detail; Task 3 provides lifecycle cross-discovery by indexing both completed guides.
 
     Files:
     - Create: `docs/guides/configuring-dispatch-workspaces.md`
-    - Modify once in this plan: `docs/guides/index.md`, `docs/guides/configuring-agent-runners.md`
-    - Modify creator-owned test: `tests/dispatch-workspace-docs.test.ts`
+    - Modify once in this plan: `docs/guides/configuring-agent-runners.md`
+    - Modify creator-owned test: `tests/dispatch-operator-docs.test.ts`
+    - Do not modify `docs/guides/index.md` (Task 3 owns it).
 
-    Required guide sections:
-    - Goal and prerequisites; Minimal configuration; Base-branch and plan-target resolution; Worktree-root placement; Publication mode; Project bootstrap; Per-agent bootstrap; Step behavior; Environment boundaries; Remote synchronization and current limitations; Supported inspection and recovery; Managed `.gitignore`; Verification; Related concepts and troubleshooting.
-    - Describe only integrated keys/defaults/enums and supported authoring commands. Point to exact `--help` output instead of transcribing full flags.
-    - State project-before-agent ordering, role/reviewer behavior, invalidation, tracked-only mutation guard, allowed untracked artifacts, current shell/cwd/environment behavior, named-runner separation, output-tail/security limitation, and one-shot exclusion exactly as proven by Task 1.
-    - State that no workspace reset/list/show/cleanup command exists. Do not recommend metadata edits, deleting managed paths, or manual worktree mutation. Route recovery to current supported status/config correction/retry or escalation.
-    - Describe remote sync only to the proven integrated boundary and visibly label incomplete/experimental or unavailable behavior. Do not claim `@dispatch-remote-branch-sync` complete.
+    Required sections:
+    - Goal and prerequisites; Minimal configuration; Base/plan target resolution; Worktree root; Publication mode; Project bootstrap; Per-agent bootstrap; Step behavior; Environment boundaries; Remote synchronization and limits; Managed `.gitignore`; Supported inspection/recovery; Verification; Related concepts and troubleshooting.
+    - Correct legacy `trigger`/`filters` examples to schema-valid `on`/`filter`. Describe only final integrated keys/defaults/enums and point to command help rather than transcribing flags.
+    - Keep `manual_merge | pull_request | auto` publication modes accurate. State project-before-agent ordering, role/reviewer behavior, tracked-only mutation guard, named-runner separation, one-shot exclusion, output-tail/security limitation, and remote-sync status exactly as Task 1 proves.
+    - State that lifecycle controls do not manage/delete workspaces and no workspace list/show/reset/cleanup command exists. Never recommend editing registry/control state, deleting managed paths, or manual worktree mutation.
 
     Required tests:
-    - Validate tagged `yaml kspec-config` and `yaml kspec-agent` examples through public schemas.
-    - Compare documented config fields/defaults/enums to Task 1 structured facts; validate links and help-backed command paths.
-    - Assert the legacy rule examples are corrected and no unsupported workspace command appears as a procedure.
+    - Validate tagged `yaml kspec-config` and `yaml kspec-agent` examples through public schemas and compare fields/defaults/enums to the fact fixture.
+    - Validate links/help-backed paths; prove no workspace command is presented as runnable and the two rule examples no longer use legacy keys.
 
     Verification:
-    - `npm test -- tests/dispatch-workspace-docs.test.ts tests/parser/config.test.ts`
+    - `npm test -- tests/dispatch-operator-docs.test.ts tests/parser/config.test.ts`
     - `npm run build:docs-search`
     - `npm run format:check`
 
     Review handoff:
-    Reviewer verifies every normative statement against the fresh fact sheet and confirms the page is goal/prerequisite/steps/verification shaped, package-neutral, and explicit about unsupported surfaces.
+    Reviewer traces every normative statement to Task 1 facts and confirms workspace configuration is not overloaded with lifecycle transition matrices.
 
-- title: Publish the dispatch workspace lifecycle concept and correct the overview
+- title: Publish the dispatch lifecycle controls operator guide
+  slug: task-document-dispatch-lifecycle-controls
+  priority: 1
+  spec_ref: "@docs-guides-section"
+  tags: [docs, dispatch, lifecycle]
+  depends_on:
+    - "@task-document-dispatch-workspace-configuration"
+  description: |
+    Covers (documentation ownership only):
+    - @docs-guides-section ac-1, ac-2, ac-3
+
+    Factual source authorities (read-only; no product work):
+    - @dispatch-lifecycle-control-authority ac-global-pause-authority, ac-global-paused-work-does-not-start, ac-task-paused-work-does-not-start, ac-global-pause-allows-active-completion, ac-task-pause-allows-active-completion, ac-resume-reconciles-held-work, ac-stop-forbids-new-starts, ac-stop-cancels-active-work, ac-task-control-uses-canonical-identity, ac-task-resume-obeys-global-authority, ac-task-stop-preserves-unrelated-invocations, ac-controls-survive-restart, ac-controls-do-not-change-readiness, ac-stop-failure-retains-stopped-authority, ac-stop-failure-reports-pending-cleanup, ac-interrupted-stop-recovers-on-retry, ac-recovery-requires-session-ownership, ac-recovery-requires-process-birth
+    - @cli-agent-commands ac-5, ac-start-reports-authority, ac-pause-reports-authority, ac-resume-reports-authority, ac-lifecycle-command-reports-projection, ac-declined-stop-sends-no-request, ac-declined-stop-exit, ac-task-control-canonicalization, ac-lifecycle-status-authority, ac-lifecycle-status-projection, ac-lifecycle-status-active-count, ac-lifecycle-status-queued-count, ac-lifecycle-status-held-count
+    - @daemon-agent-dispatch ac-5, ac-6, ac-public-status-lifecycle-additions, ac-control-missing-identity, ac-control-ref-canonicalization, ac-control-identity-mismatch, ac-control-failure-no-success, ac-cleanup-failure-no-success
+    - @ui-agent-dispatch ac-2, ac-3, ac-stopped-actions-valid, ac-control-separated-from-degraded, ac-control-separated-from-blocked, ac-hard-stop-confirmation-cancellation, ac-hard-stop-confirmation-evidence, ac-hard-stop-confirmation-cancelled, ac-lifecycle-controls-labelled, ac-lifecycle-focus-retained, ac-lifecycle-live-update
+    - @dispatch-event-taxonomy ac-dispatch-control-domain
+    - @dispatch-workspace-cleanup-policy ac-controlled-evidence-protected
+
+    Why a dedicated page:
+    The implemented surface has two scopes, two transition matrices, hard-stop safety, durable recovery, status projections, canonical identity, API/UI equivalents, accessibility/static behavior, and explicit limitations. Putting this in bootstrap or the short Agents and Dispatch overview would obscure both workflows and duplicate CLI help.
+
+    What:
+    Create `docs/guides/controlling-dispatch-lifecycle.md`; add both new dispatch guides to `docs/guides/index.md`; keep commands concise and link to generated help.
+
+    Files:
+    - Create: `docs/guides/controlling-dispatch-lifecycle.md`
+    - Modify once in this plan: `docs/guides/index.md`
+    - Modify creator-owned test: `tests/dispatch-operator-docs.test.ts`
+
+    Required guide sections:
+    - Goal/prerequisites; Choose global or task scope; Read authority/projection/counts/held/task-control/cleanup status; Global action table; Task action table; Pause versus hard stop; CLI procedure; API/UI equivalents; Retry and restart recovery; Events for automation (only if retained as public authoring surface); Safety/error semantics; Static/read-only UI; Supported limitations; Verification; Workspace/concept/troubleshooting links.
+    - Name the actual global and task commands, but defer full options to `kspec help agent dispatch` and child help. Explain `start` versus `resume`, `draining`, matching-scope cleanup, canonical alias handling, no-op versus invalid transition, hard-stop confirmation/`--force`, dispatch-owned host-stop rejection, and evidence preservation.
+    - Mention canonical `POST /api/agent/dispatch/control`, public `GET /api/agent/status`, and agents-view equivalents without duplicating complete generated schemas. Distinguish public snake-case wire fields from UI camelCase only where a public API reader needs it.
+    - Do not claim lifecycle control changes task state, clears degraded targets, deletes workspaces, checkpoints work, guarantees exact FIFO, controls arbitrary one-shot runs, or can always finish cleanup when ownership cannot be proven.
+
+    Required tests:
+    - Compare documented command/action tables to the exported Commander tree and public lifecycle action helpers/fixtures.
+    - Exercise global/task transition examples, aliases/canonical ids, matching-scope cleanup, status fields, API/UI projections, hard-stop safety, accessibility/static behavior, and any documented event names through public schemas/helpers/fixtures.
+    - Fail on command-tree drift, unsupported action/scope, alias stored as canonical id, blanket aggregate-cleanup gating, or invented workspace procedure; do not snapshot prose style.
+
+    Verification:
+    - `npm test -- tests/dispatch-operator-docs.test.ts tests/cli-agent-dispatch-lifecycle.test.ts tests/daemon-agent-dispatch-lifecycle.test.ts tests/web-ui/dispatch-lifecycle-controls.test.ts tests/dispatch-control-events.test.ts`
+    - `npm run build:docs-search`
+    - `npm run format:check`
+
+    Review handoff:
+    Reviewer walks global pause/resume, global hard stop/retry, task alias pause/resume, task hard stop with unrelated work, static UI, and one failure from source fixture through the guide. Product ACs remain evidence, not documentation deliverables.
+
+- title: Publish the dispatch workspace concept and correct the dispatch overview
   slug: task-document-dispatch-workspace-concept
   priority: 1
   spec_ref: "@docs-concepts-section"
   tags: [docs, dispatch, concepts]
   depends_on:
-    - "@task-document-dispatch-workspace-configuration"
+    - "@task-document-dispatch-lifecycle-controls"
   description: |
-    Covers:
+    Covers (documentation ownership only):
     - @docs-concepts-section ac-1, ac-2
     - @default-project-agents-and-conventions ac-task-worker-agent, ac-pr-reviewer-agent, ac-primary-dev-agent, ac-plan-reviewer-agent
 
+    Factual source authorities (read-only):
+    - @dispatch-lifecycle-control-authority ac-controls-do-not-change-readiness, ac-session-evidence-survives-control, ac-workspace-evidence-survives-control
+    - @dispatch-workspace-cleanup-policy ac-1, ac-2, ac-controlled-evidence-protected
+
     What:
-    Create `docs/concepts/dispatch-workspaces.md`, add it to `docs/concepts/index.md`, and keep `docs/concepts/agents-and-dispatch.md` as the short overview linking to the guide and concept.
+    Create the durable workspace mental model, index it, and keep `agents-and-dispatch.md` as the short overview linking to workspace configuration, lifecycle controls, and recovery.
 
     Files:
     - Create: `docs/concepts/dispatch-workspaces.md`
     - Modify once in this plan: `docs/concepts/index.md`, `docs/concepts/agents-and-dispatch.md`
-    - Modify creator-owned test: `tests/dispatch-workspace-docs.test.ts`
+    - Modify creator-owned test: `tests/dispatch-operator-docs.test.ts`
 
     Required concept sections:
-    - What a dispatch workspace is; Why isolation exists; Workspace and target identity; Worker lifecycle; Detached reviewer lifecycle; Review rejection/fix cycle; Bootstrap state; Integration/publication; Health and cleanup; What the operator owns; Current limitations; Related operations.
-    - Explain behavior through durable concepts, not a release-sensitive field dump. Separate worker continuity, detached reviewer snapshots, and one-shot `kspec agent run`.
-    - Do not absorb pause/resume/stop, cleanup, status, CLI, or UI product ownership from the active lifecycle plan; describe only its integrated public behavior and link to current help.
-    - Explicitly replace “kspec ships with four built-in agents” with “`kspec setup` scaffolds default agent definitions”; make clear projects can configure/rename them and the live registry is authoritative.
+    - What a dispatch workspace is; Why isolation exists; Target/task identity; Worker continuity; Detached reviewer lifecycle; Fix cycle; Bootstrap state; Integration/publication; Lifecycle authority versus task readiness; Evidence/cleanup ownership; Operator ownership; Current limitations; Related operations.
+    - Keep transition procedures on the lifecycle guide. Explain only the durable distinction: controls govern admission/cancellation, while workspace lifecycle and task state remain separate.
+    - Replace “kspec ships with four built-in agents” with “`kspec setup` scaffolds default agent definitions”; projects can configure/rename them and the live registry is authoritative.
 
     Required tests:
-    - Render the page; verify its headings, index membership, overview links, stable anchors, and absence of release-sensitive schema-field enumeration.
-    - Verify the scaffold wording against `@default-project-agents-and-conventions` and setup tests.
+    - Render headings, index membership, stable links/anchors, overview cross-links, and absence of release-sensitive schema/flag dumps.
+    - Verify scaffold wording through setup fixtures and the exact default-agent ACs above.
 
     Verification:
-    - `npm test -- tests/dispatch-workspace-docs.test.ts tests/web-ui-docs-rendering.test.ts tests/setup-builtin-agents.test.ts`
+    - `npm test -- tests/dispatch-operator-docs.test.ts tests/web-ui-docs-rendering.test.ts tests/setup-builtin-agents.test.ts`
     - `npm run build:docs-search`
     - `npm run format:check`
 
     Review handoff:
-    Reviewer compares lifecycle claims to integrated workspace/registry tests and confirms the overview says setup scaffolds defaults rather than claiming immutable package-shipped agents.
+    Confirm the concept separates readiness, lifecycle authority, workspace state, degraded state, and cleanup rather than collapsing them.
 
-- title: Publish symptom-first bootstrap and workspace recovery pages
-  slug: task-document-dispatch-workspace-recovery
+- title: Publish symptom-first bootstrap workspace and lifecycle recovery pages
+  slug: task-document-dispatch-recovery
   priority: 1
   spec_ref: "@docs-troubleshooting-section"
   tags: [docs, dispatch, troubleshooting]
   depends_on:
     - "@task-document-dispatch-workspace-concept"
   description: |
-    Covers:
+    Covers (documentation ownership only):
     - @docs-troubleshooting-section ac-1, ac-2, ac-3
 
+    Factual source authorities (read-only):
+    - @dispatch-lifecycle-control-authority ac-stop-failure-retains-stopped-authority, ac-stop-failure-reports-pending-cleanup, ac-stop-failure-reports-no-success, ac-interrupted-stop-recovers-on-startup, ac-interrupted-stop-recovers-on-retry, ac-task-stop-failure-retains-stopped-authority, ac-task-stop-failure-reports-pending-cleanup, ac-task-interrupted-stop-recovers-on-retry, ac-recovery-requires-session-ownership, ac-recovery-requires-process-birth, ac-missing-leader-live-group-remains-pending, ac-unverified-live-group-is-not-signalled
+    - @daemon-agent-dispatch ac-control-error-current-status, ac-control-missing-identity, ac-control-identity-mismatch, ac-control-failure-no-success, ac-cleanup-failure-no-success
+    - @ui-agent-dispatch ac-stopped-actions-valid, ac-hard-stop-confirmation-cancelled, ac-lifecycle-live-update
+    - @dispatch-remote-branch-sync ac-no-remote, ac-transient-no-degrade, ac-divergence-enters-degraded, ac-degraded-status-api
+
     What:
-    Create the two linked recovery pages after their guide and concept targets exist, index them, and correct assignment troubleshooting without inventing operator commands.
+    Create three indexed recovery pages and correct assignment troubleshooting. Recovery stays within supported status, matching-scope retry, configuration correction, normal reconciliation, or escalation.
 
     Files:
     - Create: `docs/troubleshooting/dispatch-bootstrap-failures.md`
     - Create: `docs/troubleshooting/dispatch-workspace-sync-and-cleanup.md`
+    - Create: `docs/troubleshooting/dispatch-lifecycle-control-failures.md`
     - Modify once in this plan: `docs/troubleshooting/index.md`, `docs/troubleshooting/dispatch-refuses-to-assign.md`
-    - Modify creator-owned test: `tests/dispatch-workspace-docs.test.ts`
+    - Modify creator-owned test: `tests/dispatch-operator-docs.test.ts`
 
-    Required page sections:
-    - Bootstrap page symptom blocks: nonzero exit, tracked-file mutation, reviewer rerun refusal, invalidated cached state, inaccessible/unrunnable workspace, and unsafe output exposure. Include what the symptom means, supported observations/config correction, normal retry boundary, healthy result, and links to guide/concept/runner validation. Do not promise a timeout or shell preflight classification unless Task 1 proves it exists. State retained output is bounded as proven and bootstrap commands must not print secrets; do not claim complete redaction unless proven.
-    - Workspace page status-first blocks: target/config mismatch, plan target change, missing/colliding path, stale/unrecoverable registry state, local-only/no-remote mode, transient sync failure, divergence, occupied checkout, deferred reviewer behavior, cleanup protection, unknown root entries, and retention—only where Task 1 proves a stable observable. Label incomplete remote-sync cases and route unsupported recovery to safe observation/escalation.
-    - State plainly that no reset/list/show/cleanup workspace command exists. Never tell users to edit shadow-managed registry state, remove dispatcher-managed paths, or run manual worktree mutations. Remove/replace the stale nonexistent reset suggestion only in documentation owned here; product/runtime suggestion sites remain outside this plan and are reported as follow-up if still present.
-    - In `dispatch-refuses-to-assign.md`, describe automation filtering per rule/event: preserve eligible-only worker defaults while distinguishing reviewer and arbitrary registered event rules.
+    Required symptom blocks:
+    - Bootstrap: nonzero exit, tracked-file mutation, reviewer rerun refusal, invalidated cached state, inaccessible workspace, and unsafe output exposure, only where Task 1 proves an observable.
+    - Workspace: target/config mismatch, plan target change, path collision, stale/unrecoverable registry, local-only mode, transient sync, divergence, occupied checkout, deferred reviewer sync, cleanup protection, unknown root entries, and retention, only where proven.
+    - Lifecycle: invalid start/resume/pause transition; held task not starting; task alias not found/ambiguous/mismatched; stopped with pending/failed cleanup; control store unavailable/corrupt/commit failure; ownership/birth/group verification limitation; host-stop rejection; confirmation/`--force`; static UI read-only. For each give meaning, supported observation, safe procedure, healthy result, and concept/guide link.
+    - Retry only the matching global/task hard stop where status offers it. Successful cleanup leaves stopped authority until explicit start/resume as applicable. Never tell users to edit `.kspec/dispatch-control.yaml`, session ownership, registry metadata, process ids/groups, or managed worktrees manually.
+    - In `dispatch-refuses-to-assign.md`, add lifecycle authority/held status as a distinct admission check and describe automation filtering per rule/event; preserve eligible-only worker defaults without claiming every reviewer/arbitrary event is eligible-only.
 
     Required tests:
-    - Verify symptom/meaning/procedure/healthy-outcome structure and concept links for both pages.
-    - Validate all command paths against captured help and all links after both pages exist.
-    - Test that unsupported reset strings are not presented as runnable recovery and that reviewer/arbitrary-event prose is not blanket eligible-only.
+    - Verify symptom/meaning/procedure/healthy-outcome structure and guide/concept links.
+    - Validate every command against captured help; validate failure/status examples through public fixtures; reject unsupported reset/cleanup procedures and blanket eligible-only or aggregate-cleanup claims.
 
     Verification:
-    - `npm test -- tests/dispatch-workspace-docs.test.ts tests/web-ui-docs-rendering.test.ts`
+    - `npm test -- tests/dispatch-operator-docs.test.ts tests/web-ui-docs-rendering.test.ts tests/dispatch-lifecycle-surface-integration.test.ts`
     - `npm run build:docs-search`
     - `npm run format:check`
 
     Review handoff:
-    Reviewer walks one bootstrap failure, one target mismatch, one sync limitation, and one cleanup-protected case from integrated evidence through the written recovery; unsupported procedures are blockers.
+    Walk one bootstrap failure, one target divergence, one invalid lifecycle transition, one failed cleanup, and one identity failure from integrated evidence to safe recovery.
 
-- title: Correct top-level, package, scaffold, release, and generated guidance drift
+- title: Correct top-level package scaffold release and generated guidance drift
   slug: task-correct-adjacent-public-guidance
   priority: 2
   spec_ref: "@readme-landing-page"
   tags: [docs, setup, templates, release]
   depends_on:
-    - "@task-document-dispatch-workspace-recovery"
+    - "@task-document-dispatch-recovery"
   description: |
-    Covers:
+    Covers (documentation ownership only):
     - @readme-landing-page ac-1, ac-2
     - @docs-release-notes-availability ac-1, ac-2
     - @default-project-agents-and-conventions ac-agents-md-reflects-defaults
 
+    Factual source authorities (read-only):
+    - @cli-agent-commands ac-start-reports-authority, ac-pause-reports-authority, ac-resume-reports-authority, ac-task-control-canonicalization
+    - @dispatch-event-taxonomy ac-dispatch-control-domain
+
     What:
-    Audit and factually correct the non-`docs/` public landing/contributor/package surfaces and source-owned generated guidance. Keep universal package guidance separate from Kynetic-local policy and make no product behavior change.
+    Audit and factually correct non-`docs/` public landing/contributor/package surfaces, setup/upgrade discoverability, and source-owned generated guidance. Make no product/default change.
 
     Exact owned surfaces:
-    - `README.md` (overview/install/first steps/docs links only), `INSTALL.md` (installation/setup), `CONTRIBUTING.md` (contributor workflow), `SECURITY.md` (supported reporting/security claims), `RELEASE_NOTES.md` (historical release facts), `packages/web-ui/README.md`, and `.github/ISSUE_TEMPLATE/maintainer-approved-issues-and-features.md`.
-    - Non-behavioral comments/discoverability in `src/cli/commands/setup.ts` and `src/cli/commands/upgrade.ts`, with existing scaffold tests; do not change resolved defaults or introduce new keys/commands.
-    - Package-neutral sources under `templates/agents-sections/**/*.md` and `templates/skills/**/*.md` only when Task 1 identifies factual drift; regenerate tracked `.agents`/`.factory` outputs and `kspec-agents.md`, and build ignored plugin output. Never author in generated files.
+    - `README.md`, `INSTALL.md`, `CONTRIBUTING.md`, `SECURITY.md`, `RELEASE_NOTES.md`, `packages/web-ui/README.md`, `.github/ISSUE_TEMPLATE/maintainer-approved-issues-and-features.md`.
+    - Non-behavioral comments/links only in `src/cli/commands/setup.ts` and `src/cli/commands/upgrade.ts`; do not add keys, change defaults, or change command behavior.
+    - `templates/agents-sections/**/*.md`, `templates/skills/**/*.md`, and `templates/skills/manifest.yaml` only where inventory evidence shows factual/discoverability drift. Author only in sources; regenerate tracked `.agents`/`.factory`, `kspec-agents.md`, and ignored plugin output.
 
     Required corrections and tests:
-    - Correct the v0.12 release-note publication-mode row to include `manual_merge`, `pull_request`, and `auto` while preserving historical tense.
-    - Ensure setup/upgrade scaffold comments point to canonical docs and accurately describe existing dispatch keys without changing semantics.
-    - Keep README concise and preserve one-click links to Getting Started, Concepts, and Guides. Validate all relative links/anchors.
-    - Run semantic shared-guidance-neutrality review in both directions: no Kynetic policy becomes universal, and local policy removed from package text still has a local owner.
+    - Correct the v0.12 publication-mode row to `manual_merge`, `pull_request`, and `auto` while preserving historical tense.
+    - Ensure setup/upgrade scaffolds and package guidance discover lifecycle controls/help accurately if they currently mention dispatch operation; do not force lifecycle prose into unaffected surfaces.
+    - Keep README concise with one-click Getting Started/Concepts/Guides links. Apply semantic package-neutrality review in both directions.
     - Parse changed snippets, run scaffold snapshots, regenerate twice, and require the second generation to be clean.
 
     Verification:
-    - `npm test -- tests/docs-readme-structure.test.ts tests/scaffold-project-config.test.ts tests/upgrade-command.test.ts`
+    - `npm test -- tests/docs-readme-structure.test.ts tests/scaffold-project-config.test.ts tests/upgrade-command.test.ts tests/dispatch-operator-docs.test.ts`
     - `kspec agents generate && kspec skill render && npm run build:plugin`
     - `kspec agents generate && kspec skill render && npm run build:plugin`
     - `git diff --exit-code -- kspec-agents.md .agents .factory`
     - `npm run format:check`
 
     Review handoff:
-    Reviewer reports each changed surface, its source-of-truth comparison, generated convergence, and a separate package-neutrality judgment.
+    Report every changed surface, evidence, generated convergence, and a separate package-neutrality judgment. An inventory disposition of “no drift” is valid and must not force an edit.
 
 - title: Audit and correct the remaining declared public documentation universe
   slug: task-audit-remaining-public-docs
@@ -240,32 +331,35 @@ derive_from_specs: false
   depends_on:
     - "@task-correct-adjacent-public-guidance"
   description: |
-    Covers:
+    Covers (documentation ownership only):
     - @docs-getting-started-section ac-1, ac-2, ac-3
     - @docs-section-taxonomy ac-1, ac-2
     - @docs-release-notes-availability ac-1, ac-2
 
+    Factual source authorities (read-only):
+    - @dispatch-lifecycle-control-authority ac-controls-survive-restart, ac-controls-do-not-change-readiness, ac-controls-do-not-change-degraded-targets
+    - @cli-agent-commands ac-4, ac-5, ac-6, ac-9, ac-13
+    - @dispatch-remote-branch-sync ac-degraded-status-api, ac-no-remote
+
     What:
-    Run the requested full factual pass over every declared surface not owned by Tasks 2-5, refresh dispatch/bootstrap/workspace facts after the page slices, and close every inventory record without style-only churn.
+    Complete the factual pass over every declared surface not owned by Tasks 2-6, refresh all dispatch facts after page slices, and close every inventory record without style-only churn.
 
     Exact owned file sets:
     - All existing `docs/getting-started/**/*.md`.
-    - Existing `docs/guides/**/*.md`, excluding the three files owned by Task 2.
-    - Existing `docs/concepts/**/*.md`, excluding the three files owned by Task 3.
-    - Existing `docs/troubleshooting/**/*.md`, excluding the four files owned by Task 4.
-    - `docs/release-notes/index.md` and remaining active-public `docs/**/*.md` records not classified historical/internal-eval.
-    - Historical/internal-eval/internal-agent-guidance/fixture records receive their declared limited checks and disposition only; do not rewrite them into public guidance.
-    - Modify `tests/public-documentation-inventory.test.ts`; do not modify `tests/dispatch-workspace-docs.test.ts` or any Task 2-5 owned prose file.
+    - Existing `docs/guides/**/*.md` excluding `configuring-dispatch-workspaces.md`, `controlling-dispatch-lifecycle.md`, `configuring-agent-runners.md`, and `guides/index.md`.
+    - Existing `docs/concepts/**/*.md` excluding `dispatch-workspaces.md`, `agents-and-dispatch.md`, and `concepts/index.md`.
+    - Existing `docs/troubleshooting/**/*.md` excluding the three created recovery pages, `dispatch-refuses-to-assign.md`, and `troubleshooting/index.md`.
+    - `docs/release-notes/index.md` and remaining active-public `docs/**/*.md` not historical/internal-eval.
+    - Historical/internal-eval/internal-agent-guidance/fixture records receive their declared limited checks/disposition only.
+    - Modify `tests/public-documentation-inventory.test.ts`; do not modify `tests/dispatch-operator-docs.test.ts` or prior-task prose.
 
     Source-of-truth checks:
-    - Commands against captured Commander help; YAML/defaults/enums against exported schemas/resolved config; setup/upgrade claims against scaffold tests; package locations against packaging code; navigation/index/link/anchor claims against rendered docs; release notes against the canonical source; automation/state language against exact existing specs.
-    - Recheck known dispatch/bootstrap/workspace errors and gaps from the integrated branch. Documentation corrections in this owned set are in scope. Product contradictions become explicit limitations and follow-up evidence, not implementation in this plan.
-    - Every manifest record receives `audit_status`, evidence/source, and correction or exclusion disposition. No “reviewed by implication” rows.
+    - Commands against captured Commander help; YAML/defaults/enums against exported schemas/resolved config; lifecycle/API/UI statements against Task 1 facts and public fixtures; setup/upgrade against scaffold tests; navigation/link/anchor claims against rendering; release notes against canonical source.
+    - Recheck final-review lifecycle fixes and current remote-sync status. Correct owned documentation; record product contradictions as limitations/follow-up evidence, not implementation.
+    - Assign evidence/disposition to every manifest record. Preserve historical text except dangerous unsupported current instructions.
 
     Required tests:
-    - Full manifest closure against independently derived tracked Markdown and non-file universes.
-    - Relative links/anchors, section landing membership/order, release-note single-source equivalence, deterministic tagged snippet validation, and generated-source ownership.
-    - Preserve historical text except dangerous unsupported current instructions; avoid wording/style churn unrelated to factual correction.
+    - Full manifest closure; relative links/anchors; landing membership/order; release-note single-source equivalence; tagged snippet validation; generated-source ownership.
 
     Verification:
     - `npm test -- tests/public-documentation-inventory.test.ts tests/docs-readme-structure.test.ts tests/folder-backed-resource-docs.test.ts tests/resource-ui-task-markdown-docs.test.ts tests/web-ui-docs-rendering.test.ts tests/web-ui-docs-search.test.ts`
@@ -274,9 +368,9 @@ derive_from_specs: false
     - `npm run typecheck`
 
     Review handoff:
-    Reviewer independently samples every classification and audit topic, diffs the manifest against all derived universes, and rejects any unsupported normative command, silent omission, style-only sweep, or edit to a prior task's owned prose.
+    Reviewer samples every classification/topic, compares manifest to independently derived universes, and rejects silent omission, unsupported normative commands, style-only sweeps, or edits to prior owners.
 
-- title: Close structured documentation drift gates and rendered validation
+- title: Close structured documentation drift gates and rendered browser validation
   slug: task-close-documentation-drift-gates
   priority: 2
   spec_ref: "@docs-navigation-shape"
@@ -284,33 +378,40 @@ derive_from_specs: false
   depends_on:
     - "@task-audit-remaining-public-docs"
   description: |
-    Covers:
+    Covers (documentation ownership only):
     - @docs-navigation-shape ac-1, ac-2
     - @docs-search ac-1, ac-2, ac-3
     - @docs-reachability ac-1, ac-2, ac-3
     - @auto-cli-docs ac-1, ac-3, ac-4, ac-5
 
+    Factual source authorities (read-only):
+    - @cli-agent-commands ac-declined-stop-sends-no-request, ac-declined-stop-exit, ac-task-control-canonicalization, ac-lifecycle-status-authority, ac-lifecycle-status-projection, ac-lifecycle-status-active-count, ac-lifecycle-status-queued-count, ac-lifecycle-status-held-count
+    - @daemon-agent-dispatch ac-5, ac-6, ac-public-status-lifecycle-additions, ac-control-error-current-status
+    - @ui-agent-dispatch ac-status-active-work-visible, ac-status-queued-work-visible, ac-status-held-work-visible, ac-stopped-actions-valid, ac-lifecycle-controls-labelled, ac-lifecycle-focus-retained, ac-lifecycle-live-update
+    - @dispatch-event-taxonomy ac-dispatch-control-domain
+
     What:
-    Harden the two Task 1-created tests after all content exists, validate navigation/search/rendering and package generation, and report focused-plan success separately from the unrelated refs baseline.
+    Harden Task 1 tests after all content exists, validate navigation/search/static rendering and browser accessibility, regenerate package outputs, and report focused success separately from the unrelated refs baseline.
 
     Files:
-    - Modify: `tests/public-documentation-inventory.test.ts`, `tests/dispatch-workspace-docs.test.ts`, `tests/web-ui-docs-rendering.test.ts`, `tests/web-ui-docs-search.test.ts`, `tests/e2e/docs.spec.ts`
+    - Modify: `tests/public-documentation-inventory.test.ts`, `tests/dispatch-operator-docs.test.ts`, `tests/web-ui-docs-rendering.test.ts`, `tests/web-ui-docs-search.test.ts`, `tests/e2e/docs.spec.ts`
     - Modify `scripts/build-docs-search.cjs` only if a factual indexing defect is exposed.
-    - No prose edits except a correction exposed by a failing gate; route it to the task that owns that file or record the explicit dependency rather than editing in parallel.
+    - No prose edits except through the declared owner; do not repair prior files in parallel.
 
     Required gates:
-    - Structured schema/default/enum comparisons; tagged example parsing; command-tree/help existence; inventory/link/anchor/index completeness; source/generated convergence; search inclusion for all four new pages; desktop/mobile sidebar, current page, TOC anchors, offline/static rendering, and no raw Markdown link leaks.
-    - Negative fixtures target concrete drift: legacy `trigger`/`filters`, unsupported workspace recovery command, missing inventory record, invalid dispatch key/default, broken anchor, unpaired generated output, and generated file treated as source. Do not add style or package-neutrality string policing.
-    - Regenerate package outputs twice and prove the second run is clean. Build docs search and web UI; run focused browser docs QA.
+    - Structured schema/default/enum comparisons; tagged examples; complete command tree including global/task lifecycle nodes; transition/alias/status/cleanup/recovery/API/UI/event facts; inventory/link/anchor/index closure; generated convergence; search inclusion for all six new pages; desktop/mobile sidebar, current page, TOC anchors, offline/static rendering, and no raw Markdown link leaks.
+    - Browser docs QA searches for and reaches workspace configuration, lifecycle controls, workspace concept, and all three recovery pages at wide/narrow viewports. Lifecycle docs links reach the agents UI where available; static/public docs remain readable without daemon mutation. Accessibility assertions use rendered semantics, labels, focus/live behavior fixtures, not CSS/style policing.
+    - Negative fixtures target concrete drift: legacy `trigger`/`filters`, unsupported workspace command, wrong global/task action, alias/canonical mismatch, omitted status field, aggregate cleanup used as blanket gate, stale API/UI projection, undocumented event mismatch, missing inventory record, broken anchor, unpaired generated output, and generated file treated as source.
+    - Regenerate twice and prove second-run cleanliness. Build docs search/web UI and run focused browser docs QA.
 
     Baseline validation policy:
-    - Changed/focused docs-plan gates, formatting, lint, typecheck, tests, generation, search, web build, and docs E2E must pass.
+    - Changed/focused plan gates, formatting, lint, typecheck, tests, generation, search, web build, and docs E2E must pass.
     - Run `kspec validate --alignment --warnings-ok` and `kspec validate --completeness --warnings-ok` as focused state checks.
-    - Run `kspec validate --refs --warnings-ok` only to capture/compare project baseline evidence. At plan drafting time it exits 4 with seven unrelated ambiguous-reference errors involving duplicate `@observations` and `@spec-plan-import` slugs. This plan neither fixes nor absorbs them. Completion requires no new/changed refs errors and an exact captured diff against that baseline; it must not claim the refs gate or project-wide validation is green.
-    - Project-wide green/release-ready status remains externally blocked until the owning work resolves those seven ambiguity errors and a fresh full refs validation passes. Report that prerequisite explicitly.
+    - Run `kspec validate --refs --warnings-ok` only to capture/compare baseline. At plan revision time the known baseline is exit 4 with seven unrelated ambiguous-reference errors involving duplicate `@observations` and `@spec-plan-import` slugs. This plan does not fix them. Completion requires no new/changed refs errors and an exact diff against a freshly captured baseline; it must not claim project-wide refs green.
+    - If those external errors are resolved before execution, record the fresh result rather than preserving a fictional failure. Project-wide green may be claimed only from an independently passing fresh refs validation.
 
     Verification:
-    - `npm test -- tests/dispatch-workspace-docs.test.ts tests/public-documentation-inventory.test.ts tests/docs-readme-structure.test.ts tests/web-ui-docs-rendering.test.ts tests/web-ui-docs-search.test.ts`
+    - `npm test -- tests/dispatch-operator-docs.test.ts tests/public-documentation-inventory.test.ts tests/docs-readme-structure.test.ts tests/web-ui-docs-rendering.test.ts tests/web-ui-docs-search.test.ts`
     - `kspec agents generate && kspec skill render && npm run build:plugin`
     - `kspec agents generate && kspec skill render && npm run build:plugin`
     - `git diff --exit-code -- kspec-agents.md .agents .factory`
@@ -323,25 +424,30 @@ derive_from_specs: false
     - `npm test`
     - `kspec validate --alignment --warnings-ok`
     - `kspec validate --completeness --warnings-ok`
-    - `kspec validate --refs --warnings-ok` (baseline evidence comparison; not an expected green completion gate until external ambiguity cleanup lands)
+    - `kspec validate --refs --warnings-ok` (baseline comparison unless independently green)
 
     Review handoff:
-    Final reviewer receives the inventory diff, fresh source-fact evidence, focused/full test output, generated-clean proof, desktop/mobile evidence, and exact refs-baseline comparison. The handoff may claim this docs plan's gates passed; it may not claim project-wide green or review approval.
+    Supply inventory diff, final-reviewed-tip source facts, focused/full tests, generated-clean proof, desktop/mobile/static evidence, accessibility evidence, and exact refs-baseline comparison. Claim only this plan's gates, not review approval or project-wide green.
 ```
 
 ## Implementation Notes
 
-### Slice and ownership order
+### Slice and page ownership order
 
-1. Task 1 waits for lifecycle-plan integration, refreshes facts, and is the sole creator of the inventory fixture and both shared tests.
-2. Tasks 2-4 are serialized guide → concept/overview → troubleshooting, so every link target exists before use and every shared test modifier depends transitively on its creator. Each documentation page and index is authored once.
-3. Task 5 owns non-`docs/` public/package/scaffold/generated corrections; Task 6 owns the explicitly excluded remainder of `docs/`; their file sets do not overlap Tasks 2-4.
-4. Task 7 modifies shared tests only after all creators and content slices complete. A correction exposed at this stage returns to the declared file owner rather than creating a parallel write.
+1. Task 1 is the sole creator of the manifest, fact fixture, and two shared documentation tests. It starts only from the final reviewed integrated lifecycle target and refreshes after review fixes.
+2. Task 2 owns workspace configuration and runner-example correction. Task 3 depends on it, owns the dedicated lifecycle guide and the guide index, and adds both guide links only after both targets exist.
+3. Task 4 owns the workspace concept, concept index, and short overview. Task 5 owns three recovery pages, troubleshooting index, and assignment correction. Shared-test writes are transitively serialized.
+4. Task 6 owns non-`docs/` public/package/scaffold/generated corrections. Task 7 owns the explicit remainder of `docs/` and inventory closure. Their file sets exclude Tasks 2-5.
+5. Task 8 modifies shared gates only after all content exists. A prose correction returns to its declared owner instead of creating a parallel write. The graph is a single acyclic chain of eight standalone slices.
 
-### Spec text and AC policy
+### Documentation versus product ownership
 
-No spec patch is proposed. If execution discovers a genuinely missing documentation behavior that cannot map to the exact existing owners above, stop and obtain separate approval for a spec change. Any later approved spec patch must appear verbatim in its task body with exact spec ref, AC id, Given/When/Then, preservation rules, and `kspec item get <ref>` readback; workers may not paraphrase it. Product AC proposals from the first draft—timeout/process group, reset prerequisites, cleanup policy restatements, status projection, and runner schema wording—are removed rather than rewritten because their product work is deferred.
+No product spec patch is proposed. Lifecycle refs and ACs appear only under “Factual source authorities” so workers know which implemented contracts to verify; `Covers` lists only documentation/spec owners for documentation work. If source review reveals missing product behavior or a genuinely ownerless documentation contract, stop and obtain separate approval rather than adding product scope here.
+
+### Current integration and review uncertainty
+
+The inspected lifecycle implementation and its focused test history are integrated on the remote lifecycle target, while local `dev` does not yet contain that tip and the lifecycle plan remains active. Final implementation review may add commits or alter documented details. Therefore the exact reviewed commit and final public facts are intentionally late-bound in Task 1. The earlier approved documentation reviews `@01KXH7G6DBP8RRS39VKMPWE28M` and `@01KXH7BNXKV4KXA7AVSJ14GGB3` predate this revision and do not approve it.
 
 ### Completion claim
 
-Completion means the documentation plan's changed/focused gates pass and every declared public-surface record has evidence. It does not mean the active lifecycle plan is approved by this plan, remote sync is complete, the seven pre-existing refs ambiguities are fixed, project-wide validation is green, or either first-pass review has approved this revision.
+Completion means the documentation plan's changed/focused gates pass and every declared public-surface record has evidence. It does not mean this revised plan has been reviewed or approved, the lifecycle final review is complete at drafting time, remote sync is complete, the seven pre-existing refs ambiguities are fixed, or project-wide validation is green.

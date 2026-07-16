@@ -3,3 +3,8 @@ notes:
     content: Addressed first-pass reviews @01KXH58W89H5RDQ6DGSEETV8YN and @01KXH5HDNG7HNDXW09GHH4QPH1
     author: Jacob Chapel
     created_at: 2026-07-14T20:58:38.121Z
+  - _ulid: 01KXPGBJ9W3QF0SK0RT0GDJC17
+    content: Refresh documentation slices for completed lifecycle-control implementation pending final
+      implementation review
+    author: Hermes Closure Reviewer
+    created_at: 2026-07-16T22:22:03.580Z
