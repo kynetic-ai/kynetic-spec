@@ -2,7 +2,89 @@ _ulid: 01KXM7H0H54D862MKHG9VQCBFG
 slugs: []
 title: Review protect controlled dispatch evidence from cleanup
 author: Jacob Chapel
-checks: []
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: All 1049 matched files passed formatting.
+    name: format
+    required: true
+    runner: npm run format:check
+    created_at: 2026-07-16T01:26:28.415Z
+    completed_at: 2026-07-16T01:26:28.415Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Repo-wide lint: 0 errors (702 baseline warnings). Focused oxlint on all 3 changed
+      TypeScript/test files: 0 warnings and 0 errors."
+    name: lint
+    required: true
+    runner: npm run lint -- --quiet
+    created_at: 2026-07-16T01:26:32.918Z
+    completed_at: 2026-07-16T01:26:32.918Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Shared build and tsc --noEmit completed successfully.
+    name: typecheck
+    required: true
+    runner: npm run typecheck
+    created_at: 2026-07-16T01:26:39.186Z
+    completed_at: 2026-07-16T01:26:39.186Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: kspec validate --refs --warnings-ok passed; 6 documented baseline deprecation warnings.
+    name: kspec validate refs
+    required: true
+    runner: kspec
+    created_at: 2026-07-16T01:26:44.544Z
+    completed_at: 2026-07-16T01:26:44.544Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: kspec validate --alignment --warnings-ok passed; repository baseline warnings only.
+    name: kspec validate alignment
+    required: true
+    runner: kspec
+    created_at: 2026-07-16T01:26:49.662Z
+    completed_at: 2026-07-16T01:26:49.662Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: kspec validate --completeness --warnings-ok passed; repository baseline warnings only.
+      Controlled-evidence and inherited trait annotations were inspected.
+    name: kspec validate completeness
+    required: true
+    runner: kspec
+    created_at: 2026-07-16T01:26:55.277Z
+    completed_at: 2026-07-16T01:26:55.277Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Focused five-file command passed 14 suites / 69 tests.
+    name: focused cleanup tests
+    required: true
+    runner: npm test
+    created_at: 2026-07-16T01:27:01.391Z
+    completed_at: 2026-07-16T01:27:01.391Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: No whitespace errors between integration base 958c482d25 and reviewed head dd9e182d59.
+    name: git diff check
+    required: true
+    runner: git diff --check
+    created_at: 2026-07-16T01:27:09.085Z
+    completed_at: 2026-07-16T01:27:09.085Z
 events:
   - _ulid: 01KXM7H0H5NGW2AKKRZNQMSMKX
     actor: Jacob Chapel
@@ -17,6 +99,76 @@ events:
       from: draft
       to: open
     timestamp: 2026-07-16T01:09:48.149Z
+  - _ulid: 01KXM8GH3Z9J46KX30SNZTWC49
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: format
+    timestamp: 2026-07-16T01:26:28.735Z
+  - _ulid: 01KXM8GNMQJXXKKY7CPKBHHWPP
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: lint
+    timestamp: 2026-07-16T01:26:33.368Z
+  - _ulid: 01KXM8GVPGBT8H0ZZPB3HAT4W8
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: typecheck
+    timestamp: 2026-07-16T01:26:39.568Z
+  - _ulid: 01KXM8H0W9F9T8S90CVDQP0AWK
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate refs
+    timestamp: 2026-07-16T01:26:44.873Z
+  - _ulid: 01KXM8H5WNHXPQ6SGA0HG553QZ
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate alignment
+    timestamp: 2026-07-16T01:26:50.005Z
+  - _ulid: 01KXM8HBE51K5GXM2MWXW1PM19
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate completeness
+    timestamp: 2026-07-16T01:26:55.685Z
+  - _ulid: 01KXM8HHH91XN03NQV6CCBJSKD
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: focused cleanup tests
+    timestamp: 2026-07-16T01:27:01.929Z
+  - _ulid: 01KXM8HRWECH3GXHS9565NNJM3
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: git diff check
+    timestamp: 2026-07-16T01:27:09.454Z
+  - _ulid: 01KXM8HXQ1D8Y8P5B3NKK876RH
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KXM8HXANXPJSZ70EDWD5GDP9
+    timestamp: 2026-07-16T01:27:14.401Z
+  - _ulid: 01KXM8J37TJVMAC2NE1H97RXQP
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KXM8J2QZ0CCR7MVV9P1DH8SM
+    timestamp: 2026-07-16T01:27:20.058Z
 examined_commit: dd9e182d59521a161a6b5b383539cc4b70aac120
 external_links: []
 lifecycle_state: open
@@ -26,8 +178,56 @@ subject:
   content_hash: ""
   ref: "@01KXH2PRVHHSQ14WR16A5KHTJT"
   shadow_commit: ""
-threads: []
+threads:
+  - _ulid: 01KXM8HXANXPJSZ70EDWD5GDP9
+    anchor:
+      type: code
+      commit: dd9e182d59521a161a6b5b383539cc4b70aac120
+      line_end: 4224
+      line_start: 4224
+      path: src/agent-runtime/workspace.ts
+      side: head
+    entries:
+      - _ulid: 01KXM8HXANT2Q8WBTHCF462MFQ
+        author: Jacob Chapel
+        body: "MUST-FIX — Claim: closing-record protection compares the raw record identity directly against
+          canonical controlled keys and bypasses the alias-to-canonical map used by the other
+          evaluators. Impact: a historical slug-only closing record for a canonically paused or
+          stopped-pending-cleanup task can be physically reaped, and terminal reconciliation can
+          self-heal it to completed/closed, destroying the evidence this task must preserve.
+          Evidence: an executed builder reproduction with a normalized registry snapshot preserved
+          evaluateTaskRef(@task-alias), but evaluateClosingRecordForReap(raw slug-only record)
+          returned preserve=false; supplying task_id made the same closing decision preserve=true.
+          Use the mapped canonical key here and add behavioral reap plus terminal-reconciliation
+          coverage for a historical alias-only record."
+        created_at: 2026-07-16T01:27:14.005Z
+    kind: blocker
+  - _ulid: 01KXM8J2QZ0CCR7MVV9P1DH8SM
+    anchor:
+      type: code
+      commit: dd9e182d59521a161a6b5b383539cc4b70aac120
+      line_end: 4280
+      line_start: 4279
+      path: src/agent-runtime/workspace.ts
+      side: head
+    entries:
+      - _ulid: 01KXM8J2QZ1VJADDH60VXBMT3N
+        author: Jacob Chapel
+        body: "MUST-FIX — Claim: paused-held protection is populated only from task-scoped control records;
+          globally paused held task identities are never supplied to cleanup protection. Global held
+          identities live in the engine queue/status projection, while
+          loadDispatchArtifactProtectionState accepts only active/in-flight ids. Impact: on startup
+          or another cleanup pass, a task held by global pause can have an unregistered or
+          cleanup-eligible artifact deleted even though paused-held evidence is a required
+          protection class. Evidence: an executed project reproduction committed global
+          authority=paused with no task control, loaded the production protection state, and
+          evaluateTaskRef for the held task returned preserve=false. Thread global held canonical
+          task IDs into the production protection snapshot and add physical cleanup coverage; the
+          current matrix manually injects pausedHeldTaskRefs and therefore does not prove this
+          path."
+        created_at: 2026-07-16T01:27:19.551Z
+    kind: blocker
 verdicts: []
 created_at: 2026-07-16T01:09:15.941Z
-updated_at: 2026-07-16T01:09:47.900Z
+updated_at: 2026-07-16T01:27:19.551Z
 notes: []
