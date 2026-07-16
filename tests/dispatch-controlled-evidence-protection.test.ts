@@ -4,26 +4,38 @@ import { execSync } from "node:child_process";
 import { afterEach, describe, expect, it } from "vitest";
 import {
   buildDispatchArtifactProtectionState,
+  loadDispatchArtifactProtectionState,
   provisionDispatchWorkspace,
   reapDispatchWorkspace,
   reconcileDispatchWorkspaceArtifacts,
   reconcileDispatchWorkspaceLifecycle,
   reconcileDispatchWorkspaceRegistry,
+  resolveDispatchWorkspaceConfig,
 } from "../src/agent-runtime/workspace.js";
 import {
   getOrCreateDispatchControlStore,
   unregisterDispatchControlStore,
 } from "../src/agent-runtime/dispatch-control-store.js";
-import { initContext } from "../src/parser/index.js";
-import { loadDispatchWorkspaceRegistry } from "../src/parser/dispatch-workspaces.js";
+import { initContext, resolveTaskDataManager } from "../src/parser/index.js";
+import {
+  loadDispatchWorkspaceRegistry,
+  saveDispatchWorkspaceRecord,
+} from "../src/parser/dispatch-workspaces.js";
 import { createSession, getSession } from "../src/sessions/store.js";
 import type { DispatchWorkspaceRecord } from "../src/schema/index.js";
+import {
+  buildProjectTaskResolver,
+  resolveCanonicalId,
+} from "../src/agent-runtime/workspace-identity.js";
+import { ensureSplitBackendRegistered } from "../src/parser/split-backend.js";
 import { cleanupTempDir, createTempDir, initGitRepo, kspec, testUlid } from "./helpers/cli.js";
 
 const WORKTREE_ROOT = "/tmp/kspec-controlled-evidence-protection";
 const TASK_ID = "01KRF37Y941E2T8D1ATFV63JB0";
 const TASK_REF = `@${TASK_ID}`;
 const TASK_SLUG = "task-controlled-evidence";
+
+ensureSplitBackendRegistered();
 
 function closingRecord(taskId = TASK_ID): DispatchWorkspaceRecord {
   const taskRef = `@${taskId}`;
@@ -158,6 +170,27 @@ describe("controlled dispatch evidence protection", () => {
     expect(protection.evaluateClosingRecordForReap(controlled).preserve).toBe(true);
     expect(protection.evaluateClosingRecordForReap(unrelated).preserve).toBe(false);
   });
+
+  // AC: @dispatch-workspace-cleanup-policy ac-controlled-evidence-protected
+  it("canonicalizes a raw historical alias-only closing record before reap", () => {
+    const canonicalRecord = {
+      ...closingRecord(),
+      task_ref: "@task-controlled-evidence",
+    };
+    const historicalRecord = {
+      ...canonicalRecord,
+      task_id: undefined,
+      task_ref: "@task-controlled-evidence",
+    };
+    const protection = buildDispatchArtifactProtectionState({
+      worktreeRoot: WORKTREE_ROOT,
+      pausedHeldTaskRefs: [TASK_REF],
+      registry: { status: "loaded", records: [canonicalRecord] },
+    });
+
+    expect(protection.evaluateTaskRef(historicalRecord.task_ref).preserve).toBe(true);
+    expect(protection.evaluateClosingRecordForReap(historicalRecord).preserve).toBe(true);
+  });
 });
 
 function git(cwd: string, command: string): string {
@@ -209,6 +242,45 @@ async function controlTask(
           }
         : snapshot.pending_cleanup,
   }));
+}
+
+async function createCanonicalTask(
+  projectDir: string,
+  slug: string,
+): Promise<{
+  taskId: string;
+  taskRef: string;
+  taskSlug: string;
+  task: { title: string; slugs: string[] };
+}> {
+  const result = kspec(
+    `task add --title "Historical Controlled Evidence" --slug ${slug} --json`,
+    projectDir,
+  );
+  const parsed = JSON.parse(result.stdout) as { task: { _ulid: string; slugs: string[] } };
+  const taskSlug = parsed.task.slugs[0] ?? slug;
+  return {
+    taskId: parsed.task._ulid,
+    taskRef: `@${parsed.task._ulid}`,
+    taskSlug,
+    task: { title: "Historical Controlled Evidence", slugs: [taskSlug] },
+  };
+}
+
+async function rewriteRecordAsHistoricalAlias(
+  projectDir: string,
+  canonicalTaskRef: string,
+  alias: string,
+): Promise<void> {
+  const ctx = await initContext(projectDir);
+  const records = await loadDispatchWorkspaceRegistry(ctx);
+  const record = records.find((candidate) => candidate.task_ref === canonicalTaskRef);
+  if (!record) throw new Error(`Missing workspace record for ${canonicalTaskRef}`);
+  await saveDispatchWorkspaceRecord(ctx, {
+    ...record,
+    task_id: undefined,
+    task_ref: alias,
+  });
 }
 
 describe("controlled evidence physical cleanup", () => {
@@ -317,6 +389,121 @@ describe("controlled evidence physical cleanup", () => {
 
     const records = await loadDispatchWorkspaceRegistry(await initContext(projectDir));
     const record = records.find((candidate) => candidate.task_ref === taskRef);
+    expect(record?.cleanup.status).not.toBe("completed");
+    expect(record?.lifecycle_state).not.toBe("closed");
+  });
+
+  // AC: @dispatch-workspace-cleanup-policy ac-controlled-evidence-protected
+  it("preserves physical cleanup for a canonically paused historical alias-only record", async () => {
+    const projectDir = await createTempDir("kspec-controlled-historical-reap-");
+    projectDirs.push(projectDir);
+    await seedDispatchProject(projectDir);
+    const slug = "task-historical-controlled-reap";
+    const { taskId, taskRef, taskSlug, task } = await createCanonicalTask(projectDir, slug);
+    const workspace = await provisionDispatchWorkspace({ projectDir, taskRef, task });
+    await reconcileDispatchWorkspaceLifecycle({
+      projectDir,
+      taskRef,
+      task,
+      cleanupState: { integrationState: "merged", taskStatus: "completed" },
+    });
+    await rewriteRecordAsHistoricalAlias(projectDir, taskRef, `@${taskSlug}`);
+    const historicalRecord = (
+      await loadDispatchWorkspaceRegistry(await initContext(projectDir))
+    ).find((candidate) => candidate.workspace_id === workspace.metadata.workspaceId);
+    expect(historicalRecord?.task_ref).toBe(`@${taskSlug}`);
+    expect(historicalRecord?.task_id).toBeUndefined();
+    const taskContext = await initContext(projectDir);
+    expect(
+      (await resolveTaskDataManager(taskContext).loadAllTasks(taskContext)).map(
+        (item) => item._ulid,
+      ),
+    ).toContain(taskId);
+    expect(
+      resolveCanonicalId(
+        await buildProjectTaskResolver(await initContext(projectDir)),
+        `@${taskSlug}`,
+      ),
+    ).toBe(taskId);
+    await controlTask(projectDir, taskId, "paused");
+    unregisterDispatchControlStore(projectDir);
+
+    const debugProtection = await loadDispatchArtifactProtectionState(
+      projectDir,
+      await resolveDispatchWorkspaceConfig(projectDir),
+    );
+    expect(debugProtection.controlTrusted).toBe(true);
+    expect(debugProtection.controlledTaskRefs).toContain(taskId);
+    expect(debugProtection.evaluateTaskRef(`@${taskSlug}`).preserve).toBe(true);
+
+    const result = await reapDispatchWorkspace(projectDir, `@${taskSlug}`, { task });
+
+    expect(result.action).toBe("cleanup_blocked");
+    expect(await fs.stat(workspace.cwd).then(() => true)).toBe(true);
+    expect(git(projectDir, `branch --list ${workspace.metadata.canonicalBranch}`)).toContain(
+      workspace.metadata.canonicalBranch,
+    );
+  });
+
+  // AC: @dispatch-workspace-cleanup-policy ac-controlled-evidence-protected
+  // AC: @dispatch-workspace-cleanup-policy ac-protection-applies-to-every-destructive-surface
+  it("preserves physical artifacts for a task held by global pause", async () => {
+    const projectDir = await createTempDir("kspec-controlled-global-held-");
+    projectDirs.push(projectDir);
+    await seedDispatchProject(projectDir);
+    const taskId = testUlid("GLBL", 1);
+    const taskRef = `@${taskId}`;
+    const task = { title: "Globally Held Evidence", slugs: ["task-globally-held-evidence"] };
+    const workspace = await provisionDispatchWorkspace({ projectDir, taskRef, task });
+    await reconcileDispatchWorkspaceLifecycle({
+      projectDir,
+      taskRef,
+      task,
+      cleanupState: { integrationState: "merged", taskStatus: "completed" },
+    });
+
+    await reconcileDispatchWorkspaceArtifacts(projectDir, {
+      pausedHeldTaskRefs: [taskId],
+    });
+
+    expect(await fs.stat(workspace.cwd).then(() => true)).toBe(true);
+    expect(git(projectDir, `branch --list ${workspace.metadata.canonicalBranch}`)).toContain(
+      workspace.metadata.canonicalBranch,
+    );
+    const records = await loadDispatchWorkspaceRegistry(await initContext(projectDir));
+    const record = records.find((candidate) => candidate.task_id === taskId);
+    expect(record?.cleanup.status).not.toBe("completed");
+    expect(record?.lifecycle_state).not.toBe("closed");
+  });
+
+  // AC: @dispatch-workspace-cleanup-policy ac-controlled-evidence-protected
+  it("does not self-heal a canonically paused historical alias-only record to closed", async () => {
+    const projectDir = await createTempDir("kspec-controlled-historical-terminal-");
+    projectDirs.push(projectDir);
+    await seedDispatchProject(projectDir);
+    const slug = "task-historical-controlled-terminal";
+    const { taskId, taskRef, taskSlug, task } = await createCanonicalTask(projectDir, slug);
+    const workspace = await provisionDispatchWorkspace({ projectDir, taskRef, task });
+    await reconcileDispatchWorkspaceLifecycle({
+      projectDir,
+      taskRef,
+      task,
+      cleanupState: { integrationState: "merged", taskStatus: "completed" },
+    });
+    await rewriteRecordAsHistoricalAlias(projectDir, taskRef, `@${taskSlug}`);
+    await controlTask(projectDir, taskId, "paused");
+    unregisterDispatchControlStore(projectDir);
+    await fs.rm(workspace.cwd, { recursive: true, force: true });
+    git(projectDir, "worktree prune");
+    git(projectDir, `branch -D ${workspace.metadata.canonicalBranch}`);
+
+    await reconcileDispatchWorkspaceRegistry(
+      projectDir,
+      new Map([[taskRef, "completed" as const]]),
+    );
+
+    const records = await loadDispatchWorkspaceRegistry(await initContext(projectDir));
+    const record = records.find((candidate) => candidate.task_ref === `@${taskSlug}`);
     expect(record?.cleanup.status).not.toBe("completed");
     expect(record?.lifecycle_state).not.toBe("closed");
   });

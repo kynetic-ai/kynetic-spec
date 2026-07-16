@@ -1312,6 +1312,16 @@ export class DispatchEngine {
     // AC: @dispatch-remote-branch-sync ac-pull-target-on-start — resolve sync config and sync before bootstrap
     await this._initTargetSync();
 
+    // A paused/stopped authority must expose its held canonical task identities
+    // before startup cleanup runs. Seed the queue without draining so cleanup
+    // can preserve globally held evidence through the same production snapshot
+    // used by status projection. Running startup retains its existing ordering.
+    const bootstrapSeededForHeldCleanup = !this._globalSchedulingPermitted();
+    if (bootstrapSeededForHeldCleanup) {
+      await this._evaluateAllTasks({ skipIfActive: false });
+    }
+    const heldTaskIds = this._heldTaskIds();
+
     try {
       const ctx = await initContext(this.projectDir);
       const tasks = await resolveTaskDataManager(ctx).loadAllTasks(ctx);
@@ -1319,13 +1329,19 @@ export class DispatchEngine {
         tasks.map((task) => [`@${task._ulid}`, task.status as TaskStatus]),
       );
       await this.shadowMutex.runExclusive(async () => {
-        await reconcileDispatchWorkspaceRegistry(this.projectDir, taskStatusByRef);
+        await reconcileDispatchWorkspaceRegistry(
+          this.projectDir,
+          taskStatusByRef,
+          undefined,
+          heldTaskIds,
+        );
       });
     } catch (err) {
       console.error("[dispatch] Workspace registry reconciliation error:", err);
     }
     await reconcileDispatchWorkspaceArtifacts(this.projectDir, {
       activeTaskIds: this._activeTaskIds(),
+      pausedHeldTaskRefs: heldTaskIds,
     });
 
     // AC: @dispatch-remote-branch-sync ac-no-remote — resolve remote sync at start time
@@ -1342,7 +1358,9 @@ export class DispatchEngine {
     }
 
     // AC: @agent-dispatch-engine ac-8 - Bootstrap: evaluate existing task states
-    await this._bootstrap();
+    if (!bootstrapSeededForHeldCleanup) {
+      await this._bootstrap();
+    }
 
     // AC: @agent-dispatch-engine ac-19, ac-20 - Start periodic reconciliation
     if (this.reconcileIntervalMs > 0) {
@@ -2393,6 +2411,15 @@ export class DispatchEngine {
     });
   }
 
+  private _heldTaskIds(): string[] {
+    const authority = this.lifecyclePublication.snapshot.global.authority;
+    return Array.from(this.queues.values())
+      .flatMap((queue) => queue.map((entry) => entry.change.taskId))
+      .filter((taskId) => authority !== "running" || !this._taskSchedulingPermitted(taskId))
+      .filter((taskId, index, all) => all.indexOf(taskId) === index)
+      .toSorted();
+  }
+
   getLifecycleStatus(): {
     globalAuthority: "stopped" | "running" | "paused";
     projection: "running" | "paused" | "draining" | "stopped";
@@ -2404,11 +2431,7 @@ export class DispatchEngine {
   } {
     const authority = this.lifecyclePublication.snapshot.global.authority;
     const base = this.getStatus();
-    const heldTaskIds = Array.from(this.queues.values())
-      .flatMap((queue) => queue.map((entry) => entry.change.taskId))
-      .filter((taskId) => authority !== "running" || !this._taskSchedulingPermitted(taskId))
-      .filter((taskId, index, all) => all.indexOf(taskId) === index)
-      .toSorted();
+    const heldTaskIds = this._heldTaskIds();
     return {
       globalAuthority: authority,
       projection:
@@ -2531,10 +2554,12 @@ export class DispatchEngine {
         tasks.map((task) => [`@${task._ulid}`, task.status as TaskStatus]),
       );
       await this.shadowMutex.runExclusive(async () => {
+        const heldTaskIds = this._heldTaskIds();
         await reconcileDispatchWorkspaceRegistry(
           this.projectDir,
           taskStatusByRef,
           this._activeRoleByTaskId(),
+          heldTaskIds,
         );
       });
       // AC: @multi-turn-session-lifecycle ac-11 — reload session.idle hook presence
@@ -2546,6 +2571,7 @@ export class DispatchEngine {
     }
     await reconcileDispatchWorkspaceArtifacts(this.projectDir, {
       activeTaskIds: this._activeTaskIds(),
+      pausedHeldTaskRefs: this._heldTaskIds(),
     });
 
     // AC: @dispatch-remote-branch-sync ac-push-target-periodic
@@ -4408,6 +4434,7 @@ export class DispatchEngine {
                         slugs: entry.change.task.slugs,
                       }
                     : undefined,
+                  this._heldTaskIds(),
                 );
               });
             } catch (cleanupErr) {

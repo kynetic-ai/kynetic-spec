@@ -327,6 +327,29 @@ describe("global dispatch lifecycle authority", () => {
     });
   });
 
+  // AC: @dispatch-workspace-cleanup-policy ac-controlled-evidence-protected
+  it("threads globally paused held identities into startup cleanup protection", async () => {
+    const harness = await createGlobalLifecycleHarness("paused");
+    let registryHeldTaskIds: string[] = [];
+    let artifactHeldTaskIds: string[] = [];
+    vi.spyOn(workspaceModule, "reconcileDispatchWorkspaceRegistry").mockImplementation(
+      async (_projectDir, _statuses, _activeRoles, heldTaskIds) => {
+        registryHeldTaskIds = [...(heldTaskIds ?? [])];
+      },
+    );
+    vi.spyOn(workspaceModule, "reconcileDispatchWorkspaceArtifacts").mockImplementation(
+      async (_projectDir, options) => {
+        artifactHeldTaskIds = [...(options?.pausedHeldTaskRefs ?? [])];
+      },
+    );
+
+    await harness.engine.start();
+
+    expect(harness.engine.getLifecycleStatus().heldTaskIds).toEqual([harness.taskId]);
+    expect(registryHeldTaskIds).toEqual([harness.taskId]);
+    expect(artifactHeldTaskIds).toEqual([harness.taskId]);
+  });
+
   // AC: @dispatch-lifecycle-control-authority ac-global-paused-work-does-not-start
   it("rechecks paused authority when a coalesced event timer expires", async () => {
     const harness = await createGlobalLifecycleHarness("running", {

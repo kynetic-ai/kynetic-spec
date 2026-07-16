@@ -2988,20 +2988,30 @@ export async function reconcileDispatchWorkspaceRegistry(
   taskStatusByRef?: Map<string, ResolveDispatchWorkspaceCleanupStateOptions["taskStatus"]>,
   // Keyed by bare canonical task ULID `<task-ulid>` (from _activeRoleByTaskId()).
   activeRoleByTaskRef?: Map<string, RegistryRole>,
+  // Canonical task ULIDs held by global lifecycle authority in the engine queue.
+  pausedHeldTaskRefs?: Iterable<string>,
 ): Promise<void> {
   const resolvedConfig = await resolveDispatchWorkspaceConfig(projectDir);
   const ctx = await initContext(projectDir);
   const records = await loadDispatchWorkspaceRegistry(ctx);
+  const resolver = await buildProjectTaskResolver(ctx);
+  const normalizedProtectionRecords = records.map((record) =>
+    record.task_id
+      ? record
+      : { ...record, task_id: recordCanonicalId(record, resolver) ?? undefined },
+  );
   const controlledEvidence = await loadDispatchControlledEvidence(projectDir);
   const registryProtection = buildDispatchArtifactProtectionState({
     worktreeRoot: resolvedConfig.worktreeRoot,
     activeOrInFlightTaskRefs: activeRoleByTaskRef?.keys(),
-    pausedHeldTaskRefs: controlledEvidence.pausedHeldTaskRefs,
+    pausedHeldTaskRefs: new Set([
+      ...controlledEvidence.pausedHeldTaskRefs,
+      ...(pausedHeldTaskRefs ?? []),
+    ]),
     stoppedPendingCleanupTaskRefs: controlledEvidence.stoppedPendingCleanupTaskRefs,
     control: controlledEvidence.control,
-    registry: { status: "loaded", records },
+    registry: { status: "loaded", records: normalizedProtectionRecords },
   });
-  const resolver = await buildProjectTaskResolver(ctx);
   const nonClosedRecords = records.filter(
     (r) =>
       r.lifecycle_state !== "closed" &&
@@ -3555,6 +3565,7 @@ export async function cleanupReviewerDispatchWorkspace(
   projectDir: string,
   taskRef: string,
   task?: ProvisionDispatchWorkspaceOptions["task"],
+  pausedHeldTaskRefs?: Iterable<string>,
 ): Promise<DispatchWorkspaceReapResult> {
   const existing = await findWorkspaceRegistrationByTaskRef(projectDir, taskRef, task);
   const resolvedConfig = await resolveDispatchWorkspaceConfig(projectDir);
@@ -3567,7 +3578,9 @@ export async function cleanupReviewerDispatchWorkspace(
     return { taskRef, action: "none", blockedReason: null };
   }
 
-  const protection = await loadDispatchArtifactProtectionState(projectDir, resolvedConfig);
+  const protection = await loadDispatchArtifactProtectionState(projectDir, resolvedConfig, {
+    pausedHeldTaskRefs,
+  });
   const taskDecision = protection.evaluateControlledTaskRef(existingRecord.task_id ?? taskRef);
   if (taskDecision.preserve) {
     return {
@@ -3631,6 +3644,7 @@ export async function reapDispatchWorkspace(
   taskRef: string,
   options?: {
     activeTaskIds?: Iterable<string>;
+    pausedHeldTaskRefs?: Iterable<string>;
     task?: ProvisionDispatchWorkspaceOptions["task"];
   },
 ): Promise<DispatchWorkspaceReapResult> {
@@ -3677,7 +3691,9 @@ export async function reapDispatchWorkspace(
   }
 
   const resolvedConfig = await resolveDispatchWorkspaceConfig(projectDir);
-  const protection = await loadDispatchArtifactProtectionState(projectDir, resolvedConfig);
+  const protection = await loadDispatchArtifactProtectionState(projectDir, resolvedConfig, {
+    pausedHeldTaskRefs: options?.pausedHeldTaskRefs,
+  });
   const protectionDecision = existingRegistryRecord
     ? protection.evaluateClosingRecordForReap(existingRegistryRecord)
     : protection.evaluateTaskRef(taskRef);
@@ -4221,7 +4237,9 @@ export function buildDispatchArtifactProtectionState(
     if (record.lifecycle_state !== "closing") {
       return { preserve: false, reason: null };
     }
-    if (activeKeys.has(normalizeProtectionKey(record.task_id ?? record.task_ref))) {
+    const rawKey = normalizeProtectionKey(record.task_id ?? record.task_ref);
+    const key = aliasToCanonicalKey.get(rawKey) ?? rawKey;
+    if (activeKeys.has(key)) {
       return {
         preserve: true,
         reason: `Closing workspace for ${record.task_ref} still has an active dispatch invocation or other active/in-flight, paused-held, or stopped-pending-cleanup ownership; reap must wait.`,
@@ -4332,7 +4350,10 @@ async function loadDispatchControlledEvidence(
 export async function loadDispatchArtifactProtectionState(
   projectDir: string,
   resolvedConfig: ResolvedDispatchWorkspaceConfig,
-  options: { activeOrInFlightTaskRefs?: Iterable<string> } = {},
+  options: {
+    activeOrInFlightTaskRefs?: Iterable<string>;
+    pausedHeldTaskRefs?: Iterable<string>;
+  } = {},
 ): Promise<DispatchArtifactProtectionState> {
   const controlledEvidence = await loadDispatchControlledEvidence(projectDir);
   let registryInput: DispatchArtifactProtectionInput["registry"];
@@ -4359,7 +4380,10 @@ export async function loadDispatchArtifactProtectionState(
   return buildDispatchArtifactProtectionState({
     worktreeRoot: resolvedConfig.worktreeRoot,
     activeOrInFlightTaskRefs: options.activeOrInFlightTaskRefs,
-    pausedHeldTaskRefs: controlledEvidence.pausedHeldTaskRefs,
+    pausedHeldTaskRefs: new Set([
+      ...controlledEvidence.pausedHeldTaskRefs,
+      ...(options.pausedHeldTaskRefs ?? []),
+    ]),
     stoppedPendingCleanupTaskRefs: controlledEvidence.stoppedPendingCleanupTaskRefs,
     control: controlledEvidence.control,
     registry: registryInput,
@@ -4399,7 +4423,10 @@ function logArtifactPreservation(
 
 export async function reconcileDispatchWorkspaceArtifacts(
   projectDir: string,
-  options?: { activeTaskIds?: Iterable<string> },
+  options?: {
+    activeTaskIds?: Iterable<string>;
+    pausedHeldTaskRefs?: Iterable<string>;
+  },
 ): Promise<void> {
   const resolvedConfig = await resolveDispatchWorkspaceConfig(projectDir);
   await ensureUsableWorktreeRoot(projectDir, resolvedConfig.worktreeRoot);
@@ -4418,6 +4445,7 @@ export async function reconcileDispatchWorkspaceArtifacts(
   // task refs so all surfaces converge on the same preserve/delete decision.
   let protection = await loadDispatchArtifactProtectionState(projectDir, resolvedConfig, {
     activeOrInFlightTaskRefs: activeTaskIds,
+    pausedHeldTaskRefs: options?.pausedHeldTaskRefs,
   });
 
   const referencedReviewerDirs = new Set<string>();
@@ -4497,6 +4525,7 @@ export async function reconcileDispatchWorkspaceArtifacts(
       } else {
         await reapDispatchWorkspace(projectDir, metadata.taskRef, {
           activeTaskIds,
+          pausedHeldTaskRefs: options?.pausedHeldTaskRefs,
           task: {
             title: metadata.taskSlug,
             slugs: [metadata.taskSlug],
@@ -4510,6 +4539,7 @@ export async function reconcileDispatchWorkspaceArtifacts(
   // state so subsequent surfaces see the latest classification.
   protection = await loadDispatchArtifactProtectionState(projectDir, resolvedConfig, {
     activeOrInFlightTaskRefs: activeTaskIds,
+    pausedHeldTaskRefs: options?.pausedHeldTaskRefs,
   });
 
   for (const entry of entriesUnderRoot) {
