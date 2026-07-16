@@ -478,6 +478,12 @@ events:
     payload:
       thread_ulid: 01KXMWQR2NJSXMPK9TTWDY64RB
     timestamp: 2026-07-16T07:42:33.689Z
+  - _ulid: 01KXMY1AG8RHH67DAZANZTG50Q
+    actor: Jacob Chapel
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KXMWQVDBS6YXSKJ1MF90W8Y6
+    timestamp: 2026-07-16T07:42:39.112Z
 examined_commit: 30da557ff43c38e74c3933c432824b58ce3d4827
 external_links: []
 lifecycle_state: closed
@@ -539,6 +545,13 @@ threads:
           route fixtures with real active/queued/held state and exact lifecycle rows, and attach
           these AC annotations to tests that exercise the endpoint."
         created_at: 2026-07-16T07:20:00.171Z
+      - _ulid: 01KXMY1A88CSD25QM79FQ6ZYJ1
+        author: Jacob Chapel
+        body: "Fixed in dc53f97405: moved every lifecycle status AC annotation from schema-only tests onto a
+          GET /api/agent/status behavioral test. The fixture populates engine active and queued
+          state plus a durably paused task, then asserts exact counts, projection, identity, scope,
+          mode, reason, and control rows."
+        created_at: 2026-07-16T07:42:38.855Z
     kind: blocker
   - _ulid: 01KXMWQZ0S152XRB425QTQTRB9
     anchor:
@@ -642,5 +655,5 @@ verdicts:
     role: reviewer
     created_at: 2026-07-16T07:21:52.377Z
 created_at: 2026-07-16T07:05:26.538Z
-updated_at: 2026-07-16T07:42:33.410Z
+updated_at: 2026-07-16T07:42:38.855Z
 notes: []
