@@ -119,6 +119,27 @@ checks:
     runner: manual review
     created_at: 2026-07-16T06:27:38.890Z
     completed_at: 2026-07-16T06:27:38.890Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: All 1052 matched files use the correct format.
+    name: format
+    required: true
+    runner: npm run format:check
+    created_at: 2026-07-16T06:28:09.721Z
+    completed_at: 2026-07-16T06:28:09.721Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Repo-wide lint completed with 0 errors and 702 baseline warnings. Focused oxlint on all
+      five changed TypeScript/test files completed with 0 warnings and 0 errors.
+    name: lint
+    required: true
+    runner: npm run lint -- --quiet
+    created_at: 2026-07-16T06:28:12.861Z
+    completed_at: 2026-07-16T06:28:12.861Z
 events:
   - _ulid: 01KXMRY86JZG0SFRX0BWZ92S1W
     actor: Jacob Chapel
@@ -224,6 +245,20 @@ events:
       kind: blocker
       thread_ulid: 01KXMSR9GR34BM9521SAAE60P5
     timestamp: 2026-07-16T06:27:49.161Z
+  - _ulid: 01KXMSRY3VPSQX1Z73S46DMQRQ
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: format
+    timestamp: 2026-07-16T06:28:09.979Z
+  - _ulid: 01KXMSS15PCXNYYV4T5K2AT1ZW
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: lint
+    timestamp: 2026-07-16T06:28:13.110Z
 examined_commit: 224ff0ef123337050be9107fab0dafa7d90ecfcf
 external_links: []
 lifecycle_state: open
@@ -300,5 +335,5 @@ threads:
     kind: blocker
 verdicts: []
 created_at: 2026-07-16T06:13:35.585Z
-updated_at: 2026-07-16T06:27:48.888Z
+updated_at: 2026-07-16T06:28:12.861Z
 notes: []
