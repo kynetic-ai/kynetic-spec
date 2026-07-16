@@ -5309,3 +5309,21 @@ inbox:
       - concurrency
     added_by: Jacob Chapel
     created_at: 2026-07-15T21:46:11.913Z
+  - _ulid: 01KXNR7QE2CGEEHMTH9BHTXFYV
+    text: Replace raw session JSONL line count with a meaningful logical activity count in session
+      summaries and the Sessions UI. Count each logical tool invocation once by toolCallId,
+      regardless of tool_call_update/progress volume, and count completed assistant messages once
+      after merging agent_message_chunk records. Do not treat message/thought chunks, usage updates,
+      available-command updates, session-info updates, or repeated tool-call progress updates as
+      separate user-facing events. Define whether lifecycle/turn-boundary records belong in the
+      metric, keep active-session and persisted close-time summaries consistent, and add
+      adapter-aware tests covering Codex ACP phased/streamed tool calls. Consider relabeling the UI
+      metric from 'events' to 'activities' or another term that accurately communicates the logical
+      count.
+    tags:
+      - sessions
+      - web-ui
+      - observability
+      - ux
+    added_by: Jacob Chapel
+    created_at: 2026-07-16T15:20:31.938Z
