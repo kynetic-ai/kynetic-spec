@@ -68,3 +68,14 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-07-16T13:53:18.287Z
+  - _ulid: 01KXNKW06DKEZ8HFZWVCGD0HD4
+    content: "Fix cycle 2 approach: preserve the still-connected invoking lifecycle control on rejected
+      mutations before considering replacement controls, while retaining replacement focus after
+      successful action-shape changes. Add Playwright browser fixtures that render paused/draining
+      active work, queued work, canonical held rows, separately labelled
+      authority/projection/degraded/held evidence, and rejected global/task hard-stop focus
+      restoration. Re-verify every @ui-agent-dispatch AC and all project gates before resolving the
+      canonical unresolved review threads and resubmitting."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-07-16T14:04:13.389Z
