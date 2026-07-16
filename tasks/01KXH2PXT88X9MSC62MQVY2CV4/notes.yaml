@@ -1,1 +1,18 @@
-notes: []
+notes:
+  - _ulid: 01KXNNC63AA7QNSQWPRSYHDP5Z
+    content: "Approach: add one real-daemon cross-surface fixture using
+      createTestDaemonProject/startTestDaemon with registered teardown, boundedDaemonFetch,
+      explicit-cwd kspec, and captured lifecycle events. Reuse the existing public/shared schemas
+      and CLI boundary rather than duplicating validators. Cover exact canonical global/task
+      transitions, alias canonicalization, public snake-case versus internal/CLI hybrid rows,
+      cleanup aggregate variants, scope gating, closed failures, prompt/session branches, and event
+      correspondence; extend the existing focused files only where their owner-level matrices need a
+      missing behavioral case. Edge cases: conditional cleanup error fields, canonical ULID
+      ordering/uniqueness/counts, global versus task cleanup isolation, mutation success without
+      admission, invalid transitions/retries, raw-field suppression. Test plan: focused integration
+      file plus the three existing lifecycle suites, then all project gates. UI lifecycle conversion
+      is owned by the pending UI task and is not yet present on the integration target;
+      re-check/rebase before final verification."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-07-16T14:30:32.298Z
