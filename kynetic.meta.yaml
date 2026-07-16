@@ -24187,6 +24187,17 @@ observations:
     resolved: false
     workflow_ref: "@session-reflect-loop"
     created_at: 2026-07-16T15:36:30.338Z
+  - _ulid: 01KXNV2N693ZTNZS0GRJCDABYN
+    type: friction
+    content: "Cross-surface verification was dispatched before every behavior-owner task was merged:
+      @task-verify-api-cli-projection required the UI wire-to-camel converter but did not depend on
+      @task-ui-dispatch-lifecycle-controls, forcing a review cycle and later block. Plan derivation
+      or automation readiness should verify that each named surface owner is an explicit dependency
+      of end-to-end verification tasks."
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    created_at: 2026-07-16T16:10:11.529Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
