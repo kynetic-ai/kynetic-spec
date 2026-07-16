@@ -8755,11 +8755,11 @@ workspaces:
     canonical_branch: dispatch/task/task-verify-engine-restart-races/01kxh2px
     canonical_branch_head: f38eb47aa73c3ed032195fea02fdfa0210dbfa24
     cleanup:
-      status: scheduled
+      status: completed
       detail: integrated-into-base-branch
       eligible: true
       reason: integrated-into-base-branch
-      updated_at: 2026-07-16T04:15:05.141Z
+      updated_at: 2026-07-16T04:19:41.137Z
     health:
       status: healthy
       issues: []
@@ -8773,17 +8773,17 @@ workspaces:
       target_branch: plan/plan-dispatch-lifecycle-pause-resume-and-stop-controls/01kxc2vx
       target_commit: 0e014e61d8f3b4804be4f3f6dce2bc8439fcc4b9
       updated_at: 2026-07-16T04:15:05.141Z
-    lifecycle_state: closing
+    lifecycle_state: closed
     resolved_base_branch: plan/plan-dispatch-lifecycle-pause-resume-and-stop-controls/01kxc2vx
     task_id: 01KXH2PXA2YQJEGTQ3A3H9N4FQ
     task_ref: "@01KXH2PXA2YQJEGTQ3A3H9N4FQ"
     task_slug: task-verify-engine-restart-races
     timestamps:
-      closed_at: null
+      closed_at: 2026-07-16T04:19:41.137Z
       last_active_at: 2026-07-16T03:50:51.156Z
       last_reconciled_at: 2026-07-16T04:18:56.930Z
       created_at: 2026-07-16T03:07:25.837Z
-      updated_at: 2026-07-16T04:18:56.930Z
+      updated_at: 2026-07-16T04:19:41.137Z
     workspace_id: dispatch-workspace-01KXH2PXA2YQJEGTQ3A3H9N4FQ
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
