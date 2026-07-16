@@ -35,6 +35,17 @@ checks:
     runner: npm run typecheck
     created_at: 2026-07-16T16:04:26.789Z
     completed_at: 2026-07-16T16:04:26.789Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "PASS on ccdbdbf1576a: 2,828 suites passed; 10,920 tests passed and 3 skipped of 10,923.
+      Fresh log: /tmp/kspec-test-cache/01KXNS7HTQXF0554QMWJZAVT2K/190bc8764113c728.log"
+    name: full test suite
+    required: true
+    runner: npm test -- --fresh
+    created_at: 2026-07-16T16:04:32.673Z
+    completed_at: 2026-07-16T16:04:32.673Z
 events:
   - _ulid: 01KXNSFNANGKV7Q691FYEJJR3W
     actor: Jacob Chapel
@@ -70,6 +81,13 @@ events:
       status: pass
       name: typecheck
     timestamp: 2026-07-16T16:04:27.045Z
+  - _ulid: 01KXNTRAHA5FZYRVDAZWMV03QX
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: full test suite
+    timestamp: 2026-07-16T16:04:32.938Z
 examined_commit: ccdbdbf1576a4b84197652909759850dff01cc5c
 external_links: []
 lifecycle_state: open
@@ -82,5 +100,5 @@ subject:
 threads: []
 verdicts: []
 created_at: 2026-07-16T15:42:20.501Z
-updated_at: 2026-07-16T16:04:26.789Z
+updated_at: 2026-07-16T16:04:32.673Z
 notes: []
