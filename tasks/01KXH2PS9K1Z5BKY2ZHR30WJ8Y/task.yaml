@@ -119,8 +119,13 @@ description: >
 spec_ref: "@dispatch-event-taxonomy"
 plan_ref: "@plan-dispatch-lifecycle-pause-resume-and-stop-controls"
 origin: derived
-status: pending_review
+status: completed
 blocked_by: []
+closed_reason: Merged to plan/plan-dispatch-lifecycle-pause-resume-and-stop-controls/01kxc2vx at
+  89a72367b80e. Registered six dispatch lifecycle event identifiers, strict sanitized payloads and
+  closed error codes, post-commit applied/noop/failed emission, agents-topic publication isolation,
+  and startup recovery failure auditing. Fresh full suite passed 2814 suites / 10769 tests with 3
+  skipped; all required review gates passed.
 depends_on:
   - "@task-patch-dispatch-events-specs"
   - "@task-engine-stop-recovery"
@@ -303,8 +308,26 @@ history:
         previous: "@01KXMEE5104DV3HNC56B94W19Z"
     command: review-link
     timestamp: 2026-07-16T04:21:37.505Z
+  - author: Jacob Chapel
+    changes:
+      status:
+        new: completed
+        previous: pending_review
+      closed_reason:
+        new: Merged to plan/plan-dispatch-lifecycle-pause-resume-and-stop-controls/01kxc2vx at 89a72367b80e.
+          Registered six dispatch lifecycle event identifiers, strict sanitized payloads and closed
+          error codes, post-commit applied/noop/failed emission, agents-topic publication isolation,
+          and startup recovery failure auditing. Fresh full suite passed 2814 suites / 10769 tests
+          with 3 skipped; all required review gates passed.
+        previous: null
+      completed_at:
+        new: 2026-07-16T04:38:28.990Z
+        previous: null
+    command: task-complete
+    timestamp: 2026-07-16T04:38:29.007Z
 created_at: 2026-07-14T19:47:18.963Z
 started_at: 2026-07-16T03:51:43.548Z
 submitted_at: 2026-07-16T04:12:35.041Z
+completed_at: 2026-07-16T04:38:28.990Z
 todos: []
 automation: eligible
