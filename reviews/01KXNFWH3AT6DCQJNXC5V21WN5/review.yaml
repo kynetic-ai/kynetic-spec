@@ -387,6 +387,18 @@ events:
       status: pass
       name: diff check
     timestamp: 2026-07-16T13:16:34.951Z
+  - _ulid: 01KXNH58VKVQJSHNEW6VR0PT6C
+    actor: Jacob Chapel
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KXNH2ZFV5WR53CFDK2GZ7CG6
+    timestamp: 2026-07-16T13:16:51.443Z
+  - _ulid: 01KXNH5C9VYY2C8PS512R8E2S3
+    actor: Jacob Chapel
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KXNH32Q21YBTCA3MSRZH4CNF
+    timestamp: 2026-07-16T13:16:54.971Z
 examined_commit: 83d11f75b9f53d2d822669cb37f56f77b9f4b017
 external_links: []
 lifecycle_state: open
@@ -461,6 +473,8 @@ threads:
           values."
         created_at: 2026-07-16T13:15:36.315Z
     kind: blocker
+    resolved_at: 2026-07-16T13:16:51.187Z
+    resolved_by: Jacob Chapel
   - _ulid: 01KXNH32Q21YBTCA3MSRZH4CNF
     entries:
       - _ulid: 01KXNH32Q2CGYB63B70XCVT59F
@@ -479,7 +493,9 @@ threads:
           surfaces touched: none; neutrality review not applicable."
         created_at: 2026-07-16T13:15:39.618Z
     kind: nit
+    resolved_at: 2026-07-16T13:16:54.694Z
+    resolved_by: Jacob Chapel
 verdicts: []
 created_at: 2026-07-16T12:54:36.394Z
-updated_at: 2026-07-16T13:16:34.712Z
+updated_at: 2026-07-16T13:16:54.694Z
 notes: []
