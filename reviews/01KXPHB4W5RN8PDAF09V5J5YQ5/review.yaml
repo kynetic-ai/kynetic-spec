@@ -62,6 +62,13 @@ events:
     payload:
       thread_ulid: 01KXPHDKB3007KN8QCHZ86BDEV
     timestamp: 2026-07-16T22:42:01.716Z
+  - _ulid: 01KXPHGFDTJS58AGHX39Y0ZZBX
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KXPHGF1TZMS8Q95WTK4PZ5Z4
+    timestamp: 2026-07-16T22:42:13.050Z
 examined_commit: null
 external_links: []
 lifecycle_state: open
@@ -453,7 +460,26 @@ threads:
     kind: blocker
     resolved_at: 2026-07-16T22:42:01.365Z
     resolved_by: Jacob Chapel
+  - _ulid: 01KXPHGF1TZMS8Q95WTK4PZ5Z4
+    anchor:
+      type: structured
+      field: baseline-validation-policy
+      ref: "@task-close-documentation-drift-gates"
+      section: tasks
+    entries:
+      - _ulid: 01KXPHGF1TNC2T21NHQWW4AC01
+        author: Jacob Chapel
+        body: The asserted refs baseline does not match the exact stored plan revision. At f639f10d72, a
+          fresh kspec validate --refs --warnings-ok exits 0 with References OK and six
+          deprecated-reference warnings; it does not exit 4 with seven ambiguity errors involving
+          @observations and @spec-plan-import. The final lifecycle review also recorded the refs
+          gate passing before this plan was imported. Replace the revision-time seven-error
+          statement and corresponding completion disclaimer with the current passing baseline,
+          including warning comparison if desired, while retaining the policy to capture a fresh
+          execution-time baseline and reject new or changed refs problems.
+        created_at: 2026-07-16T22:42:12.666Z
+    kind: blocker
 verdicts: []
 created_at: 2026-07-16T22:39:18.405Z
-updated_at: 2026-07-16T22:42:01.365Z
+updated_at: 2026-07-16T22:42:12.666Z
 notes: []
