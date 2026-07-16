@@ -32,3 +32,18 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-07-16T14:53:31.215Z
+  - _ulid: 01KXNQJWHR8A4VPAS4JMRDPQZM
+    content: "Verification complete. Cross-surface matrix: API global start => HTTP 200 + start_applied;
+      CLI global pause/resume/stop => exit 0 + pause_applied/resume_applied/stop_applied; API task
+      pause by slug => HTTP 200 with canonical task ID + task pause_applied; CLI task resume/stop =>
+      exit 0 + task resume_applied/stop_applied; API invalid transition => HTTP 409 + failed
+      invalid_transition; injected commit failure => HTTP 503 + failed control_commit_failed. Owner
+      suites prove all 17 closed errors map uniquely through API responses, CLI exit 3, and
+      failed-event error codes. Public status is snake_case, internal/CLI status preserves the
+      documented hybrid casing, and cleanup aggregates were verified for all-pending, all-failed,
+      mixed, nested matching, matching-task rejection, and unrelated-task allowance. Full CI suite:
+      461 files passed, 10,853 tests passed, 31 skipped; all quality and kspec validation gates
+      passed."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-07-16T15:09:09.048Z
