@@ -127,3 +127,17 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-07-16T08:08:27.689Z
+  - _ulid: 01KXN07RZ7PVMDMT1WR35ADTEF
+    content: "Fix cycle 4 approach: move canonical X-Request-Id assignment to an Elysia onTransform hook
+      so native body-validation failures are traced; add a runtime-only DispatchEngine teardown
+      option so legacy hard-stop applies durable lifecycle control exactly once; track cold engine
+      creation and roll back all runtime helpers without another lifecycle mutation when
+      canonical/global start persistence fails. Edge cases: preserve cleanup retry engines, do not
+      erase pre-existing engines, keep exact legacy/canonical failure rows, and retain ordinary
+      daemon shutdown hard-stop behavior. Tests first: assert request IDs on native invalid body,
+      real-shadow commit-hook failures leave no engine for canonical start and both aliases, and
+      each legacy stop emits exactly one api/global stop-applied outcome. Re-verify all task and
+      inherited AC coverage plus full compatibility gates."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-07-16T08:21:07.687Z
