@@ -178,6 +178,27 @@ events:
       status: fail
       name: "behavioral diagnostic: publication callback isolation"
     timestamp: 2026-07-16T03:30:35.832Z
+  - _ulid: 01KXMFNJ31YXPG61NY234MSS02
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KXMFNHSFS1MQP4NBQ8DDSCPD
+    timestamp: 2026-07-16T03:31:33.602Z
+  - _ulid: 01KXMFNP7RTYCETTH90BFTYAJR
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KXMFNNYBPJN8BW93SXKZV3EE
+    timestamp: 2026-07-16T03:31:37.849Z
+  - _ulid: 01KXMFNV3TNB373AA0W4DHVJSK
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KXMFNTTDH0W4NWWSPJ9V0ZZ6
+    timestamp: 2026-07-16T03:31:42.842Z
 examined_commit: 5f0855ff1c7ce4fb93457d442d1bb6b5be4a7375
 external_links: []
 lifecycle_state: open
@@ -187,8 +208,75 @@ subject:
   content_hash: ""
   ref: "@01KXH2PS9K1Z5BKY2ZHR30WJ8Y"
   shadow_commit: ""
-threads: []
+threads:
+  - _ulid: 01KXMFNHSFS1MQP4NBQ8DDSCPD
+    anchor:
+      type: code
+      commit: 5f0855ff1c7ce4fb93457d442d1bb6b5be4a7375
+      line_end: 1220
+      line_start: 1220
+      path: src/agent-runtime/dispatch.ts
+      side: head
+    entries:
+      - _ulid: 01KXMFNHSGRMJQPE2SQPQZW0K7
+        author: Jacob Chapel
+        body: "MUST-FIX — WebSocket publication is inside the lifecycle action's success try/catch, so a
+          delivery exception converts an already committed applied result into a second failed
+          outcome. I reproduced this through public applyGlobalLifecycleAction with a throwing
+          onDispatchControlEvent: authority committed to paused, the call rejected with the callback
+          error, and EventBus retained both dispatch_control.pause_applied and
+          dispatch_control.failed. packages/daemon wires this callback directly to
+          PubSubManager.broadcast, whose ws.send can throw. This violates exactly-once auditing and
+          misreports durable authority. Isolate best-effort agents-topic publication from the
+          durable control result and add a behavioral regression proving a publication failure
+          cannot reject/reclassify or double-emit the control outcome."
+        created_at: 2026-07-16T03:31:33.296Z
+    kind: blocker
+  - _ulid: 01KXMFNNYBPJN8BW93SXKZV3EE
+    anchor:
+      type: code
+      commit: 5f0855ff1c7ce4fb93457d442d1bb6b5be4a7375
+      line_end: 1439
+      line_start: 1435
+      path: src/agent-runtime/dispatch.ts
+      side: head
+    entries:
+      - _ulid: 01KXMFNNYBX6NZ6XGX37V4NJPR
+        author: Jacob Chapel
+        body: "MUST-FIX — Interrupted-stop recovery failures on daemon startup remain unaudited.
+          _recoverPendingCleanups first durably marks a cleanup failure and throws, but start()
+          discards that error here; no production startup/recovery path calls the new outcome
+          emitter (rg finds source: recovery/daemon_startup only in tests). Thus
+          cancellation/session/ownership failure predicates can reach a durable failed outcome
+          during startup without the required dispatch_control.failed event, despite those sources
+          and codes being part of this task's closed contract. Emit exactly once after the failed
+          cleanup state commits and add a behavioral startup-recovery test; the current mapping test
+          injects DispatchCleanupError into a pause store mutation and cannot detect this missing
+          path."
+        created_at: 2026-07-16T03:31:37.547Z
+    kind: blocker
+  - _ulid: 01KXMFNTTDH0W4NWWSPJ9V0ZZ6
+    entries:
+      - _ulid: 01KXMFNTTEFKS5QA0Y1GPV572W
+        author: Jacob Chapel
+        body: "Review evidence log — Files read: all 10 changed files; surrounding EventBus, dispatch
+          control store/transaction, stop/start recovery, task identity, daemon PubSub, WebSocket
+          invalidation, automation event-log subscription, prior review threads,
+          task/plan/spec/trait context. Commands run: base-to-head diff/history; task/spec/review
+          lookups; AC annotation searches; format, repo lint, focused lint, typecheck, fresh full
+          suite, two isolated flaky-test reruns, refs/alignment/completeness validation, diff check;
+          in-memory public-engine publication-failure diagnostic. Claims verified: prior ref-only
+          audit, real store commit barriers, public-boundary mapper coverage, and lifecycle AC
+          annotations are present; existing UI invalidation/event-log subscriptions do refresh from
+          agents-topic events. Categories searched: correctness, durable ordering, identity edge
+          cases, failure classification/recovery, callback error handling, sanitization/security
+          exposure, test quality, schema/registry parity, daemon/WebSocket/UI integration.
+          Shared-guidance neutrality: not applicable; no shared guidance surfaces changed.
+          Full-suite triage: one intermittent agent-invocation process-identity assertion failed
+          under load, passed twice in isolated fresh reruns, and is tracked as @01KXMFGZ."
+        created_at: 2026-07-16T03:31:42.542Z
+    kind: nit
 verdicts: []
 created_at: 2026-07-16T03:10:02.272Z
-updated_at: 2026-07-16T03:30:35.602Z
+updated_at: 2026-07-16T03:31:42.542Z
 notes: []
