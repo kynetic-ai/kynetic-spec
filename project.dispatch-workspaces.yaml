@@ -582,88 +582,6 @@ workspaces:
         last_seen_at: 2026-06-16T09:13:44.959Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-stabilize-git-prompt-suppression-tests-01kv7n12
   - active_role: null
-    base_branch_point: ab46ef576b5d10bb7dca97d35f248586645356af
-    bootstrap:
-      status: not_run
-      canonicalBranchHead: null
-      configHash: null
-      failureMessage: null
-      invalidationReasons: []
-      lastRole: null
-      lastRunAt: null
-      roleStates:
-        reviewer:
-          status: not_run
-          canonicalBranchHead: null
-          configHash: null
-          failureMessage: null
-          invalidationReasons: []
-          lastRunAt: null
-          steps: []
-        worker:
-          status: not_run
-          canonicalBranchHead: null
-          configHash: null
-          failureMessage: null
-          invalidationReasons: []
-          lastRunAt: null
-          steps: []
-      steps: []
-    branch_provenance:
-      adopted_at: 2026-06-03T19:13:32.737Z
-      adopted_from: dispatch/task/task-fleet-buffer-preview-sanitization/01kt7dv7
-      ownership: adopted
-      rehydrated: true
-      remote_ref: origin/dispatch/task/task-fleet-buffer-preview-sanitization/01kt7dv7
-      source: task-submission-linkage
-    canonical_branch: dispatch/task/task-fleet-buffer-preview-sanitization/01kt7dv7
-    canonical_branch_head: 9008219bb7775a345224df1765b5bd1c537a1c87
-    cleanup:
-      status: completed
-      detail: integrated-into-base-branch
-      eligible: true
-      reason: integrated-into-base-branch
-      updated_at: 2026-07-09T02:36:12.205Z
-    health:
-      status: healthy
-      issues: []
-      summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-07-09T02:36:01.694Z
-    integration:
-      status: merged
-      detail: integration:merged
-      outcome: merged
-      publication_mode: manual_merge
-      target_branch: dev
-      target_commit: ab46ef576b5d10bb7dca97d35f248586645356af
-      updated_at: 2026-07-09T02:36:01.694Z
-    lifecycle_state: closed
-    resolved_base_branch: dev
-    task_id: 01KT7DV7P6CTBBNXGB2AJF1269
-    task_ref: "@01KT7DV7P6CTBBNXGB2AJF1269"
-    task_slug: task-fleet-buffer-preview-sanitization
-    timestamps:
-      closed_at: 2026-07-09T02:36:12.205Z
-      last_active_at: null
-      last_reconciled_at: 2026-07-09T02:36:01.694Z
-      created_at: 2026-06-03T19:13:32.780Z
-      updated_at: 2026-07-09T02:36:12.205Z
-    workspace_id: dispatch-workspace-01KT7DV7P6CTBBNXGB2AJF1269
-    worktree_root: /home/chapel/Projects/kynetic-spec/.kspec-worktrees
-    worktrees:
-      reviewer:
-        branch_mode: detached
-        branch_ref: null
-        head: 49b4e1ec3e5b3ca85438575f29485559371d0abc
-        last_seen_at: 2026-07-09T02:33:10.456Z
-        path: /home/chapel/Projects/kynetic-spec/.kspec-worktrees/task-fleet-buffer-preview-sanitization-01kt7dv7-review
-      worker:
-        branch_mode: branch
-        branch_ref: dispatch/task/task-fleet-buffer-preview-sanitization/01kt7dv7
-        head: 9008219bb7775a345224df1765b5bd1c537a1c87
-        last_seen_at: 2026-07-09T02:33:10.456Z
-        path: /home/chapel/Projects/kynetic-spec/.kspec-worktrees/task-fleet-buffer-preview-sanitization-01kt7dv7
-  - active_role: null
     base_branch_point: dev
     bootstrap:
       status: succeeded
@@ -8317,25 +8235,25 @@ workspaces:
     canonical_branch: dispatch/task/task-protect-controlled-dispatch-evidence/01kxh2pr
     canonical_branch_head: e717fb401dc3848707d9a9efc04d23dc8a0aa995
     cleanup:
-      status: not_scheduled
-      detail: null
-      eligible: false
-      reason: null
-      updated_at: 2026-07-16T02:22:30.830Z
+      status: scheduled
+      detail: integrated-into-base-branch
+      eligible: true
+      reason: integrated-into-base-branch
+      updated_at: 2026-07-16T02:50:33.002Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-07-16T02:23:43.883Z
+      updated_at: 2026-07-16T02:50:33.002Z
     integration:
-      status: pending
-      detail: null
-      outcome: manual_merge
+      status: merged
+      detail: integration:merged
+      outcome: merged
       publication_mode: manual_merge
       target_branch: plan/plan-dispatch-lifecycle-pause-resume-and-stop-controls/01kxc2vx
       target_commit: 958c482d258844ba156717bd1878a5e821263488
-      updated_at: 2026-07-16T02:22:30.830Z
-    lifecycle_state: integrating
+      updated_at: 2026-07-16T02:50:33.002Z
+    lifecycle_state: closing
     resolved_base_branch: plan/plan-dispatch-lifecycle-pause-resume-and-stop-controls/01kxc2vx
     task_id: 01KXH2PRVHHSQ14WR16A5KHTJT
     task_ref: "@01KXH2PRVHHSQ14WR16A5KHTJT"
@@ -8343,9 +8261,9 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-07-16T02:23:43.883Z
-      last_reconciled_at: 2026-07-16T02:23:43.883Z
+      last_reconciled_at: 2026-07-16T02:50:33.002Z
       created_at: 2026-07-15T22:24:20.888Z
-      updated_at: 2026-07-16T02:23:43.883Z
+      updated_at: 2026-07-16T02:50:33.002Z
     workspace_id: dispatch-workspace-01KXH2PRVHHSQ14WR16A5KHTJT
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
