@@ -81312,9 +81312,23 @@ runs:
     completed_at: 2026-07-16T14:19:34.424Z
   - _ulid: 01KXNMXDVK32VN1A07F259QA95
     status: active
-    current_step: 0
+    current_step: 1
     initiated_by: Jacob Chapel
-    step_results: []
+    step_results:
+      - status: completed
+        step_index: 0
+        started_at: 2026-07-16T14:22:28.724Z
+        completed_at: 2026-07-16T14:23:29.118Z
+        notes: "Baseline complete: 2,099 observations, 428 inbox items, and 1,707 tasks inventoried before
+          candidate selection. Existing coverage already includes unbounded reflection baseline
+          friction @01KXNHG881XZA1WMVDNTTFCTCD/@01KXJRJXACV51XFQDFG39GQ80W, workflow show run-ref
+          friction @01KXJKHVTNZHY72RH1N6XQM1A0, review read-after-write duplicate-thread friction
+          @01KXNDDB52657Q6BKF3ZSXQESG, and cross-worktree full-suite contention
+          @01KXMGDN676NJW7B93XVPBDWK6."
+      - status: completed
+        step_index: 1
+        started_at: 2026-07-16T14:23:29.118Z
+        completed_at: 2026-07-16T14:23:29.118Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-07-16T14:22:28.724Z
