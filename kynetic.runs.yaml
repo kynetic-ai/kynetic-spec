@@ -81977,9 +81977,22 @@ runs:
     completed_at: 2026-07-16T21:13:55.019Z
   - _ulid: 01KXPE06S8JY09T35BS7NB0Q08
     status: active
-    current_step: 0
+    current_step: 1
     initiated_by: Jacob Chapel
-    step_results: []
+    step_results:
+      - status: completed
+        step_index: 0
+        started_at: 2026-07-16T21:40:54.184Z
+        completed_at: 2026-07-16T21:42:11.487Z
+        notes: "Worked well: the detached-review workflow supported a complete evidence-backed review from
+          snapshot through approval, safe helper-driven merge into the exact plan integration
+          target, and lifecycle completion. Focused Playwright verification exercised the lifecycle
+          controls in a real browser, while canonical identity and direct viewport checks
+          independently confirmed the worker's claims."
+      - status: completed
+        step_index: 1
+        started_at: 2026-07-16T21:42:11.487Z
+        completed_at: 2026-07-16T21:42:11.487Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-07-16T21:40:54.184Z
