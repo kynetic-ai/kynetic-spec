@@ -14,7 +14,7 @@
 
 	let { invocation, taskTitle = null }: Props = $props();
 
-	let elapsedFormatted = $derived(formatElapsed(invocation.elapsed_ms));
+	let elapsedFormatted = $derived(formatElapsed(invocation.elapsedMs));
 
 	// AC: @runner-operator-surfaces ac-web-ui-invocation-rows-show-resolved-adapter
 	// Build a row-level accessible label that combines the agent, runner
@@ -36,15 +36,15 @@
 	}
 
 	function buildAccessibleLabel(inv: ActiveInvocation): string {
-		const parts: string[] = [`Active invocation for ${inv.agent_id}`];
+		const parts: string[] = [`Active invocation for ${inv.agentId}`];
 		if (inv.runner) {
 			parts.push(`runner ${inv.runner}`);
 		}
-		if (inv.resolved_adapter) {
-			parts.push(`adapter ${inv.resolved_adapter}`);
+		if (inv.resolvedAdapter) {
+			parts.push(`adapter ${inv.resolvedAdapter}`);
 		}
-		if (inv.task_ref) {
-			parts.push(`task ${inv.task_ref}`);
+		if (inv.taskRef) {
+			parts.push(`task ${inv.taskRef}`);
 		}
 		return parts.join(', ');
 	}
@@ -60,7 +60,7 @@
 >
 	<div class="flex items-center gap-3 min-w-0">
 		<Badge class="bg-status-in-progress text-status-in-progress-fg shrink-0">
-			{invocation.agent_id}
+			{invocation.agentId}
 		</Badge>
 
 		{#if invocation.runner}
@@ -74,7 +74,7 @@
 			</Badge>
 		{/if}
 
-		{#if invocation.resolved_adapter}
+		{#if invocation.resolvedAdapter}
 			<!-- AC: @runner-operator-surfaces ac-web-ui-invocation-rows-show-resolved-adapter -->
 			<!-- Resolved adapter is rendered as visible text (not only a title
 				 attribute) so assistive technology can read it and so legacy
@@ -85,13 +85,13 @@
 				class="text-xs shrink-0 text-muted-foreground"
 				data-testid="invocation-resolved-adapter"
 			>
-				adapter: {invocation.resolved_adapter}
+				adapter: {invocation.resolvedAdapter}
 			</Badge>
 		{/if}
 
-		{#if invocation.task_ref}
+		{#if invocation.taskRef}
 			<span data-testid="invocation-task-ref">
-				<ReferenceLink ref={invocation.task_ref} type="task" title={taskTitle} class="text-sm" />
+				<ReferenceLink ref={invocation.taskRef} type="task" title={taskTitle} class="text-sm" />
 			</span>
 		{:else}
 			<span class="text-sm text-muted-foreground italic">No task</span>
@@ -105,7 +105,7 @@
 		</span>
 
 		<a
-			href="{base}/sessions/{invocation.session_id}"
+			href="{base}/sessions/{invocation.sessionId}"
 			class="inline-flex items-center gap-1 text-xs text-primary hover:underline"
 			data-testid="invocation-session-link"
 		>

@@ -1659,6 +1659,7 @@ export function createAgentDispatchRoutes(options: AgentDispatchRouteOptions = {
           global_authority: lifecycle.global_authority,
           projection: lifecycle.projection,
           cleanup_state: lifecycle.cleanup_state,
+          active_count: lifecycle.active_count,
           held_count: lifecycle.held_count,
           held_tasks: lifecycle.held_tasks,
           task_controls: lifecycle.task_controls,
