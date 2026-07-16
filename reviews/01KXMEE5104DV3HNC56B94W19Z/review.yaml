@@ -2,7 +2,105 @@ _ulid: 01KXMEE5104DV3HNC56B94W19Z
 slugs: []
 title: Review register, sanitize, and emit dispatch lifecycle events (cycle 2)
 author: Jacob Chapel
-checks: []
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: All 1049 files matched formatting.
+    name: format
+    required: true
+    runner: npm run format:check
+    created_at: 2026-07-16T03:30:08.866Z
+    completed_at: 2026-07-16T03:30:08.866Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Repo lint passed with 0 errors and 702 baseline warnings; focused oxlint on all 10 changed
+      TypeScript/test files passed with 0 warnings and 0 errors.
+    name: lint
+    required: true
+    runner: npm run lint -- --quiet
+    created_at: 2026-07-16T03:30:12.202Z
+    completed_at: 2026-07-16T03:30:12.202Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Shared package build and tsc --noEmit passed.
+    name: typecheck
+    required: true
+    runner: npm run typecheck
+    created_at: 2026-07-16T03:30:15.764Z
+    completed_at: 2026-07-16T03:30:15.764Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Fresh full run completed 2811 suites: 2809 passed, 1 intermittent agent-invocation
+      assertion failed, and changed lifecycle/event suites passed; two immediate isolated fresh
+      reruns passed 14/14. Classified as flaky and tracked separately in @01KXMFGZ per review-gates,
+      so this review proceeds as if the pre-existing/flaky test passed."
+    name: full test suite
+    required: true
+    runner: npm test -- --fresh
+    created_at: 2026-07-16T03:30:18.981Z
+    completed_at: 2026-07-16T03:30:18.981Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Passed with 6 existing deprecated-reference warnings allowed.
+    name: kspec validate refs
+    required: true
+    runner: kspec validate --refs --warnings-ok
+    created_at: 2026-07-16T03:30:22.224Z
+    completed_at: 2026-07-16T03:30:22.224Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Passed with repository baseline warnings allowed: 45 orphaned specs and 10 status mismatches."
+    name: kspec validate alignment
+    required: true
+    runner: kspec validate --alignment --warnings-ok
+    created_at: 2026-07-16T03:30:25.818Z
+    completed_at: 2026-07-16T03:30:25.818Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Passed with repository baseline coverage/annotation warnings allowed; task-covered
+      lifecycle and dispatch payload AC annotations were manually verified.
+    name: kspec validate completeness
+    required: true
+    runner: kspec validate --completeness --warnings-ok
+    created_at: 2026-07-16T03:30:29.243Z
+    completed_at: 2026-07-16T03:30:29.243Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: No whitespace errors in the base-to-head diff.
+    name: diff check
+    required: true
+    runner: git diff --check
+    created_at: 2026-07-16T03:30:32.407Z
+    completed_at: 2026-07-16T03:30:32.407Z
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: A throwing onDispatchControlEvent callback caused applyGlobalLifecycleAction('pause') to
+      reject after authority committed paused, while EventBus retained both
+      dispatch_control.pause_applied and dispatch_control.failed. Expected one applied outcome and a
+      resolved control call.
+    name: "behavioral diagnostic: publication callback isolation"
+    required: true
+    runner: tsx in-memory DispatchEngine lifecycle diagnostic
+    created_at: 2026-07-16T03:30:35.602Z
+    completed_at: 2026-07-16T03:30:35.602Z
 events:
   - _ulid: 01KXMEE5100ZRH21HSKMY9DHN8
     actor: Jacob Chapel
@@ -17,6 +115,69 @@ events:
       from: draft
       to: open
     timestamp: 2026-07-16T03:10:19.378Z
+  - _ulid: 01KXMFJZKG1JJ12K125JYJVRFH
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: format
+    timestamp: 2026-07-16T03:30:09.136Z
+  - _ulid: 01KXMFK2VJCTQFYMKF4PHR2HXG
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: lint
+    timestamp: 2026-07-16T03:30:12.466Z
+  - _ulid: 01KXMFK6B6F271GTCX4KPRM27X
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: typecheck
+    timestamp: 2026-07-16T03:30:16.038Z
+  - _ulid: 01KXMFK9FDW07DS7CJK1615BF3
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: full test suite
+    timestamp: 2026-07-16T03:30:19.245Z
+  - _ulid: 01KXMFKCMCP4S8514AB3TBAETM
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate refs
+    timestamp: 2026-07-16T03:30:22.476Z
+  - _ulid: 01KXMFKG47MPG4W49JYV8HGBXF
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate alignment
+    timestamp: 2026-07-16T03:30:26.055Z
+  - _ulid: 01KXMFKKFJP1C8RDPHAMFW6NB9
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate completeness
+    timestamp: 2026-07-16T03:30:29.490Z
+  - _ulid: 01KXMFKPKB5M6N69G1GDVGQRAG
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: diff check
+    timestamp: 2026-07-16T03:30:32.683Z
+  - _ulid: 01KXMFKSNRGP98Z6JMMWRY1FPD
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: fail
+      name: "behavioral diagnostic: publication callback isolation"
+    timestamp: 2026-07-16T03:30:35.832Z
 examined_commit: 5f0855ff1c7ce4fb93457d442d1bb6b5be4a7375
 external_links: []
 lifecycle_state: open
@@ -29,5 +190,5 @@ subject:
 threads: []
 verdicts: []
 created_at: 2026-07-16T03:10:02.272Z
-updated_at: 2026-07-16T03:10:19.109Z
+updated_at: 2026-07-16T03:30:35.602Z
 notes: []
