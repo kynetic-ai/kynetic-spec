@@ -384,6 +384,13 @@ events:
       kind: blocker
       thread_ulid: 01KXND05GGR4MCQWADM95V5XX9
     timestamp: 2026-07-16T12:04:10.197Z
+  - _ulid: 01KXND0RXP4CJBFARMB3VP1AJH
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KXND0RKYQHVV409GZ8W34ECV
+    timestamp: 2026-07-16T12:04:29.750Z
 examined_commit: ef7ffa06f604363415e906b2db0ccfbc3abb4afb
 external_links: []
 lifecycle_state: open
@@ -531,7 +538,24 @@ threads:
           with a distinctive thrown error that must not appear.
         created_at: 2026-07-16T12:04:09.873Z
     kind: blocker
+  - _ulid: 01KXND0RKYQHVV409GZ8W34ECV
+    entries:
+      - _ulid: 01KXND0RKY0J2072RHNW32QB4Y
+        author: Jacob Chapel
+        body: "Review evidence log — Files read: every changed file plus surrounding CLI output/index code,
+          daemon dispatch routes and serializers, task/spec context, and project review/work gates.
+          Commands run: format check; repo/focused lint; typecheck; fresh full tests; two isolated
+          flaky-test reruns; refs/alignment/completeness validation; diff check; task/spec/review
+          lookups; annotation and integration searches. Claims verified: canonical control/status
+          routing and strict schemas were compared independently with daemon implementations; the
+          reported full-suite claim was rerun and its intermittent failure triaged to existing task
+          @stabilize-agent-invocation-process-identity. Categories searched: correctness, edge
+          cases, error handling/data exposure, security boundary, test quality, AC coverage, and
+          daemon integration. Shared/package guidance surfaces touched: none; neutrality review not
+          applicable."
+        created_at: 2026-07-16T12:04:29.438Z
+    kind: nit
 verdicts: []
 created_at: 2026-07-16T11:41:11.315Z
-updated_at: 2026-07-16T12:04:09.873Z
+updated_at: 2026-07-16T12:04:29.438Z
 notes: []
