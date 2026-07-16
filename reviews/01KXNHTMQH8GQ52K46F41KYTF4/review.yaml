@@ -515,6 +515,66 @@ events:
       from: open
       to: closed
     timestamp: 2026-07-16T13:53:16.238Z
+  - _ulid: 01KXNMTPRWH5BD57XXQVBPQPWC
+    actor: Jacob Chapel
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KXNJZM8CJFPVDS4CFCRW9APK
+    timestamp: 2026-07-16T14:20:59.549Z
+  - _ulid: 01KXNMTT03GK5HMBVTX69DDTT1
+    actor: Jacob Chapel
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KXNJZM8CJFPVDS4CFCRW9APK
+    timestamp: 2026-07-16T14:21:02.851Z
+  - _ulid: 01KXNMTXAJ8EBZJTAGB2YWXNZW
+    actor: Jacob Chapel
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KXNJZQJJ61G1KRW7WV1PNB35
+    timestamp: 2026-07-16T14:21:06.258Z
+  - _ulid: 01KXNMV0PG9AHHZK3ND9AP6GSC
+    actor: Jacob Chapel
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KXNJZQJJ61G1KRW7WV1PNB35
+    timestamp: 2026-07-16T14:21:09.712Z
+  - _ulid: 01KXNMV3ZHY6P6APH3B2QVQ94M
+    actor: Jacob Chapel
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KXNJZTP7K0ZGYPCYFB7YHPX9
+    timestamp: 2026-07-16T14:21:13.073Z
+  - _ulid: 01KXNMV73EYMZ0X2KBVPZF8XZ1
+    actor: Jacob Chapel
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KXNJZTP7K0ZGYPCYFB7YHPX9
+    timestamp: 2026-07-16T14:21:16.270Z
+  - _ulid: 01KXNMVA9GAWSQJ63QE59AWFK1
+    actor: Jacob Chapel
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KXNJZXY943DPPV9KFHRSFJ5G
+    timestamp: 2026-07-16T14:21:19.536Z
+  - _ulid: 01KXNMVDJ38N6HM0HWFZV30JK6
+    actor: Jacob Chapel
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KXNJZXY943DPPV9KFHRSFJ5G
+    timestamp: 2026-07-16T14:21:22.883Z
+  - _ulid: 01KXNMVGT9NTD2EFYPZRESWPYR
+    actor: Jacob Chapel
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KXNK017NVG2ZJE7B7YAH4WSV
+    timestamp: 2026-07-16T14:21:26.217Z
+  - _ulid: 01KXNMVKRTFN0GP65CEP9KBD57
+    actor: Jacob Chapel
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KXNK017NVG2ZJE7B7YAH4WSV
+    timestamp: 2026-07-16T14:21:29.242Z
 examined_commit: da3bae8d95d5c41771751ce68f54e04cdd21a15b
 external_links: []
 lifecycle_state: closed
@@ -544,7 +604,14 @@ threads:
           and the task requirement for success/error refresh. The browser test covers Cancel and
           successful Pause only, so it does not catch this error path.
         created_at: 2026-07-16T13:48:43.660Z
+      - _ulid: 01KXNMTPEHYPV3SVW7GDN547VA
+        author: Jacob Chapel
+        body: "Fixed in 4094f8d891: rejected global mutations now prefer the still-connected invoking
+          control, and Playwright verifies rejected Hard stop focus restoration."
+        created_at: 2026-07-16T14:20:59.215Z
     kind: blocker
+    resolved_at: 2026-07-16T14:21:02.611Z
+    resolved_by: Jacob Chapel
   - _ulid: 01KXNJZQJJ61G1KRW7WV1PNB35
     anchor:
       type: code
@@ -562,7 +629,14 @@ threads:
           focus from Hard-stop task to Pause task or Resume task after a rejected request. Preserve
           the invoking button on errors and add a behavioral task-row error-focus case.
         created_at: 2026-07-16T13:48:47.058Z
+      - _ulid: 01KXNMTX1NS6158TQW6Q3Q5HRJ
+        author: Jacob Chapel
+        body: "Fixed in 4094f8d891: rejected held-task mutations preserve the invoking Hard-stop task
+          control, with a behavioral browser assertion after the failed refresh."
+        created_at: 2026-07-16T14:21:05.973Z
     kind: blocker
+    resolved_at: 2026-07-16T14:21:09.464Z
+    resolved_by: Jacob Chapel
   - _ulid: 01KXNJZTP7K0ZGYPCYFB7YHPX9
     anchor:
       type: code
@@ -582,7 +656,15 @@ threads:
           empty lifecycle arrays. Add behavioral rendered-view coverage for active work during
           draining/cleanup plus queued and held rows.
         created_at: 2026-07-16T13:48:50.247Z
+      - _ulid: 01KXNMV3R62MBR926HSK3D46EE
+        author: Jacob Chapel
+        body: "Fixed in 4094f8d891: moved these AC annotations to Playwright coverage that renders
+          paused/draining active work, queued rows, held rows, aggregate counts, and the canonical
+          held-task identity."
+        created_at: 2026-07-16T14:21:12.838Z
     kind: blocker
+    resolved_at: 2026-07-16T14:21:16.016Z
+    resolved_by: Jacob Chapel
   - _ulid: 01KXNJZXY943DPPV9KFHRSFJ5G
     anchor:
       type: code
@@ -601,7 +683,14 @@ threads:
           omits those labels would leave this test green. Replace or supplement it with rendered
           behavioral assertions.
         created_at: 2026-07-16T13:48:53.577Z
+      - _ulid: 01KXNMVA0R9MM2269T730JEK3Q
+        author: Jacob Chapel
+        body: "Fixed in 4094f8d891: moved these AC annotations to Playwright assertions for separate
+          authority, projection, degraded-state, and held/blocked evidence labels."
+        created_at: 2026-07-16T14:21:19.256Z
     kind: blocker
+    resolved_at: 2026-07-16T14:21:22.638Z
+    resolved_by: Jacob Chapel
   - _ulid: 01KXNK017NVG2ZJE7B7YAH4WSV
     entries:
       - _ulid: 01KXNK017N6J7MY8VSWXX22X41
@@ -619,7 +708,14 @@ threads:
           non-behavioral coverage for five rendered-view ACs. Shared/package guidance surfaces
           touched: none."
         created_at: 2026-07-16T13:48:56.949Z
+      - _ulid: 01KXNMVGJDK0M0SCE77QFH07G5
+        author: Jacob Chapel
+        body: Acknowledged. Fix cycle 2 preserves the verified behavior and adds the missing error-focus and
+          rendered-view evidence identified by this review log.
+        created_at: 2026-07-16T14:21:25.964Z
     kind: nit
+    resolved_at: 2026-07-16T14:21:29.012Z
+    resolved_by: Jacob Chapel
   - _ulid: 01KXNK2JT34W1FSSS4T1Y5AP02
     anchor:
       type: code
@@ -735,5 +831,5 @@ verdicts:
     role: reviewer
     created_at: 2026-07-16T13:53:16.238Z
 created_at: 2026-07-16T13:28:31.729Z
-updated_at: 2026-07-16T13:53:16.238Z
+updated_at: 2026-07-16T14:21:29.012Z
 notes: []
