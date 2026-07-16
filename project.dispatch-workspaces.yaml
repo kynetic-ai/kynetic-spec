@@ -11066,7 +11066,7 @@ workspaces:
         head: 87ba5a40db4a3a66c21c89c9ff90b28d9177727c
         last_seen_at: 2026-07-16T13:53:45.616Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/stabilize-resistant-process-exit-test-01kxnjtv
-  - active_role: reviewer
+  - active_role: null
     base_branch_point: d207e138c177474260e1661bf7bd404c9eb6aa3f
     bootstrap:
       status: succeeded
@@ -11563,9 +11563,9 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-07-16T19:15:46.584Z
-      last_reconciled_at: 2026-07-16T19:47:06.828Z
+      last_reconciled_at: 2026-07-16T19:49:13.913Z
       created_at: 2026-07-16T14:26:57.848Z
-      updated_at: 2026-07-16T19:47:06.828Z
+      updated_at: 2026-07-16T19:49:13.913Z
     workspace_id: dispatch-workspace-01KXH2PXT88X9MSC62MQVY2CV4
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
