@@ -462,6 +462,13 @@ events:
       kind: blocker
       thread_ulid: 01KXNK3G7MR06W9FKC18D5RBV4
     timestamp: 2026-07-16T13:50:50.940Z
+  - _ulid: 01KXNK412Y9E1NTVEZRYYEBQRJ
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KXNK40T3H9TQNGREW59KVA4T
+    timestamp: 2026-07-16T13:51:07.870Z
 examined_commit: da3bae8d95d5c41771751ce68f54e04cdd21a15b
 external_links: []
 lifecycle_state: open
@@ -645,7 +652,25 @@ threads:
           behavioral assertions.
         created_at: 2026-07-16T13:50:50.612Z
     kind: blocker
+  - _ulid: 01KXNK40T3H9TQNGREW59KVA4T
+    entries:
+      - _ulid: 01KXNK40T30GM60QES6N3TFWQG
+        author: Jacob Chapel
+        body: "Review evidence log. Files read: all 19 changed files, surrounding daemon status
+          serialization, lifecycle schemas and consumers, complete lifecycle unit tests, agents
+          Playwright changes, prior review threads, task/spec/plan. Commands run: diff/stat/log,
+          consumer and AC searches, format, repo/focused lint, typecheck, fresh full tests, focused
+          rerun, focused lifecycle tests, agents E2E, refs/alignment/completeness validation, diff
+          check. Claims verified: strict snake-to-camel boundary, prior five blocker fixes,
+          global/task action matrices, sanitized failures, status/event invalidation, static/legacy
+          fallback, and browser confirmation/cancel/success-focus/live behavior. Categories
+          searched: correctness, edge cases, error handling, accessibility, security/data exposure,
+          test quality, integration. Findings: failed hard-stop focus on global/task controls and
+          non-behavioral coverage for five rendered-view ACs. Shared/package guidance surfaces
+          touched: none."
+        created_at: 2026-07-16T13:51:07.587Z
+    kind: nit
 verdicts: []
 created_at: 2026-07-16T13:28:31.729Z
-updated_at: 2026-07-16T13:50:50.612Z
+updated_at: 2026-07-16T13:51:07.587Z
 notes: []
