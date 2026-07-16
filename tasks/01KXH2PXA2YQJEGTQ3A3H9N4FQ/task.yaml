@@ -79,7 +79,7 @@ description: >
 spec_ref: "@dispatch-lifecycle-control-authority"
 plan_ref: "@plan-dispatch-lifecycle-pause-resume-and-stop-controls"
 origin: derived
-status: pending
+status: in_progress
 blocked_by: []
 depends_on:
   - "@task-verify-engine-publication-admission"
@@ -92,6 +92,7 @@ tags:
   - verification
   - engine
 vcs_refs: []
+session_id: 01KXMEAAC9RDTVAXMDX6GQ3838
 history:
   - author: Jacob Chapel
     changes:
@@ -100,6 +101,20 @@ history:
         previous: null
     command: task-set
     timestamp: 2026-07-14T20:12:10.549Z
+  - author: Jacob Chapel
+    changes:
+      status:
+        new: in_progress
+        previous: pending
+      session_id:
+        new: 01KXMEAAC9RDTVAXMDX6GQ3838
+        previous: null
+      started_at:
+        new: 2026-07-16T03:09:15.222Z
+        previous: null
+    command: task-start
+    timestamp: 2026-07-16T03:09:15.287Z
 created_at: 2026-07-14T19:47:23.074Z
+started_at: 2026-07-16T03:09:15.222Z
 todos: []
 automation: eligible
