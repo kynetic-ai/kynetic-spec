@@ -229,6 +229,30 @@ events:
       from: open
       to: closed
     timestamp: 2026-07-16T14:53:27.452Z
+  - _ulid: 01KXNRXS5AMN2XW7ZYKFM1RCZB
+    actor: Jacob Chapel
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KXNPMHFSGKCG2VQRDP7H4VQ8
+    timestamp: 2026-07-16T15:32:34.602Z
+  - _ulid: 01KXNRXWF6AJ4BMP3DN280N64F
+    actor: Jacob Chapel
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KXNPMHFSGKCG2VQRDP7H4VQ8
+    timestamp: 2026-07-16T15:32:37.990Z
+  - _ulid: 01KXNRXZMNHC0NKR09B22VSJB7
+    actor: Jacob Chapel
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KXNPNPJY04NAEGWRPKJC7YDT
+    timestamp: 2026-07-16T15:32:41.237Z
+  - _ulid: 01KXNRY32D6B4W1888BP92R8B1
+    actor: Jacob Chapel
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KXNPNPJY04NAEGWRPKJC7YDT
+    timestamp: 2026-07-16T15:32:44.750Z
 examined_commit: 4094f8d891fa081dad353ba75d1ba270ae5ce541
 external_links: []
 lifecycle_state: closed
@@ -266,7 +290,16 @@ threads:
           Repository-wide ripgrep found zero occurrences of ac-ui-failures-do-not-expose-raw-errors
           in implementation or tests."
         created_at: 2026-07-16T14:53:05.842Z
+      - _ulid: 01KXNRXRX65SQ4T9EJJ5MW9D93
+        author: Jacob Chapel
+        body: "Fixed in ccdbdbf157: added the exact standalone // AC: @dispatch-lifecycle-control-authority
+          ac-ui-failures-do-not-expose-raw-errors annotation to the existing behavioral stale-409
+          test, retaining assertions that private worktree and command text never appears in mapped
+          UI output."
+        created_at: 2026-07-16T15:32:34.341Z
     kind: blocker
+    resolved_at: 2026-07-16T15:32:37.737Z
+    resolved_by: Jacob Chapel
   - _ulid: 01KXNPNPJY04NAEGWRPKJC7YDT
     entries:
       - _ulid: 01KXNPNPJYX3YP013DW1GMFSA6
@@ -287,7 +320,15 @@ threads:
           AC.\\nShared package guidance surfaces touched: none; shared-guidance-neutrality checklist
           not applicable."
         created_at: 2026-07-16T14:53:12.670Z
+      - _ulid: 01KXNRXZCVZBWVBE5YY11TXTPT
+        author: Jacob Chapel
+        body: Reviewed the evidence log and re-ran the same complete verification surface after rebasing
+          onto the current plan target; no additional code action was requested by this
+          informational thread.
+        created_at: 2026-07-16T15:32:40.987Z
     kind: nit
+    resolved_at: 2026-07-16T15:32:44.480Z
+    resolved_by: Jacob Chapel
 verdicts:
   - applies_to_version:
       type: entity_version
@@ -297,5 +338,5 @@ verdicts:
     role: reviewer
     created_at: 2026-07-16T14:53:27.451Z
 created_at: 2026-07-16T14:30:25.585Z
-updated_at: 2026-07-16T14:53:27.452Z
+updated_at: 2026-07-16T15:32:44.480Z
 notes: []

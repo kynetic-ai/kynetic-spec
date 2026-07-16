@@ -105,3 +105,16 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-07-16T15:15:46.928Z
+  - _ulid: 01KXNRY49A06T1B6K61N7T1ZRK
+    content: "Fix cycle 3 completed in ccdbdbf157 after rebasing onto current plan target d207e138c1.
+      Added the exact assigned @dispatch-lifecycle-control-authority raw-error AC annotation to the
+      existing behavioral stale-409 sanitized-failure test; retained negative assertions against
+      private path and destructive-command text. Re-verified all @ui-agent-dispatch ACs and the
+      assigned cross-spec AC. Gates: format pass; repo lint 0 errors; focused lint 0 new
+      warnings/errors (4 verified pre-existing warnings); typecheck pass; focused lifecycle 98/98;
+      agents Playwright 50/50; full suite 10,920 passed/3 skipped; refs/alignment/completeness
+      accepted baselines; diff check pass. Both cycle-3 threads resolved and canonical branch
+      force-with-lease pushed after required rebase."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-07-16T15:32:45.994Z
