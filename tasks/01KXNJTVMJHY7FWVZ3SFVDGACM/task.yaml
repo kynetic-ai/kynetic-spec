@@ -14,7 +14,7 @@ description: Fresh full-suite review run failed tests/agent-invocation.test.ts c
 spec_ref: "@agent-invocation-lifecycle"
 meta_ref: null
 plan_ref: null
-status: pending
+status: in_progress
 blocked_by: []
 depends_on: []
 context: []
@@ -23,6 +23,22 @@ tags:
   - testing
   - agent-runtime
 vcs_refs: []
+session_id: 01KXNK9PKM0J19D5K5RGDGQKHK
+history:
+  - author: Jacob Chapel
+    changes:
+      status:
+        new: in_progress
+        previous: pending
+      session_id:
+        new: 01KXNK9PKM0J19D5K5RGDGQKHK
+        previous: null
+      started_at:
+        new: 2026-07-16T13:55:08.447Z
+        previous: null
+    command: task-start
+    timestamp: 2026-07-16T13:55:08.448Z
 created_at: 2026-07-16T13:46:07.377Z
+started_at: 2026-07-16T13:55:08.447Z
 todos: []
 automation: eligible
