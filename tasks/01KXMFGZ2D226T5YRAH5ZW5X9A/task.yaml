@@ -1,0 +1,28 @@
+_ulid: 01KXMFGZ2D226T5YRAH5ZW5X9A
+slugs:
+  - stabilize-agent-invocation-process-identity
+title: Stabilize intermittent spawned-process identity assertion
+type: bug
+description: "Fresh full-suite review run on 2026-07-15 intermittently failed
+  tests/agent-invocation.test.ts case 'reaps a spawned process before releasing failed ownership
+  publication' at line 328 with Error: missing spawned process identity. Two immediate isolated
+  fresh reruns passed 14/14. The reviewed task does not modify src/agent-runtime/invocation.ts or
+  this test, so this is tracked separately as a flaky concurrency/process-observation failure.
+  Reproduce under full-suite load, determine why onOwnershipFailed can run without spawned
+  PID/start-token evidence, and make the assertion/ownership publication sequencing deterministic
+  without weakening coverage."
+spec_ref: null
+meta_ref: null
+plan_ref: null
+status: pending
+blocked_by: []
+depends_on: []
+context: []
+priority: 2
+tags:
+  - testing
+  - dispatch
+vcs_refs: []
+created_at: 2026-07-16T03:29:03.053Z
+todos: []
+automation: eligible

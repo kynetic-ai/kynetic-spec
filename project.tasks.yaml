@@ -34067,3 +34067,19 @@
   submitted_at: 2026-07-15T15:05:02.684Z
   completed_at: 2026-07-15T15:28:45.721Z
   automation: eligible
+- _ulid: 01KXMFGZ2D226T5YRAH5ZW5X9A
+  slugs:
+    - stabilize-agent-invocation-process-identity
+  title: Stabilize intermittent spawned-process identity assertion
+  type: bug
+  status: pending
+  blocked_by: []
+  depends_on: []
+  priority: 2
+  tags:
+    - testing
+    - dispatch
+  notes_count: 0
+  todos_count: 0
+  created_at: 2026-07-16T03:29:03.053Z
+  automation: eligible
