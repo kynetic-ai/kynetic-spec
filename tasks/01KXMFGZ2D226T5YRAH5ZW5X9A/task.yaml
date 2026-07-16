@@ -14,8 +14,12 @@ description: "Fresh full-suite review run on 2026-07-15 intermittently failed
 spec_ref: null
 meta_ref: null
 plan_ref: null
-status: in_progress
-blocked_by: []
+status: blocked
+blocked_by:
+  - Affected test and implementation exist only on unmerged plan branch
+    plan/plan-dispatch-lifecycle-pause-resume-and-stop-controls/01kxc2vx (introduced by 29569d9efb),
+    but this task is mandated to target dev and has plan_ref=null. Re-target/link the task to that
+    plan branch or integrate the prerequisite work into dev, then unblock.
 depends_on: []
 context: []
 priority: 2
@@ -38,6 +42,25 @@ history:
         previous: null
     command: task-start
     timestamp: 2026-07-16T04:20:00.267Z
+  - author: Jacob Chapel
+    changes:
+      status:
+        new: blocked
+        previous: in_progress
+      blocked_by:
+        new:
+          - Affected test and implementation exist only on unmerged plan branch
+            plan/plan-dispatch-lifecycle-pause-resume-and-stop-controls/01kxc2vx (introduced by
+            29569d9efb), but this task is mandated to target dev and has plan_ref=null.
+            Re-target/link the task to that plan branch or integrate the prerequisite work into dev,
+            then unblock.
+        previous: []
+      prior_status:
+        new: in_progress
+        previous: null
+    command: task-block
+    timestamp: 2026-07-16T04:22:53.095Z
+prior_status: in_progress
 created_at: 2026-07-16T03:29:03.053Z
 started_at: 2026-07-16T04:20:00.266Z
 todos: []

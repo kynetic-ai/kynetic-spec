@@ -34075,8 +34075,12 @@
     - stabilize-agent-invocation-process-identity
   title: Stabilize intermittent spawned-process identity assertion
   type: bug
-  status: in_progress
-  blocked_by: []
+  status: blocked
+  blocked_by:
+    - Affected test and implementation exist only on unmerged plan branch
+      plan/plan-dispatch-lifecycle-pause-resume-and-stop-controls/01kxc2vx (introduced by
+      29569d9efb), but this task is mandated to target dev and has plan_ref=null. Re-target/link the
+      task to that plan branch or integrate the prerequisite work into dev, then unblock.
   depends_on: []
   priority: 2
   tags:
