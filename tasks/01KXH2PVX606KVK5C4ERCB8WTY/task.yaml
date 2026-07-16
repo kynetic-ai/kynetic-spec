@@ -85,7 +85,7 @@ tags:
   - ui
   - accessibility
 vcs_refs: []
-review_ref: "@01KXNXF2V47S1BJF04AGCA0PZE"
+review_ref: "@01KXNXFEQBHJNS7GSWG1XF9R9K"
 submission_linkage:
   review_url: null
   branch: dispatch/task/task-ui-dispatch-lifecycle-controls/01kxh2pv
@@ -371,6 +371,13 @@ history:
         previous: "@01KXNSFNANKT3KW9ERA617E5JX"
     command: review-link
     timestamp: 2026-07-16T16:51:58.556Z
+  - author: Jacob Chapel
+    changes:
+      review_ref:
+        new: "@01KXNXFEQBHJNS7GSWG1XF9R9K"
+        previous: "@01KXNXF2V47S1BJF04AGCA0PZE"
+    command: review-link
+    timestamp: 2026-07-16T16:52:10.706Z
 created_at: 2026-07-14T19:47:21.638Z
 started_at: 2026-07-16T16:17:34.412Z
 submitted_at: 2026-07-16T16:42:07.803Z
