@@ -11576,7 +11576,7 @@ workspaces:
         head: 8364599a91cd18587254d378c3a6c8f45922a00b
         last_seen_at: 2026-07-16T19:14:42.374Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-verify-api-cli-projection-01kxh2px
-  - active_role: reviewer
+  - active_role: null
     base_branch_point: 2b1916dc1b0a272e6cd022d7c4687d0bbbd14173
     bootstrap:
       status: succeeded
@@ -12078,9 +12078,9 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-07-16T21:16:13.107Z
-      last_reconciled_at: 2026-07-16T21:40:00.969Z
+      last_reconciled_at: 2026-07-16T21:45:23.545Z
       created_at: 2026-07-16T19:46:01.318Z
-      updated_at: 2026-07-16T21:40:00.969Z
+      updated_at: 2026-07-16T21:45:23.545Z
     workspace_id: dispatch-workspace-01KXH2PY7C0W6GDQAFZN12HMC4
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
