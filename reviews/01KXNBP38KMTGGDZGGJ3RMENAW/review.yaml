@@ -100,6 +100,26 @@ checks:
     runner: git diff --check
     created_at: 2026-07-16T12:02:11.469Z
     completed_at: 2026-07-16T12:02:11.469Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: All 1053 files passed Prettier formatting validation.
+    name: format
+    required: true
+    runner: npm run format:check
+    created_at: 2026-07-16T12:02:32.693Z
+    completed_at: 2026-07-16T12:02:32.693Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: TypeScript typecheck completed successfully.
+    name: typecheck
+    required: true
+    runner: npm run typecheck
+    created_at: 2026-07-16T12:02:36.220Z
+    completed_at: 2026-07-16T12:02:36.220Z
 events:
   - _ulid: 01KXNBP38JXQ0H0P916D19W8YE
     actor: Jacob Chapel
@@ -205,6 +225,20 @@ events:
       kind: nit
       thread_ulid: 01KXNCWYD4HT48MYAFT8D2Q0R8
     timestamp: 2026-07-16T12:02:24.562Z
+  - _ulid: 01KXNCX6VQ5PMTWJ7STKGP7FK5
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: format
+    timestamp: 2026-07-16T12:02:32.951Z
+  - _ulid: 01KXNCXA9WBF45ATVW4D1ZS3S8
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: typecheck
+    timestamp: 2026-07-16T12:02:36.476Z
 examined_commit: ef7ffa06f604363415e906b2db0ccfbc3abb4afb
 external_links: []
 lifecycle_state: open
@@ -296,5 +330,5 @@ threads:
     kind: nit
 verdicts: []
 created_at: 2026-07-16T11:41:11.315Z
-updated_at: 2026-07-16T12:02:24.292Z
+updated_at: 2026-07-16T12:02:36.220Z
 notes: []
