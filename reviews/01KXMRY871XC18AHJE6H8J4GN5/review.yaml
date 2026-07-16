@@ -465,6 +465,42 @@ events:
       from: open
       to: closed
     timestamp: 2026-07-16T06:30:27.965Z
+  - _ulid: 01KXMVB90YN1RCMQH9NDJTECBX
+    actor: Jacob Chapel
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KXMSR2V0CJB6HB1JT87JPS9H
+    timestamp: 2026-07-16T06:55:39.550Z
+  - _ulid: 01KXMVBCCAJVRCHM52KEZMXF3N
+    actor: Jacob Chapel
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KXMSR2V0CJB6HB1JT87JPS9H
+    timestamp: 2026-07-16T06:55:42.987Z
+  - _ulid: 01KXMVBFZMWDVTBN8RWTC1K9N1
+    actor: Jacob Chapel
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KXMSR62R55W3J0QJZ71QFPDF
+    timestamp: 2026-07-16T06:55:46.676Z
+  - _ulid: 01KXMVBMENSTKSCQ0X0SR62N73
+    actor: Jacob Chapel
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KXMSR62R55W3J0QJZ71QFPDF
+    timestamp: 2026-07-16T06:55:51.253Z
+  - _ulid: 01KXMVBR0FTNHDK4ATNYMRE10C
+    actor: Jacob Chapel
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KXMSR9GR34BM9521SAAE60P5
+    timestamp: 2026-07-16T06:55:54.895Z
+  - _ulid: 01KXMVBV5K8DYAR6TDN0RKRKN9
+    actor: Jacob Chapel
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KXMSR9GR34BM9521SAAE60P5
+    timestamp: 2026-07-16T06:55:58.132Z
 examined_commit: 224ff0ef123337050be9107fab0dafa7d90ecfcf
 external_links: []
 lifecycle_state: closed
@@ -496,7 +532,15 @@ threads:
           projection is non-idle, preserve unrelated-scope behavior, and add behavioral route cases
           for paused or absent control rows with matching cleanup."
         created_at: 2026-07-16T06:27:42.048Z
+      - _ulid: 01KXMVB8S0CTA146897270CZ4K
+        author: Jacob Chapel
+        body: "Fixed in 30da557ff4: matching task cleanup now rejects both pause and resume independent of
+          whether the task-control row is absent, paused, or stopped. Route regressions cover
+          absent/paused rows and preserve unrelated-scope behavior."
+        created_at: 2026-07-16T06:55:39.291Z
     kind: blocker
+    resolved_at: 2026-07-16T06:55:42.739Z
+    resolved_by: Jacob Chapel
   - _ulid: 01KXMSR62R55W3J0QJZ71QFPDF
     anchor:
       type: code
@@ -517,7 +561,16 @@ threads:
           corruption robustly from the degraded state or a typed failure and add a corrupt-store
           control regression test."
         created_at: 2026-07-16T06:27:45.368Z
+      - _ulid: 01KXMVBFPTG2NX3PZQ5RP0NQC6
+        author: Jacob Chapel
+        body: "Fixed in 30da557ff4: DispatchControlStore now retains a typed corrupt/unavailable degraded
+          kind, canonical preflight stops before engine creation on degraded committed state, and
+          mutation error mapping uses that typed classification. A real version:99 committed fixture
+          now returns control_store_corrupt."
+        created_at: 2026-07-16T06:55:46.394Z
     kind: blocker
+    resolved_at: 2026-07-16T06:55:50.996Z
+    resolved_by: Jacob Chapel
   - _ulid: 01KXMSR9GR34BM9521SAAE60P5
     anchor:
       type: code
@@ -538,7 +591,15 @@ threads:
           Use the same reliable classification on both status surfaces and add deep-equal
           corrupt/unavailable cases."
         created_at: 2026-07-16T06:27:48.888Z
+      - _ulid: 01KXMVBQR00J0TJK1Y8WQ96NF0
+        author: Jacob Chapel
+        body: "Fixed in 30da557ff4: public and internal status adapters now share typed store classification
+          for both no-engine and engine-present responses. Deep-equal corrupt and unavailable route
+          cases verify the frozen response rows."
+        created_at: 2026-07-16T06:55:54.624Z
     kind: blocker
+    resolved_at: 2026-07-16T06:55:57.819Z
+    resolved_by: Jacob Chapel
   - _ulid: 01KXMSV8MHBHXE6HAHN72BY4S6
     anchor:
       type: code
@@ -618,5 +679,5 @@ verdicts:
     role: reviewer
     created_at: 2026-07-16T06:30:27.965Z
 created_at: 2026-07-16T06:13:35.585Z
-updated_at: 2026-07-16T06:30:27.965Z
+updated_at: 2026-07-16T06:55:57.819Z
 notes: []
