@@ -81793,7 +81793,7 @@ runs:
     completed_at: 2026-07-16T19:14:10.864Z
   - _ulid: 01KXP7BNZHDQY5P6RCZJVPPD5X
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -81806,7 +81806,22 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-07-16T19:46:00.199Z
-        completed_at: 2026-07-16T19:46:00.199Z
+        completed_at: 2026-07-16T19:48:04.408Z
+        notes: "High-confidence friction candidate: batch JSON cannot express negated boolean semantics.
+          This session passed required:false for optional review checks; dry-run accepted it, but
+          stored checks remained required. Source verification shows buildCommandArgv omits every
+          false boolean, while review check needs --no-required to produce false. No matching
+          task/inbox/observation found across searches for batch no-required, negated options, and
+          boolean false. Existing tracked frictions skipped: post-green test teardown hang
+          @01KM4A3W; workflow show explicit run-ref mismatch @01KKBD52 and multiple
+          inbox/observations; noisy unfiltered reflection baseline @01KSDZFN and @01KXKCX5Y. Success
+          candidate: detached reviewer merge helper safely selected and merged into the advanced
+          integration tip; this behavior is already implemented and covered by completed
+          helper-hardening work, so no new success capture is necessary."
+      - status: completed
+        step_index: 2
+        started_at: 2026-07-16T19:48:04.408Z
+        completed_at: 2026-07-16T19:48:04.408Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-07-16T19:44:50.161Z
