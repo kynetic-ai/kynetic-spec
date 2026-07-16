@@ -1,0 +1,28 @@
+_ulid: 01KXNJTVMJHY7FWVZ3SFVDGACM
+slugs:
+  - stabilize-resistant-process-exit-test
+title: Stabilize resistant-process exit observation test
+type: bug
+description: Fresh full-suite review run failed tests/agent-invocation.test.ts case 'observes
+  resistant process exit before publishing normal invocation exit' with ENOENT from
+  lstat('/proc/524128'). An immediate isolated fresh rerun of all 14 tests in that file passed, so
+  the failure is intermittent and unrelated to the lifecycle UI diff. Investigate the race between
+  process exit and /proc identity observation; make the test deterministic without weakening the
+  assertion that resistant process exit is observed before normal invocation-exit publication.
+  Reproduce under concurrent/full-suite load and preserve @agent-invocation-lifecycle ac-8
+  behavioral coverage.
+spec_ref: "@agent-invocation-lifecycle"
+meta_ref: null
+plan_ref: null
+status: pending
+blocked_by: []
+depends_on: []
+context: []
+priority: 3
+tags:
+  - testing
+  - agent-runtime
+vcs_refs: []
+created_at: 2026-07-16T13:46:07.377Z
+todos: []
+automation: eligible

@@ -34102,3 +34102,20 @@
   created_at: 2026-07-16T03:29:03.053Z
   started_at: 2026-07-16T04:20:00.266Z
   automation: eligible
+- _ulid: 01KXNJTVMJHY7FWVZ3SFVDGACM
+  slugs:
+    - stabilize-resistant-process-exit-test
+  title: Stabilize resistant-process exit observation test
+  type: bug
+  spec_ref: "@agent-invocation-lifecycle"
+  status: pending
+  blocked_by: []
+  depends_on: []
+  priority: 3
+  tags:
+    - testing
+    - agent-runtime
+  notes_count: 0
+  todos_count: 0
+  created_at: 2026-07-16T13:46:07.377Z
+  automation: eligible
