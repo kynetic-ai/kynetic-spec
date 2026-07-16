@@ -80717,8 +80717,8 @@ runs:
     started_at: 2026-07-16T09:33:50.702Z
     completed_at: 2026-07-16T09:36:56.503Z
   - _ulid: 01KXN623FTQ39M00QH755FVXAW
-    status: active
-    current_step: 1
+    status: completed
+    current_step: 3
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -80731,7 +80731,30 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-07-16T10:03:54.665Z
-        completed_at: 2026-07-16T10:03:54.665Z
+        completed_at: 2026-07-16T10:05:11.848Z
+        notes: "High-confidence success: a deterministic real-shadow two-request probe tested the complete
+          cold-start transaction and exposed a post-start rollback race missed by focused and broad
+          green suites. High-confidence friction candidates: the known post-green npm-test teardown
+          hang, and duplicate review mutations after retrying a shell/batch recording operation. The
+          lifecycle defect itself is already a concrete blocker on the current task."
+      - status: completed
+        step_index: 2
+        started_at: 2026-07-16T10:05:11.848Z
+        completed_at: 2026-07-16T10:05:13.601Z
+        notes: "Duplicate evaluation: behavioral temp-project/adversarial probe success is already covered
+          by @01KPA46TF, @01KSEQ7V, @01KMR8XS8, and the resolved duplicate @01KXHXXD. Duplicate
+          review-thread/check creation through shell-passed mutations is already covered by
+          unresolved friction observation @01KPQQKXG. The full-suite teardown hang is already
+          tracked by pending @task-investigate-npm-test-teardown-hang-after-green-suite-run. The
+          lifecycle race is captured in review @01KXN4RDS4Z5PDBW06KEWHD81H and task
+          @01KXH2PSQY6GK4S66S4TB6JVV3 is needs_work. No unique high-confidence item remains."
+      - status: skipped
+        step_index: 3
+        started_at: 2026-07-16T10:05:13.601Z
+        completed_at: 2026-07-16T10:05:15.234Z
+        notes: "No capture performed: every high-confidence candidate matched existing tracking or the
+          active review/task. Skipping capture avoids reflection noise and duplicate records."
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-07-16T10:02:53.306Z
+    completed_at: 2026-07-16T10:05:15.234Z
