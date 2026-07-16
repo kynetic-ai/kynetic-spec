@@ -30060,9 +30060,9 @@ reviews:
   - _ulid: 01KXN2482NF1GHK853Q1F65NBG
     slugs: []
     title: Review canonical dispatch lifecycle API (cycle 5)
-    disposition: pending
+    disposition: changes_requested
     author: Jacob Chapel
-    check_count: 0
+    check_count: 11
     examined_commit: f5628f46861b4183eccb74b1b9ca4b7526ff996c
     lifecycle_state: open
     related_refs: []
@@ -30071,8 +30071,8 @@ reviews:
       content_hash: ""
       ref: "@01KXH2PSQY6GK4S66S4TB6JVV3"
       shadow_commit: ""
-    thread_count: 0
-    unresolved_blocker_count: 0
+    thread_count: 1
+    unresolved_blocker_count: 1
     verdict_count: 0
     created_at: 2026-07-16T08:54:09.237Z
-    updated_at: 2026-07-16T08:54:22.247Z
+    updated_at: 2026-07-16T09:13:16.272Z
