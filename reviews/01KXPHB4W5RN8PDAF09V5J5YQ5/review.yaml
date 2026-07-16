@@ -2,7 +2,20 @@ _ulid: 01KXPHB4W5RN8PDAF09V5J5YQ5
 slugs: []
 title: "Fresh canonical plan review: Documentation Completeness and Dispatch Workspaces"
 author: Jacob Chapel
-checks: []
+checks:
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Remote topology is current: 0fceed5a is ancestor of lifecycle tip 3f22e6c9; origin/dev is
+      2 commits left and lifecycle is 63 right; lifecycle is not in origin/dev. However review
+      01KXPCP5Y3Y0BEY2KP8KDFXNS8 approved b28c2955 and task completion merged it at 3f22e6c9 before
+      plan import f639f10d72, contradicting the stored pending-review statements."
+    name: Implementation freshness and ancestry
+    required: true
+    runner: canonical-plan-review
+    created_at: 2026-07-16T22:42:54.566Z
+    completed_at: 2026-07-16T22:42:54.566Z
 events:
   - _ulid: 01KXPHB4W525RSJNXKZZMG0HTJ
     actor: Jacob Chapel
@@ -76,6 +89,13 @@ events:
       kind: blocker
       thread_ulid: 01KXPHGPCYNQGYZRTT9849V25T
     timestamp: 2026-07-16T22:42:20.542Z
+  - _ulid: 01KXPHHRB3X576XXGRAV0J2R04
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: fail
+      name: Implementation freshness and ancestry
+    timestamp: 2026-07-16T22:42:54.947Z
 examined_commit: null
 external_links: []
 lifecycle_state: open
@@ -508,5 +528,5 @@ threads:
     kind: blocker
 verdicts: []
 created_at: 2026-07-16T22:39:18.405Z
-updated_at: 2026-07-16T22:42:20.190Z
+updated_at: 2026-07-16T22:42:54.566Z
 notes: []
