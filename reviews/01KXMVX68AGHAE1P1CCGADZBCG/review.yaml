@@ -448,6 +448,24 @@ events:
       from: open
       to: closed
     timestamp: 2026-07-16T07:21:52.388Z
+  - _ulid: 01KXMWX3RQX0SG45GTZJT7P31J
+    actor: codex-reviewer
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KXMWTJ416GMS621WRY0GT04Z
+    timestamp: 2026-07-16T07:22:52.567Z
+  - _ulid: 01KXMWX712DKN6YGZ0PVF522D9
+    actor: codex-reviewer
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KXMWTN51W1FRPSCN14DN9984
+    timestamp: 2026-07-16T07:22:55.906Z
+  - _ulid: 01KXMWXCW6STB0Z5Z7KDM8B93F
+    actor: codex-reviewer
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KXMWTR5M1FWYNA3DBKAZ4XAH
+    timestamp: 2026-07-16T07:23:01.894Z
 examined_commit: 30da557ff43c38e74c3933c432824b58ce3d4827
 external_links: []
 lifecycle_state: closed
@@ -545,6 +563,8 @@ threads:
           prove no mutation and no raw alias exposure."
         created_at: 2026-07-16T07:21:28.961Z
     kind: blocker
+    resolved_at: 2026-07-16T07:22:52.273Z
+    resolved_by: codex-reviewer
   - _ulid: 01KXMWTN51W1FRPSCN14DN9984
     anchor:
       type: code
@@ -566,6 +586,8 @@ threads:
           tests that exercise the endpoint."
         created_at: 2026-07-16T07:21:32.066Z
     kind: blocker
+    resolved_at: 2026-07-16T07:22:55.645Z
+    resolved_by: codex-reviewer
   - _ulid: 01KXMWTR5M1FWYNA3DBKAZ4XAH
     anchor:
       type: code
@@ -588,6 +610,8 @@ threads:
           untested."
         created_at: 2026-07-16T07:21:35.157Z
     kind: blocker
+    resolved_at: 2026-07-16T07:23:01.636Z
+    resolved_by: codex-reviewer
 verdicts:
   - applies_to_version:
       type: entity_version
@@ -597,5 +621,5 @@ verdicts:
     role: reviewer
     created_at: 2026-07-16T07:21:52.377Z
 created_at: 2026-07-16T07:05:26.538Z
-updated_at: 2026-07-16T07:21:52.388Z
+updated_at: 2026-07-16T07:23:01.636Z
 notes: []
