@@ -96,3 +96,15 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-07-16T07:21:54.612Z
+  - _ulid: 01KXMX9MKEVBHJTHHV34BS3JD2
+    content: "Fix cycle 3 approach: require task-scoped lifecycle identity to resolve to an existing
+      loaded task before any mutation, preserving mismatch/ambiguity translation and preventing
+      phantom controls. Replace stale API-trait N/A annotations with behavioral tests for
+      not-found/no-mutation, semantic shadow commit, and X-Request-Id on canonical success/failure;
+      implement request tracing at the route boundary. Move lifecycle status AC coverage onto exact
+      endpoint tests with non-empty active, queued, and held/control state while retaining separate
+      schema validation tests. Re-verify every task-owned and inherited AC plus exact compatibility
+      rows."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-07-16T07:29:43.022Z
