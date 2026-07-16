@@ -106,6 +106,57 @@ checks:
     runner: npm test -- lifecycle web-ui slice
     created_at: 2026-07-16T21:37:28.949Z
     completed_at: 2026-07-16T21:37:28.949Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Repo-wide lint passed with 0 errors and 696 baseline warnings; focused oxlint on
+      tests/e2e/dispatch-lifecycle.spec.ts passed with 0 warnings and 0 errors.
+    name: lint
+    required: true
+    runner: npm run lint -- --quiet
+    created_at: 2026-07-16T21:37:49.707Z
+    completed_at: 2026-07-16T21:37:49.707Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Shared package build and TypeScript no-emit check passed.
+    name: typecheck
+    required: true
+    runner: npm run typecheck
+    created_at: 2026-07-16T21:37:53.199Z
+    completed_at: 2026-07-16T21:37:53.199Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Fresh run passed 2830 suites; 10926 tests passed and 3 expected tests skipped of 10929.
+    name: full test suite
+    required: true
+    runner: npm test -- --fresh
+    created_at: 2026-07-16T21:37:56.667Z
+    completed_at: 2026-07-16T21:37:56.667Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Schema and references passed with 6 allowed deprecated-reference warnings.
+    name: kspec validate refs
+    required: true
+    runner: kspec validate --refs --warnings-ok
+    created_at: 2026-07-16T21:38:00.211Z
+    completed_at: 2026-07-16T21:38:00.211Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Alignment validation passed with the repository warning baseline.
+    name: kspec validate alignment
+    required: true
+    runner: kspec validate --alignment --warnings-ok
+    created_at: 2026-07-16T21:38:03.792Z
+    completed_at: 2026-07-16T21:38:03.792Z
 events:
   - _ulid: 01KXPCP5XSQ9Q03VQWMJP2G2QN
     actor: Jacob Chapel
@@ -197,6 +248,41 @@ events:
       kind: nit
       thread_ulid: 01KXPDT1T4D07AMDCG9ZCDH2FH
     timestamp: 2026-07-16T21:37:32.739Z
+  - _ulid: 01KXPDTJX0FSK12CD6CV6TFCET
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: lint
+    timestamp: 2026-07-16T21:37:49.985Z
+  - _ulid: 01KXPDTP9ZVXDDF3V5AP9HG864
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: typecheck
+    timestamp: 2026-07-16T21:37:53.471Z
+  - _ulid: 01KXPDTSQ31YSK5M3P1BXAHCTA
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: full test suite
+    timestamp: 2026-07-16T21:37:56.963Z
+  - _ulid: 01KXPDTX4NPSM98T3EPS3CJY2H
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate refs
+    timestamp: 2026-07-16T21:38:00.469Z
+  - _ulid: 01KXPDV0PPQ5A6MNXFJYVMW34G
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate alignment
+    timestamp: 2026-07-16T21:38:04.118Z
 examined_commit: b28c29557d3ec15ee1cfc0b14c6d2ee5a57b86aa
 external_links: []
 lifecycle_state: open
@@ -233,5 +319,5 @@ threads:
     kind: nit
 verdicts: []
 created_at: 2026-07-16T21:17:57.059Z
-updated_at: 2026-07-16T21:37:32.484Z
+updated_at: 2026-07-16T21:38:03.792Z
 notes: []
