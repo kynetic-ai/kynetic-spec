@@ -2,7 +2,123 @@ _ulid: 01KXMNSY6PHW4TZC8H0T3FEFPC
 slugs: []
 title: Review canonical dispatch lifecycle API
 author: Jacob Chapel
-checks: []
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: All 1052 files matched formatting.
+    name: format
+    required: true
+    runner: npm run format:check
+    created_at: 2026-07-16T05:34:25.519Z
+    completed_at: 2026-07-16T05:34:25.519Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Repo lint: 0 errors (702 baseline warnings); focused oxlint on all four changed files: 0
+      warnings and 0 errors."
+    name: lint
+    required: true
+    runner: npm run lint -- --quiet
+    created_at: 2026-07-16T05:34:28.795Z
+    completed_at: 2026-07-16T05:34:28.795Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Shared build and tsc --noEmit passed.
+    name: typecheck
+    required: true
+    runner: npm run typecheck
+    created_at: 2026-07-16T05:34:31.857Z
+    completed_at: 2026-07-16T05:34:31.857Z
+  - status: skipped
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Every suite reported PASS through the final agent-dispatch-engine suite; runner then
+      stayed alive without a final result and was terminated after a quiet interval. Pre-existing
+      teardown/long-tail issue is tracked by
+      @task-investigate-npm-test-teardown-hang-after-green-suite-run. Focused lifecycle/API/route
+      slice passed 37/37.
+    name: full test suite
+    required: true
+    runner: npm test -- --fresh
+    created_at: 2026-07-16T05:34:35.728Z
+    completed_at: 2026-07-16T05:34:35.728Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: kspec validate --refs --warnings-ok passed with 6 baseline deprecation warnings.
+    name: kspec validate refs
+    required: true
+    runner: kspec
+    created_at: 2026-07-16T05:34:39.913Z
+    completed_at: 2026-07-16T05:34:39.913Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: kspec validate --alignment --warnings-ok passed with repository baseline warnings.
+    name: kspec validate alignment
+    required: true
+    runner: kspec
+    created_at: 2026-07-16T05:34:45.054Z
+    completed_at: 2026-07-16T05:34:45.054Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: kspec validate --completeness --warnings-ok passed with repository baseline warnings;
+      manual task-owned AC audit found missing failure-path coverage and is recorded as a blocker.
+    name: kspec validate completeness
+    required: true
+    runner: kspec
+    created_at: 2026-07-16T05:34:49.606Z
+    completed_at: 2026-07-16T05:34:49.606Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Base 89a72367 to head 9e07c020 produced no whitespace errors.
+    name: diff check
+    required: false
+    runner: git diff --check
+    created_at: 2026-07-16T05:34:53.382Z
+    completed_at: 2026-07-16T05:34:53.382Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "daemon-agent-dispatch-lifecycle, daemon-api/agent-dispatch, and
+      daemon-agent-dispatch-routes passed: 13 suites, 37 tests."
+    name: focused lifecycle tests
+    required: false
+    runner: npm test -- --fresh <focused files>
+    created_at: 2026-07-16T05:34:56.737Z
+    completed_at: 2026-07-16T05:34:56.737Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Files read: packages/daemon/src/routes/agent-dispatch.ts, packages/shared/src/api.ts,
+      tests/daemon-agent-dispatch-lifecycle.test.ts, tests/daemon-agent-dispatch-routes.test.ts,
+      tests/daemon-api/agent-dispatch.test.ts, and interacting engine/control-store/task-identity
+      code. Commands: exact base/head diff, AC lookups/annotation search, focused/full tests,
+      format/lint/typecheck, three validations, diff check, two in-process runtime probes. Claims
+      verified: canonical happy path/canonicalization tests pass; rejected stopped->pause leaves
+      engine running with held queue; failed legacy stop is not retried on second call. Categories:
+      correctness, edge cases, error handling, security/raw-path exposure, test quality,
+      integration/compatibility. Shared/package guidance surfaces touched: none; neutrality
+      checklist not applicable."
+    name: review evidence log
+    required: false
+    runner: manual review
+    created_at: 2026-07-16T05:35:00.133Z
+    completed_at: 2026-07-16T05:35:00.133Z
 events:
   - _ulid: 01KXMNSY69DMRNY725JVWQ0R27
     actor: Jacob Chapel
@@ -17,17 +133,225 @@ events:
       from: draft
       to: open
     timestamp: 2026-07-16T05:19:31.696Z
+  - _ulid: 01KXMPPHEWQZ5BHXBZYS74BVDN
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: format
+    timestamp: 2026-07-16T05:34:25.756Z
+  - _ulid: 01KXMPPMNKARPNGCZV6W1B1KZW
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: lint
+    timestamp: 2026-07-16T05:34:29.043Z
+  - _ulid: 01KXMPPQNWHSM7Q4RRR16JSDT4
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: typecheck
+    timestamp: 2026-07-16T05:34:32.124Z
+  - _ulid: 01KXMPPVH4M6K2QBB7DFB5ZD8Y
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: skipped
+      name: full test suite
+    timestamp: 2026-07-16T05:34:36.068Z
+  - _ulid: 01KXMPPZNQ1RYWSWZ2ASAXF1AK
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate refs
+    timestamp: 2026-07-16T05:34:40.311Z
+  - _ulid: 01KXMPQ4JQFBX6WKRKYSJKZRQP
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate alignment
+    timestamp: 2026-07-16T05:34:45.335Z
+  - _ulid: 01KXMPQ921K5AWYQDT6RPQY67A
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate completeness
+    timestamp: 2026-07-16T05:34:49.921Z
+  - _ulid: 01KXMPQCPVDTVDZZPCQK2YE696
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: diff check
+    timestamp: 2026-07-16T05:34:53.659Z
+  - _ulid: 01KXMPQFZ3F4FHW42N3P2T6D34
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: focused lifecycle tests
+    timestamp: 2026-07-16T05:34:56.995Z
+  - _ulid: 01KXMPQK9CAZT02K6X1J9GRWVT
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: review evidence log
+    timestamp: 2026-07-16T05:35:00.397Z
+  - _ulid: 01KXMPQPCRZRHARRC5BABKYP9H
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KXMPQP4NY96DVHVEKXYH0CK0
+    timestamp: 2026-07-16T05:35:03.576Z
+  - _ulid: 01KXMPQSJZ3P0XJ571F3A0Y3HY
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KXMPQSBN3A5QTRCBCBYWG9RX
+    timestamp: 2026-07-16T05:35:06.847Z
+  - _ulid: 01KXMPQWQ4XJ52AGHG862M93D0
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KXMPQWFKR73QY49M1ZHWN4TY
+    timestamp: 2026-07-16T05:35:10.052Z
+  - _ulid: 01KXMPQZT2KYZJKRD1HTEJE6QY
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KXMPQZJ9EE3GNNPYXNKRZVGF
+    timestamp: 2026-07-16T05:35:13.218Z
+  - _ulid: 01KXMPR2WX07K9W7W46P3CRRMC
+    actor: codex-reviewer
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: request_changes
+    timestamp: 2026-07-16T05:35:16.381Z
+  - _ulid: 01KXMPR2WX2QH1T1TDZNWSSFR0
+    actor: codex-reviewer
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-07-16T05:35:16.381Z
 examined_commit: 9e07c0203194a8d450906f08be1e346a3e8226c0
 external_links: []
-lifecycle_state: open
+lifecycle_state: closed
 related_refs: []
 subject:
   type: task
   content_hash: ""
   ref: "@01KXH2PSQY6GK4S66S4TB6JVV3"
   shadow_commit: ""
-threads: []
-verdicts: []
+threads:
+  - _ulid: 01KXMPQP4NY96DVHVEKXYH0CK0
+    anchor:
+      type: code
+      commit: 9e07c0203194a8d450906f08be1e346a3e8226c0
+      line_end: 916
+      line_start: 902
+      path: packages/daemon/src/routes/agent-dispatch.ts
+      side: head
+    entries:
+      - _ulid: 01KXMPQP4NK3MNXBTJE7Y5YGH5
+        author: Jacob Chapel
+        body: "MUST-FIX: Invalid canonical transitions create runtime state before validation. The route
+          calls ensureDispatchEngine before applyGlobalLifecycleAction/applyTaskLifecycleAction, so
+          a stopped→pause request starts the engine, performs startup reconciliation, and queues
+          held tasks before returning 409. Runtime evidence: POST global pause on a stopped
+          real-shadow fixture returned 409 but left engineExists=true, engineRunning=true,
+          dispatch_enabled=true, queue_depth=1, held_count=1. The plan requires invalid transitions
+          to perform no reconciliation, enqueue, session, or process creation. Validate the
+          transition/identity against committed authority before starting runtime infrastructure,
+          and add a behavioral regression test."
+        created_at: 2026-07-16T05:35:03.317Z
+    kind: blocker
+  - _ulid: 01KXMPQSBN3A5QTRCBCBYWG9RX
+    anchor:
+      type: code
+      commit: 9e07c0203194a8d450906f08be1e346a3e8226c0
+      line_end: 1132
+      line_start: 1121
+      path: packages/daemon/src/routes/agent-dispatch.ts
+      side: head
+    entries:
+      - _ulid: 01KXMPQSBP54V6JVA78PH3DEAF
+        author: Jacob Chapel
+        body: "MUST-FIX: Legacy stop loses cleanup retry state and can report success without retrying
+          cleanup. engine.stop() clears lifecycleStarted even when
+          applyGlobalLifecycleAction('stop') throws; the alias catch retains the now-stopped engine
+          in the map, and the next alias call invokes stop() again, skips lifecycle cleanup, deletes
+          the engine, and returns 200. Runtime injection produced
+          first={500,cleanup_pending,cancellation_failed}, second={200,{stopped:true}}, with
+          lifecycleCalls still 1. Both POST /dispatch/stop and the action=stop adapter share this
+          failure mode. Preserve a retryable engine/lifecycle state and prove repeated alias stop
+          actually retries matching global cleanup before success."
+        created_at: 2026-07-16T05:35:06.614Z
+    kind: blocker
+  - _ulid: 01KXMPQWFKR73QY49M1ZHWN4TY
+    anchor:
+      type: code
+      commit: 9e07c0203194a8d450906f08be1e346a3e8226c0
+      line_end: 1031
+      line_start: 1025
+      path: packages/daemon/src/routes/agent-dispatch.ts
+      side: head
+    entries:
+      - _ulid: 01KXMPQWFKG4VSFJZAZ9R7HDXD
+        author: Jacob Chapel
+        body: "MUST-FIX: The compatibility stop translators do not implement the frozen exact response rows.
+          Every non-invalid error is labeled reason:'cleanup_pending', so pre-commit
+          control_store_unavailable/control_store_corrupt/control_commit_failed and uncategorized
+          internal errors gain a forbidden reason field. The task table requires reason only for
+          post-commit cleanup failures; pre-commit and other internal rows contain only the boolean
+          plus error_code. Apply stage-aware translation to both stop aliases and deep-equal every
+          listed 409/500/503 row."
+        created_at: 2026-07-16T05:35:09.811Z
+    kind: blocker
+  - _ulid: 01KXMPQZJ9EE3GNNPYXNKRZVGF
+    anchor:
+      type: code
+      commit: 9e07c0203194a8d450906f08be1e346a3e8226c0
+      line_end: 344
+      line_start: 227
+      path: tests/daemon-agent-dispatch-lifecycle.test.ts
+      side: head
+    entries:
+      - _ulid: 01KXMPQZJ9YX96QKPZENTA4Z1T
+        author: Jacob Chapel
+        body: "MUST-FIX: Mandatory behavioral/AC coverage is incomplete. The new file annotates happy path,
+          validation/current-status, canonicalization/mismatch, and schema checks, but rg finds no
+          test annotation or failure injection for @daemon-agent-dispatch
+          ac-control-failure-no-success or ac-cleanup-failure-no-success. It also omits the
+          task-required deep-equal matching-scope cleanup matrix, complete legacy alias
+          success/error rows, all closed failure codes, native invalid-body preservation, and
+          several schema rejection cases (count mismatch and wrong nested task cleanup). The passing
+          37-test slice therefore cannot detect the runtime and adapter defects above. Add
+          behavioral in-process tests with the two missing AC annotations and the frozen
+          canonical/alias matrix; do not use source-scanning tests."
+        created_at: 2026-07-16T05:35:12.969Z
+    kind: blocker
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: request_changes
+    reviewer: codex-reviewer
+    role: reviewer
+    created_at: 2026-07-16T05:35:16.381Z
 created_at: 2026-07-16T05:18:48.534Z
-updated_at: 2026-07-16T05:19:31.437Z
+updated_at: 2026-07-16T05:35:16.381Z
 notes: []
