@@ -174,6 +174,8 @@ async function expectNoHorizontalOverflow(page: import("@playwright/test").Page)
 }
 
 test.describe("dispatch lifecycle browser regression", () => {
+  test.use({ viewport: { width: 1440, height: 900 } });
+
   // AC: @ui-agent-dispatch ac-2
   // AC: @ui-agent-dispatch ac-3
   // AC: @ui-agent-dispatch ac-status-projection
@@ -196,7 +198,9 @@ test.describe("dispatch lifecycle browser regression", () => {
       status: LifecycleStatus;
       authority: string;
       projection: string;
-      actions: string[];
+      globalActions: string[];
+      taskActions?: string[];
+      taskRow?: "held" | "control";
     }> = [
       {
         name: "running/running",
@@ -207,14 +211,14 @@ test.describe("dispatch lifecycle browser regression", () => {
         }),
         authority: "running",
         projection: "running",
-        actions: ["Pause", "Hard stop"],
+        globalActions: ["Pause", "Hard stop"],
       },
       {
         name: "paused/paused",
         status: lifecycleStatus({ global_authority: "paused", projection: "paused" }),
         authority: "paused",
         projection: "paused",
-        actions: ["Resume", "Hard stop"],
+        globalActions: ["Resume", "Hard stop"],
       },
       {
         name: "paused/draining with live work",
@@ -244,10 +248,25 @@ test.describe("dispatch lifecycle browser regression", () => {
           queue_depth: 1,
           held_count: 1,
           held_tasks: [heldTask()],
+          degraded: {
+            active: true,
+            reason: "branch diverged",
+            enteredAt: timestamp,
+          },
+          degraded_targets: [
+            {
+              branch: "dev",
+              reason: "branch diverged",
+              enteredAt: timestamp,
+              kind: "sync",
+            },
+          ],
         }),
         authority: "paused",
         projection: "draining",
-        actions: ["Resume", "Hard stop", "Pause task", "Hard-stop task"],
+        globalActions: ["Resume", "Hard stop"],
+        taskActions: ["Pause task", "Hard-stop task"],
+        taskRow: "held",
       },
       {
         name: "legacy false with active work",
@@ -269,14 +288,14 @@ test.describe("dispatch lifecycle browser regression", () => {
         }),
         authority: "running",
         projection: "running",
-        actions: ["Pause", "Hard stop"],
+        globalActions: ["Pause", "Hard stop"],
       },
       {
         name: "stopped/idle",
         status: lifecycleStatus(),
         authority: "stopped",
         projection: "stopped",
-        actions: ["Start"],
+        globalActions: ["Start"],
       },
       {
         name: "stopped/global-pending",
@@ -288,7 +307,7 @@ test.describe("dispatch lifecycle browser regression", () => {
         }),
         authority: "stopped",
         projection: "stopped",
-        actions: ["Retry hard stop"],
+        globalActions: ["Retry hard stop"],
       },
       {
         name: "stopped/mixed-failed-plus-pending",
@@ -307,7 +326,7 @@ test.describe("dispatch lifecycle browser regression", () => {
         }),
         authority: "stopped",
         projection: "stopped",
-        actions: ["Retry hard stop"],
+        globalActions: ["Retry hard stop"],
       },
       {
         name: "stopped/unrelated-task-cleanup",
@@ -337,7 +356,9 @@ test.describe("dispatch lifecycle browser regression", () => {
         }),
         authority: "stopped",
         projection: "stopped",
-        actions: ["Start", "Retry hard stop"],
+        globalActions: ["Start"],
+        taskActions: ["Retry hard stop"],
+        taskRow: "held",
       },
       {
         name: "task-stopped-idle",
@@ -349,7 +370,9 @@ test.describe("dispatch lifecycle browser regression", () => {
         }),
         authority: "running",
         projection: "running",
-        actions: ["Pause", "Hard stop", "Resume task"],
+        globalActions: ["Pause", "Hard stop"],
+        taskActions: ["Resume task"],
+        taskRow: "control",
       },
       {
         name: "task-stopped-failed",
@@ -380,10 +403,13 @@ test.describe("dispatch lifecycle browser regression", () => {
         }),
         authority: "running",
         projection: "running",
-        actions: ["Pause", "Hard stop", "Retry hard stop"],
+        globalActions: ["Pause", "Hard stop"],
+        taskActions: ["Retry hard stop"],
+        taskRow: "control",
       },
     ];
 
+    expect(page.viewportSize()).toEqual({ width: 1440, height: 900 });
     for (const scenario of scenarios) {
       await test.step(scenario.name, async () => {
         status = scenario.status;
@@ -392,35 +418,51 @@ test.describe("dispatch lifecycle browser regression", () => {
         await expect(page.getByTestId("dispatch-authority")).toHaveText(scenario.authority);
         await expect(page.getByTestId("dispatch-projection")).toHaveText(scenario.projection);
         const controls = page.getByTestId("dispatch-section");
-        for (const action of scenario.actions) {
-          const actionScope =
-            action.includes("task") ||
-            (["stopped/unrelated-task-cleanup", "task-stopped-failed"].includes(scenario.name) &&
-              action === "Retry hard stop")
-              ? page
-              : controls;
-          await expect(
-            actionScope.getByRole("button", { name: action, exact: true }),
-          ).toBeVisible();
+        await expect(controls.locator("button[data-lifecycle-control]")).toHaveText(
+          scenario.globalActions,
+        );
+        await expect(page.getByTestId("dispatch-active-count")).toHaveText(
+          String(scenario.status.active_count),
+        );
+        await expect(page.getByTestId("dispatch-queued-count")).toHaveText(
+          String(scenario.status.queue_depth),
+        );
+        await expect(page.getByTestId("dispatch-held-count")).toHaveText(
+          String(scenario.status.held_count),
+        );
+
+        const taskRow = scenario.taskRow
+          ? page.getByTestId(
+              `${scenario.taskRow === "held" ? "held-task" : "task-control"}-${taskId}`,
+            )
+          : null;
+        if (taskRow) {
+          await expect(taskRow).toBeVisible();
+          await expect(taskRow.locator("button[data-lifecycle-control]")).toHaveText(
+            scenario.taskActions ?? [],
+          );
+        } else {
+          await expect(page.getByTestId(`held-task-${taskId}`)).toHaveCount(0);
+          await expect(page.getByTestId(`task-control-${taskId}`)).toHaveCount(0);
         }
+
         if (scenario.name.includes("draining")) {
-          await expect(page.getByTestId("dispatch-active-count")).toHaveText("1");
-          await expect(page.getByTestId("dispatch-queued-count")).toHaveText("1");
-          await expect(page.getByTestId("dispatch-held-count")).toHaveText("1");
           await expect(page.getByTestId("active-invocation-row")).toContainText("task-worker");
           await expect(page.getByTestId("queued-invocation-row")).toContainText("pr-reviewer");
           await expect(page.getByTestId(`held-task-${taskId}`)).toContainText(
             "Migrate every lifecycle UI consumer and control",
           );
+          await expect(page.getByTestId("dispatch-degraded-state")).toContainText("Degraded state");
+          await expect(page.getByTestId("dispatch-degraded-state")).toContainText(
+            "branch diverged",
+          );
+          await expect(page.getByTestId("held-tasks-section")).toContainText("Held Tasks");
+          await expect(page.getByTestId(`held-task-${taskId}`)).toContainText(
+            "Held by global authority: operator request",
+          );
         }
         if (scenario.name === "legacy false with active work") {
-          await expect(page.getByTestId("dispatch-active-count")).toHaveText("1");
           await expect(page.getByTestId("active-invocation-row")).toContainText("task-worker");
-        }
-        if (scenario.name === "task-stopped-failed") {
-          await expect(page.getByRole("button", { name: "Resume task", exact: true })).toHaveCount(
-            0,
-          );
         }
         if (scenario.status.cleanup_state.entries.length > 0) {
           const evidence = page.getByTestId("dispatch-cleanup-evidence");
@@ -492,7 +534,7 @@ test.describe("dispatch lifecycle browser regression", () => {
   // AC: @ui-agent-dispatch ac-lifecycle-controls-labelled
   // AC: @ui-agent-dispatch ac-lifecycle-focus-retained
   // AC: @ui-agent-dispatch ac-lifecycle-live-update
-  test("uses submitted task refs and canonical response identity for task controls", async ({
+  test("confirms task hard stop using submitted refs and canonical response identity", async ({
     page,
     daemon: _daemon,
   }) => {
@@ -511,6 +553,7 @@ test.describe("dispatch lifecycle browser regression", () => {
         dispatch_enabled: true,
         global_authority: "running",
         projection: "running",
+        task_controls: [taskControl("stopped")],
       });
       return {
         status: 200,
@@ -532,16 +575,26 @@ test.describe("dispatch lifecycle browser regression", () => {
     await expect(row).toContainText("Migrate every lifecycle UI consumer and control");
     await expect(row.getByRole("button", { name: "Resume task" })).toBeVisible();
     await expect(row.getByRole("button", { name: "Hard-stop task" })).toBeVisible();
-    await row.getByRole("button", { name: "Resume task" }).press("Enter");
+    await row.getByRole("button", { name: "Hard-stop task" }).press("Enter");
+    const dialog = page.getByRole("dialog", { name: "Confirm hard stop" });
+    await expect(dialog).toContainText("Active matching invocations will be cancelled.");
+    await dialog.getByRole("button", { name: "Confirm" }).click();
 
     expect(controls.bodies).toEqual([
       {
         scope: "task",
-        action: "resume",
+        action: "stop",
         task_ref: "@task-ui-dispatch-lifecycle-controls",
       },
     ]);
     await expect(row).toHaveCount(0);
+    const canonicalResult = page.getByTestId(`task-control-${taskId}`);
+    await expect(canonicalResult).toContainText("Migrate every lifecycle UI consumer and control");
+    await expect(canonicalResult.getByRole("link")).toHaveAttribute(
+      "href",
+      `/tasks/board?ref=%40task-ui-dispatch-lifecycle-controls`,
+    );
+    await expect(canonicalResult.getByRole("button", { name: "Resume task" })).toBeVisible();
     await expect(page.getByTestId("task-lifecycle-live-status")).toContainText(
       "Task lifecycle changed: Migrate every lifecycle UI consumer and control",
     );
@@ -805,6 +858,7 @@ test.describe("dispatch lifecycle browser regression", () => {
     page,
     daemon: _daemon,
   }) => {
+    const browserErrors = recordBrowserErrors(page);
     let response = {
       ...lifecycleStatus(),
       globalAuthority: "stopped",
@@ -839,6 +893,7 @@ test.describe("dispatch lifecycle browser regression", () => {
       "Dispatch lifecycle operation failed",
     );
     await expect(page.getByTestId("dispatch-cleanup-evidence")).toHaveCount(0);
+    expect(browserErrors, browserErrors.join("\n")).toEqual([]);
   });
 
   // AC: @ui-agent-dispatch ac-3
