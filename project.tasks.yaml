@@ -34027,7 +34027,7 @@
   type: task
   spec_ref: "@daemon-agent-dispatch"
   plan_ref: "@plan-dispatch-lifecycle-pause-resume-and-stop-controls"
-  status: in_progress
+  status: pending_review
   blocked_by: []
   depends_on:
     - "@task-cli-dispatch-lifecycle-controls"
@@ -34040,11 +34040,11 @@
     - api
     - cli
   review_ref: "@01KXP26Q29B2MQTY8Q339QXBGG"
-  notes_count: 11
+  notes_count: 12
   todos_count: 0
   created_at: 2026-07-14T19:47:23.592Z
   started_at: 2026-07-16T18:42:49.011Z
-  submitted_at: 2026-07-16T18:04:01.556Z
+  submitted_at: 2026-07-16T19:09:04.283Z
   automation: eligible
 - _ulid: 01KXH2PY7C0W6GDQAFZN12HMC4
   slugs:

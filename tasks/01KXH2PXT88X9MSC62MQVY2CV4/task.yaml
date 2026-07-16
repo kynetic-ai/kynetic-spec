@@ -46,7 +46,7 @@ description: |
 spec_ref: "@daemon-agent-dispatch"
 plan_ref: "@plan-dispatch-lifecycle-pause-resume-and-stop-controls"
 origin: derived
-status: in_progress
+status: pending_review
 blocked_by: []
 depends_on:
   - "@task-cli-dispatch-lifecycle-controls"
@@ -64,8 +64,8 @@ review_ref: "@01KXP26Q29B2MQTY8Q339QXBGG"
 submission_linkage:
   review_url: null
   branch: dispatch/task/task-verify-api-cli-projection/01kxh2px
-  captured_at: 2026-07-16T18:04:01.541Z
-  commit: 6c7f7d0fb155d07094f1ec8d6140b20a8e463065
+  captured_at: 2026-07-16T19:09:04.269Z
+  commit: 8364599a91cd18587254d378c3a6c8f45922a00b
   remote: origin
   remote_url: git@github.com:lepahc/kynetic-spec.git
   upstream_ref: refs/heads/dispatch/task/task-verify-api-cli-projection/01kxh2px
@@ -250,9 +250,36 @@ history:
         previous: 2026-07-16T15:51:16.280Z
     command: task-start
     timestamp: 2026-07-16T18:42:49.021Z
+  - author: Jacob Chapel
+    changes:
+      status:
+        new: pending_review
+        previous: in_progress
+      submission_linkage:
+        new:
+          review_url: null
+          branch: dispatch/task/task-verify-api-cli-projection/01kxh2px
+          captured_at: 2026-07-16T19:09:04.269Z
+          commit: 8364599a91cd18587254d378c3a6c8f45922a00b
+          remote: origin
+          remote_url: git@github.com:lepahc/kynetic-spec.git
+          upstream_ref: refs/heads/dispatch/task/task-verify-api-cli-projection/01kxh2px
+        previous:
+          review_url: null
+          branch: dispatch/task/task-verify-api-cli-projection/01kxh2px
+          captured_at: 2026-07-16T18:04:01.541Z
+          commit: 6c7f7d0fb155d07094f1ec8d6140b20a8e463065
+          remote: origin
+          remote_url: git@github.com:lepahc/kynetic-spec.git
+          upstream_ref: refs/heads/dispatch/task/task-verify-api-cli-projection/01kxh2px
+      submitted_at:
+        new: 2026-07-16T19:09:04.283Z
+        previous: 2026-07-16T18:04:01.556Z
+    command: task-submit
+    timestamp: 2026-07-16T19:09:04.283Z
 prior_status: null
 created_at: 2026-07-14T19:47:23.592Z
 started_at: 2026-07-16T18:42:49.011Z
-submitted_at: 2026-07-16T18:04:01.556Z
+submitted_at: 2026-07-16T19:09:04.283Z
 todos: []
 automation: eligible

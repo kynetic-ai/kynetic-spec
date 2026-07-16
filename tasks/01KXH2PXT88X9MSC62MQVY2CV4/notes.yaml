@@ -131,3 +131,19 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-07-16T18:43:27.492Z
+  - _ulid: 01KXP5A58AK8NBGATD8N4YKX0F
+    content: "Fix cycle 2 complete in 8364599a91: preserved both challenged annotations and made them
+      behaviorally accurate. The real-daemon suite now proves native invalid-body HTTP 400
+      validation_error/details output for @trait-api-endpoint ac-3 and proves matching-cleanup
+      failures include current aggregate plus nested task lifecycle status for
+      ac-control-error-current-status. All three cycle-2 review threads were replied to and
+      resolved. Gates: format pass; repo lint 0 errors; focused lint 0 warnings/errors; typecheck
+      pass; focused lifecycle 139/139; refs/alignment/completeness validations pass with accepted
+      repository baseline warnings; diff hygiene pass. Fresh full run hit the separately tracked
+      resistant-descendant /proc ENOENT intermittent, whose fresh file rerun passed 14/14; the
+      subsequent full rerun showed every suite green, including that file and all changed surfaces,
+      then reproduced the separately tracked post-green test-runner teardown hang after the final
+      147-test engine file."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-07-16T19:09:03.114Z
