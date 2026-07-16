@@ -24225,6 +24225,18 @@ observations:
     resolved: false
     workflow_ref: "@session-reflect-loop"
     created_at: 2026-07-16T16:46:30.496Z
+  - _ulid: 01KXP1XVKMME02W6W8BXBHD1WV
+    type: friction
+    content: Pure UI wire-conversion logic is coupled to the broad SvelteKit API module. Both the UI
+      lifecycle owner suite and the real-daemon lifecycle surface suite must mock mode, project,
+      static-API, and constants modules just to import and exercise parseAgentDispatchStatusWire,
+      making non-Svelte boundary verification noisier and more fragile than the parser behavior
+      itself.
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    workflow_ref: "@session-reflect-loop"
+    created_at: 2026-07-16T18:09:54.292Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
