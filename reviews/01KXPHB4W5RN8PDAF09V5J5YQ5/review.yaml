@@ -24,6 +24,13 @@ events:
       kind: blocker
       thread_ulid: 01KXPHCS1RXBRB22T78F58PYTH
     timestamp: 2026-07-16T22:40:12.203Z
+  - _ulid: 01KXPHD9Y78W1GP9YRFYBR6JVX
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KXPHD9F2QYM30C3QNK4WJ95Z
+    timestamp: 2026-07-16T22:40:29.127Z
 examined_commit: null
 external_links: []
 lifecycle_state: open
@@ -55,7 +62,55 @@ threads:
           for any later review or fix cycle that actually appears.
         created_at: 2026-07-16T22:40:11.832Z
     kind: blocker
+  - _ulid: 01KXPHD9F2QYM30C3QNK4WJ95Z
+    anchor:
+      type: structured
+      field: baseline-validation-policy
+      ref: "@task-close-documentation-drift-gates"
+      section: tasks
+    entries:
+      - _ulid: 01KXPHD9F2NW77RM4JS8HTNPXW
+        author: Jacob Chapel
+        body: >-
+          The asserted refs baseline does not match the exact stored plan revision. At f639f10d72, a
+          fresh ✓ Validation passed
+
+          ────────────────────────────────────────
+
+          Files checked: 1715
+
+          Items checked: 698
+
+          Tasks checked: 1707
+
+          Meta: 13 agents, 17 workflows, 14 conventions
+
+
+          Schema: OK
+
+          References: OK
+
+
+          Reference warnings: 6
+            ⚠ @session-summary-cache
+              Reference "@session-summary-cache" points to deprecated item: Session Summary Cache
+              in: /home/chapel/Projects/kynetic-spec/.kspec/tasks/01KKB3PHA6MSJDZS7AZ1Z2VN6A/task.yaml (spec_ref)
+            ⚠ @session-summary-cache
+              Reference "@session-summary-cache" points to deprecated item: Session Summary Cache
+              in: /home/chapel/Projects/kynetic-spec/.kspec/tasks/01KKSRDQY1HZBENKBD06V6KDGW/task.yaml (spec_ref)
+            ⚠ @task-activity-git-query
+              Reference "@task-activity-git-query" points to deprecated item: Task Activity Git Query
+              in: /home/chapel/Projects/kynetic-spec/.kspec/tasks/01KKW4VPB0MV22C92JHNR7APJZ/task.yaml (spec_ref)
+            ⚠ @task-activity-git-query
+              Reference "@task-activity-git-query" points to deprecated item: Task Activity Git Query
+              in: /home/chapel/Projects/kynetic-spec/.kspec/tasks/01KKW6PK9QFXKH69HE6KY8Q40Y/task.yaml (spec_ref)
+            ⚠ @task-activity-git-query
+              Reference "@task-activity-git-query" points to deprecated item: Task Activity Git Query
+              in: /home/chapel/Projects/kynetic-spec/.kspec/tasks/01KKWG44FR0W955X7EFVBHPX6B/task.yaml (spec_ref)
+            ... and 1 more (use -v to see all) exits 0 with  and six deprecated-reference warnings; it does not exit 4 with seven / ambiguity errors. The final lifecycle review also recorded the refs gate passing before this plan was imported. Replace the revision-time seven-error statement and corresponding completion disclaimer with the current passing baseline (including warning comparison if desired), while retaining the policy to capture a fresh execution-time baseline and reject new/changed refs problems.
+        created_at: 2026-07-16T22:40:28.642Z
+    kind: blocker
 verdicts: []
 created_at: 2026-07-16T22:39:18.405Z
-updated_at: 2026-07-16T22:40:11.832Z
+updated_at: 2026-07-16T22:40:28.642Z
 notes: []
