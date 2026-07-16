@@ -81579,9 +81579,26 @@ runs:
     completed_at: 2026-07-16T16:14:33.800Z
   - _ulid: 01KXNWZZQN7YBJG9N3XXMQ21XZ
     status: active
-    current_step: 0
+    current_step: 1
     initiated_by: Jacob Chapel
-    step_results: []
+    step_results:
+      - status: completed
+        step_index: 0
+        started_at: 2026-07-16T16:43:41.174Z
+        completed_at: 2026-07-16T16:44:21.632Z
+        notes: "Worked well: reading every review thread and re-reading the full AC set before editing kept
+          the fix scoped; tests-first reproduced both invalid-project recovery failures immediately;
+          moving lifecycle announcements to the persistent page owner matched Svelte component
+          lifetime semantics; running the complete agents Playwright file exposed and then verified
+          focus timing under parallel browser load; batching all review replies/resolutions
+          preserved an atomic audit trail. Friction candidates: specialized strict response parsing
+          bypassed the shared invalid-project recovery behavior; row-local live regions are easy to
+          remove before asynchronous success announcements; repeated production E2E builds and the
+          fresh full suite were costly, with the full suite taking 3308 seconds."
+      - status: completed
+        step_index: 1
+        started_at: 2026-07-16T16:44:21.632Z
+        completed_at: 2026-07-16T16:44:21.632Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-07-16T16:43:41.174Z
