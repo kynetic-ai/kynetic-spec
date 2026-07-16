@@ -611,6 +611,7 @@ describe("lifecycle API behavior", () => {
     expect(error.message).not.toContain("private daemon detail");
   });
 
+  // AC: @dispatch-lifecycle-control-authority ac-ui-failures-do-not-expose-raw-errors
   it("maps stale 409 failures to fixed copy while retaining unchanged evidence", async () => {
     vi.stubGlobal(
       "fetch",
