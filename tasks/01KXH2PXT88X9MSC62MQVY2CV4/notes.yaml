@@ -105,3 +105,13 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-07-16T17:36:42.013Z
+  - _ulid: 01KXP1JEVEVQ2GF2P4M6V4G7KQ
+    content: "Fix cycle 1 complete in 6c7f7d0fb1: rebased onto approved UI owner merge, added
+      real-daemon public-wire to UI-camel conversion and semantic round-trip coverage, and preserved
+      the all-17 failure and exact public-status matrices. Gates: format pass; repo lint 0 errors;
+      focused lint 0 warnings/errors; typecheck pass; focused lifecycle 139/139; fresh full suite
+      2,830 suites and 10,926 tests passed with 3 skipped; refs/alignment/completeness validations
+      pass with accepted repository baseline warnings."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-07-16T18:03:40.782Z

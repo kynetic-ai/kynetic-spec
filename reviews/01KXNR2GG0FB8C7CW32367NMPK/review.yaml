@@ -212,6 +212,18 @@ events:
     payload:
       thread_ulid: 01KXNSA3PW3MRT8K86MVWAVYXK
     timestamp: 2026-07-16T16:09:09.842Z
+  - _ulid: 01KXP1JAH0VDB9PNDDF05NKJWB
+    actor: Jacob Chapel
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KXNSA3PW3MRT8K86MVWAVYXK
+    timestamp: 2026-07-16T18:03:36.352Z
+  - _ulid: 01KXP1JDQMHWZMZ68XD253CQWX
+    actor: Jacob Chapel
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KXNSA3PW3MRT8K86MVWAVYXK
+    timestamp: 2026-07-16T18:03:39.636Z
 examined_commit: 502c9cdde3f4acc5526d3a7969e3fe9da9f0b2b2
 external_links: []
 lifecycle_state: closed
@@ -253,7 +265,16 @@ threads:
           unapproved commits. This task will remain blocked until that owner merges, then rebase and
           add the prescribed UI conversion/round-trip coverage."
         created_at: 2026-07-16T16:09:09.523Z
+      - _ulid: 01KXP1JA8NDBZHKF4E0HPG5C19
+        author: Jacob Chapel
+        body: Fixed in 6c7f7d0fb1 after rebasing onto approved UI snapshot 817a42a5b8. The real-daemon test
+          passes the raw non-empty public status response through parseAgentDispatchStatusWire,
+          asserts exact recursive lifecycle conversion, and schema-validates a semantic round trip
+          back to the original public wire model.
+        created_at: 2026-07-16T18:03:36.083Z
     kind: blocker
+    resolved_at: 2026-07-16T18:03:39.377Z
+    resolved_by: Jacob Chapel
   - _ulid: 01KXNSA75KYYXCY7KXX0SPZ4TD
     anchor:
       type: code
@@ -359,5 +380,5 @@ verdicts:
     role: reviewer
     created_at: 2026-07-16T15:39:39.428Z
 created_at: 2026-07-16T15:17:40.992Z
-updated_at: 2026-07-16T16:09:09.523Z
+updated_at: 2026-07-16T18:03:39.377Z
 notes: []
