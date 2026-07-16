@@ -119,6 +119,70 @@ checks:
     runner: npm run typecheck
     created_at: 2026-07-16T02:09:39.709Z
     completed_at: 2026-07-16T02:09:39.709Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "2810 suites passed; 10748 tests passed; 3 skipped. Full log:
+      /tmp/kspec-test-cache/01KXM9MH84KCNR9RBNQ11J7A93/bfc708b738e40257.log"
+    name: full test suite
+    required: true
+    runner: npm test -- --fresh
+    created_at: 2026-07-16T02:09:58.583Z
+    completed_at: 2026-07-16T02:09:58.583Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Passed with 6 pre-existing/deprecated-reference warnings allowed.
+    name: kspec validate refs
+    required: true
+    runner: kspec validate --refs --warnings-ok
+    created_at: 2026-07-16T02:10:01.923Z
+    completed_at: 2026-07-16T02:10:01.923Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Passed with repository baseline warnings allowed: 45 orphaned specs and 10 status mismatches."
+    name: kspec validate alignment
+    required: true
+    runner: kspec validate --alignment --warnings-ok
+    created_at: 2026-07-16T02:10:05.218Z
+    completed_at: 2026-07-16T02:10:05.218Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Passed with repository baseline warnings allowed. Manual task-Covers audit found four
+      lifecycle event AC annotations absent; recorded separately as a blocker.
+    name: kspec validate completeness
+    required: true
+    runner: kspec validate --completeness --warnings-ok
+    created_at: 2026-07-16T02:10:08.684Z
+    completed_at: 2026-07-16T02:10:08.684Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: No whitespace errors in base-to-head diff.
+    name: diff check
+    required: false
+    runner: git diff --check
+    created_at: 2026-07-16T02:10:12.566Z
+    completed_at: 2026-07-16T02:10:12.566Z
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Instrumented existing invalid-transition/not-found lifecycle test with
+      onDispatchControlEvent. Both ref-only failures returned errors but callback events remained
+      []; expected 2. Diagnostic failed 1/16 and was reverted clean.
+    name: "behavioral diagnostic: ref-only failure events"
+    required: false
+    runner: temporary targeted diagnostic
+    created_at: 2026-07-16T02:10:16.991Z
+    completed_at: 2026-07-16T02:10:16.991Z
 events:
   - _ulid: 01KXM9QJPKG7GGSFKQ9ACJEDBF
     actor: Jacob Chapel
@@ -261,6 +325,48 @@ events:
       status: pass
       name: typecheck
     timestamp: 2026-07-16T02:09:39.970Z
+  - _ulid: 01KXMB06208PJCB00WQ97KV94Y
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: full test suite
+    timestamp: 2026-07-16T02:09:58.848Z
+  - _ulid: 01KXMB09A6GKF8EC2PPAC7GB62
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate refs
+    timestamp: 2026-07-16T02:10:02.182Z
+  - _ulid: 01KXMB0CH4J9BQY2A8JWRXQFM9
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate alignment
+    timestamp: 2026-07-16T02:10:05.476Z
+  - _ulid: 01KXMB0FXKVX807F09B0XQRBVW
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate completeness
+    timestamp: 2026-07-16T02:10:08.947Z
+  - _ulid: 01KXMB0KPF2VN5VPEXTAT3E90Y
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: diff check
+    timestamp: 2026-07-16T02:10:12.816Z
+  - _ulid: 01KXMB0R4VWXYRZ7HFHJSVT3P4
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: fail
+      name: "behavioral diagnostic: ref-only failure events"
+    timestamp: 2026-07-16T02:10:17.371Z
 examined_commit: 40aed15a47ba2163b9d3ff74e5cadfee02d83c5c
 external_links: []
 lifecycle_state: closed
@@ -382,5 +488,5 @@ verdicts:
     role: reviewer
     created_at: 2026-07-16T02:09:24.139Z
 created_at: 2026-07-16T01:47:48.307Z
-updated_at: 2026-07-16T02:09:39.709Z
+updated_at: 2026-07-16T02:10:16.991Z
 notes: []
