@@ -11,8 +11,101 @@ checks:
     name: format
     required: true
     runner: npm run format:check
-    created_at: 2026-07-16T21:37:29.623Z
-    completed_at: 2026-07-16T21:37:29.623Z
+    created_at: 2026-07-16T21:36:58.162Z
+    completed_at: 2026-07-16T21:36:58.162Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Repo-wide lint passed with 0 errors and 696 baseline warnings; focused oxlint on
+      tests/e2e/dispatch-lifecycle.spec.ts passed with 0 warnings and 0 errors.
+    name: lint
+    required: true
+    runner: npm run lint -- --quiet
+    created_at: 2026-07-16T21:37:01.579Z
+    completed_at: 2026-07-16T21:37:01.579Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Shared package build and TypeScript no-emit check passed.
+    name: typecheck
+    required: true
+    runner: npm run typecheck
+    created_at: 2026-07-16T21:37:05.114Z
+    completed_at: 2026-07-16T21:37:05.114Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Fresh run passed 2830 suites; 10926 tests passed and 3 expected tests skipped of 10929.
+    name: full test suite
+    required: true
+    runner: npm test -- --fresh
+    created_at: 2026-07-16T21:37:08.547Z
+    completed_at: 2026-07-16T21:37:08.547Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Schema and references passed with 6 allowed deprecated-reference warnings.
+    name: kspec validate refs
+    required: true
+    runner: kspec validate --refs --warnings-ok
+    created_at: 2026-07-16T21:37:11.734Z
+    completed_at: 2026-07-16T21:37:11.734Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Alignment validation passed with the repository warning baseline.
+    name: kspec validate alignment
+    required: true
+    runner: kspec validate --alignment --warnings-ok
+    created_at: 2026-07-16T21:37:15.055Z
+    completed_at: 2026-07-16T21:37:15.055Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Completeness validation passed with the repository warning baseline; all ui-agent-dispatch
+      ACs have behavioral browser annotations.
+    name: kspec validate completeness
+    required: true
+    runner: kspec validate --completeness --warnings-ok
+    created_at: 2026-07-16T21:37:18.540Z
+    completed_at: 2026-07-16T21:37:18.540Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Chromium Playwright run passed 12 of 12 cases at explicit 1440x900 and 390x844 viewports.
+    name: focused browser suite
+    required: true
+    runner: npm run test:e2e -- tests/e2e/dispatch-lifecycle.spec.ts
+    created_at: 2026-07-16T21:37:22.197Z
+    completed_at: 2026-07-16T21:37:22.197Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Base-to-head diff has no whitespace errors.
+    name: git diff check
+    required: true
+    runner: git diff --check
+    created_at: 2026-07-16T21:37:25.459Z
+    completed_at: 2026-07-16T21:37:25.459Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: dispatch lifecycle controls, WebSocket cache invalidation, and fleet buffer slice passed
+      100 of 100 tests.
+    name: focused lifecycle regression slice
+    required: false
+    runner: npm test -- lifecycle web-ui slice
+    created_at: 2026-07-16T21:37:28.949Z
+    completed_at: 2026-07-16T21:37:28.949Z
 events:
   - _ulid: 01KXPCP5XSQ9Q03VQWMJP2G2QN
     actor: Jacob Chapel
@@ -27,13 +120,83 @@ events:
       from: draft
       to: open
     timestamp: 2026-07-16T21:18:42.999Z
-  - _ulid: 01KXPDSZ9TKBK5WZEG7G8NGWCA
+  - _ulid: 01KXPDS0J708JEA033NAGE09ZY
     actor: Jacob Chapel
     event_type: check_added
     payload:
       status: pass
       name: format
-    timestamp: 2026-07-16T21:37:29.914Z
+    timestamp: 2026-07-16T21:36:58.440Z
+  - _ulid: 01KXPDS3WP8HN97PX0VS3Z7JEZ
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: lint
+    timestamp: 2026-07-16T21:37:01.846Z
+  - _ulid: 01KXPDS7AJBKYCKW0PEG4X3XMH
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: typecheck
+    timestamp: 2026-07-16T21:37:05.362Z
+  - _ulid: 01KXPDSANH91N6VG6MDA9RTHBE
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: full test suite
+    timestamp: 2026-07-16T21:37:08.786Z
+  - _ulid: 01KXPDSDSNE6ZWDEYT9WN50GKB
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate refs
+    timestamp: 2026-07-16T21:37:11.989Z
+  - _ulid: 01KXPDSH1HCK7X2QCQ9D5AQWVQ
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate alignment
+    timestamp: 2026-07-16T21:37:15.313Z
+  - _ulid: 01KXPDSMH4TMR3V76KKVVQ6DY0
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate completeness
+    timestamp: 2026-07-16T21:37:18.884Z
+  - _ulid: 01KXPDSR0HS0FZ8WZEQEMSXSWM
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: focused browser suite
+    timestamp: 2026-07-16T21:37:22.449Z
+  - _ulid: 01KXPDSV6WX43EN52MZYAVVWB2
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: git diff check
+    timestamp: 2026-07-16T21:37:25.724Z
+  - _ulid: 01KXPDSYM4KBF94FWD8DCJT37T
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: focused lifecycle regression slice
+    timestamp: 2026-07-16T21:37:29.220Z
+  - _ulid: 01KXPDT223ABXH4GFXFZ2C5G9H
+    actor: pr-reviewer
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KXPDT1T4D07AMDCG9ZCDH2FH
+    timestamp: 2026-07-16T21:37:32.739Z
 examined_commit: b28c29557d3ec15ee1cfc0b14c6d2ee5a57b86aa
 external_links: []
 lifecycle_state: open
@@ -43,8 +206,32 @@ subject:
   content_hash: ""
   ref: "@01KXH2PY7C0W6GDQAFZN12HMC4"
   shadow_commit: ""
-threads: []
+threads:
+  - _ulid: 01KXPDT1T4D07AMDCG9ZCDH2FH
+    entries:
+      - _ulid: 01KXPDT1T40S7DD2WG92QJ8AHT
+        author: pr-reviewer
+        body: "Review evidence log (informational; zero findings). Files read:
+          tests/e2e/dispatch-lifecycle.spec.ts; tests/e2e/fixtures/test-base.ts;
+          tests/e2e/agents.spec.ts; playwright.config.ts;
+          packages/web-ui/src/routes/agents/+page.svelte;
+          packages/web-ui/src/lib/components/agents/DispatchStatus.svelte;
+          packages/web-ui/src/lib/components/agents/HeldTaskRow.svelte;
+          packages/web-ui/src/lib/api.ts; task, spec, plan, and prior-review context. Commands run:
+          exact base-to-head and fix-cycle diffs/logs; focused Playwright suite; focused lifecycle
+          regression slice; format; repo and focused lint; typecheck; fresh full npm test;
+          refs/alignment/completeness validation; git diff check; AC/source-scanning audit. Claims
+          verified: shared isolated daemon fixture is used; all 12 Chromium cases pass; explicit
+          1440x900 and 390x844 coverage is exercised; exact global/task action matrices, canonical
+          response identity, confirmation cancellation, keyboard focus, polite live regions, mapped
+          errors, static read-only behavior, and console/page-error outcomes are behaviorally
+          asserted; full suite passes 10926 with 3 expected skips. Categories searched: correctness,
+          edge cases, error handling, security/data exposure, test quality, accessibility,
+          integration, regression risk. Prior five blockers were independently rechecked and are
+          resolved. No product-code or shared-guidance surfaces changed."
+        created_at: 2026-07-16T21:37:32.484Z
+    kind: nit
 verdicts: []
 created_at: 2026-07-16T21:17:57.059Z
-updated_at: 2026-07-16T21:37:29.623Z
+updated_at: 2026-07-16T21:37:32.484Z
 notes: []
