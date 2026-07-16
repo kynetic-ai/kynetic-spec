@@ -136,3 +136,17 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-07-16T16:18:45.301Z
+  - _ulid: 01KXNWWDXAABYWE1WRWTQ4K6DS
+    content: "Fix cycle 4 completed in 5730514449. Preserved stale invalid-project recovery for both
+      lifecycle status and control responses before strict envelope parsing, with behavioral tests
+      observing clearInvalidSelection. Moved task lifecycle announcements to a persistent polite
+      atomic agents-page live region and added browser coverage proving successful resume removes
+      the row while its announcement survives; hardened rejected task-control focus timing. All
+      three cycle-4 threads resolved. Gates: format pass; repo lint 0 errors; focused lint 0
+      warnings/errors; typecheck pass; focused lifecycle/invalidation/fleet 100/100; agents
+      Playwright 51/51; fresh full suite 10,922 passed/3 skipped; refs/alignment/completeness
+      accepted baselines; diff check pass. Re-verified all 16 @ui-agent-dispatch AC annotations and
+      assigned cross-spec raw-error annotation."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-07-16T16:41:44.619Z
