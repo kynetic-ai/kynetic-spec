@@ -1,0 +1,26 @@
+_ulid: 01KXNXF2V47S1BJF04AGCA0PZE
+slugs: []
+title: Review lifecycle UI consumers and controls (cycle 5)
+author: Jacob Chapel
+checks: []
+events:
+  - _ulid: 01KXNXF2V3Q3ZG6Y1MQMS8M7J9
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-07-16T16:51:55.876Z
+examined_commit: 5730514449aa2ac0f80f87e29201897efb9248c2
+external_links: []
+lifecycle_state: draft
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KXH2PVX606KVK5C4ERCB8WTY"
+  shadow_commit: ""
+threads: []
+verdicts: []
+created_at: 2026-07-16T16:51:55.876Z
+updated_at: null
+notes: []
