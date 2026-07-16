@@ -80970,7 +80970,7 @@ runs:
     started_at: 2026-07-16T12:08:27.463Z
     completed_at: 2026-07-16T12:08:38.622Z
   - _ulid: 01KXNDVK1A7AWEEVC03TCEX1DY
-    status: active
+    status: completed
     current_step: 3
     initiated_by: Jacob Chapel
     step_results:
@@ -81007,10 +81007,13 @@ runs:
           reflection baseline truncation -> @01KXJ4K3/@01KSDZFN. No unique high-confidence item
           remains, and lower-confidence successes are intentionally omitted under loop-mode volume
           rules."
-      - status: completed
+      - status: skipped
         step_index: 3
         started_at: 2026-07-16T12:22:25.951Z
-        completed_at: 2026-07-16T12:22:25.951Z
+        completed_at: 2026-07-16T12:22:35.184Z
+        notes: "No capture: every high-confidence candidate was already covered by an existing task, inbox
+          item, or observation. Creating nothing is the correct loop-mode outcome."
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-07-16T12:19:08.458Z
+    completed_at: 2026-07-16T12:22:35.184Z
