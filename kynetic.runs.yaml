@@ -81579,7 +81579,7 @@ runs:
     completed_at: 2026-07-16T16:14:33.800Z
   - _ulid: 01KXNWZZQN7YBJG9N3XXMQ21XZ
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -81598,7 +81598,22 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-07-16T16:44:21.632Z
-        completed_at: 2026-07-16T16:44:21.632Z
+        completed_at: 2026-07-16T16:45:59.367Z
+        notes: "High-confidence untracked friction: endpoint-specific strict lifecycle response parsing
+          consumed non-2xx bodies directly and bypassed the shared invalid-project recovery path in
+          both status and control calls; cross-cutting recovery must run before specialized envelope
+          validation. High-confidence untracked success: asynchronous announcements for controls
+          that can remove their own keyed row should be owned by a persistent parent live region and
+          proven with a browser test that observes both row removal and the surviving polite/atomic
+          announcement. Excluded as duplicates: slow/full-suite silence and process-tree diagnosis
+          are covered by @task-investigate-npm-test-teardown-hang-after-green-suite-run and
+          @01KVS5B5; repeated E2E production builds by inbox @01KFYAHF; unbounded reflection
+          baseline by inbox @01KXJRJXA; workflow show run-ref mismatch by inbox @01KXJKHV;
+          browser-level AC coverage by @01KXNN1R."
+      - status: completed
+        step_index: 2
+        started_at: 2026-07-16T16:45:59.367Z
+        completed_at: 2026-07-16T16:45:59.367Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-07-16T16:43:41.174Z
