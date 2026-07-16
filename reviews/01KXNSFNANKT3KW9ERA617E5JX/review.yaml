@@ -13,6 +13,18 @@ checks:
     runner: npm run format:check
     created_at: 2026-07-16T16:04:12.680Z
     completed_at: 2026-07-16T16:04:12.680Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "PASS on ccdbdbf1576a: repo-wide oxlint completed with 0 errors (696 baseline warnings).
+      Focused changed-file oxlint completed with 0 errors; its 4 warnings are on pre-existing lines
+      in tests/web-ui/ws-cache-invalidation.test.ts, while this diff changes only later assertions."
+    name: lint
+    required: true
+    runner: npm run lint -- --quiet
+    created_at: 2026-07-16T16:04:18.973Z
+    completed_at: 2026-07-16T16:04:18.973Z
 events:
   - _ulid: 01KXNSFNANGKV7Q691FYEJJR3W
     actor: Jacob Chapel
@@ -34,6 +46,13 @@ events:
       status: pass
       name: format
     timestamp: 2026-07-16T16:04:12.997Z
+  - _ulid: 01KXNTQX9E1K2D0GC0NMNJDSV8
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: lint
+    timestamp: 2026-07-16T16:04:19.374Z
 examined_commit: ccdbdbf1576a4b84197652909759850dff01cc5c
 external_links: []
 lifecycle_state: open
@@ -46,5 +65,5 @@ subject:
 threads: []
 verdicts: []
 created_at: 2026-07-16T15:42:20.501Z
-updated_at: 2026-07-16T16:04:12.680Z
+updated_at: 2026-07-16T16:04:18.973Z
 notes: []
