@@ -23976,6 +23976,17 @@ observations:
     resolved: false
     workflow_ref: "@session-reflect-loop"
     created_at: 2026-07-15T20:51:59.721Z
+  - _ulid: 01KXM7BMG3XVVHSZC3CBD1A5SX
+    type: success
+    content: A pure canonical-identity protection classifier paired with a protected-state ×
+      destructive-surface behavioral matrix made cleanup policy consistent across task, registry,
+      branch, worktree, reviewer snapshot, and root-pruning paths; adding physical session and
+      registry assertions then verified the matrix represented preserved evidence rather than only
+      classifier internals.
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    created_at: 2026-07-16T01:06:19.779Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
