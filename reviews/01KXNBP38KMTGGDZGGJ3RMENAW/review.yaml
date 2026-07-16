@@ -391,6 +391,30 @@ events:
       kind: nit
       thread_ulid: 01KXND0RKYQHVV409GZ8W34ECV
     timestamp: 2026-07-16T12:04:29.750Z
+  - _ulid: 01KXND2K3FCMM4Z1XY1J2A8XBW
+    actor: Jacob Chapel
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KXNCZX325B1SNBYF3ZVRPSJE
+    timestamp: 2026-07-16T12:05:29.328Z
+  - _ulid: 01KXND2Q8WVKEHSASWSSVSYD9P
+    actor: Jacob Chapel
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KXND014EYSNKPWRR99W84G41
+    timestamp: 2026-07-16T12:05:33.596Z
+  - _ulid: 01KXND2VC8KY162W2V7R9J8KSF
+    actor: Jacob Chapel
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KXND05GGR4MCQWADM95V5XX9
+    timestamp: 2026-07-16T12:05:37.800Z
+  - _ulid: 01KXND2ZGNBFH6AYTKPX6RDWSD
+    actor: Jacob Chapel
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KXND0RKYQHVV409GZ8W34ECV
+    timestamp: 2026-07-16T12:05:42.037Z
 examined_commit: ef7ffa06f604363415e906b2db0ccfbc3abb4afb
 external_links: []
 lifecycle_state: open
@@ -498,6 +522,8 @@ threads:
           ensure the assertions prove each authority result.
         created_at: 2026-07-16T12:04:01.250Z
     kind: blocker
+    resolved_at: 2026-07-16T12:05:29.020Z
+    resolved_by: Jacob Chapel
   - _ulid: 01KXND014EYSNKPWRR99W84G41
     anchor:
       type: code
@@ -518,6 +544,8 @@ threads:
           the required subprocess helper and exercise real flags for every grammar row.
         created_at: 2026-07-16T12:04:05.391Z
     kind: blocker
+    resolved_at: 2026-07-16T12:05:33.294Z
+    resolved_by: Jacob Chapel
   - _ulid: 01KXND05GGR4MCQWADM95V5XX9
     anchor:
       type: code
@@ -538,6 +566,8 @@ threads:
           with a distinctive thrown error that must not appear.
         created_at: 2026-07-16T12:04:09.873Z
     kind: blocker
+    resolved_at: 2026-07-16T12:05:37.485Z
+    resolved_by: Jacob Chapel
   - _ulid: 01KXND0RKYQHVV409GZ8W34ECV
     entries:
       - _ulid: 01KXND0RKY0J2072RHNW32QB4Y
@@ -555,7 +585,9 @@ threads:
           applicable."
         created_at: 2026-07-16T12:04:29.438Z
     kind: nit
+    resolved_at: 2026-07-16T12:05:41.737Z
+    resolved_by: Jacob Chapel
 verdicts: []
 created_at: 2026-07-16T11:41:11.315Z
-updated_at: 2026-07-16T12:04:29.438Z
+updated_at: 2026-07-16T12:05:41.737Z
 notes: []
