@@ -453,9 +453,31 @@ events:
       status: pass
       name: review evidence log
     timestamp: 2026-07-16T10:00:57.591Z
+  - _ulid: 01KXN5Z8QVRWWBHZ6EJRHBDFR7
+    actor: codex-reviewer
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KXN5TRTNKTT5RH005M2MSTBB
+    timestamp: 2026-07-16T10:01:20.379Z
+  - _ulid: 01KXN5ZBVVSY0FD4BJSDRWRG03
+    actor: codex-reviewer
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: request_changes
+    timestamp: 2026-07-16T10:01:23.579Z
+  - _ulid: 01KXN5ZBVVXJK1TR0GX0C5VSKX
+    actor: codex-reviewer
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-07-16T10:01:23.579Z
 examined_commit: cd4d2f46e13e390617ae1fe9e09ee74af8af4e43
 external_links: []
-lifecycle_state: open
+lifecycle_state: closed
 related_refs: []
 subject:
   type: task
@@ -488,6 +510,8 @@ threads:
           add a behavioral concurrent post-start persistence-failure regression."
         created_at: 2026-07-16T09:58:53.013Z
     kind: blocker
+    resolved_at: 2026-07-16T10:01:20.105Z
+    resolved_by: codex-reviewer
   - _ulid: 01KXN5XFE45F3YZQ7BFY3P5VS5
     anchor:
       type: code
@@ -513,7 +537,14 @@ threads:
           add a behavioral concurrent post-start persistence-failure regression."
         created_at: 2026-07-16T10:00:21.701Z
     kind: blocker
-verdicts: []
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: request_changes
+    reviewer: codex-reviewer
+    role: reviewer
+    created_at: 2026-07-16T10:01:23.579Z
 created_at: 2026-07-16T09:40:07.588Z
-updated_at: 2026-07-16T10:00:57.317Z
+updated_at: 2026-07-16T10:01:23.579Z
 notes: []
