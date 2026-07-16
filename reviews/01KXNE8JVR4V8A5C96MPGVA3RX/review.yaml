@@ -505,6 +505,78 @@ events:
       from: open
       to: closed
     timestamp: 2026-07-16T12:49:56.872Z
+  - _ulid: 01KXNH89VZ1AV3WRP6CXHC27QG
+    actor: Jacob Chapel
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KXNFEAGSK0D2131WCS3DHY8V
+    timestamp: 2026-07-16T13:18:30.783Z
+  - _ulid: 01KXNH8CWM8F76HYJ4DAXJS88C
+    actor: Jacob Chapel
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KXNFEAGSK0D2131WCS3DHY8V
+    timestamp: 2026-07-16T13:18:33.876Z
+  - _ulid: 01KXNH8FTBQFTR6PX98A2SNWYV
+    actor: Jacob Chapel
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KXNFEDVD8B18PAWKSG5SH4MC
+    timestamp: 2026-07-16T13:18:36.875Z
+  - _ulid: 01KXNH8JNYFG4KWM0NGQ8525F0
+    actor: Jacob Chapel
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KXNFEDVD8B18PAWKSG5SH4MC
+    timestamp: 2026-07-16T13:18:39.806Z
+  - _ulid: 01KXNH8NRSN5NDVC2MBMX1CD55
+    actor: Jacob Chapel
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KXNFEH6FMXTG6FCZDT3CXM6J
+    timestamp: 2026-07-16T13:18:42.969Z
+  - _ulid: 01KXNH8RSEMNWNTNET6V6K3XXF
+    actor: Jacob Chapel
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KXNFEH6FMXTG6FCZDT3CXM6J
+    timestamp: 2026-07-16T13:18:46.062Z
+  - _ulid: 01KXNH8W06FB6AX81ANK8YRP5S
+    actor: Jacob Chapel
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KXNFEMC3Q7FA79NK96B94ZS1
+    timestamp: 2026-07-16T13:18:49.350Z
+  - _ulid: 01KXNH8Z50BDBMDPAR4DZTXDC3
+    actor: Jacob Chapel
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KXNFEMC3Q7FA79NK96B94ZS1
+    timestamp: 2026-07-16T13:18:52.576Z
+  - _ulid: 01KXNH92ADSM7CCP23TG270R0D
+    actor: Jacob Chapel
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KXNFEQNKKHWRKSZJFEFCP5SC
+    timestamp: 2026-07-16T13:18:55.821Z
+  - _ulid: 01KXNH95EFHXA6ZVFYSBK4PSE6
+    actor: Jacob Chapel
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KXNFEQNKKHWRKSZJFEFCP5SC
+    timestamp: 2026-07-16T13:18:59.023Z
+  - _ulid: 01KXNH98MVM416MCWQZWEPNG32
+    actor: Jacob Chapel
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KXNFETSNSM0GMMWFCRQN2GJ7
+    timestamp: 2026-07-16T13:19:02.299Z
+  - _ulid: 01KXNH9BQ319F8K16D4RPAZ56N
+    actor: Jacob Chapel
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KXNFETSNSM0GMMWFCRQN2GJ7
+    timestamp: 2026-07-16T13:19:05.443Z
 examined_commit: 94bade5fd3b922dc5be743c479cbca710b5f864c
 external_links: []
 lifecycle_state: closed
@@ -534,7 +606,16 @@ threads:
           browser tests that exercise the actual behaviors for hard-stop
           cancellation/evidence/cancelled outcome, focus retention, and live updates.
         created_at: 2026-07-16T12:46:50.905Z
+      - _ulid: 01KXNH89M4PGBE134RWNX1QBST
+        author: Jacob Chapel
+        body: "Fixed in da3bae8d95: replaced constant-only annotations with a Playwright test that opens and
+          cancels the real dialog, verifies cancellation/evidence text and labels, sends no request
+          on Cancel, performs a successful pause, verifies focus on Resume, and observes the polite
+          live update."
+        created_at: 2026-07-16T13:18:30.529Z
     kind: blocker
+    resolved_at: 2026-07-16T13:18:33.629Z
+    resolved_by: Jacob Chapel
   - _ulid: 01KXNFEDVD8B18PAWKSG5SH4MC
     anchor:
       type: code
@@ -554,7 +635,16 @@ threads:
           surviving/replacement logical control after the refreshed DOM is committed, and cover the
           success path behaviorally.
         created_at: 2026-07-16T12:46:54.317Z
+      - _ulid: 01KXNH8FJPZT1KENR5NN1BJJ5B
+        author: Jacob Chapel
+        body: "Fixed in da3bae8d95: both global and held-task controls now wait for the refreshed DOM,
+          reject detached invoking nodes, focus a connected replacement logical action, and fall
+          back to a surviving global lifecycle control when a task row disappears. Cancel prefers
+          the still-connected invoking control. The success path is browser-tested."
+        created_at: 2026-07-16T13:18:36.630Z
     kind: blocker
+    resolved_at: 2026-07-16T13:18:39.584Z
+    resolved_by: Jacob Chapel
   - _ulid: 01KXNFEH6FMXTG6FCZDT3CXM6J
     anchor:
       type: code
@@ -573,7 +663,15 @@ threads:
           section whenever dispatch was enabled. Change the section condition so running/zero-active
           remains visible and accessible.
         created_at: 2026-07-16T12:46:57.743Z
+      - _ulid: 01KXNH8NGY0FND2WRM61R6MSK8
+        author: Jacob Chapel
+        body: "Fixed in da3bae8d95: the active-invocations section now renders whenever authority is running
+          or active evidence exists, so the running zero-active empty state and polite region are
+          reachable. Both existing browser regressions pass."
+        created_at: 2026-07-16T13:18:42.718Z
     kind: blocker
+    resolved_at: 2026-07-16T13:18:45.816Z
+    resolved_by: Jacob Chapel
   - _ulid: 01KXNFEMC3Q7FA79NK96B94ZS1
     anchor:
       type: code
@@ -593,7 +691,16 @@ threads:
           before projection, and add unknown-field tests that would fail with the current
           implementation.
         created_at: 2026-07-16T12:47:00.996Z
+      - _ulid: 01KXNH8VQDEYY5QZ116XP2EP81
+        author: Jacob Chapel
+        body: "Fixed in da3bae8d95: complete public status, lifecycle error, success envelope, and mutation
+          data key sets are validated before any projection. Strict shared lifecycle parsing remains
+          authoritative for nested invariants. New tests prove unknown status-root,
+          response-envelope, and response-data fields are rejected."
+        created_at: 2026-07-16T13:18:49.069Z
     kind: blocker
+    resolved_at: 2026-07-16T13:18:52.315Z
+    resolved_by: Jacob Chapel
   - _ulid: 01KXNFEQNKKHWRKSZJFEFCP5SC
     anchor:
       type: code
@@ -613,7 +720,16 @@ threads:
           assertions to the new stable lifecycle IDs and sanitized copy (or preserve compatible
           behavior where required) so the suite passes."
         created_at: 2026-07-16T12:47:04.371Z
+      - _ulid: 01KXNH9224HE7ZHWVTHRVFNDPR
+        author: Jacob Chapel
+        body: "Fixed in da3bae8d95: migrated stale indicator/toggle selectors to stable lifecycle IDs, added
+          required hard-stop confirmation, switched raw-error expectations to fixed sanitized copy,
+          restored zero-active behavior, and added canonical route fixtures for the fake-shadow E2E
+          environment. Full agents browser file passes 47/47."
+        created_at: 2026-07-16T13:18:55.556Z
     kind: blocker
+    resolved_at: 2026-07-16T13:18:58.760Z
+    resolved_by: Jacob Chapel
   - _ulid: 01KXNFETSNSM0GMMWFCRQN2GJ7
     entries:
       - _ulid: 01KXNFETSN0Z9CBJ3BX02RJZC0
@@ -633,7 +749,16 @@ threads:
           strictness. Shared/package guidance surfaces touched: none; shared-guidance neutrality is
           not applicable."
         created_at: 2026-07-16T12:47:07.573Z
+      - _ulid: 01KXNH98CYN2BTN8XPV5HDQ6M8
+        author: Jacob Chapel
+        body: "Acknowledged and re-verified in da3bae8d95. Final evidence: format and repo/focused lint
+          pass; typecheck passes; 98 focused lifecycle tests pass; agents browser suite passes
+          47/47; full suite passes 10,873 with 3 skipped; refs/alignment/completeness validations
+          pass at accepted baselines."
+        created_at: 2026-07-16T13:19:02.046Z
     kind: nit
+    resolved_at: 2026-07-16T13:19:05.196Z
+    resolved_by: Jacob Chapel
   - _ulid: 01KXNFHHTHF0QJK0KC9R955KZ1
     anchor:
       type: code
@@ -774,5 +899,5 @@ verdicts:
     role: reviewer
     created_at: 2026-07-16T12:49:56.871Z
 created_at: 2026-07-16T12:26:14.264Z
-updated_at: 2026-07-16T12:49:56.872Z
+updated_at: 2026-07-16T13:19:05.196Z
 notes: []
