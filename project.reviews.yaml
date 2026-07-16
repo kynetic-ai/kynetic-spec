@@ -29886,3 +29886,21 @@ reviews:
     verdict_count: 1
     created_at: 2026-07-16T01:09:15.941Z
     updated_at: 2026-07-16T01:28:30.300Z
+  - _ulid: 01KXM9QJPK2AEF4NSMVN5SMRJ2
+    slugs: []
+    title: Review register, sanitize, and emit dispatch lifecycle events
+    disposition: pending
+    author: Jacob Chapel
+    check_count: 0
+    examined_commit: 40aed15a47ba2163b9d3ff74e5cadfee02d83c5c
+    lifecycle_state: draft
+    related_refs: []
+    subject:
+      type: task
+      content_hash: ""
+      ref: "@01KXH2PS9K1Z5BKY2ZHR30WJ8Y"
+      shadow_commit: ""
+    thread_count: 0
+    unresolved_blocker_count: 0
+    verdict_count: 0
+    created_at: 2026-07-16T01:47:48.307Z
