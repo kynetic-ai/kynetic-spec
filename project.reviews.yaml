@@ -30341,3 +30341,21 @@ reviews:
     verdict_count: 1
     created_at: 2026-07-16T19:20:05.275Z
     updated_at: 2026-07-16T19:43:09.569Z
+  - _ulid: 01KXP9HCRG1MK3HMYN2NPVC5AZ
+    slugs: []
+    title: Review verify lifecycle UI behavior in a real browser
+    disposition: pending
+    author: Jacob Chapel
+    check_count: 0
+    examined_commit: 4bedaff5093dbef95ea81efb52b33c53be08a837
+    lifecycle_state: draft
+    related_refs: []
+    subject:
+      type: task
+      content_hash: ""
+      ref: "@01KXH2PY7C0W6GDQAFZN12HMC4"
+      shadow_commit: ""
+    thread_count: 0
+    unresolved_blocker_count: 0
+    verdict_count: 0
+    created_at: 2026-07-16T20:22:54.480Z
