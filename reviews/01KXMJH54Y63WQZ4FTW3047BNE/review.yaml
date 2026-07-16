@@ -2,7 +2,17 @@ _ulid: 01KXMJH54Y63WQZ4FTW3047BNE
 slugs: []
 title: Review register, sanitize, and emit dispatch lifecycle events (cycle 3)
 author: Jacob Chapel
-checks: []
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: All 1050 files matched formatting.
+    name: format
+    required: true
+    runner: npm run format:check
+    created_at: 2026-07-16T04:36:49.390Z
+    completed_at: 2026-07-16T04:36:49.390Z
 events:
   - _ulid: 01KXMJH54JXCW55KEJ8TNA7MES
     actor: Jacob Chapel
@@ -17,6 +27,13 @@ events:
       from: draft
       to: open
     timestamp: 2026-07-16T04:21:47.628Z
+  - _ulid: 01KXMKD2BGN7Q0SZC5C8W2GK8Q
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: format
+    timestamp: 2026-07-16T04:36:49.648Z
 examined_commit: 227eb5005923d64b52ea7d7f53f8107c2a7d5224
 external_links: []
 lifecycle_state: open
@@ -29,5 +46,5 @@ subject:
 threads: []
 verdicts: []
 created_at: 2026-07-16T04:21:35.006Z
-updated_at: 2026-07-16T04:21:47.368Z
+updated_at: 2026-07-16T04:36:49.390Z
 notes: []
