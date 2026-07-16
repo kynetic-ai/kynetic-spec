@@ -449,9 +449,25 @@ events:
     payload:
       thread_ulid: 01KXMSVF271NM7SMGVQJ6GZCAJ
     timestamp: 2026-07-16T06:30:16.483Z
+  - _ulid: 01KXMSX4VXGGSN790M1SZMZEWS
+    actor: codex-reviewer
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: request_changes
+    timestamp: 2026-07-16T06:30:27.965Z
+  - _ulid: 01KXMSX4VXNNFQ8HG3WV9WNHZ9
+    actor: codex-reviewer
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-07-16T06:30:27.965Z
 examined_commit: 224ff0ef123337050be9107fab0dafa7d90ecfcf
 external_links: []
-lifecycle_state: open
+lifecycle_state: closed
 related_refs: []
 subject:
   type: task
@@ -593,7 +609,14 @@ threads:
     kind: blocker
     resolved_at: 2026-07-16T06:30:16.200Z
     resolved_by: Jacob Chapel
-verdicts: []
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: request_changes
+    reviewer: codex-reviewer
+    role: reviewer
+    created_at: 2026-07-16T06:30:27.965Z
 created_at: 2026-07-16T06:13:35.585Z
-updated_at: 2026-07-16T06:30:16.200Z
+updated_at: 2026-07-16T06:30:27.965Z
 notes: []
