@@ -89,7 +89,7 @@ tags:
   - daemon
   - api
 vcs_refs: []
-review_ref: "@01KXMYDEJTTN9ZEJY49JZYHP22"
+review_ref: "@01KXN2482NF1GHK853Q1F65NBG"
 submission_linkage:
   review_url: null
   branch: dispatch/task/task-daemon-dispatch-lifecycle-api/01kxh2ps
@@ -368,6 +368,13 @@ history:
         previous: 2026-07-16T07:43:27.018Z
     command: task-submit
     timestamp: 2026-07-16T08:44:26.234Z
+  - author: Jacob Chapel
+    changes:
+      review_ref:
+        new: "@01KXN2482NF1GHK853Q1F65NBG"
+        previous: "@01KXMYDEJTTN9ZEJY49JZYHP22"
+    command: review-link
+    timestamp: 2026-07-16T08:54:11.656Z
 created_at: 2026-07-14T19:47:19.422Z
 started_at: 2026-07-16T08:19:23.182Z
 submitted_at: 2026-07-16T08:44:26.234Z
