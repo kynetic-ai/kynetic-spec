@@ -193,6 +193,13 @@ events:
       kind: blocker
       thread_ulid: 01KXNTSZN8V7HNKTY6ZM79AYSA
     timestamp: 2026-07-16T16:05:27.602Z
+  - _ulid: 01KXNTV52YC4V0Q4FAGDD041CH
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KXNTV4PVK79SWPT0701A2RD7
+    timestamp: 2026-07-16T16:06:05.662Z
 examined_commit: ccdbdbf1576a4b84197652909759850dff01cc5c
 external_links: []
 lifecycle_state: open
@@ -257,7 +264,33 @@ threads:
           region and add a browser behavioral test for this removal path."
         created_at: 2026-07-16T16:05:27.337Z
     kind: blocker
+  - _ulid: 01KXNTV4PVK79SWPT0701A2RD7
+    entries:
+      - _ulid: 01KXNTV4PWCBV4ZT157HA05FYN
+        author: Jacob Chapel
+        body: "Review evidence log — Files read: all 19 changed files in d207e138c1..ccdbdbf157 (daemon
+          agent-dispatch route; web API, lifecycle model, all agents/automation/board/dashboard
+          consumers and WS invalidation; agents E2E and lifecycle/invalidation tests), plus
+          surrounding project store, project-context middleware, query keys/cache wiring, prior
+          versions of api.ts, task/spec/plan context, and all three prior review cycles. Commands
+          run: git diff/stat/log/show/diff-check/status/ref checks; kspec task/item/review queries;
+          format check; repo and focused oxlint; typecheck; fresh full Vitest suite; focused agents
+          Playwright suite; refs/alignment/completeness validations; AC/source/test searches. Claims
+          verified: cycle-3 exact standalone raw-error annotation is present on a behavioral
+          sanitized-failure test; strict lifecycle envelopes fail closed; global/task action tables
+          use matching-scope cleanup; all listed consumers project the camelCase lifecycle model;
+          active/queued/held evidence remains visible in covered states; agents events invalidate
+          agents and automation events; static mode makes no request; canonical branch and detached
+          snapshot both remain ccdbdbf1576a. Categories searched: correctness, wire
+          conversion/invariants, legacy fallback, edge cases, error handling and raw-detail
+          sanitization, invalid project recovery, focus/live accessibility, static mode,
+          WebSocket/cache integration, test quality/AC annotations, source-scanning tests,
+          security/data exposure, consumer inventory, and regression status. Findings: two blocker
+          threads recorded; no source-scanning tests and no shared/package guidance surfaces
+          touched."
+        created_at: 2026-07-16T16:06:05.276Z
+    kind: nit
 verdicts: []
 created_at: 2026-07-16T15:42:20.501Z
-updated_at: 2026-07-16T16:05:27.337Z
+updated_at: 2026-07-16T16:06:05.276Z
 notes: []
