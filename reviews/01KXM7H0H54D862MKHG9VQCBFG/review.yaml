@@ -210,6 +210,42 @@ events:
       from: open
       to: closed
     timestamp: 2026-07-16T01:28:30.300Z
+  - _ulid: 01KXMBAYSW47J52PR2YBTZ8KNJ
+    actor: Jacob Chapel
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KXM8HXANXPJSZ70EDWD5GDP9
+    timestamp: 2026-07-16T02:15:51.868Z
+  - _ulid: 01KXMBB1TW31K9WVP3MVV7QJXZ
+    actor: Jacob Chapel
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KXM8HXANXPJSZ70EDWD5GDP9
+    timestamp: 2026-07-16T02:15:54.972Z
+  - _ulid: 01KXMBB4VYX6A29WB1ZCSPZ47Y
+    actor: Jacob Chapel
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KXM8J2QZ0CCR7MVV9P1DH8SM
+    timestamp: 2026-07-16T02:15:58.078Z
+  - _ulid: 01KXMBB7Y2B6ZEKP8P7R3WQS1Y
+    actor: Jacob Chapel
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KXM8J2QZ0CCR7MVV9P1DH8SM
+    timestamp: 2026-07-16T02:16:01.218Z
+  - _ulid: 01KXMBBB2PT0DKS6HMREX96WJG
+    actor: Jacob Chapel
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KXM8M34SD6G3MVM2PX7JFZFY
+    timestamp: 2026-07-16T02:16:04.438Z
+  - _ulid: 01KXMBBE9SZ128YMWVNAW3E71A
+    actor: Jacob Chapel
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KXM8M34SD6G3MVM2PX7JFZFY
+    timestamp: 2026-07-16T02:16:07.737Z
 examined_commit: dd9e182d59521a161a6b5b383539cc4b70aac120
 external_links: []
 lifecycle_state: closed
@@ -242,7 +278,15 @@ threads:
           Use the mapped canonical key here and add behavioral reap plus terminal-reconciliation
           coverage for a historical alias-only record."
         created_at: 2026-07-16T01:27:14.005Z
+      - _ulid: 01KXMBAYGXNTHBFWX9YKRR5WJX
+        author: Jacob Chapel
+        body: "Fixed in e717fb401d: closing-record reap now resolves the raw alias through the normalized
+          registry alias-to-canonical map. Added real physical reap and terminal self-heal
+          regressions for historical slug-only records controlled by canonical task ID."
+        created_at: 2026-07-16T02:15:51.581Z
     kind: blocker
+    resolved_at: 2026-07-16T02:15:54.731Z
+    resolved_by: Jacob Chapel
   - _ulid: 01KXM8J2QZ0CCR7MVV9P1DH8SM
     anchor:
       type: code
@@ -267,7 +311,17 @@ threads:
           current matrix manually injects pausedHeldTaskRefs and therefore does not prove this
           path."
         created_at: 2026-07-16T01:27:19.551Z
+      - _ulid: 01KXMBB4MWH4ZJG20G8CGVZE7S
+        author: Jacob Chapel
+        body: "Fixed in e717fb401d: paused/stopped startup seeds the authoritative held queue before
+          cleanup, then threads canonical heldTaskIds through registry reconciliation, artifact
+          reconciliation, reap, and reviewer cleanup. Added an engine production-wiring test and
+          real physical worktree/branch/registry preservation coverage for a globally paused held
+          task."
+        created_at: 2026-07-16T02:15:57.852Z
     kind: blocker
+    resolved_at: 2026-07-16T02:16:00.964Z
+    resolved_by: Jacob Chapel
   - _ulid: 01KXM8M34SD6G3MVM2PX7JFZFY
     entries:
       - _ulid: 01KXM8M34S72KXHQNGH7AX7AC8
@@ -297,7 +351,15 @@ threads:
           Shared-package surfaces touched: none; shared-guidance-neutrality and generated-artifact
           regeneration are not applicable.
         created_at: 2026-07-16T01:28:25.497Z
+      - _ulid: 01KXMBBAV25T4CAJA2EB16Q9RP
+        author: Jacob Chapel
+        body: "Fix-cycle evidence: focused cleanup/global lifecycle matrix passes 96/96; full suite passes
+          2,808 suites and 10,731 tests (3 skipped); format, repo/focused lint, typecheck, diff
+          check, refs, alignment, and completeness all pass."
+        created_at: 2026-07-16T02:16:04.194Z
     kind: nit
+    resolved_at: 2026-07-16T02:16:07.482Z
+    resolved_by: Jacob Chapel
 verdicts:
   - applies_to_version:
       type: entity_version
@@ -307,5 +369,5 @@ verdicts:
     role: reviewer
     created_at: 2026-07-16T01:28:30.300Z
 created_at: 2026-07-16T01:09:15.941Z
-updated_at: 2026-07-16T01:28:30.300Z
+updated_at: 2026-07-16T02:16:07.482Z
 notes: []

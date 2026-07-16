@@ -104,3 +104,16 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-07-16T01:50:52.785Z
+  - _ulid: 01KXMBBFE3P7FQ8V450C0DRWHD
+    content: "Fix cycle 1 completed in e717fb401d. Closing reap now canonicalizes raw historical
+      alias-only records through the normalized protection snapshot, preventing physical reap and
+      terminal self-heal for canonically controlled evidence. Global pause/stop startup now seeds
+      held queue identities before cleanup and threads them through registry, artifact, reap, and
+      reviewer destructive surfaces. Added real alias-only reap/self-heal tests, global-held
+      physical preservation, and engine production-wiring coverage. Re-verified all cleanup ACs and
+      inherited trait N/A annotations. Focused matrix: 96/96. Full suite: 2,808 suites / 10,731
+      tests passed (3 skipped). Format, repo/focused lint, typecheck, diff check, refs, alignment,
+      and completeness passed."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-07-16T02:16:08.899Z
