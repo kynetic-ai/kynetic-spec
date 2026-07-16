@@ -132,6 +132,19 @@ checks:
     runner: canonical-plan-review
     created_at: 2026-07-16T22:44:16.525Z
     completed_at: 2026-07-16T22:44:16.525Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: The retained full documentation audit is bounded by deterministic inventory and explicit
+      exclusions, while lifecycle additions are split into fact freeze, two guides, concept,
+      recovery, adjacent surfaces, remainder audit, and final gates. No style-only sweep or
+      speculative product work is authorized.
+    name: Scope proportionality
+    required: true
+    runner: canonical-plan-review
+    created_at: 2026-07-16T22:44:24.943Z
+    completed_at: 2026-07-16T22:44:24.943Z
 events:
   - _ulid: 01KXPHB4W525RSJNXKZZMG0HTJ
     actor: Jacob Chapel
@@ -275,6 +288,13 @@ events:
       status: pass
       name: No product or spec closure scope
     timestamp: 2026-07-16T22:44:16.913Z
+  - _ulid: 01KXPHMGM571K8V1Y3K6SP04PG
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: Scope proportionality
+    timestamp: 2026-07-16T22:44:25.349Z
 examined_commit: null
 external_links: []
 lifecycle_state: open
@@ -707,5 +727,5 @@ threads:
     kind: blocker
 verdicts: []
 created_at: 2026-07-16T22:39:18.405Z
-updated_at: 2026-07-16T22:44:16.525Z
+updated_at: 2026-07-16T22:44:24.943Z
 notes: []
