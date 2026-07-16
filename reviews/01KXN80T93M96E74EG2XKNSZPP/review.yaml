@@ -226,6 +226,18 @@ checks:
     runner: npm test -- --fresh changed lifecycle route files
     created_at: 2026-07-16T10:53:28.953Z
     completed_at: 2026-07-16T10:53:28.953Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Verified prior blocker independently: serialized canonical, unified alias, and legacy
+      start races return settled failures without publishing an engine or mutating stopped
+      authority; generic startup failure permits the queued retry after rollback."
+    name: concurrent cold-start persistence
+    required: false
+    runner: behavioral in-process route tests
+    created_at: 2026-07-16T10:53:34.626Z
+    completed_at: 2026-07-16T10:53:34.626Z
 events:
   - _ulid: 01KXN80T8W5B91KWP2BR13A6RX
     actor: Jacob Chapel
@@ -380,6 +392,13 @@ events:
       status: pass
       name: focused lifecycle tests
     timestamp: 2026-07-16T10:53:29.198Z
+  - _ulid: 01KXN8YXRW072QMP0EAERBVTM0
+    actor: codex-reviewer
+    event_type: check_added
+    payload:
+      status: pass
+      name: concurrent cold-start persistence
+    timestamp: 2026-07-16T10:53:34.877Z
 examined_commit: 6f9462a6c73e15e96c1f013e5a2067034d02e397
 external_links: []
 lifecycle_state: open
@@ -392,5 +411,5 @@ subject:
 threads: []
 verdicts: []
 created_at: 2026-07-16T10:37:08.259Z
-updated_at: 2026-07-16T10:53:28.953Z
+updated_at: 2026-07-16T10:53:34.626Z
 notes: []
