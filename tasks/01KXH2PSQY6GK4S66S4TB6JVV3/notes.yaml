@@ -46,3 +46,18 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-07-16T05:49:06.775Z
+  - _ulid: 01KXMRDJJTFNX7HVXKDDJMBJ7W
+    content: "Fix cycle 1: addressed and resolved all four review blockers in 224ff0ef12. Invalid
+      canonical/legacy transitions now preflight committed matching-scope authority before engine
+      startup using guards shared with locked engine mutations. Legacy stops durably apply/retry
+      cleanup before runtime teardown, and compatibility rows emit cleanup_pending only for
+      DispatchCleanupError while preserving exact pre-commit/internal/invalid rows. Added missing
+      failure AC annotations plus behavioral matrices for no-engine transitions, unrelated cleanup
+      scope, all cleanup codes, retry, native validation, count mismatch, and nested task cleanup.
+      Gates: format/diff, focused lint, repo lint 0 errors, typecheck, focused 59/59, engine/API
+      96/96, refs/alignment/completeness validations pass. Full fresh suite reported every suite
+      PASS through final agent-dispatch-engine 147/147, then reproduced tracked post-green teardown
+      hang and was terminated after a quiet interval."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-07-16T06:04:29.146Z
