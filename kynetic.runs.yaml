@@ -80759,10 +80759,12 @@ runs:
     started_at: 2026-07-16T10:02:53.306Z
     completed_at: 2026-07-16T10:05:15.234Z
   - _ulid: 01KXN7J8BEQPVD7443KCRKRHDP
-    status: active
+    status: aborted
+    abort_reason: Automated dispatch session requires the no-prompt loop reflection variant
     current_step: 0
     initiated_by: Jacob Chapel
     step_results: []
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-07-16T10:29:11.150Z
+    completed_at: 2026-07-16T10:30:05.206Z
