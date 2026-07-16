@@ -188,11 +188,6 @@ function lifecycleControl(
 
 describe("dispatch lifecycle public wire schemas", () => {
   // AC: @daemon-agent-dispatch ac-public-status-lifecycle-additions
-  // AC: @dispatch-lifecycle-control-authority ac-status-reports-authority
-  // AC: @dispatch-lifecycle-control-authority ac-status-reports-projection
-  // AC: @dispatch-lifecycle-control-authority ac-status-reports-active-count
-  // AC: @dispatch-lifecycle-control-authority ac-status-reports-queued-count
-  // AC: @dispatch-lifecycle-control-authority ac-status-reports-held-count
   it("accepts exact idle, pending, failed, and mixed lifecycle rows", () => {
     expect(DispatchCleanupStateSchema.parse({ status: "idle", entries: [] })).toEqual({
       status: "idle",
@@ -242,10 +237,6 @@ describe("dispatch lifecycle public wire schemas", () => {
     expect(DispatchCleanupStateSchema.safeParse(candidate).success).toBe(false);
   });
 
-  // AC: @dispatch-lifecycle-control-authority ac-status-reports-held-task-identity
-  // AC: @dispatch-lifecycle-control-authority ac-status-reports-held-task-scope
-  // AC: @dispatch-lifecycle-control-authority ac-status-reports-held-task-mode
-  // AC: @dispatch-lifecycle-control-authority ac-status-reports-held-task-reason
   it("rejects noncanonical, unsorted, duplicate, and count-mismatched task rows", () => {
     const base = {
       global_authority: "paused",
@@ -341,6 +332,200 @@ describe("canonical dispatch lifecycle routes", () => {
         task_controls: [],
       }),
     );
+  });
+
+  // AC: @dispatch-lifecycle-control-authority ac-status-reports-authority
+  // AC: @dispatch-lifecycle-control-authority ac-status-reports-projection
+  // AC: @dispatch-lifecycle-control-authority ac-status-reports-active-count
+  // AC: @dispatch-lifecycle-control-authority ac-status-reports-queued-count
+  // AC: @dispatch-lifecycle-control-authority ac-status-reports-held-count
+  // AC: @dispatch-lifecycle-control-authority ac-status-reports-held-task-identity
+  // AC: @dispatch-lifecycle-control-authority ac-status-reports-held-task-scope
+  // AC: @dispatch-lifecycle-control-authority ac-status-reports-held-task-mode
+  // AC: @dispatch-lifecycle-control-authority ac-status-reports-held-task-reason
+  it("reports exact active, queued, and task-held lifecycle state", async () => {
+    const fixture = await createLifecycleRouteFixture();
+    await requestLifecycleRoute(fixture, "/api/agent/dispatch/control", {
+      scope: "global",
+      action: "start",
+    });
+    const pause = await requestLifecycleRoute(fixture, "/api/agent/dispatch/control", {
+      scope: "task",
+      action: "pause",
+      task_ref: "@test-task-ready",
+      reason: "operator hold",
+    });
+    expect(pause.status).toBe(200);
+    const pauseBody = await pause.json();
+    const engine = getDispatchEngine(fixture.projectDir)!;
+    const now = 1_752_600_000_000;
+    const internals = engine as unknown as {
+      activeCount: Map<string, number>;
+      activeInvocationDetails: Map<string, Record<string, unknown>>;
+      queues: Map<string, Array<Record<string, unknown>>>;
+    };
+    internals.activeCount.set("task-worker", 1);
+    internals.activeInvocationDetails.set("invocation-active", {
+      invocationId: "invocation-active",
+      sessionId: "session-active",
+      agentId: "task-worker",
+      agentName: "Task Worker",
+      taskId: canonicalTaskId,
+      taskRef: "@test-task-ready",
+      role: "worker",
+      startedAtMs: now - 1_000,
+      resolvedAdapter: "claude-agent-acp",
+      runner: undefined,
+    });
+    internals.queues.set("task-worker", [
+      {
+        agent: {
+          id: "task-worker",
+          name: "Task Worker",
+          adapter: "claude-agent-acp",
+        },
+        change: {
+          taskId: canonicalTaskId,
+          taskRef: "@test-task-ready",
+          fromStatus: "pending",
+          toStatus: "pending",
+          timestamp: now - 500,
+        },
+        retryCount: 0,
+        nextRetryAt: 0,
+        enqueuedAtMs: now - 500,
+        sequence: 1,
+        starvationDeferrals: 0,
+      },
+    ]);
+    const nowSpy = vi.spyOn(Date, "now").mockReturnValue(now);
+    const response = await requestLifecycleRoute(fixture, "/api/agent/status");
+    nowSpy.mockRestore();
+
+    expect(response.status).toBe(200);
+    const body = await response.json();
+    expect({
+      dispatch_enabled: body.dispatch_enabled,
+      active_invocations: body.active_invocations,
+      queued_invocations: body.queued_invocations,
+      queue_depth: body.queue_depth,
+      global_authority: body.global_authority,
+      projection: body.projection,
+      cleanup_state: body.cleanup_state,
+      held_count: body.held_count,
+      held_tasks: body.held_tasks,
+      task_controls: body.task_controls,
+    }).toEqual({
+      dispatch_enabled: true,
+      active_invocations: [
+        {
+          session_id: "session-active",
+          agent_id: "task-worker",
+          task_ref: "@test-task-ready",
+          task_title: "Ready task",
+          elapsed_ms: 1_000,
+          resolved_adapter: "claude-agent-acp",
+        },
+      ],
+      queued_invocations: [
+        {
+          agent_id: "task-worker",
+          task_ref: "@test-task-ready",
+          task_title: "Ready task",
+          wait_ms: 500,
+          resolved_adapter: "claude-agent-acp",
+        },
+      ],
+      queue_depth: 1,
+      global_authority: "running",
+      projection: "running",
+      cleanup_state: { status: "idle", entries: [] },
+      held_count: 1,
+      held_tasks: [
+        {
+          task_id: canonicalTaskId,
+          task_ref: "@test-task-ready",
+          title: "Ready task",
+          scope: "task",
+          mode: "paused",
+          reason: "operator hold",
+          actor: "api",
+          source: "api",
+          controlled_at: pauseBody.data.task_controls[0].controlled_at,
+          updated_at: pauseBody.data.task_controls[0].updated_at,
+        },
+      ],
+      task_controls: pauseBody.data.task_controls,
+    });
+  });
+
+  // AC: @trait-api-endpoint ac-2
+  it("rejects missing and ambiguous task identities without mutation or alias exposure", async () => {
+    const fixture = await createLifecycleRouteFixture();
+    const missingTaskId = "01KG0RR6CA45ZT43W2T6HJMVB9";
+    const missing = await requestLifecycleRoute(fixture, "/api/agent/dispatch/control", {
+      scope: "task",
+      action: "pause",
+      task_id: missingTaskId,
+    });
+    expect(missing.status).toBe(404);
+    const missingBody = await missing.json();
+    expect(missingBody).toEqual({
+      ok: false,
+      data: expect.objectContaining({ task_controls: [], held_tasks: [] }),
+      error: {
+        code: "task_not_found",
+        message: "Task not found",
+        suggestion: "Use an existing canonical task identifier or resolvable task reference.",
+      },
+    });
+    expect(JSON.stringify(missingBody)).not.toContain(missingTaskId);
+    expect(getDispatchEngine(fixture.projectDir)).toBeUndefined();
+
+    const ambiguous = await requestLifecycleRoute(fixture, "/api/agent/dispatch/control", {
+      scope: "task",
+      action: "pause",
+      task_ref: "@01KG0RR",
+    });
+    expect(ambiguous.status).toBe(409);
+    const ambiguousBody = await ambiguous.json();
+    expect(ambiguousBody).toEqual({
+      ok: false,
+      data: expect.objectContaining({ task_controls: [], held_tasks: [] }),
+      error: {
+        code: "task_identity_ambiguous",
+        message: "Task identity is ambiguous",
+        suggestion: "Retry with the canonical task identifier.",
+      },
+    });
+    expect(JSON.stringify(ambiguousBody)).not.toContain("@01KG0RR");
+    expect(getDispatchEngine(fixture.projectDir)).toBeUndefined();
+  });
+
+  // AC: @trait-api-endpoint ac-5
+  // AC: @trait-api-endpoint ac-6
+  it("commits task controls semantically and traces canonical success and failure", async () => {
+    const fixture = await createLifecycleRouteFixture();
+    const success = await requestLifecycleRoute(fixture, "/api/agent/dispatch/control", {
+      scope: "task",
+      action: "pause",
+      task_ref: "@test-task-ready",
+    });
+    expect(success.status).toBe(200);
+    expect(success.headers.get("x-request-id")).toMatch(/^[0-9A-HJKMNP-TV-Z]{26}$/);
+    expect(
+      execSync("git log -1 --pretty=%s", { cwd: path.join(fixture.projectDir, ".kspec") })
+        .toString()
+        .trim(),
+    ).toBe(`dispatch-task-pause-${canonicalTaskId}`);
+
+    const failure = await requestLifecycleRoute(fixture, "/api/agent/dispatch/control", {
+      scope: "task",
+      action: "pause",
+      task_id: "01KG0RR6CA45ZT43W2T6HJMVB9",
+    });
+    expect(failure.status).toBe(404);
+    expect(failure.headers.get("x-request-id")).toMatch(/^[0-9A-HJKMNP-TV-Z]{26}$/);
   });
 
   // AC: @daemon-agent-dispatch ac-control-missing-identity

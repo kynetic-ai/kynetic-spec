@@ -340,15 +340,26 @@ export async function requireCanonicalTaskIdentity(
   projectDir: string,
   input: TaskIdentityInput,
 ): Promise<CanonicalTaskIdentity> {
-  const resolution = await resolveCanonicalTaskIdentity(projectDir, input);
-  if (resolution === null) {
+  let resolver: TaskRefResolver;
+  try {
+    const ctx = await initContext(projectDir);
+    const tasks = await resolveTaskDataManager(ctx).loadAllTasks(ctx);
+    resolver = buildTaskRefResolver(tasks);
+  } catch {
     throw new TaskIdentityResolutionError(
       "task-identity-unavailable",
       `[${input.source}] task identity could not be loaded; rejecting before control lookup.`,
     );
   }
+  const resolution = normalizeTaskIdentity(input, resolver);
   if (!resolution.ok) {
     throw new TaskIdentityResolutionError(resolution.code, resolution.diagnostic);
+  }
+  if (!resolver.getByUlid(resolution.identity.taskId)) {
+    throw new TaskIdentityResolutionError(
+      "unresolved-task-ref",
+      `[${input.source}] task identity does not match an existing task; rejecting before control lookup.`,
+    );
   }
   return resolution.identity;
 }

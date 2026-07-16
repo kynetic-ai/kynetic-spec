@@ -934,6 +934,7 @@ export function createAgentDispatchRoutes(options: AgentDispatchRouteOptions = {
       .post(
         "/dispatch/control",
         async ({ body, projectContext, request, set }) => {
+          set.headers["X-Request-Id"] = ulid();
           const projectDir = projectContext.path;
           let engine = engines.get(projectDir);
           let preflightIdentity: CanonicalTaskIdentity | null = null;
