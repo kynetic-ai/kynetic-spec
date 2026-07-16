@@ -29967,7 +29967,7 @@ reviews:
     title: Review register, sanitize, and emit dispatch lifecycle events (cycle 3)
     disposition: pending
     author: Jacob Chapel
-    check_count: 1
+    check_count: 2
     examined_commit: 227eb5005923d64b52ea7d7f53f8107c2a7d5224
     lifecycle_state: open
     related_refs: []
@@ -29980,4 +29980,4 @@ reviews:
     unresolved_blocker_count: 0
     verdict_count: 0
     created_at: 2026-07-16T04:21:35.006Z
-    updated_at: 2026-07-16T04:36:49.390Z
+    updated_at: 2026-07-16T04:36:55.580Z
