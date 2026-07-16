@@ -237,9 +237,25 @@ events:
       kind: nit
       thread_ulid: 01KXPJMYP86KM0FP7H7HXE5WDG
     timestamp: 2026-07-16T23:02:08.595Z
+  - _ulid: 01KXPJNVXW5DFZ5DMXMRAJ222A
+    actor: plan-reviewer
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: approve
+    timestamp: 2026-07-16T23:02:38.269Z
+  - _ulid: 01KXPJNVXXT32ANCPKADHE5XAM
+    actor: plan-reviewer
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-07-16T23:02:38.269Z
 examined_commit: null
 external_links: []
-lifecycle_state: open
+lifecycle_state: closed
 related_refs: []
 subject:
   type: plan
@@ -280,7 +296,14 @@ threads:
           was not modified."
         created_at: 2026-07-16T23:02:08.329Z
     kind: nit
-verdicts: []
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: approve
+    reviewer: plan-reviewer
+    role: reviewer
+    created_at: 2026-07-16T23:02:38.253Z
 created_at: 2026-07-16T23:00:16.179Z
-updated_at: 2026-07-16T23:02:08.329Z
+updated_at: 2026-07-16T23:02:38.269Z
 notes: []
