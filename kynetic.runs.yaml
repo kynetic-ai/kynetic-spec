@@ -80971,7 +80971,7 @@ runs:
     completed_at: 2026-07-16T12:08:38.622Z
   - _ulid: 01KXNDVK1A7AWEEVC03TCEX1DY
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -80984,7 +80984,23 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-07-16T12:20:00.796Z
-        completed_at: 2026-07-16T12:20:00.796Z
+        completed_at: 2026-07-16T12:22:15.477Z
+        notes: "High-confidence candidates from this session: (1) full npm test took 2623.9s and required
+          repeated polling; already tracked by unresolved friction @01KJJT519 and completed
+          local-sharding work @01KJA66Z. (2) browser-level lifecycle accessibility/control
+          verification is already pending as @task-verify-ui-lifecycle-browser. (3) exact public
+          status projection, including the active_count omission found at the UI boundary, is
+          already covered by pending @task-verify-api-cli-projection. (4) kspec workflow show
+          docs/CLI mismatch is already covered by @01KKBD52 plus multiple inbox/observation records.
+          (5) unbounded reflection baseline truncation is already tracked exactly by unresolved
+          @01KXJ4K3 and inbox @01KSDZFN. Success candidate—reusing the shared strict lifecycle
+          schema at the UI boundary caught malformed/missing fields early—is consistent with
+          existing shared-schema deduplication work @task-deduplicate-web-ui-types, so it is not
+          unique enough to capture."
+      - status: completed
+        step_index: 2
+        started_at: 2026-07-16T12:22:15.477Z
+        completed_at: 2026-07-16T12:22:15.477Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-07-16T12:19:08.458Z
