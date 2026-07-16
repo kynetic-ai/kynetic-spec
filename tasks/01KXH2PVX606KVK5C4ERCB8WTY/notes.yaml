@@ -1,1 +1,17 @@
-notes: []
+notes:
+  - _ulid: 01KXNBTGV9AW28DDY02Y5HF6AF
+    content: "Approach: reuse the shared strict DispatchLifecycleStatusSchema at the web API boundary,
+      add deterministic camelCase conversion plus a centralized matching-scope lifecycle action
+      model, and migrate every listed consumer to that model. Minimal dependency repair: the merged
+      public status route omitted required active_count, so add that exact wire field rather than
+      synthesize evidence in the client. Edge cases: legacy absent authority with active work,
+      global versus unrelated task cleanup, mixed pending/failed cleanup, stale 409 refresh, static
+      read-only controls, retry without auto-resume, canonical task identity, fixed sanitized
+      failures, focus/live announcements, and active evidence during draining/cleanup. Test plan:
+      behavioral API fetch/control requests and exact conversion/rejection fixtures; pure
+      action-matrix coverage for all global/task states; rendered consumer/accessibility assertions
+      where supported; agents-topic invalidation including automation events; existing fleet buffer
+      regressions; all 16 @ui-agent-dispatch ACs annotated."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-07-16T11:43:36.297Z
