@@ -81407,7 +81407,7 @@ runs:
     completed_at: 2026-07-16T15:12:03.804Z
   - _ulid: 01KXNS05Y6FS04Q1BAH8KE9B4V
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -81420,7 +81420,18 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-07-16T15:35:46.953Z
-        completed_at: 2026-07-16T15:35:46.953Z
+        completed_at: 2026-07-16T15:36:04.770Z
+        notes: "High-confidence friction: task descriptions assign cross-spec criteria through prose-only
+          '### Covers' lists, but completeness validation does not machine-link those assignments to
+          required test annotations. In this session the behavioral test existed and all validation
+          gates passed, yet the missing assigned annotation survived until a third review cycle. The
+          long full-suite/build-lock wait is also concrete but already tracked by
+          @task-investigate-npm-test-teardown-hang-after-green-suite-run and existing observations,
+          so it is not a new candidate. No unique systemic success met the capture bar."
+      - status: completed
+        step_index: 2
+        started_at: 2026-07-16T15:36:04.770Z
+        completed_at: 2026-07-16T15:36:04.770Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-07-16T15:33:53.222Z
