@@ -81930,7 +81930,7 @@ runs:
     completed_at: 2026-07-16T20:47:59.200Z
   - _ulid: 01KXPCA494TP9WMG6YKDVAWH0F
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -81943,7 +81943,21 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-07-16T21:12:07.697Z
-        completed_at: 2026-07-16T21:12:07.697Z
+        completed_at: 2026-07-16T21:13:28.681Z
+        notes: "High-confidence findings: (1) friction: the full npm test run emitted its final summary only
+          after a 47-minute run with long-tail files; existing task
+          @task-investigate-npm-test-teardown-hang-after-green-suite-run covers it. (2) friction:
+          kspec workflow show required an explicit run ref despite skill examples; pending task
+          01KKBD52 and multiple inbox/observations already cover it. (3) friction: sequential
+          reply/resolve output and immediate state were confusing; existing observations 01KKZXHF4
+          and 01KNK6ZF cover it. (4) unique success: state-machine UI tests became materially
+          stronger when each scenario asserted the exact scoped control set and counts, so extra
+          prohibited controls fail. (5) unique success: setting and asserting the exact Playwright
+          viewport prevents device defaults from silently invalidating dimension-specific coverage."
+      - status: completed
+        step_index: 2
+        started_at: 2026-07-16T21:13:28.681Z
+        completed_at: 2026-07-16T21:13:28.681Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-07-16T21:11:22.148Z
