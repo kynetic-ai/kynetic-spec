@@ -411,6 +411,36 @@ events:
         content_hash: ""
       decision: request_changes
     timestamp: 2026-07-16T02:11:25.421Z
+  - _ulid: 01KXMB54CMYBX4MVWKK2WPGNJR
+    actor: pr-reviewer
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KXMB19N8NESY7AZSKHKFKSA6
+    timestamp: 2026-07-16T02:12:40.980Z
+  - _ulid: 01KXMB57KH7M1HJWVE3SFWTV16
+    actor: pr-reviewer
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KXMB1D0X2ZPH7C1KSQ2B8K3Y
+    timestamp: 2026-07-16T02:12:44.273Z
+  - _ulid: 01KXMB5B9H2RWYZ5CY1BZNH71Y
+    actor: pr-reviewer
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KXMB1YCTRZ3JX61MDD555PQ3
+    timestamp: 2026-07-16T02:12:48.051Z
+  - _ulid: 01KXMB5F4QTNBS7W6D1G7N46SW
+    actor: pr-reviewer
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KXMB21QCT8AS8ZDX5CHZ9B2Z
+    timestamp: 2026-07-16T02:12:51.991Z
+  - _ulid: 01KXMB5JR55DGG7MHGYYKQ419E
+    actor: pr-reviewer
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KXMB2PZRHGH64MGJJZPH80A3
+    timestamp: 2026-07-16T02:12:55.685Z
 examined_commit: 40aed15a47ba2163b9d3ff74e5cadfee02d83c5c
 external_links: []
 lifecycle_state: closed
@@ -546,6 +576,8 @@ threads:
           outcome."
         created_at: 2026-07-16T02:10:35.304Z
     kind: blocker
+    resolved_at: 2026-07-16T02:12:40.707Z
+    resolved_by: pr-reviewer
   - _ulid: 01KXMB1D0X2ZPH7C1KSQ2B8K3Y
     anchor:
       type: code
@@ -566,6 +598,8 @@ threads:
           exactly one afterward for applied and noop paths.
         created_at: 2026-07-16T02:10:38.749Z
     kind: blocker
+    resolved_at: 2026-07-16T02:12:44.018Z
+    resolved_by: pr-reviewer
   - _ulid: 01KXMB1YCTRZ3JX61MDD555PQ3
     anchor:
       type: code
@@ -587,6 +621,8 @@ threads:
           supplemental mapper coverage.
         created_at: 2026-07-16T02:10:56.539Z
     kind: blocker
+    resolved_at: 2026-07-16T02:12:47.650Z
+    resolved_by: pr-reviewer
   - _ulid: 01KXMB21QCT8AS8ZDX5CHZ9B2Z
     anchor:
       type: code
@@ -607,6 +643,8 @@ threads:
           current direct-emitter fixtures.
         created_at: 2026-07-16T02:10:59.948Z
     kind: blocker
+    resolved_at: 2026-07-16T02:12:51.692Z
+    resolved_by: pr-reviewer
   - _ulid: 01KXMB2PZRHGH64MGJJZPH80A3
     entries:
       - _ulid: 01KXMB2PZRMNW70Y9NBQWBJBED
@@ -625,6 +663,8 @@ threads:
           neutrality: not applicable; no package guidance surfaces changed."
         created_at: 2026-07-16T02:11:21.720Z
     kind: nit
+    resolved_at: 2026-07-16T02:12:55.287Z
+    resolved_by: pr-reviewer
 verdicts:
   - applies_to_version:
       type: entity_version
@@ -641,5 +681,5 @@ verdicts:
     role: reviewer
     created_at: 2026-07-16T02:11:25.421Z
 created_at: 2026-07-16T01:47:48.307Z
-updated_at: 2026-07-16T02:11:25.421Z
+updated_at: 2026-07-16T02:12:55.287Z
 notes: []
