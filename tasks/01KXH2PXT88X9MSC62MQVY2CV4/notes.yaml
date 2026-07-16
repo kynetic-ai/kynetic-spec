@@ -95,3 +95,13 @@ notes:
     supersedes: null
     author: Hermes Closure Reviewer
     created_at: 2026-07-16T17:29:26.350Z
+  - _ulid: 01KXP0120XZT0SESGWG6A51049
+    content: "Fix cycle 1 dependency completion: rebased cleanly onto plan tip 817a42a5b8 containing the
+      approved UI lifecycle converter. The real-daemon surface test now feeds the exact non-empty
+      public status response through parseAgentDispatchStatusWire, asserts recursive
+      root/cleanup/held-task/task-control camel conversion, and validates a schema-backed semantic
+      round trip to the original public wire lifecycle. Focused surface test passes 3/3; the UI
+      parser is real, with only its SvelteKit environment dependencies mocked."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-07-16T17:36:42.013Z
