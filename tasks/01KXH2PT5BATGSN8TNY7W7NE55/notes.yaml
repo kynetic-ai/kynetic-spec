@@ -51,3 +51,13 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-07-16T13:17:17.498Z
+  - _ulid: 01KXNHS4RN4263ZY579G3C8PK1
+    content: "Fix cycle 2 approach: replace permissive internal lifecycle status parsing with explicit
+      strict schemas for every preserved status field, including invocation and queue rows; remove
+      passthrough/spread leakage; add behavioral real-CLI regressions for both agent status commands
+      proving unknown top-level and nested cwd/error fields fail closed to the fixed internal_error
+      envelope without exposing injected values. Re-verify every lifecycle AC and inherited trait
+      annotation, then run focused and full project gates."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-07-16T13:27:42.613Z
