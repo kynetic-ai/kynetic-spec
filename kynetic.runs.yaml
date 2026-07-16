@@ -79913,7 +79913,7 @@ runs:
     completed_at: 2026-07-16T01:42:35.865Z
   - _ulid: 01KXMBAGJM5FMZB8D732W3NTF8
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -79928,7 +79928,22 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-07-16T02:16:05.673Z
-        completed_at: 2026-07-16T02:16:05.673Z
+        completed_at: 2026-07-16T02:17:34.358Z
+        notes: "High-confidence findings after baseline and targeted search: (1) Cross-spec task Covers
+          metadata is not recognized by completeness/alignment validation; this session's missing
+          annotations passed validation. Already tracked by inbox @01KTYSZ1 and the reviewer-helper
+          follow-up @01KRYQJJ, so do not duplicate. (2) The dispatched role entry instructed this
+          reviewer to start , but no such rendered skill was available; the usable core skill was .
+          This is repeatable dispatcher/config friction and appears to violate
+          @dispatch-role-workflow-entry-contract ac-4, which requires fail-fast behavior for missing
+          or invalid role entrypoints. Searches for invalid/missing role entrypoints found only the
+          requirement itself and no task/inbox/observation tracking the live mismatch. Success
+          candidate: targeted behavioral runtime diagnostics caught semantic gaps hidden by green
+          unit tests; this is already established review practice, so no new capture is warranted."
+      - status: completed
+        step_index: 2
+        started_at: 2026-07-16T02:17:34.358Z
+        completed_at: 2026-07-16T02:17:34.358Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-07-16T02:15:37.300Z
