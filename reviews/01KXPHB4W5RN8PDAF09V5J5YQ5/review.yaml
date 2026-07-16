@@ -50,6 +50,12 @@ events:
     payload:
       thread_ulid: 01KXPHD9F2QYM30C3QNK4WJ95Z
     timestamp: 2026-07-16T22:41:44.279Z
+  - _ulid: 01KXPHFW5Z4ZJ1PAX0BFWFCR5X
+    actor: Jacob Chapel
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KXPHDKB3007KN8QCHZ86BDEV
+    timestamp: 2026-07-16T22:41:53.343Z
 examined_commit: null
 external_links: []
 lifecycle_state: open
@@ -433,8 +439,13 @@ threads:
           test-only for this artifact) so the task is standalone and the ownership/closure path is
           executable.
         created_at: 2026-07-16T22:40:38.756Z
+      - _ulid: 01KXPHFVJ40PSZ5N6PHZ3FSGV9
+        author: Jacob Chapel
+        body: Superseded because shell quoting corrupted the recorded body; the corrected anchored blocker
+          follows.
+        created_at: 2026-07-16T22:41:52.708Z
     kind: blocker
 verdicts: []
 created_at: 2026-07-16T22:39:18.405Z
-updated_at: 2026-07-16T22:41:43.916Z
+updated_at: 2026-07-16T22:41:52.708Z
 notes: []
