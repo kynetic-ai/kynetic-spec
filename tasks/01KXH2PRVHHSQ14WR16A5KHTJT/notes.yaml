@@ -89,3 +89,18 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-07-16T01:28:33.716Z
+  - _ulid: 01KXM9X6VHB0NQW681JN95AGP8
+    content: "Fix cycle 1 approach: add behavioral regressions before production changes for (1)
+      canonical controlled identity protecting a raw historical alias-only closing record through
+      physical reap and terminal self-heal, and (2) global-pause held queue identities reaching
+      physical cleanup rather than only the pure injected matrix. Reuse the existing project task
+      resolver to normalize registry snapshots for protection and reuse
+      DispatchEngine.getLifecycleStatus heldTaskIds when threading protection through
+      registry/artifact/reap/reviewer cleanup. Edge cases: startup queue seeding under
+      paused/stopped authority, no duplicate bootstrap queue entries, running startup ordering
+      unchanged, task-scoped pause remains sourced from committed control, and unrelated terminal
+      cleanup remains eligible. Verification: focused cleanup/global lifecycle tests, all required
+      formatting/lint/type/full-test gates, three kspec validations, and diff check."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-07-16T01:50:52.785Z
