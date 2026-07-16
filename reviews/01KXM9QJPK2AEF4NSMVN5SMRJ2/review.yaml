@@ -441,6 +441,66 @@ events:
     payload:
       thread_ulid: 01KXMB2PZRHGH64MGJJZPH80A3
     timestamp: 2026-07-16T02:12:55.685Z
+  - _ulid: 01KXMDW68TE46CNT98F4K4DMXP
+    actor: Jacob Chapel
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KXMAYH1DYHQ0RC1028APKYS5
+    timestamp: 2026-07-16T03:00:13.722Z
+  - _ulid: 01KXMDW9H07NP96SB3PT6SM9NE
+    actor: Jacob Chapel
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KXMAYH1DYHQ0RC1028APKYS5
+    timestamp: 2026-07-16T03:00:17.057Z
+  - _ulid: 01KXMDWCJMZWQB5J5F60MYANEH
+    actor: Jacob Chapel
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KXMAYM4Y8RPM9VH715M1RNYE
+    timestamp: 2026-07-16T03:00:20.180Z
+  - _ulid: 01KXMDWFZY3JJ9H8YSPYW18CVY
+    actor: Jacob Chapel
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KXMAYM4Y8RPM9VH715M1RNYE
+    timestamp: 2026-07-16T03:00:23.679Z
+  - _ulid: 01KXMDWK6P537T8ZG0Y1VVAYYM
+    actor: Jacob Chapel
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KXMAYQM6CS85M5FMZVTR2WPT
+    timestamp: 2026-07-16T03:00:26.966Z
+  - _ulid: 01KXMDWPAQ2B0DZEDF1W8K9RFS
+    actor: Jacob Chapel
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KXMAYQM6CS85M5FMZVTR2WPT
+    timestamp: 2026-07-16T03:00:30.167Z
+  - _ulid: 01KXMDWTCDKEVG643QYK4W127H
+    actor: Jacob Chapel
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KXMAYW8KQM1Q8RGM65RAXZSV
+    timestamp: 2026-07-16T03:00:34.318Z
+  - _ulid: 01KXMDWY1B4XJ534Y0N6W659DX
+    actor: Jacob Chapel
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KXMAYW8KQM1Q8RGM65RAXZSV
+    timestamp: 2026-07-16T03:00:38.059Z
+  - _ulid: 01KXMDX16WFCWZWWW1ZCCFRSY9
+    actor: Jacob Chapel
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KXMAZ0A05JE1QZHQC14QCSTX
+    timestamp: 2026-07-16T03:00:41.308Z
+  - _ulid: 01KXMDX4J0RJRTHH2ZM41ZGHZH
+    actor: Jacob Chapel
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KXMAZ0A05JE1QZHQC14QCSTX
+    timestamp: 2026-07-16T03:00:44.736Z
 examined_commit: 40aed15a47ba2163b9d3ff74e5cadfee02d83c5c
 external_links: []
 lifecycle_state: closed
@@ -473,7 +533,17 @@ threads:
           failures, reconcile the required canonical task_id contract rather than dropping the audit
           outcome."
         created_at: 2026-07-16T02:09:04.557Z
+      - _ulid: 01KXMDW607H6JXKJ4TZE2YNQ67
+        author: Jacob Chapel
+        body: "Fixed in 5f0855ff1c: applyTaskLifecycleAction now retains the exact canonical identity
+          resolved for the operation, so ref-only matrix failures emit one task-scoped failed event.
+          Failures before any canonical identity exists emit one strict identity-neutral payload
+          without copying the unresolved alias; the behavioral regression proves invalid_transition
+          and task_not_found delivery through both EventBus and callback."
+        created_at: 2026-07-16T03:00:13.444Z
     kind: blocker
+    resolved_at: 2026-07-16T03:00:16.744Z
+    resolved_by: Jacob Chapel
   - _ulid: 01KXMAYM4Y8RPM9VH715M1RNYE
     anchor:
       type: code
@@ -493,7 +563,16 @@ threads:
           capture is attached to the engine EventBus/callback, proving zero before commit and
           exactly one afterward for applied and noop paths.
         created_at: 2026-07-16T02:09:07.742Z
+      - _ulid: 01KXMDWCBAQWMJ65JWVT5WV4TJ
+        author: Jacob Chapel
+        body: "Fixed in 5f0855ff1c: removed the synthetic direct-emitter commit Promise. EngineControlStore
+          now holds the real mutate settlement boundary while public applyGlobalLifecycleAction
+          remains pending; tests prove zero EventBus/callback events before release and exactly one
+          after applied and noop durable outcomes."
+        created_at: 2026-07-16T03:00:19.946Z
     kind: blocker
+    resolved_at: 2026-07-16T03:00:23.380Z
+    resolved_by: Jacob Chapel
   - _ulid: 01KXMAYQM6CS85M5FMZVTR2WPT
     anchor:
       type: code
@@ -514,7 +593,17 @@ threads:
           engine boundary and assert the emitted identifier/code/count; a table test may remain as
           supplemental mapper coverage.
         created_at: 2026-07-16T02:09:11.303Z
+      - _ulid: 01KXMDWJZ6T9360Q1ZV8J9YXD7
+        author: Jacob Chapel
+        body: "Fixed in 5f0855ff1c: the suite now invokes public engine lifecycle methods for all 17
+          classes. Identity and matrix cases use real task resolution/transition behavior; store,
+          transaction, cleanup, and fallback faults are injected through the lifecycle-store
+          dependency and verified at the engine emission boundary. The direct mapper table remains
+          only supplemental."
+        created_at: 2026-07-16T03:00:26.726Z
     kind: blocker
+    resolved_at: 2026-07-16T03:00:29.883Z
+    resolved_by: Jacob Chapel
   - _ulid: 01KXMAYW8KQM1Q8RGM65RAXZSV
     anchor:
       type: code
@@ -534,7 +623,16 @@ threads:
           that actually prove each lifecycle audit AC; do not merely attach the annotations to the
           current direct-emitter fixtures.
         created_at: 2026-07-16T02:09:16.051Z
+      - _ulid: 01KXMDWT4BN79T7EB20N4B6XPZ
+        author: Jacob Chapel
+        body: "Fixed in 5f0855ff1c: added standalone behavioral annotations for
+          ac-applied-control-is-auditable, ac-noop-control-is-auditable,
+          ac-failed-control-is-auditable, and ac-failure-events-use-closed-error-codes. Each
+          annotation sits on an engine/store boundary test rather than a direct-emitter fixture."
+        created_at: 2026-07-16T03:00:34.059Z
     kind: blocker
+    resolved_at: 2026-07-16T03:00:37.799Z
+    resolved_by: Jacob Chapel
   - _ulid: 01KXMAZ0A05JE1QZHQC14QCSTX
     entries:
       - _ulid: 01KXMAZ0A0ZF6S2SVZFNB38RRC
@@ -552,7 +650,15 @@ threads:
           test quality, schema/registry parity, daemon/WebSocket/UI integration. Shared-guidance
           neutrality: not applicable; no package guidance surfaces changed."
         created_at: 2026-07-16T02:09:20.192Z
+      - _ulid: 01KXMDX0YNDPZM4QPM92JSCFNY
+        author: Jacob Chapel
+        body: Acknowledged. Fix-cycle verification independently reran the focused 266-test lifecycle/event
+          slice and the complete repository gate; the final full run passed 2,811 suites and 10,752
+          tests with 3 skipped.
+        created_at: 2026-07-16T03:00:41.045Z
     kind: nit
+    resolved_at: 2026-07-16T03:00:44.480Z
+    resolved_by: Jacob Chapel
   - _ulid: 01KXMB19N8NESY7AZSKHKFKSA6
     anchor:
       type: code
@@ -681,5 +787,5 @@ verdicts:
     role: reviewer
     created_at: 2026-07-16T02:11:25.421Z
 created_at: 2026-07-16T01:47:48.307Z
-updated_at: 2026-07-16T02:12:55.287Z
+updated_at: 2026-07-16T03:00:44.480Z
 notes: []
