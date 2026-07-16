@@ -46,8 +46,15 @@ description: |
 spec_ref: "@daemon-agent-dispatch"
 plan_ref: "@plan-dispatch-lifecycle-pause-resume-and-stop-controls"
 origin: derived
-status: in_progress
-blocked_by: []
+status: blocked
+blocked_by:
+  - Blocked on newly formalized dependency @task-ui-dispatch-lifecycle-controls. The required
+    public-wire to UI-camel converter is owned there, its cycle-4 review is changes_requested, and
+    it is not merged into integration target
+    plan/plan-dispatch-lifecycle-pause-resume-and-stop-controls/01kxc2vx. Importing its unapproved
+    branch would conflate tasks. Once it merges, rebase this canonical branch, add exact UI
+    conversion/round-trip coverage, resolve the remaining review thread, rerun all gates, and
+    resubmit.
 depends_on:
   - "@task-cli-dispatch-lifecycle-controls"
   - "@task-verify-engine-restart-races"
@@ -153,6 +160,27 @@ history:
           - "@task-verify-engine-restart-races"
     command: task-set
     timestamp: 2026-07-16T16:08:34.718Z
+  - author: Jacob Chapel
+    changes:
+      status:
+        new: blocked
+        previous: in_progress
+      blocked_by:
+        new:
+          - Blocked on newly formalized dependency @task-ui-dispatch-lifecycle-controls. The
+            required public-wire to UI-camel converter is owned there, its cycle-4 review is
+            changes_requested, and it is not merged into integration target
+            plan/plan-dispatch-lifecycle-pause-resume-and-stop-controls/01kxc2vx. Importing its
+            unapproved branch would conflate tasks. Once it merges, rebase this canonical branch,
+            add exact UI conversion/round-trip coverage, resolve the remaining review thread, rerun
+            all gates, and resubmit.
+        previous: []
+      prior_status:
+        new: in_progress
+        previous: null
+    command: task-block
+    timestamp: 2026-07-16T16:10:19.450Z
+prior_status: in_progress
 created_at: 2026-07-14T19:47:23.592Z
 started_at: 2026-07-16T15:51:16.280Z
 submitted_at: 2026-07-16T15:09:10.179Z

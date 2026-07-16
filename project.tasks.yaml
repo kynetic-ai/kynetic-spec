@@ -34026,8 +34026,15 @@
   type: task
   spec_ref: "@daemon-agent-dispatch"
   plan_ref: "@plan-dispatch-lifecycle-pause-resume-and-stop-controls"
-  status: in_progress
-  blocked_by: []
+  status: blocked
+  blocked_by:
+    - Blocked on newly formalized dependency @task-ui-dispatch-lifecycle-controls. The required
+      public-wire to UI-camel converter is owned there, its cycle-4 review is changes_requested, and
+      it is not merged into integration target
+      plan/plan-dispatch-lifecycle-pause-resume-and-stop-controls/01kxc2vx. Importing its unapproved
+      branch would conflate tasks. Once it merges, rebase this canonical branch, add exact UI
+      conversion/round-trip coverage, resolve the remaining review thread, rerun all gates, and
+      resubmit.
   depends_on:
     - "@task-cli-dispatch-lifecycle-controls"
     - "@task-verify-engine-restart-races"
