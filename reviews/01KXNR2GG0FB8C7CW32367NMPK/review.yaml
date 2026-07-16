@@ -138,6 +138,34 @@ events:
       status: pass
       name: kspec validate completeness
     timestamp: 2026-07-16T15:37:12.997Z
+  - _ulid: 01KXNSA40RA6ZTTKBJSPAC5PED
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KXNSA3PW3MRT8K86MVWAVYXK
+    timestamp: 2026-07-16T15:39:18.936Z
+  - _ulid: 01KXNSA7DB4ZECXMG3CP3FKSGT
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KXNSA75KYYXCY7KXX0SPZ4TD
+    timestamp: 2026-07-16T15:39:22.411Z
+  - _ulid: 01KXNSAAJN75R07V3WGREG36T7
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KXNSAAAVHAKHHKRC7F73H7QJ
+    timestamp: 2026-07-16T15:39:25.653Z
+  - _ulid: 01KXNSADS71CR7WG65G8MB5MWH
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KXNSADH8FX7B32SCDK7MECXA
+    timestamp: 2026-07-16T15:39:28.935Z
 examined_commit: 502c9cdde3f4acc5526d3a7969e3fe9da9f0b2b2
 external_links: []
 lifecycle_state: open
@@ -147,8 +175,111 @@ subject:
   content_hash: ""
   ref: "@01KXH2PXT88X9MSC62MQVY2CV4"
   shadow_commit: ""
-threads: []
+threads:
+  - _ulid: 01KXNSA3PW3MRT8K86MVWAVYXK
+    anchor:
+      type: code
+      commit: 502c9cdde3f4acc5526d3a7969e3fe9da9f0b2b2
+      line_end: 982
+      line_start: 945
+      path: packages/web-ui/src/lib/api.ts
+      side: head
+    entries:
+      - _ulid: 01KXNSA3PXT05FEWC4G3DDBG63
+        author: Jacob Chapel
+        body: "MUST-FIX: The task's required public-wire to UI-camel conversion and semantic round trip are
+          absent at this reviewed head. AgentDispatchStatus still models only the legacy snake_case
+          fields and fetchAgentStatus returns response.json() without validating or recursively
+          converting lifecycle root/nested rows. The new surface suite never invokes the UI helper.
+          Impact: this task would claim end-to-end projection verification while the current UI
+          boundary still receives the wrong casing and none of the required unknown/mixed-case
+          rejection or round-trip behavior is proved. Evidence: packages/web-ui/src/lib/api.ts lines
+          945-982 contain neither lifecycle fields nor a converter, and the separate UI owner task
+          is not integrated into this snapshot. Rebase after that owner is integrated and add the
+          prescribed exact API-helper conversion/round-trip coverage, or formally correct this
+          task's dependency/scope before resubmitting."
+        created_at: 2026-07-16T15:39:18.621Z
+    kind: blocker
+  - _ulid: 01KXNSA75KYYXCY7KXX0SPZ4TD
+    anchor:
+      type: code
+      commit: 502c9cdde3f4acc5526d3a7969e3fe9da9f0b2b2
+      line_end: 150
+      line_start: 147
+      path: tests/dispatch-lifecycle-surface-integration.test.ts
+      side: head
+    entries:
+      - _ulid: 01KXNSA75K15Z7AX2Z6KFCCC4J
+        author: Jacob Chapel
+        body: "MUST-FIX: The required all-17 response/exit/event matrix is not exercised through the
+          real-daemon surface. injectLifecycleFailure supports only control_commit_failed plus
+          pending/cancellation_failed cleanup-state seeding, and the live test observes failed
+          outcomes only for invalid_transition and control_commit_failed. The added CLI array-length
+          assertion and engine event-code uniqueness assertion are separate unit-level proofs; they
+          cannot detect cross-layer disagreement for the other validation, identity, store, and
+          cleanup failures. The same real-daemon matrix also omits the handoff's
+          global-cleanup/task-metadata admission case, matching-scope retries, and legacy-alias
+          scope checks. Expand the surface cases so each required branch compares HTTP response, CLI
+          exit/copy, and captured sanitized event; the handoff must also reflect that
+          validation_failed exits 1 rather than claiming all failures exit 3."
+        created_at: 2026-07-16T15:39:22.163Z
+    kind: blocker
+  - _ulid: 01KXNSAAAVHAKHHKRC7F73H7QJ
+    anchor:
+      type: code
+      commit: 502c9cdde3f4acc5526d3a7969e3fe9da9f0b2b2
+      line_end: 412
+      line_start: 383
+      path: tests/dispatch-lifecycle-surface-integration.test.ts
+      side: head
+    entries:
+      - _ulid: 01KXNSAAAV6VSG3KWQH4NY5DX4
+        author: Jacob Chapel
+        body: "MUST-FIX: This does not prove the claimed exact public status contract. The test copies only
+          expected lifecycle keys into a fresh object before calling the strict schema, so unknown
+          fields and camelCase duplicates on the actual response are discarded. It rejects only
+          globalAuthority; cleanupState, activeCount, queueDepth, heldCount, heldTasks,
+          taskControls, or degradedTargets could leak alongside the canonical fields and the test
+          would still pass. That directly misses the task's mixed-case/unknown rejection
+          requirement. Validate an exact composed raw public response schema or explicitly assert
+          the complete allowed key set and every forbidden casing alias."
+        created_at: 2026-07-16T15:39:25.403Z
+    kind: blocker
+  - _ulid: 01KXNSADH8FX7B32SCDK7MECXA
+    entries:
+      - _ulid: 01KXNSADH8JDQWR6X685ME6VCS
+        author: Jacob Chapel
+        body: >-
+          Review evidence log
+
+
+          Files read: packages/daemon/src/routes/agent-dispatch.ts;
+          tests/cli-agent-dispatch-lifecycle.test.ts; tests/daemon-agent-dispatch-lifecycle.test.ts;
+          tests/dispatch-control-events.test.ts;
+          tests/dispatch-lifecycle-surface-integration.test.ts; surrounding
+          packages/shared/src/api.ts, src/cli/commands/agent.ts, packages/web-ui/src/lib/api.ts;
+          task, linked spec, and plan context.
+
+
+          Commands run: raw base..head diff/stat/log; task/spec/plan/review lookups; AC annotation
+          search; fresh focused lifecycle tests; npm run format:check; npm run lint -- --quiet;
+          focused npx oxlint on all five changed files; npm run typecheck; fresh full npm test;
+          three kspec validation modes; git diff --check/status.
+
+
+          Claims verified: public active_count is now projected and the real-daemon focused slice
+          passes; all 17 code names are independently unique in CLI/event owner suites. The claimed
+          end-to-end all-17 comparison and UI conversion were disproved by the helper/test matrix
+          and current UI API implementation.
+
+
+          Categories searched: correctness, cleanup/scope edge cases, error handling and
+          closed-code/raw-data suppression, security/data exposure, test quality, and
+          API/CLI/event/UI integration. Shared package-guidance surfaces were not touched, so
+          neutrality checks were not applicable.
+        created_at: 2026-07-16T15:39:28.680Z
+    kind: nit
 verdicts: []
 created_at: 2026-07-16T15:17:40.992Z
-updated_at: 2026-07-16T15:37:12.751Z
+updated_at: 2026-07-16T15:39:28.680Z
 notes: []
