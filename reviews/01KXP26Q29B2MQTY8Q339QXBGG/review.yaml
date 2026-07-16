@@ -214,6 +214,13 @@ events:
       kind: blocker
       thread_ulid: 01KXP3AZT0NYB62N47AC3Q8WQ1
     timestamp: 2026-07-16T18:34:33.416Z
+  - _ulid: 01KXP3B69PASW4WXYETXYGR5GT
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KXP3B610FDNFGR1BZ890XHN5
+    timestamp: 2026-07-16T18:34:39.798Z
 examined_commit: 6c7f7d0fb155d07094f1ec8d6140b20a8e463065
 external_links: []
 lifecycle_state: open
@@ -244,7 +251,26 @@ threads:
           AC. False AC attribution obscures which behavior is actually covered."
         created_at: 2026-07-16T18:34:33.153Z
     kind: blocker
+  - _ulid: 01KXP3B610FDNFGR1BZ890XHN5
+    anchor:
+      type: code
+      commit: 6c7f7d0fb155d07094f1ec8d6140b20a8e463065
+      line_end: 668
+      line_start: 668
+      path: tests/dispatch-lifecycle-surface-integration.test.ts
+      side: head
+    entries:
+      - _ulid: 01KXP3B611ZN1YK4C09TKFGQF2
+        author: Jacob Chapel
+        body: MUST-FIX — This annotation claims ac-control-error-current-status, but the annotated test's
+          matching-cleanup failure asserts only HTTP 409 and error.code. It does not assert that the
+          failure response data includes the current lifecycle status required by the AC; the later
+          status reads and successful retry are separate responses. Remove this redundant annotation
+          or assert the required current-status fields on the failing control response. As written,
+          the test would still pass if this AC regressed on this branch.
+        created_at: 2026-07-16T18:34:39.521Z
+    kind: blocker
 verdicts: []
 created_at: 2026-07-16T18:14:44.553Z
-updated_at: 2026-07-16T18:34:33.153Z
+updated_at: 2026-07-16T18:34:39.521Z
 notes: []
