@@ -2,7 +2,108 @@ _ulid: 01KXNFWH3AT6DCQJNXC5V21WN5
 slugs: []
 title: Review safe lifecycle CLI commands (cycle 2)
 author: Jacob Chapel
-checks: []
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: All 1053 formatted files passed.
+    name: format
+    required: true
+    runner: npm run format:check
+    created_at: 2026-07-16T13:14:59.156Z
+    completed_at: 2026-07-16T13:14:59.156Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: 0 errors. Repo warning baseline remains; no warnings were introduced in submitted hunks.
+    name: lint
+    required: true
+    runner: npm run lint -- --quiet
+    created_at: 2026-07-16T13:15:02.599Z
+    completed_at: 2026-07-16T13:15:02.599Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: 0 errors. All 33 warnings are pre-existing lines outside the submitted diff.
+    name: focused-lint
+    required: true
+    runner: npx oxlint <changed files>
+    created_at: 2026-07-16T13:15:05.996Z
+    completed_at: 2026-07-16T13:15:05.996Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Shared build and tsc --noEmit passed.
+    name: typecheck
+    required: true
+    runner: npm run typecheck
+    created_at: 2026-07-16T13:15:09.539Z
+    completed_at: 2026-07-16T13:15:09.539Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: 2824 suites passed; 10874 tests passed and 3 skipped.
+    name: full test suite
+    required: true
+    runner: npm test -- --fresh
+    created_at: 2026-07-16T13:15:12.983Z
+    completed_at: 2026-07-16T13:15:12.983Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Exit 0; schema and references OK with documented warning baseline.
+    name: kspec validate refs
+    required: true
+    runner: kspec validate --refs --warnings-ok
+    created_at: 2026-07-16T13:15:16.432Z
+    completed_at: 2026-07-16T13:15:16.432Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Exit 0; no submitted-change alignment errors.
+    name: kspec validate alignment
+    required: true
+    runner: kspec validate --alignment --warnings-ok
+    created_at: 2026-07-16T13:15:19.797Z
+    completed_at: 2026-07-16T13:15:19.797Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Exit 0; task-specific authority AC gaps from cycle 1 are cleared; repository warnings are
+      baseline.
+    name: kspec validate completeness
+    required: true
+    runner: kspec validate --completeness --warnings-ok
+    created_at: 2026-07-16T13:15:23.205Z
+    completed_at: 2026-07-16T13:15:23.205Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: 40 suites and 164 tests passed.
+    name: focused lifecycle tests
+    required: false
+    runner: npm test -- lifecycle/agent/endpoint files
+    created_at: 2026-07-16T13:15:26.561Z
+    completed_at: 2026-07-16T13:15:26.561Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: No whitespace errors.
+    name: diff check
+    required: false
+    runner: git diff --check
+    created_at: 2026-07-16T13:15:29.841Z
+    completed_at: 2026-07-16T13:15:29.841Z
 events:
   - _ulid: 01KXNFWH39EVZ8QXX5QYYZ6YY1
     actor: Jacob Chapel
@@ -17,6 +118,90 @@ events:
       from: draft
       to: open
     timestamp: 2026-07-16T12:54:51.237Z
+  - _ulid: 01KXNH1MMAAXFJ1R5AS95JMN3X
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KXNH1MC9AZN9N2NN1P9DB67G
+    timestamp: 2026-07-16T13:14:52.426Z
+  - _ulid: 01KXNH1QXGCHWJCFXRH3TK8Z8Y
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KXNH1QNRTAQCCMAJ4GMAAB8C
+    timestamp: 2026-07-16T13:14:55.792Z
+  - _ulid: 01KXNH1VFAPBHSXN03VCC87EMJ
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: format
+    timestamp: 2026-07-16T13:14:59.434Z
+  - _ulid: 01KXNH1YT8Y0RXNRNHA655MKHN
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: lint
+    timestamp: 2026-07-16T13:15:02.856Z
+  - _ulid: 01KXNH224BFF65T5KF6437K9BN
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: focused-lint
+    timestamp: 2026-07-16T13:15:06.251Z
+  - _ulid: 01KXNH25KF2AJF7JQJW9N74HD4
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: typecheck
+    timestamp: 2026-07-16T13:15:09.807Z
+  - _ulid: 01KXNH28YPA4DZRK48SYSS33XB
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: full test suite
+    timestamp: 2026-07-16T13:15:13.238Z
+  - _ulid: 01KXNH2CB218J1C03RAHKJ18AA
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate refs
+    timestamp: 2026-07-16T13:15:16.706Z
+  - _ulid: 01KXNH2FKYVENVY1XM0C14YFM6
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate alignment
+    timestamp: 2026-07-16T13:15:20.062Z
+  - _ulid: 01KXNH2JY2QZJDQ4B0HCMQ5M7D
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate completeness
+    timestamp: 2026-07-16T13:15:23.458Z
+  - _ulid: 01KXNH2P74D9G3D7ST237RBEA2
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: focused lifecycle tests
+    timestamp: 2026-07-16T13:15:26.820Z
+  - _ulid: 01KXNH2SCYRW92W1M31H8VCEQ4
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: diff check
+    timestamp: 2026-07-16T13:15:30.078Z
 examined_commit: 83d11f75b9f53d2d822669cb37f56f77b9f4b017
 external_links: []
 lifecycle_state: open
@@ -26,8 +211,49 @@ subject:
   content_hash: ""
   ref: "@01KXH2PT5BATGSN8TNY7W7NE55"
   shadow_commit: ""
-threads: []
+threads:
+  - _ulid: 01KXNH1MC9AZN9N2NN1P9DB67G
+    anchor:
+      type: code
+      commit: 83d11f75b9f53d2d822669cb37f56f77b9f4b017
+      line_end: 215
+      line_start: 200
+      path: src/cli/commands/agent.ts
+      side: head
+    entries:
+      - _ulid: 01KXNH1MCABB8P751PNCVC0FRD
+        author: Jacob Chapel
+        body: "MUST-FIX — The internal status validator is not fail-closed: invocations and queued accept
+          arbitrary values and the top-level schema uses passthrough. Both JSON status commands then
+          spread the parsed object, so daemon-supplied paths or raw error text are emitted verbatim.
+          Impact: this violates the exact internal-status contract and the task guarantee that
+          response paths, cwd values, and raw daemon errors never cross the CLI boundary. Evidence:
+          an executable status probe returned exit 0 and printed injected fields cwd=/secret/raw and
+          error=raw daemon detail. Define and preserve the known existing status fields explicitly,
+          reject unknown/malformed fields, and add a regression proving both status commands map
+          such a response to the closed internal_error envelope without rendering the injected
+          values."
+        created_at: 2026-07-16T13:14:52.170Z
+    kind: blocker
+  - _ulid: 01KXNH1QNRTAQCCMAJ4GMAAB8C
+    entries:
+      - _ulid: 01KXNH1QNRN55CXFTJQX1GEXH4
+        author: Jacob Chapel
+        body: "Review evidence log — Files read: all eight changed files and complete diffs; surrounding CLI
+          registration/output/daemon-client code; daemon canonical control and internal-status
+          serializers/routes; task, plan, linked specs/traits, and prior review threads. Commands
+          run: git diff/log/status; task/plan/item/review lookups; AC annotation searches; format,
+          repo lint, focused lint, typecheck, focused tests, fresh full tests,
+          refs/alignment/completeness validation, diff check; executable malformed-status probe.
+          Claims verified: all three prior blockers are fixed; canonical control/status routing
+          matches daemon implementations; fresh full suite passed 2824 suites/10874 tests with 3
+          skipped. Categories searched: correctness, edge cases, error handling and data exposure,
+          security boundary, test quality, AC coverage, and integration. Finding: arbitrary
+          successful status fields leak through passthrough validation. Shared/package guidance
+          surfaces touched: none; neutrality review not applicable."
+        created_at: 2026-07-16T13:14:55.544Z
+    kind: nit
 verdicts: []
 created_at: 2026-07-16T12:54:36.394Z
-updated_at: 2026-07-16T12:54:50.969Z
+updated_at: 2026-07-16T13:15:29.841Z
 notes: []
