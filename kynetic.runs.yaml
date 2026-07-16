@@ -81407,7 +81407,7 @@ runs:
     completed_at: 2026-07-16T15:12:03.804Z
   - _ulid: 01KXNS05Y6FS04Q1BAH8KE9B4V
     status: active
-    current_step: 2
+    current_step: 3
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -81431,7 +81431,18 @@ runs:
       - status: completed
         step_index: 2
         started_at: 2026-07-16T15:36:04.770Z
-        completed_at: 2026-07-16T15:36:04.770Z
+        completed_at: 2026-07-16T15:36:19.239Z
+        notes: "Decision: capture one unique high-confidence friction observation about prose-only task
+          Covers assignments bypassing automated AC-annotation completeness. Searches for
+          'cross-spec AC annotation', 'task Covers acceptance criteria', 'coverage assignment',
+          'Covers ref', and 'unlinked acceptance criteria' returned no existing tracking. Skip
+          full-suite/build-lock friction as duplicate of
+          @task-investigate-npm-test-teardown-hang-after-green-suite-run and related observations.
+          Skip all lower-confidence candidates."
+      - status: completed
+        step_index: 3
+        started_at: 2026-07-16T15:36:19.239Z
+        completed_at: 2026-07-16T15:36:19.239Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-07-16T15:33:53.222Z
