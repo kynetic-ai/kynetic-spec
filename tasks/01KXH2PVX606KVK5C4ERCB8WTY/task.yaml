@@ -73,7 +73,7 @@ description: |
 spec_ref: "@ui-agent-dispatch"
 plan_ref: "@plan-dispatch-lifecycle-pause-resume-and-stop-controls"
 origin: derived
-status: pending
+status: in_progress
 blocked_by: []
 depends_on:
   - "@task-patch-dispatch-ui-specs"
@@ -85,6 +85,7 @@ tags:
   - ui
   - accessibility
 vcs_refs: []
+session_id: 01KXNBKCC37S17E6CE4JCNAX6M
 history:
   - author: Jacob Chapel
     changes:
@@ -93,6 +94,20 @@ history:
         previous: null
     command: task-set
     timestamp: 2026-07-14T20:12:07.976Z
+  - author: Jacob Chapel
+    changes:
+      status:
+        new: in_progress
+        previous: pending
+      session_id:
+        new: 01KXNBKCC37S17E6CE4JCNAX6M
+        previous: null
+      started_at:
+        new: 2026-07-16T11:41:29.585Z
+        previous: null
+    command: task-start
+    timestamp: 2026-07-16T11:41:29.585Z
 created_at: 2026-07-14T19:47:21.638Z
+started_at: 2026-07-16T11:41:29.585Z
 todos: []
 automation: eligible
