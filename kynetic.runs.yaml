@@ -81356,7 +81356,7 @@ runs:
     completed_at: 2026-07-16T14:24:54.506Z
   - _ulid: 01KXNQM07WYXDX8C3SJ10657G1
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -81372,7 +81372,21 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-07-16T15:11:18.835Z
-        completed_at: 2026-07-16T15:11:18.835Z
+        completed_at: 2026-07-16T15:11:31.754Z
+        notes: "High-confidence friction: the assigned verification task explicitly required UI camel-case
+          conversion coverage, but the UI implementation owner @task-ui-dispatch-lifecycle-controls
+          was still needs_work, absent from the integration target, and not declared in this task's
+          depends list. This makes dependency status report satisfied while part of the verification
+          surface is unavailable, forcing workers either to duplicate unreviewed owner work or leave
+          a stated subset unverified. Success: the single real-daemon API/CLI/event sequence exposed
+          the missing public active_count field; this is a concrete instance of the already tracked
+          general test-first pattern @01KFCS35, so it is not a new capture. The full-suite
+          post-green hang is also concrete but already tracked by
+          @task-investigate-npm-test-teardown-hang-after-green-suite-run."
+      - status: completed
+        step_index: 2
+        started_at: 2026-07-16T15:11:31.754Z
+        completed_at: 2026-07-16T15:11:31.754Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-07-16T15:09:45.596Z
