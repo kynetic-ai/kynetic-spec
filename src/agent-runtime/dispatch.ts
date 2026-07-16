@@ -1217,7 +1217,15 @@ export function emitDispatchControlOutcome(
       input.scope === "task" ? `dispatch-control:${input.taskId}` : "dispatch-control:global",
     payload,
   });
-  if (emitted.accepted) onEvent?.({ type: eventType, data: payload });
+  if (emitted.accepted && onEvent) {
+    try {
+      onEvent({ type: eventType, data: payload });
+    } catch {
+      // The event bus is the durable outcome boundary. Best-effort delivery to
+      // live agents-topic consumers must not reclassify an already settled
+      // lifecycle action or cause a second failed audit event.
+    }
+  }
   return emitted;
 }
 
@@ -1435,7 +1443,10 @@ export class DispatchEngine {
     if (this.lifecycleStore) {
       this.lifecyclePublication = await loadDispatchBootstrapAuthority(this.lifecycleStore);
       await this.lifecycleMutex.runExclusive(async () => {
-        await this._recoverPendingCleanups({ scope: "all" }).catch(() => undefined);
+        await this._recoverPendingCleanups(
+          { scope: "all" },
+          { auditSource: "daemon_startup" },
+        ).catch(() => undefined);
       });
     }
     this.running = true;
@@ -2350,6 +2361,7 @@ export class DispatchEngine {
 
   private async _recoverPendingCleanups(
     selector: { scope: "all" } | { scope: "global" } | { scope: "task"; taskId: string },
+    options: { auditSource?: "daemon_startup" | "recovery" } = {},
   ): Promise<void> {
     if (!this.lifecycleStore) return;
     const keys = Object.keys(this.lifecyclePublication.snapshot.pending_cleanup).filter((key) => {
@@ -2369,6 +2381,22 @@ export class DispatchEngine {
             ? error
             : new DispatchCleanupError("internal_error", "Dispatch cleanup failed internally");
         await this._markCleanupFailed(key, cleanupError.code);
+        if (options.auditSource) {
+          const context = { source: options.auditSource };
+          this._emitDispatchControlOutcome(
+            key === "global"
+              ? { scope: "global", action: "stop", outcome: "failed", context, error: cleanupError }
+              : {
+                  scope: "task",
+                  action: "stop",
+                  outcome: "failed",
+                  context,
+                  taskId: key,
+                  taskRef: null,
+                  error: cleanupError,
+                },
+          );
+        }
         firstError ??= cleanupError;
       }
     }

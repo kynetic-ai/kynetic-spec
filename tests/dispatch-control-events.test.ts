@@ -125,6 +125,7 @@ async function createEngineFixture(
     authority?: "stopped" | "running" | "paused";
     snapshot?: DispatchControl;
     duplicateTaskSlug?: boolean;
+    callbackError?: Error;
   } = {},
 ): Promise<{
   engine: DispatchEngine;
@@ -165,7 +166,10 @@ async function createEngineFixture(
     reconcileIntervalMs: 0,
     coalesceWindowMs: 0,
     lifecycleStore: store,
-    onDispatchControlEvent: (event) => callbackEvents.push(event),
+    onDispatchControlEvent: (event) => {
+      callbackEvents.push(event);
+      if (options.callbackError) throw options.callbackError;
+    },
   });
   const busEvents = captureDispatchControlEvents(engine.eventBus);
   return { engine, store, callbackEvents, busEvents };
@@ -211,6 +215,26 @@ describe("DispatchEngine lifecycle audit boundary", () => {
       data: { scope: "global", action: "pause", outcome: "applied", authority: "paused" },
     });
     expect(fixture.busEvents).toHaveLength(1);
+  });
+
+  // AC: @dispatch-lifecycle-control-authority ac-applied-control-is-auditable
+  it("does not reclassify a committed outcome when publication delivery throws", async () => {
+    const callbackError = new Error("injected agents publication failure");
+    const fixture = await createEngineFixture({ authority: "running", callbackError });
+
+    await expect(
+      fixture.engine.applyGlobalLifecycleAction("pause", {
+        reason: "operator request",
+        actor: "operator",
+        source: "api",
+      }),
+    ).resolves.toEqual({ outcome: "applied", authority: "paused" });
+
+    expect(fixture.engine.getLifecycleStatus().globalAuthority).toBe("paused");
+    expect(fixture.callbackEvents).toHaveLength(1);
+    expect(fixture.callbackEvents[0]?.type).toBe("dispatch_control.pause_applied");
+    expect(fixture.busEvents).toHaveLength(1);
+    expect(fixture.busEvents[0]?.event_type).toBe("dispatch_control.pause_applied");
   });
 
   // AC: @dispatch-lifecycle-control-authority ac-noop-control-is-auditable
