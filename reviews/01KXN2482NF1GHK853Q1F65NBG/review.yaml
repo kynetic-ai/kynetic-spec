@@ -231,9 +231,25 @@ events:
       status: pass
       name: review evidence log
     timestamp: 2026-07-16T09:13:16.530Z
+  - _ulid: 01KXN37JD144X1WSQ2MVCJXS77
+    actor: codex-reviewer
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: request_changes
+    timestamp: 2026-07-16T09:13:26.689Z
+  - _ulid: 01KXN37JD1QVVR0VPCTGJQZC7X
+    actor: codex-reviewer
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-07-16T09:13:26.689Z
 examined_commit: f5628f46861b4183eccb74b1b9ca4b7526ff996c
 external_links: []
-lifecycle_state: open
+lifecycle_state: closed
 related_refs: []
 subject:
   type: task
@@ -268,7 +284,14 @@ threads:
           behavioral concurrent-start/failure regression."
         created_at: 2026-07-16T09:12:40.978Z
     kind: blocker
-verdicts: []
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: request_changes
+    reviewer: codex-reviewer
+    role: reviewer
+    created_at: 2026-07-16T09:13:26.682Z
 created_at: 2026-07-16T08:54:09.237Z
-updated_at: 2026-07-16T09:13:16.272Z
+updated_at: 2026-07-16T09:13:26.689Z
 notes: []
