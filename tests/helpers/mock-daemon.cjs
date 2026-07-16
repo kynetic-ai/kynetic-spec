@@ -209,6 +209,35 @@ const server = http.createServer(async (req, res) => {
       queuedInvocations: 0,
       invocations: [],
       queued: [],
+      globalAuthority: "stopped",
+      projection: "stopped",
+      cleanupState: { status: "idle", entries: [] },
+      heldCount: 0,
+      heldTasks: [],
+      taskControls: [],
+    });
+  }
+  if (path === "/api/agent/dispatch/control" && method === "POST") {
+    let request = {};
+    try {
+      request = JSON.parse(body || "{}");
+    } catch {}
+    const authority = request.action === "start" ? "running" : "stopped";
+    return ok(res, {
+      ok: true,
+      data: {
+        global_authority: authority,
+        projection: authority,
+        cleanup_state: { status: "idle", entries: [] },
+        active_count: 0,
+        queue_depth: 0,
+        held_count: 0,
+        held_tasks: [],
+        task_controls: [],
+        degraded_targets: [],
+        outcome: "applied",
+      },
+      error: null,
     });
   }
   if (path === "/api/agent/dispatch/start" && method === "POST") {

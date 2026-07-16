@@ -14,6 +14,7 @@
 
 import type { Command } from "commander";
 import chalk from "chalk";
+import { z } from "zod";
 import { initContext, loadMetaContext, findTaskByRef } from "../../parser/index.js";
 import { resolveTaskDataManager } from "../../parser/task-data-manager.js";
 import { runInvocation } from "../../agent-runtime/invocation.js";
@@ -45,8 +46,8 @@ import {
   type RunnerValidationReport,
 } from "../../agents/runner-validation.js";
 import { ulid } from "ulid";
-import { EXIT_CODES } from "../exit-codes.js";
-import { error, info, output, success, warn, isJsonMode } from "../output.js";
+import { EXIT_CODES, LIFECYCLE_EXIT_CODES } from "../exit-codes.js";
+import { error, info, output, success, warn, isJsonMode, lifecycleError } from "../output.js";
 import { parseIntOption, validateEnumOption } from "../validators.js";
 import { getRunningDaemonClient } from "../daemon-client.js";
 import { errors } from "../../strings/errors.js";
@@ -67,6 +68,455 @@ export function _setWebSocketCtor(ctor: typeof WebSocket | null): void {
 }
 
 // ─── Helpers ─────────────────────────────────────────────────────────────────
+
+const LifecycleActionSchema = z.enum(["start", "pause", "resume", "stop"]);
+type LifecycleAction = z.infer<typeof LifecycleActionSchema>;
+
+const CanonicalLifecycleUlidSchema = z.string().regex(/^[0-9A-HJKMNP-TV-Z]{26}$/);
+const DispatchCleanupErrorCodeSchema = z.enum([
+  "cancellation_timeout",
+  "cancellation_failed",
+  "session_closure_failed",
+  "cleanup_ownership_mismatch",
+  "cleanup_process_birth_mismatch",
+  "cleanup_leader_missing_group_alive",
+  "cleanup_identity_unverifiable",
+  "cleanup_group_unverifiable",
+  "internal_error",
+]);
+const DispatchControlErrorCodeSchema = z.enum([
+  "validation_failed",
+  "task_not_found",
+  "task_identity_ambiguous",
+  "task_identity_mismatch",
+  "invalid_transition",
+  "control_store_unavailable",
+  "control_store_corrupt",
+  "control_commit_failed",
+  ...DispatchCleanupErrorCodeSchema.options,
+]);
+const DispatchCleanupEntryStatusSchema = z
+  .object({
+    cleanup_id: CanonicalLifecycleUlidSchema,
+    scope: z.enum(["global", "task"]),
+    task_id: CanonicalLifecycleUlidSchema.optional(),
+    status: z.enum(["pending", "failed"]),
+    phase: z.enum(["owned", "signals_sent", "sessions_closed"]),
+    error_code: DispatchCleanupErrorCodeSchema.optional(),
+  })
+  .strict()
+  .superRefine((entry, ctx) => {
+    if ((entry.scope === "task") !== (entry.task_id !== undefined)) {
+      ctx.addIssue({ code: "custom", path: ["task_id"], message: "invalid task scope" });
+    }
+    if ((entry.status === "failed") !== (entry.error_code !== undefined)) {
+      ctx.addIssue({ code: "custom", path: ["error_code"], message: "invalid failure code" });
+    }
+  });
+const DispatchCleanupStateSchema = z
+  .object({
+    status: z.enum(["idle", "pending", "failed"]),
+    entries: z.array(DispatchCleanupEntryStatusSchema),
+  })
+  .strict()
+  .superRefine((state, ctx) => {
+    const expected =
+      state.entries.length === 0
+        ? "idle"
+        : state.entries.some((entry) => entry.status === "failed")
+          ? "failed"
+          : "pending";
+    if (state.status !== expected) {
+      ctx.addIssue({ code: "custom", path: ["status"], message: "invalid aggregate status" });
+    }
+    const cleanupIds = new Set<string>();
+    const owners = new Set<string>();
+    let previousKey: string | undefined;
+    state.entries.forEach((entry, index) => {
+      const owner = entry.scope === "global" ? "global" : `task:${entry.task_id}`;
+      const key = `${entry.scope === "global" ? "0" : `1:${entry.task_id}`}:${entry.cleanup_id}`;
+      if (cleanupIds.has(entry.cleanup_id) || owners.has(owner)) {
+        ctx.addIssue({ code: "custom", path: ["entries", index], message: "duplicate cleanup" });
+      }
+      if (previousKey !== undefined && previousKey.localeCompare(key) > 0) {
+        ctx.addIssue({ code: "custom", path: ["entries", index], message: "unsorted cleanup" });
+      }
+      cleanupIds.add(entry.cleanup_id);
+      owners.add(owner);
+      previousKey = key;
+    });
+  });
+const DispatchControlMetadataSchema = z.object({
+  reason: z.string(),
+  actor: z.string(),
+  source: z.enum(["cli", "api", "ui", "daemon_startup", "daemon_shutdown", "recovery"]),
+  controlled_at: z.string().datetime({ offset: true }),
+  updated_at: z.string().datetime({ offset: true }),
+});
+const DispatchHeldTaskSchema = DispatchControlMetadataSchema.extend({
+  task_id: CanonicalLifecycleUlidSchema,
+  task_ref: z.string().nullable(),
+  title: z.string().nullable(),
+  scope: z.enum(["global", "task"]),
+  mode: z.enum(["paused", "stopped"]),
+}).strict();
+const DispatchTaskControlStatusSchema = DispatchControlMetadataSchema.extend({
+  task_id: CanonicalLifecycleUlidSchema,
+  task_ref: z.string().nullable(),
+  title: z.string().nullable(),
+  mode: z.enum(["paused", "stopped"]),
+  cleanup_state: DispatchCleanupStateSchema,
+})
+  .strict()
+  .superRefine((control, ctx) => {
+    if (
+      control.cleanup_state.entries.some(
+        (entry) => entry.scope !== "task" || entry.task_id !== control.task_id,
+      )
+    ) {
+      ctx.addIssue({ code: "custom", path: ["cleanup_state"], message: "mismatched cleanup" });
+    }
+  });
+
+function addSortedLifecycleTaskIssues(
+  rows: ReadonlyArray<{ task_id: string }>,
+  path: string,
+  ctx: z.RefinementCtx,
+): void {
+  rows.forEach((row, index) => {
+    if (index > 0 && rows[index - 1]!.task_id >= row.task_id) {
+      ctx.addIssue({ code: "custom", path: [path, index], message: "unsorted task rows" });
+    }
+  });
+}
+
+const InternalDegradedSchema = z
+  .object({ active: z.boolean(), reason: z.string(), enteredAt: z.string().nullable() })
+  .strict();
+const DegradedTargetSchema = z
+  .object({ branch: z.string(), reason: z.string(), enteredAt: z.string(), kind: z.string() })
+  .strict();
+
+const InternalLifecycleStatusSchema = z
+  .object({
+    running: z.boolean(),
+    activeInvocations: z.number().int().nonnegative(),
+    queuedInvocations: z.number().int().nonnegative(),
+    invocations: z.array(z.unknown()),
+    queued: z.array(z.unknown()).optional(),
+    degraded: InternalDegradedSchema.optional(),
+    globalAuthority: z.enum(["stopped", "running", "paused"]),
+    projection: z.enum(["running", "paused", "draining", "stopped"]),
+    cleanupState: DispatchCleanupStateSchema,
+    heldCount: z.number().int().nonnegative(),
+    heldTasks: z.array(DispatchHeldTaskSchema),
+    taskControls: z.array(DispatchTaskControlStatusSchema),
+  })
+  .passthrough()
+  .superRefine((status, ctx) => {
+    for (const forbidden of [
+      "global_authority",
+      "cleanup_state",
+      "active_count",
+      "queue_depth",
+      "held_count",
+      "held_tasks",
+      "task_controls",
+      "degraded_targets",
+    ]) {
+      if (forbidden in status) {
+        ctx.addIssue({ code: "custom", path: [forbidden], message: "mixed status casing" });
+      }
+    }
+    if (status.heldCount !== status.heldTasks.length) {
+      ctx.addIssue({ code: "custom", path: ["heldCount"], message: "heldCount mismatch" });
+    }
+    addSortedLifecycleTaskIssues(status.heldTasks, "heldTasks", ctx);
+    addSortedLifecycleTaskIssues(status.taskControls, "taskControls", ctx);
+  });
+
+const LifecycleControlSuccessSchema = z
+  .object({
+    ok: z.literal(true),
+    data: z
+      .object({
+        global_authority: z.enum(["stopped", "running", "paused"]),
+        projection: z.enum(["running", "paused", "draining", "stopped"]),
+        cleanup_state: DispatchCleanupStateSchema,
+        active_count: z.number().int().nonnegative(),
+        queue_depth: z.number().int().nonnegative(),
+        held_count: z.number().int().nonnegative(),
+        held_tasks: z.array(DispatchHeldTaskSchema),
+        task_controls: z.array(DispatchTaskControlStatusSchema),
+        degraded_targets: z.array(DegradedTargetSchema),
+        outcome: z.enum(["applied", "noop"]),
+        task_id: CanonicalLifecycleUlidSchema.optional(),
+        task_ref: z.string().nullable().optional(),
+      })
+      .strict()
+      .superRefine((data, ctx) => {
+        if ((data.task_id === undefined) !== (data.task_ref === undefined)) {
+          ctx.addIssue({ code: "custom", path: ["task_id"], message: "partial task identity" });
+        }
+        if (data.held_count !== data.held_tasks.length) {
+          ctx.addIssue({ code: "custom", path: ["held_count"], message: "held count mismatch" });
+        }
+        addSortedLifecycleTaskIssues(data.held_tasks, "held_tasks", ctx);
+        addSortedLifecycleTaskIssues(data.task_controls, "task_controls", ctx);
+      }),
+    error: z.null(),
+  })
+  .strict();
+
+const LifecycleControlFailureSchema = z
+  .object({
+    ok: z.literal(false),
+    data: z.unknown().nullable(),
+    error: z.object({ code: DispatchControlErrorCodeSchema }).passthrough(),
+  })
+  .passthrough();
+
+type InternalLifecycleStatus = z.infer<typeof InternalLifecycleStatusSchema>;
+type LifecycleControlSuccess = z.infer<typeof LifecycleControlSuccessSchema>;
+type LifecycleErrorCode = z.infer<typeof DispatchControlErrorCodeSchema>;
+
+const LIFECYCLE_ERROR_COPY: Record<LifecycleErrorCode, { message: string; suggestion: string }> = {
+  validation_failed: {
+    message: "Invalid dispatch lifecycle request.",
+    suggestion: "Check the command options and try again.",
+  },
+  task_not_found: {
+    message: "Task not found.",
+    suggestion: "Verify the task reference with `kspec task get`.",
+  },
+  task_identity_ambiguous: {
+    message: "Task reference is ambiguous.",
+    suggestion: "Use a canonical task ULID.",
+  },
+  task_identity_mismatch: {
+    message: "Task identity does not match the resolved task.",
+    suggestion: "Provide one matching task reference or task ID.",
+  },
+  invalid_transition: {
+    message: "Dispatch lifecycle transition is not valid from the current authority.",
+    suggestion: "Check dispatch status and choose a valid action.",
+  },
+  control_store_unavailable: {
+    message: "Dispatch control storage is unavailable.",
+    suggestion: "Retry after the daemon can access the control store.",
+  },
+  control_store_corrupt: {
+    message: "Dispatch control storage is corrupt.",
+    suggestion: "Repair the dispatch control record before retrying.",
+  },
+  control_commit_failed: {
+    message: "Dispatch control change could not be committed.",
+    suggestion: "Retry; if it persists, inspect shadow-branch health.",
+  },
+  cancellation_timeout: {
+    message: "Dispatch cancellation timed out.",
+    suggestion: "Retry hard stop after active work settles.",
+  },
+  cancellation_failed: {
+    message: "Dispatch cancellation failed.",
+    suggestion: "Retry hard stop and inspect daemon logs.",
+  },
+  session_closure_failed: {
+    message: "Dispatch session closure failed.",
+    suggestion: "Retry hard stop after the session store is available.",
+  },
+  cleanup_ownership_mismatch: {
+    message: "Dispatch cleanup ownership could not be verified.",
+    suggestion: "Do not retry blindly; inspect the matching session evidence.",
+  },
+  cleanup_process_birth_mismatch: {
+    message: "Dispatch process identity changed before cleanup.",
+    suggestion: "Do not signal the process; inspect the matching session evidence.",
+  },
+  cleanup_leader_missing_group_alive: {
+    message: "Dispatch cleanup found a live verified process group.",
+    suggestion: "Retry hard stop after the process group exits.",
+  },
+  cleanup_identity_unverifiable: {
+    message: "Dispatch cleanup identity cannot be verified.",
+    suggestion: "Restore readable ownership evidence before retrying.",
+  },
+  cleanup_group_unverifiable: {
+    message: "Dispatch cleanup group cannot be verified.",
+    suggestion: "Do not signal the group; restore verification evidence before retrying.",
+  },
+  internal_error: {
+    message: "Dispatch lifecycle command failed.",
+    suggestion: "Retry; if it persists, inspect daemon logs.",
+  },
+};
+
+function failLifecycle(code: LifecycleErrorCode): never {
+  const copy = LIFECYCLE_ERROR_COPY[code];
+  lifecycleError(code, copy.message, copy.suggestion);
+  process.exit(code === "validation_failed" ? EXIT_CODES.ERROR : EXIT_CODES.NOT_FOUND);
+  throw new Error("unreachable");
+}
+
+function failLifecycleLocal(
+  code: "validation_failed" | "internal_error",
+  message?: string,
+  suggestion?: string,
+): never {
+  const copy = LIFECYCLE_ERROR_COPY[code];
+  lifecycleError(code, message ?? copy.message, suggestion ?? copy.suggestion);
+  process.exit(code === "validation_failed" ? EXIT_CODES.ERROR : EXIT_CODES.NOT_FOUND);
+  throw new Error("unreachable");
+}
+
+function failDaemonUnavailable(): never {
+  lifecycleError(
+    "internal_error",
+    "Daemon is not running. The dispatch engine requires the daemon.",
+    "Start the daemon first with: kspec serve",
+  );
+  process.exit(EXIT_CODES.NOT_FOUND);
+  throw new Error("unreachable");
+}
+
+function lifecycleHeaders(ctx: Awaited<ReturnType<typeof initContext>>): Record<string, string> {
+  const headers: Record<string, string> = { "Content-Type": "application/json" };
+  if (ctx.projectRoot) {
+    headers["X-Kspec-Dir"] = ctx.projectRoot;
+    if (ctx.rootDir !== ctx.projectRoot) headers["X-Kspec-Cwd"] = ctx.rootDir;
+  }
+  return headers;
+}
+
+async function parseJsonResponse(response: Response): Promise<unknown> {
+  try {
+    return await response.json();
+  } catch {
+    return failLifecycle("internal_error");
+  }
+}
+
+async function requestLifecycleControl(input: {
+  scope: "global" | "task";
+  action: LifecycleAction;
+  taskRef?: string;
+  reason?: string;
+}): Promise<LifecycleControlSuccess> {
+  const daemon = getRunningDaemonClient();
+  if (!daemon) return failDaemonUnavailable();
+  const ctx = await initContext();
+  const body = {
+    scope: input.scope,
+    action: input.action,
+    ...(input.taskRef ? { task_ref: input.taskRef } : {}),
+    ...(input.reason !== undefined ? { reason: input.reason } : {}),
+  };
+  let response: Response;
+  try {
+    response = await fetch(`${daemon.apiUrl}/api/agent/dispatch/control`, {
+      method: "POST",
+      headers: lifecycleHeaders(ctx),
+      body: JSON.stringify(body),
+    });
+  } catch {
+    return failLifecycle("internal_error");
+  }
+  const raw = await parseJsonResponse(response);
+  if (!response.ok) {
+    const parsed = LifecycleControlFailureSchema.safeParse(raw);
+    return failLifecycle(parsed.success ? parsed.data.error.code : "internal_error");
+  }
+  const parsed = LifecycleControlSuccessSchema.safeParse(raw);
+  if (!parsed.success) return failLifecycle("internal_error");
+  const hasTaskIdentity = parsed.data.data.task_id !== undefined;
+  if ((input.scope === "task") !== hasTaskIdentity) return failLifecycle("internal_error");
+  return parsed.data;
+}
+
+function renderLifecycleControl(action: LifecycleAction, response: LifecycleControlSuccess): void {
+  output(response, () => {
+    const taskSuffix = response.data.task_id ? ` for ${response.data.task_id}` : "";
+    console.log(
+      `Dispatch ${action}: ${response.data.global_authority} (${response.data.projection})${taskSuffix}`,
+    );
+  });
+}
+
+async function promptHardStop(): Promise<boolean> {
+  const readline = await import("node:readline");
+  const rl = readline.createInterface({ input: process.stdin, output: process.stdout });
+  try {
+    return await new Promise((resolve) => {
+      rl.question(
+        "Hard-stop dispatch? Active matching invocations will be cancelled and session, branch, workspace, worktree, snapshot, and audit evidence will be preserved. [y/N] ",
+        (answer) => resolve(answer.trim().toLowerCase() === "y"),
+      );
+    });
+  } finally {
+    rl.close();
+  }
+}
+
+async function preflightHardStop(force: boolean): Promise<void> {
+  if (process.env.KSPEC_SESSION_ID) {
+    return failLifecycleLocal(
+      "internal_error",
+      "A dispatch-owned session cannot hard-stop its host.",
+      "Run this command outside the dispatch-owned session.",
+    );
+  }
+  if (force) return;
+  if (isJsonMode() || !process.stdin.isTTY) {
+    return failLifecycleLocal(
+      "validation_failed",
+      "Hard stop requires --force when stdin is not a TTY.",
+      "Re-run with --force.",
+    );
+  }
+  if (!(await promptHardStop())) {
+    console.log("Hard stop cancelled.");
+    process.exit(LIFECYCLE_EXIT_CODES.USER_CANCELLED);
+    throw new Error("unreachable");
+  }
+}
+
+async function fetchInternalLifecycleStatus(): Promise<InternalLifecycleStatus> {
+  const daemon = getRunningDaemonClient();
+  if (!daemon) return failDaemonUnavailable();
+  const ctx = await initContext();
+  const headers = lifecycleHeaders(ctx);
+  delete headers["Content-Type"];
+  let response: Response;
+  try {
+    response = await fetch(`${daemon.apiUrl}/api/agent/dispatch/status`, { headers });
+  } catch {
+    return failLifecycle("internal_error");
+  }
+  const raw = await parseJsonResponse(response);
+  if (!response.ok) {
+    const code = z
+      .object({ error_code: DispatchControlErrorCodeSchema })
+      .passthrough()
+      .safeParse(raw);
+    return failLifecycle(code.success ? code.data.error_code : "internal_error");
+  }
+  const parsed = InternalLifecycleStatusSchema.safeParse(raw);
+  if (!parsed.success) return failLifecycle("internal_error");
+  return parsed.data;
+}
+
+function appendLifecycleStatusFields(data: InternalLifecycleStatus) {
+  return { ...data, activeCount: data.activeInvocations };
+}
+
+function renderLifecycleStatusSummary(data: InternalLifecycleStatus): void {
+  console.log(`Authority: ${data.globalAuthority}`);
+  console.log(`Projection: ${data.projection}`);
+  console.log(`Active: ${data.activeInvocations}`);
+  console.log(`Queued: ${data.queuedInvocations}`);
+  console.log(`Held: ${data.heldCount}`);
+  console.log(`Cleanup: ${data.cleanupState.status}`);
+}
 
 /**
  * Resolve the effective adapter identity for an agent definition.
@@ -1152,51 +1602,10 @@ export function registerAgentCommands(program: Command): void {
     .option("--json", "Output as JSON")
     .action(async (_opts) => {
       try {
-        const daemon = getRunningDaemonClient();
-
-        // AC: @trait-error-guidance ac-1, ac-2
-        if (!daemon) {
-          error("Daemon is not running. Cannot retrieve agent status.", {
-            suggestion: "Start the daemon with: kspec serve",
-          });
-          process.exit(EXIT_CODES.ERROR);
-        }
-
-        const ctx = await initContext();
-
-        const headers: Record<string, string> = {};
-        if (ctx.projectRoot) {
-          headers["X-Kspec-Dir"] = ctx.projectRoot;
-        }
-
-        const response = await fetch(`${daemon.apiUrl}/api/agent/dispatch/status`, { headers });
-        if (!response.ok) {
-          error(`Daemon returned error: ${response.status} ${response.statusText}`);
-          process.exit(EXIT_CODES.ERROR);
-        }
-
         // AC: @cli-agent-commands ac-6
-        const data = (await response.json()) as {
-          running: boolean;
-          activeInvocations: number;
-          queuedInvocations: number;
-          invocations: Array<{
-            invocationId: string;
-            sessionId: string;
-            agentId: string;
-            agentName: string;
-            taskRef: string | undefined;
-            elapsedMs: number;
-          }>;
-          queued: Array<{
-            agentId: string;
-            agentName: string;
-            taskRef: string | undefined;
-            waitMs: number;
-          }>;
-        };
+        const data = await fetchInternalLifecycleStatus();
 
-        output(data, () => {
+        output(appendLifecycleStatusFields(data), () => {
           console.log(chalk.bold("Agent Status"));
           console.log();
           console.log(
@@ -1205,7 +1614,13 @@ export function registerAgentCommands(program: Command): void {
           console.log(`  Active invocations: ${chalk.cyan(String(data.activeInvocations))}`);
           console.log(`  Queued invocations: ${chalk.cyan(String(data.queuedInvocations))}`);
 
-          const invocations = data.invocations ?? [];
+          const invocations = data.invocations as Array<{
+            sessionId: string;
+            agentId: string;
+            agentName: string;
+            taskRef?: string;
+            elapsedMs: number;
+          }>;
           if (invocations.length > 0) {
             console.log();
             console.log(chalk.bold("Active:"));
@@ -1219,7 +1634,12 @@ export function registerAgentCommands(program: Command): void {
             }
           }
 
-          const queuedItems = data.queued ?? [];
+          const queuedItems = (data.queued ?? []) as Array<{
+            agentId: string;
+            agentName: string;
+            taskRef?: string;
+            waitMs: number;
+          }>;
           if (queuedItems.length > 0) {
             console.log();
             console.log(chalk.bold("Queued:"));
@@ -1230,8 +1650,11 @@ export function registerAgentCommands(program: Command): void {
               console.log(`    waiting: ${wait}s${taskStr}`);
             }
           }
+          console.log();
+          renderLifecycleStatusSummary(data);
         });
       } catch (err) {
+        if (err instanceof Error && err.message === "unreachable") throw err;
         error("Failed to get agent status", err);
         process.exit(EXIT_CODES.ERROR);
       }
@@ -1246,109 +1669,81 @@ export function registerAgentCommands(program: Command): void {
   dispatch
     .command("start")
     .description("Start the dispatch engine (daemon must be running)")
+    .option("--reason <text>", "Record an operator reason")
     .option("--json", "Output as JSON")
-    .action(async (_opts) => {
-      try {
-        const daemon = getRunningDaemonClient();
-
-        // AC: @cli-agent-commands ac-10 - error when daemon not running
-        if (!daemon) {
-          error("Daemon is not running. The dispatch engine requires the daemon.", {
-            suggestion: "Start the daemon first with: kspec serve",
-          });
-          process.exit(EXIT_CODES.ERROR);
-        }
-
-        const ctx = await initContext();
-
-        const headers: Record<string, string> = {
-          "Content-Type": "application/json",
-        };
-        if (ctx.projectRoot) {
-          headers["X-Kspec-Dir"] = ctx.projectRoot;
-          if (ctx.rootDir !== ctx.projectRoot) {
-            headers["X-Kspec-Cwd"] = ctx.rootDir;
-          }
-        }
-
-        const response = await fetch(`${daemon.apiUrl}/api/agent/dispatch/start`, {
-          method: "POST",
-          headers,
-        });
-
-        if (!response.ok) {
-          const body = await response.text();
-          error(`Failed to start dispatch engine: ${response.status} - ${body}`);
-          process.exit(EXIT_CODES.ERROR);
-        }
-
-        const data = (await response.json()) as {
-          started: boolean;
-          reason?: string;
-          status?: { running: boolean; activeInvocations: number; queuedInvocations: number };
-        };
-
-        output(data, () => {
-          if (data.started) {
-            success("Dispatch engine started");
-          } else {
-            console.log(chalk.yellow(`Dispatch engine: ${data.reason ?? "already running"}`));
-          }
-        });
-      } catch (err) {
-        error("Failed to start dispatch engine", err);
-        process.exit(EXIT_CODES.ERROR);
-      }
+    .action(async (opts: { reason?: string }) => {
+      const response = await requestLifecycleControl({
+        scope: "global",
+        action: "start",
+        reason: opts.reason,
+      });
+      renderLifecycleControl("start", response);
     });
+
+  for (const action of ["pause", "resume"] as const) {
+    dispatch
+      .command(action)
+      .description(
+        action === "pause"
+          ? "Pause dispatch: active invocations finish naturally."
+          : "Resume dispatch",
+      )
+      .option("--reason <text>", "Record an operator reason")
+      .option("--json", "Output as JSON")
+      .action(async (opts: { reason?: string }) => {
+        const response = await requestLifecycleControl({
+          scope: "global",
+          action,
+          reason: opts.reason,
+        });
+        renderLifecycleControl(action, response);
+      });
+  }
 
   // AC: @cli-agent-commands ac-5
   dispatch
     .command("stop")
-    .description("Stop the dispatch engine gracefully")
+    .description(
+      "Hard-stop dispatch: cancel matching active invocations, close sessions, preserve evidence.",
+    )
+    .option("--reason <text>", "Record an operator reason")
+    .option("--force", "Skip confirmation (required outside a TTY and in JSON mode)")
     .option("--json", "Output as JSON")
-    .action(async (_opts) => {
-      try {
-        const daemon = getRunningDaemonClient();
-
-        if (!daemon) {
-          error("Daemon is not running.", { suggestion: "Start the daemon with: kspec serve" });
-          process.exit(EXIT_CODES.ERROR);
-        }
-
-        const ctx = await initContext();
-
-        const headers: Record<string, string> = {
-          "Content-Type": "application/json",
-        };
-        if (ctx.projectRoot) {
-          headers["X-Kspec-Dir"] = ctx.projectRoot;
-        }
-
-        const response = await fetch(`${daemon.apiUrl}/api/agent/dispatch/stop`, {
-          method: "POST",
-          headers,
-        });
-
-        if (!response.ok) {
-          const body = await response.text();
-          error(`Failed to stop dispatch engine: ${response.status} - ${body}`);
-          process.exit(EXIT_CODES.ERROR);
-        }
-
-        const data = (await response.json()) as { stopped: boolean; reason?: string };
-
-        output(data, () => {
-          if (data.stopped) {
-            success("Dispatch engine stopped");
-          } else {
-            console.log(chalk.yellow(`Dispatch engine: ${data.reason ?? "not running"}`));
-          }
-        });
-      } catch (err) {
-        error("Failed to stop dispatch engine", err);
-        process.exit(EXIT_CODES.ERROR);
-      }
+    .action(async (opts: { reason?: string; force?: boolean }) => {
+      await preflightHardStop(opts.force === true);
+      const response = await requestLifecycleControl({
+        scope: "global",
+        action: "stop",
+        reason: opts.reason,
+      });
+      renderLifecycleControl("stop", response);
     });
+
+  const dispatchTask = dispatch.command("task").description("Control dispatch for one task");
+  for (const action of ["pause", "resume", "stop"] as const) {
+    const command = dispatchTask
+      .command(`${action} <task>`)
+      .description(
+        action === "stop"
+          ? "Hard-stop dispatch: cancel matching active invocations, close sessions, preserve evidence."
+          : `${action === "pause" ? "Pause" : "Resume"} task dispatch`,
+      )
+      .option("--reason <text>", "Record an operator reason")
+      .option("--json", "Output as JSON");
+    if (action === "stop") {
+      command.option("--force", "Skip confirmation (required outside a TTY and in JSON mode)");
+    }
+    command.action(async (task: string, opts: { reason?: string; force?: boolean }) => {
+      if (action === "stop") await preflightHardStop(opts.force === true);
+      const response = await requestLifecycleControl({
+        scope: "task",
+        action,
+        taskRef: task,
+        reason: opts.reason,
+      });
+      renderLifecycleControl(action, response);
+    });
+  }
 
   // AC: @cli-agent-commands ac-9
   dispatch
@@ -1357,45 +1752,31 @@ export function registerAgentCommands(program: Command): void {
     .option("--json", "Output as JSON")
     .action(async (_opts) => {
       try {
-        const daemon = getRunningDaemonClient();
-
-        if (!daemon) {
-          // Daemon not running — show as disabled
-          output({ running: false, activeInvocations: 0, queuedInvocations: 0, agents: [] }, () => {
+        if (!getRunningDaemonClient()) {
+          const offline = appendLifecycleStatusFields({
+            running: false,
+            activeInvocations: 0,
+            queuedInvocations: 0,
+            invocations: [],
+            queued: [],
+            globalAuthority: "stopped",
+            projection: "stopped",
+            cleanupState: { status: "idle", entries: [] },
+            heldCount: 0,
+            heldTasks: [],
+            taskControls: [],
+          });
+          output({ ...offline, agents: [] }, () => {
             console.log(chalk.bold("Dispatch Status"));
             console.log();
             console.log(`  Dispatch engine: ${chalk.gray("not available (daemon offline)")}`);
+            renderLifecycleStatusSummary(offline);
             console.log(chalk.gray("  Start daemon with: kspec serve"));
           });
           return;
         }
-
         const ctx = await initContext();
-
-        const headers: Record<string, string> = {};
-        if (ctx.projectRoot) {
-          headers["X-Kspec-Dir"] = ctx.projectRoot;
-        }
-
-        // Get dispatch status
-        const statusResponse = await fetch(`${daemon.apiUrl}/api/agent/dispatch/status`, {
-          headers,
-        });
-        if (!statusResponse.ok) {
-          error(`Daemon returned error: ${statusResponse.status}`);
-          process.exit(EXIT_CODES.ERROR);
-        }
-
-        const statusData = (await statusResponse.json()) as {
-          running: boolean;
-          activeInvocations: number;
-          queuedInvocations: number;
-          degraded?: {
-            active: boolean;
-            reason: string;
-            enteredAt: string | null;
-          };
-        };
+        const statusData = await fetchInternalLifecycleStatus();
 
         // Get loaded agents
         let agents: Array<{ id: string; name: string }> = [];
@@ -1406,7 +1787,7 @@ export function registerAgentCommands(program: Command): void {
           // Meta may not be available
         }
 
-        const fullData = { ...statusData, agents };
+        const fullData = { ...appendLifecycleStatusFields(statusData), agents };
 
         output(fullData, () => {
           console.log(chalk.bold("Dispatch Status"));
@@ -1433,6 +1814,8 @@ export function registerAgentCommands(program: Command): void {
           console.log(`  Active invocations: ${chalk.cyan(String(statusData.activeInvocations))}`);
           console.log(`  Queued invocations: ${chalk.cyan(String(statusData.queuedInvocations))}`);
           console.log();
+          renderLifecycleStatusSummary(statusData);
+          console.log();
           console.log(chalk.bold("Loaded Agents:"));
           if (agents.length === 0) {
             console.log(chalk.gray("  (none defined)"));
@@ -1443,6 +1826,7 @@ export function registerAgentCommands(program: Command): void {
           }
         });
       } catch (err) {
+        if (err instanceof Error && err.message === "unreachable") throw err;
         error("Failed to get dispatch status", err);
         process.exit(EXIT_CODES.ERROR);
       }

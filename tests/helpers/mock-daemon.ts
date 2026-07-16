@@ -283,6 +283,32 @@ function handleInProcessRequest(
       queuedInvocations: 0,
       invocations: [],
       queued: [],
+      globalAuthority: "stopped",
+      projection: "stopped",
+      cleanupState: { status: "idle", entries: [] },
+      heldCount: 0,
+      heldTasks: [],
+      taskControls: [],
+    });
+  }
+  if (path === "/api/agent/dispatch/control" && method === "POST") {
+    const request = JSON.parse(ctx.body || "{}") as { action?: string; scope?: string };
+    const authority = request.action === "start" ? "running" : "stopped";
+    return respondJson(ctx.response, 200, {
+      ok: true,
+      data: {
+        global_authority: authority,
+        projection: authority,
+        cleanup_state: { status: "idle", entries: [] },
+        active_count: 0,
+        queue_depth: 0,
+        held_count: 0,
+        held_tasks: [],
+        task_controls: [],
+        degraded_targets: [],
+        outcome: "applied",
+      },
+      error: null,
     });
   }
   if (path === "/api/agent/dispatch/start" && method === "POST") {
