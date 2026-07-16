@@ -1,1 +1,11 @@
-notes: []
+notes:
+  - _ulid: 01KXMJKATYB5SAX878DAJKTCMX
+    content: "Investigation: the failing test and ownership-publication implementation are absent from
+      the assigned dev base. They were introduced by 29569d9efb on @task-engine-stop-recovery and
+      currently exist only on plan/plan-dispatch-lifecycle-pause-resume-and-stop-controls/01kxc2vx.
+      The task has plan_ref=null and no dependency, while the plan branch differs from dev across 39
+      files. Importing that branch into this dev-targeted bug branch would prematurely publish
+      unrelated plan work, so no code edits were made."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-07-16T04:22:46.366Z
