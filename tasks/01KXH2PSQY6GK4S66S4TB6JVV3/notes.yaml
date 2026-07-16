@@ -32,3 +32,17 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-07-16T05:35:18.388Z
+  - _ulid: 01KXMQHDTQZR7TG47YJGJ80B1P
+    content: "Fix cycle 1 approach: reuse new shared pure transition guards from the dispatch engine at
+      both the route preflight boundary and the locked engine mutation boundary. Preflight only when
+      no engine exists, resolving canonical task identity and committed matching-scope cleanup first
+      so invalid canonical/legacy operations cannot instantiate or reconcile runtime state. For
+      legacy stop, apply the durable global stop before engine teardown so cleanup failure remains
+      retryable; translate cleanup_pending only for DispatchCleanupError, preserving exact
+      pre-commit/internal rows. Tests first: invalid stopped/cleanup transitions leave no engine;
+      unrelated-scope operations succeed; persistence and cleanup failures never report success;
+      repeated alias stop retries; exact legacy rows/native validation; schema count/nested-task
+      rejection."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-07-16T05:49:06.775Z
