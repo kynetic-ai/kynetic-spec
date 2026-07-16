@@ -19,3 +19,13 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-07-16T11:57:19.203Z
+  - _ulid: 01KXNYG3W0Y4N6NV15GD65ZTDH
+    content: "Repeated during cycle-5 review of @01KXH2PVX606KVK5C4ERCB8WTY on 2026-07-16: fresh full
+      suite failed tests/agent-invocation.test.ts case 'runInvocation: agent.dispatched event
+      payload reaps a resistant descendant before publishing normal invocation exit' with ENOENT
+      lstat /proc/<pid>; two immediate isolated fresh reruns passed 14/14. The reviewed diff does
+      not modify tests/agent-invocation.test.ts or src/agent-runtime/invocation.ts relative to
+      integration base, so this remains the tracked process-observation/load flake."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-07-16T17:09:58.272Z
