@@ -29867,3 +29867,21 @@ reviews:
     verdict_count: 1
     created_at: 2026-07-15T21:52:36.862Z
     updated_at: 2026-07-15T22:16:09.820Z
+  - _ulid: 01KXM7H0H54D862MKHG9VQCBFG
+    slugs: []
+    title: Review protect controlled dispatch evidence from cleanup
+    disposition: pending
+    author: Jacob Chapel
+    check_count: 0
+    examined_commit: dd9e182d59521a161a6b5b383539cc4b70aac120
+    lifecycle_state: draft
+    related_refs: []
+    subject:
+      type: task
+      content_hash: ""
+      ref: "@01KXH2PRVHHSQ14WR16A5KHTJT"
+      shadow_commit: ""
+    thread_count: 0
+    unresolved_blocker_count: 0
+    verdict_count: 0
+    created_at: 2026-07-16T01:09:15.941Z
