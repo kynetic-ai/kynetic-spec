@@ -80113,7 +80113,7 @@ runs:
     started_at: 2026-07-16T03:02:05.235Z
   - _ulid: 01KXMFT1R98HPRNBWN38S9QA3D
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -80127,7 +80127,20 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-07-16T03:36:04.943Z
-        completed_at: 2026-07-16T03:36:04.943Z
+        completed_at: 2026-07-16T03:37:08.120Z
+        notes: "High-confidence success: fault-injecting a throwing dispatch event-publication callback
+          behaviorally exposed an exactly-once lifecycle defect that happy-path tests missed;
+          targeted searches for observer/publication callback failure, fault injection, and
+          exactly-once lifecycle events found no existing tracking. High-confidence friction:
+          unbounded reflection baseline inventories caused massive truncated output, but this is
+          already covered by inbox @01KSDZFN and observation @01KXKCX5Y, so it must not be
+          duplicated. The intermittent process-identity test is already covered by task @01KXMFGZ.
+          Review-check batch flag ergonomics was treated as a one-off/insufficiently systemic and
+          excluded."
+      - status: completed
+        step_index: 2
+        started_at: 2026-07-16T03:37:08.120Z
+        completed_at: 2026-07-16T03:37:08.120Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-07-16T03:34:00.713Z
