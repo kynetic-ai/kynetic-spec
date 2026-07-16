@@ -76,7 +76,7 @@ description: |
 spec_ref: "@cli-agent-commands"
 plan_ref: "@plan-dispatch-lifecycle-pause-resume-and-stop-controls"
 origin: derived
-status: pending_review
+status: needs_work
 blocked_by: []
 depends_on:
   - "@task-patch-dispatch-cli-specs"
@@ -97,7 +97,7 @@ submission_linkage:
   remote: origin
   remote_url: git@github.com:lepahc/kynetic-spec.git
   upstream_ref: refs/heads/dispatch/task/task-cli-dispatch-lifecycle-controls/01kxh2pt
-session_id: 01KXNE3VPS89YQAQZHYPQZ32GM
+session_id: null
 history:
   - author: Jacob Chapel
     changes:
@@ -203,6 +203,16 @@ history:
         previous: "@01KXNBP38KMTGGDZGGJ3RMENAW"
     command: review-link
     timestamp: 2026-07-16T12:54:38.777Z
+  - author: Jacob Chapel
+    changes:
+      status:
+        new: needs_work
+        previous: pending_review
+      session_id:
+        new: null
+        previous: 01KXNE3VPS89YQAQZHYPQZ32GM
+    command: review-verdict-needs-work
+    timestamp: 2026-07-16T13:17:17.499Z
 created_at: 2026-07-14T19:47:19.851Z
 started_at: 2026-07-16T12:25:44.159Z
 submitted_at: 2026-07-16T12:46:56.989Z
