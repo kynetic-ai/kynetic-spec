@@ -2,7 +2,103 @@ _ulid: 01KXMBYG2AZ5HBXGWWDX93EKQE
 slugs: []
 title: Review protect controlled dispatch evidence from cleanup (cycle 2)
 author: Jacob Chapel
-checks: []
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: All 1049 matched files use the correct format.
+    name: format
+    required: true
+    runner: npm run format:check
+    created_at: 2026-07-16T02:45:43.050Z
+    completed_at: 2026-07-16T02:45:43.050Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Repo-wide lint completed with 0 errors and 702 baseline warnings. Focused oxlint on all 5
+      changed TypeScript and test files completed with 0 warnings and 0 errors.
+    name: lint
+    required: true
+    runner: npm run lint -- --quiet
+    created_at: 2026-07-16T02:45:46.357Z
+    completed_at: 2026-07-16T02:45:46.357Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Shared package build and tsc --noEmit completed successfully.
+    name: typecheck
+    required: true
+    runner: npm run typecheck
+    created_at: 2026-07-16T02:45:49.844Z
+    completed_at: 2026-07-16T02:45:49.844Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: kspec validate --refs --warnings-ok passed with 6 documented repository deprecation warnings.
+    name: kspec validate refs
+    required: true
+    runner: kspec
+    created_at: 2026-07-16T02:45:53.130Z
+    completed_at: 2026-07-16T02:45:53.130Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: kspec validate --alignment --warnings-ok passed; repository baseline orphan and status
+      warnings only.
+    name: kspec validate alignment
+    required: true
+    runner: kspec
+    created_at: 2026-07-16T02:45:56.514Z
+    completed_at: 2026-07-16T02:45:56.514Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: kspec validate --completeness --warnings-ok passed with repository baseline warnings. All
+      Dispatch Workspace Cleanup Policy ACs have annotations; inherited error-guidance ACs have
+      explicit N/A annotations for this internal runtime policy.
+    name: kspec validate completeness
+    required: true
+    runner: kspec
+    created_at: 2026-07-16T02:45:59.630Z
+    completed_at: 2026-07-16T02:45:59.630Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Six relevant files passed 16 suites and 96 tests, including historical alias reap and
+      terminal self-heal regressions plus global held startup wiring.
+    name: focused cleanup tests
+    required: true
+    runner: npm test
+    created_at: 2026-07-16T02:46:02.640Z
+    completed_at: 2026-07-16T02:46:02.640Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Fresh full run passed 2808 of 2808 suites and 10731 tests; 3 tests skipped. Duration
+      3075.0s. Log: /tmp/kspec-test-cache/01KXMBR91KD2Z6Y7WFH9K4NSBM/92ac0cfc725e0693.log"
+    name: full test suite
+    required: true
+    runner: npm test -- --fresh
+    created_at: 2026-07-16T02:46:05.781Z
+    completed_at: 2026-07-16T02:46:05.781Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: No whitespace errors between integration base 958c482d25 and reviewed head e717fb401d.
+    name: git diff check
+    required: true
+    runner: git diff --check
+    created_at: 2026-07-16T02:46:08.851Z
+    completed_at: 2026-07-16T02:46:08.851Z
 events:
   - _ulid: 01KXMBYG2262PQ63B1P4C6WY3Z
     actor: Jacob Chapel
@@ -17,6 +113,76 @@ events:
       from: draft
       to: open
     timestamp: 2026-07-16T02:26:46.760Z
+  - _ulid: 01KXMD1M88MR301N6KJY9864W8
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: format
+    timestamp: 2026-07-16T02:45:43.305Z
+  - _ulid: 01KXMD1QF6H6Q8GN6YF6C895DB
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: lint
+    timestamp: 2026-07-16T02:45:46.598Z
+  - _ulid: 01KXMD1TWDKTFYF3WNBVV4A7D6
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: typecheck
+    timestamp: 2026-07-16T02:45:50.093Z
+  - _ulid: 01KXMD1Y4E99ZFPKV8WDFDWXM7
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate refs
+    timestamp: 2026-07-16T02:45:53.422Z
+  - _ulid: 01KXMD21CMCRWW7K2T4S3QQN0E
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate alignment
+    timestamp: 2026-07-16T02:45:56.756Z
+  - _ulid: 01KXMD24EDH9RMHECBMPS1QKWK
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate completeness
+    timestamp: 2026-07-16T02:45:59.885Z
+  - _ulid: 01KXMD27BRYW7K5TB97P3Q07F3
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: focused cleanup tests
+    timestamp: 2026-07-16T02:46:02.872Z
+  - _ulid: 01KXMD2AE3XAX11SX9NGCA7QEF
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: full test suite
+    timestamp: 2026-07-16T02:46:06.019Z
+  - _ulid: 01KXMD2DE1E5JFQJVTAXHQCXN8
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: git diff check
+    timestamp: 2026-07-16T02:46:09.089Z
+  - _ulid: 01KXMD2GMN6VGVY7KFF97E5NJR
+    actor: pr-reviewer
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KXMD2GB1Y94SC474RVDP06ZW
+    timestamp: 2026-07-16T02:46:12.373Z
 examined_commit: e717fb401dc3848707d9a9efc04d23dc8a0aa995
 external_links: []
 lifecycle_state: open
@@ -26,8 +192,40 @@ subject:
   content_hash: ""
   ref: "@01KXH2PRVHHSQ14WR16A5KHTJT"
   shadow_commit: ""
-threads: []
+threads:
+  - _ulid: 01KXMD2GB1Y94SC474RVDP06ZW
+    entries:
+      - _ulid: 01KXMD2GB1RK6APD7AHRB46PTY
+        author: pr-reviewer
+        body: >-
+          Review evidence log
+
+          Files read: src/agent-runtime/dispatch.ts; src/agent-runtime/workspace.ts;
+          tests/dispatch-artifact-protection.test.ts;
+          tests/dispatch-controlled-evidence-protection.test.ts;
+          tests/dispatch-global-lifecycle.test.ts; surrounding dispatch control store, committed
+          transaction, schema, canonical identity, spawn/finalization, cleanup, and terminal
+          reconciliation context; task, spec, trait, plan, and prior review records.
+
+          Commands run: complete base-to-head and fix-cycle diffs; task/spec/trait/plan/review
+          lookups; AC annotation search; format, repo and focused lint, typecheck,
+          refs/alignment/completeness validation, diff check; focused 96-test run; fresh full
+          10731-test run; branch/head/cleanliness verification.
+
+          Claims verified: historical alias-only records now canonicalize before physical reap and
+          terminal self-heal; globally paused startup held identities reach registry and artifact
+          cleanup; active/final-gate, paused-held, stopped-pending-cleanup, degraded-control, and
+          unrelated-terminal outcomes remain correctly separated.
+
+          Categories searched: correctness, canonical identity and lifecycle edge cases,
+          degraded/error handling, security and data exposure, behavioral test quality and AC
+          annotations, startup and cleanup integration, destructive-surface consistency.
+
+          Shared/package surfaces touched: none. Shared-guidance neutrality and generated-artifact
+          regeneration are not applicable.
+        created_at: 2026-07-16T02:46:12.065Z
+    kind: nit
 verdicts: []
 created_at: 2026-07-16T02:26:32.138Z
-updated_at: 2026-07-16T02:26:46.502Z
+updated_at: 2026-07-16T02:46:12.065Z
 notes: []
