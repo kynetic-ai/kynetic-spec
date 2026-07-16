@@ -85,6 +85,17 @@ checks:
     runner: git diff --check
     created_at: 2026-07-16T01:27:09.085Z
     completed_at: 2026-07-16T01:27:09.085Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Fresh full run passed 2808/2808 suites and 10726 tests; 3 tests skipped. Duration
+      2828.1s. Log: /tmp/kspec-test-cache/01KXM7DTSZNBXRCNJMDW2T3JVA/7ab372c2a76552f8.log"
+    name: full test suite
+    required: true
+    runner: npm test -- --fresh
+    created_at: 2026-07-16T01:28:20.996Z
+    completed_at: 2026-07-16T01:28:20.996Z
 events:
   - _ulid: 01KXM7H0H5NGW2AKKRZNQMSMKX
     actor: Jacob Chapel
@@ -169,9 +180,39 @@ events:
       kind: blocker
       thread_ulid: 01KXM8J2QZ0CCR7MVV9P1DH8SM
     timestamp: 2026-07-16T01:27:20.058Z
+  - _ulid: 01KXM8KZ20EDFT9EKD5ERWJBSN
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: full test suite
+    timestamp: 2026-07-16T01:28:21.312Z
+  - _ulid: 01KXM8M3E998SFSN71NS865QTJ
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KXM8M34SD6G3MVM2PX7JFZFY
+    timestamp: 2026-07-16T01:28:25.801Z
+  - _ulid: 01KXM8M7TW0QNMJKKDARDQV6ZZ
+    actor: pr-reviewer
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: request_changes
+    timestamp: 2026-07-16T01:28:30.300Z
+  - _ulid: 01KXM8M7TWK2AHJNWSFBCTWMV0
+    actor: pr-reviewer
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-07-16T01:28:30.300Z
 examined_commit: dd9e182d59521a161a6b5b383539cc4b70aac120
 external_links: []
-lifecycle_state: open
+lifecycle_state: closed
 related_refs: []
 subject:
   type: task
@@ -227,7 +268,44 @@ threads:
           path."
         created_at: 2026-07-16T01:27:19.551Z
     kind: blocker
-verdicts: []
+  - _ulid: 01KXM8M34SD6G3MVM2PX7JFZFY
+    entries:
+      - _ulid: 01KXM8M34S72KXHQNGH7AX7AC8
+        author: Jacob Chapel
+        body: >-
+          Review evidence log
+
+          Files read: src/agent-runtime/workspace.ts; tests/dispatch-artifact-protection.test.ts;
+          tests/dispatch-controlled-evidence-protection.test.ts; related dispatch engine, control
+          store/transaction/schema, canonical-identity, spawn-race, cleanup, and
+          terminal-reconciliation context.
+
+          Commands run: full base-to-head diff; task/spec/trait/plan/review lookups; format, repo
+          and focused lint, typecheck, refs/alignment/completeness validation, diff check; focused
+          69-test cleanup run; fresh full 10,726-test run; two executable protection-state
+          reproductions.
+
+          Claims verified: paused and stopped-pending-cleanup physical preservation works for
+          canonical task records; unrelated integrated cleanup remains enabled; degraded control
+          fails closed. Worker alias-edge claim was disproved for raw historical closing records,
+          and the paused-held matrix was found not to be wired for global held identities.
+
+          Categories searched: correctness, canonical identity/edge cases, degraded error handling,
+          security/data exposure, behavioral test quality/AC annotations, concurrency/control
+          integration, destructive-surface integration.
+
+          Shared-package surfaces touched: none; shared-guidance-neutrality and generated-artifact
+          regeneration are not applicable.
+        created_at: 2026-07-16T01:28:25.497Z
+    kind: nit
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: request_changes
+    reviewer: pr-reviewer
+    role: reviewer
+    created_at: 2026-07-16T01:28:30.300Z
 created_at: 2026-07-16T01:09:15.941Z
-updated_at: 2026-07-16T01:27:19.551Z
+updated_at: 2026-07-16T01:28:30.300Z
 notes: []
