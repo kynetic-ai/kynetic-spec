@@ -169,6 +169,65 @@ checks:
     runner: npm test -- --fresh
     created_at: 2026-07-16T04:11:05.756Z
     completed_at: 2026-07-16T04:11:05.756Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: 55/55 focused tests passed across 8 suites.
+    name: focused lifecycle tests
+    required: false
+    runner: npm test -- --fresh focused lifecycle files
+    created_at: 2026-07-16T04:11:30.523Z
+    completed_at: 2026-07-16T04:11:30.523Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Passed; 6 known deprecated-reference warnings accepted by warnings-ok.
+    name: kspec validate refs
+    required: true
+    runner: kspec validate --refs --warnings-ok
+    created_at: 2026-07-16T04:11:33.564Z
+    completed_at: 2026-07-16T04:11:33.564Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Passed under repository warning baseline; no task-specific alignment errors.
+    name: kspec validate alignment
+    required: true
+    runner: kspec validate --alignment --warnings-ok
+    created_at: 2026-07-16T04:11:36.620Z
+    completed_at: 2026-07-16T04:11:36.620Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Passed under repository warning baseline; changed AC annotations resolve and behavioral
+      tests cover the task scenarios.
+    name: kspec validate completeness
+    required: true
+    runner: kspec validate --completeness --warnings-ok
+    created_at: 2026-07-16T04:11:39.755Z
+    completed_at: 2026-07-16T04:11:39.755Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Files read: all 3 changed tests; surrounding dispatch.ts and workspace.ts; task, plan
+      handoff, linked spec, and prior coverage. Commands: git diff/status/log/diff-check; kspec
+      task/item/plan/review; format, repo/focused lint, typecheck, focused/full fresh tests,
+      refs/alignment/completeness. Claims: phase barriers retain stopped pending state; retries
+      select matching entries; task B survives task A stop; controlled evidence is preserved while
+      unrelated closing record is reap-eligible; no production ownership changed. Categories:
+      correctness, concurrency, scope isolation, error codes, cleanup evidence, test
+      integrity/source scanning, integration, security. Findings: none. Shared guidance touched:
+      none; neutrality not applicable."
+    name: review evidence log
+    required: false
+    runner: manual adversarial review
+    created_at: 2026-07-16T04:11:43.053Z
+    completed_at: 2026-07-16T04:11:43.053Z
 events:
   - _ulid: 01KXMGVGPHZH6B4J1E99N16H98
     actor: Jacob Chapel
@@ -288,6 +347,41 @@ events:
       status: pass
       name: full test suite
     timestamp: 2026-07-16T04:11:06.008Z
+  - _ulid: 01KXMHYQ2RTSWRTZDRTSTWXQKZ
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: focused lifecycle tests
+    timestamp: 2026-07-16T04:11:30.776Z
+  - _ulid: 01KXMHYT0WQK5RWMQ038PRG4QS
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate refs
+    timestamp: 2026-07-16T04:11:33.788Z
+  - _ulid: 01KXMHYX0R03054MRZ02YH1KKJ
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate alignment
+    timestamp: 2026-07-16T04:11:36.857Z
+  - _ulid: 01KXMHZ02VSJN98GXC4JTV52W7
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate completeness
+    timestamp: 2026-07-16T04:11:39.995Z
+  - _ulid: 01KXMHZ3BSKJYVNC0PRRV6WV3Q
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: review evidence log
+    timestamp: 2026-07-16T04:11:43.353Z
 examined_commit: f38eb47aa73c3ed032195fea02fdfa0210dbfa24
 external_links: []
 lifecycle_state: open
@@ -300,5 +394,5 @@ subject:
 threads: []
 verdicts: []
 created_at: 2026-07-16T03:52:17.362Z
-updated_at: 2026-07-16T04:11:05.756Z
+updated_at: 2026-07-16T04:11:43.053Z
 notes: []
