@@ -34054,7 +34054,7 @@
   type: task
   spec_ref: "@ui-agent-dispatch"
   plan_ref: "@plan-dispatch-lifecycle-pause-resume-and-stop-controls"
-  status: in_progress
+  status: pending_review
   blocked_by: []
   depends_on:
     - "@task-ui-dispatch-lifecycle-controls"
@@ -34069,6 +34069,7 @@
   todos_count: 0
   created_at: 2026-07-14T19:47:24.012Z
   started_at: 2026-07-16T19:47:43.620Z
+  submitted_at: 2026-07-16T20:13:32.718Z
   automation: eligible
 - _ulid: 01KXK05HK3EEZ79AGT0FHZ868M
   slugs: []
