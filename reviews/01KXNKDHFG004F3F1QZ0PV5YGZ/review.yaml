@@ -1,0 +1,26 @@
+_ulid: 01KXNKDHFG004F3F1QZ0PV5YGZ
+slugs: []
+title: Review safe lifecycle CLI commands (cycle 3)
+author: Jacob Chapel
+checks: []
+events:
+  - _ulid: 01KXNKDHFG9HW1B52MKMYJTEMW
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-07-16T13:56:19.568Z
+examined_commit: f84a91662f82218f14c9a14fd6c75672b6f271cc
+external_links: []
+lifecycle_state: draft
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KXH2PT5BATGSN8TNY7W7NE55"
+  shadow_commit: ""
+threads: []
+verdicts: []
+created_at: 2026-07-16T13:56:19.568Z
+updated_at: null
+notes: []
