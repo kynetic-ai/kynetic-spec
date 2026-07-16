@@ -410,6 +410,28 @@ describe("buildDispatchArtifactProtectionState", () => {
     expect(outOfTree.preserve).toBe(false);
   });
 
+  // AC: @dispatch-workspace-cleanup-policy ac-controlled-evidence-protected
+  // AC: @dispatch-workspace-cleanup-policy ac-ambiguous-protection-blocks-blind-deletion
+  it("blocks blind deletion when committed lifecycle control cannot be trusted", () => {
+    const state = buildDispatchArtifactProtectionState({
+      worktreeRoot: WORKTREE_ROOT,
+      control: { status: "load-failed", reason: "control_store_degraded: invalid revision" },
+      registry: { status: "loaded", records: [] },
+    });
+
+    expect(state.controlTrusted).toBe(false);
+    expect(state.evaluateTaskRef(`@${testUlid("CTRR")}`).preserve).toBe(true);
+    expect(
+      state.evaluateDispatchBranch("dispatch/task/task-control-failed/01task00").preserve,
+    ).toBe(true);
+    expect(
+      state.evaluateWorkspacePath(path.join(WORKTREE_ROOT, "task-control-failed-01task00"))
+        .preserve,
+    ).toBe(true);
+    expect(state.evaluateDispatchBranch("feat/unrelated").preserve).toBe(false);
+    expect(state.evaluateWorkspacePath("/tmp/unrelated").preserve).toBe(false);
+  });
+
   // AC: @dispatch-workspace-cleanup-policy ac-protection-applies-to-every-destructive-surface
   it("does not protect records that belong to a different worktree root", () => {
     const taskRef = `@${testUlid("OTHR")}`;
