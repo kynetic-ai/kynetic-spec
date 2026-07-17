@@ -187,6 +187,13 @@ events:
       kind: blocker
       thread_ulid: 01KXRYH18C1JAPQQ8Z4QZM3463
     timestamp: 2026-07-17T21:08:11.933Z
+  - _ulid: 01KXRYHTWVP603ZW03CPDSY9NY
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KXRYHTKX1D2ZGH55AETG7NYD
+    timestamp: 2026-07-17T21:08:37.915Z
 examined_commit: 4109f86c5496c238583c213a8c10ac3bbafafe80
 external_links: []
 lifecycle_state: open
@@ -246,7 +253,40 @@ threads:
           shape."
         created_at: 2026-07-17T21:08:11.661Z
     kind: blocker
+  - _ulid: 01KXRYHTKX1D2ZGH55AETG7NYD
+    entries:
+      - _ulid: 01KXRYHTKXRKG7V401JYFJ1X05
+        author: Jacob Chapel
+        body: >-
+          REVIEW EVIDENCE LOG (non-finding)
+
+          Files read: all seven changed files; docs/concepts/dispatch-workspaces.md; the workspace
+          configuration and lifecycle guides; src/agent-runtime/bootstrap.ts, dispatch.ts, and
+          workspace.ts; relevant command definitions; prior review threads; dispatch operator,
+          workspace-provisioning, bootstrap, target-sync, lifecycle, identity, stop-recovery,
+          inventory, and rendering tests.
+
+          Commands run: base-to-head and fix-cycle git diff/stat/log/status/diff-check;
+          task/spec/plan/prior-review lookups; AC annotation search; public command help probes; npm
+          run format:check; npm run lint -- --quiet; focused oxlint; npm run typecheck; npm run
+          build:docs-search; fresh npm test; refs/alignment/completeness validation.
+
+          Claims verified: inventory count is now 146; output tail is bounded and non-redacted on
+          dispatcher/task-note surfaces; bootstrap failures block and public unblock restores prior
+          pending or pending_review status; exactly three cache invalidation reasons are emitted;
+          target divergence is scoped; invalid transitions, failed cleanup, identity failures,
+          host-stop rejection, and static read-only behavior match public contracts.
+
+          Categories searched: correctness, edge cases, error handling, secret exposure/security,
+          test quality, integration, navigation/rendering, command validity, generated/inventory
+          consistency. Findings: unconditional unblock for successful cache invalidation; missing
+          unblock after workspace provisioning collision.
+
+          Shared/package surfaces touched: none. Shared-guidance-neutrality direction 1/direction 2
+          and generated package artifact regeneration are not applicable.
+        created_at: 2026-07-17T21:08:37.629Z
+    kind: nit
 verdicts: []
 created_at: 2026-07-17T20:48:35.645Z
-updated_at: 2026-07-17T21:08:11.661Z
+updated_at: 2026-07-17T21:08:37.629Z
 notes: []
