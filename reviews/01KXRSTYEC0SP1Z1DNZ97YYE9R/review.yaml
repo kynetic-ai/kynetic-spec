@@ -2,7 +2,114 @@ _ulid: 01KXRSTYEC0SP1Z1DNZ97YYE9R
 slugs: []
 title: Review task-document-dispatch-recovery
 author: Jacob Chapel
-checks: []
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Passed: all 1067 matched files formatted correctly."
+    name: format
+    required: true
+    runner: npm run format:check
+    created_at: 2026-07-17T20:03:48.947Z
+    completed_at: 2026-07-17T20:03:48.947Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Passed with 0 errors; repo baseline reported 696 warnings.
+    name: lint
+    required: true
+    runner: npm run lint -- --quiet
+    created_at: 2026-07-17T20:03:52.364Z
+    completed_at: 2026-07-17T20:03:52.364Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Passed with 0 warnings and 0 errors.
+    name: focused-lint
+    required: true
+    runner: npx oxlint tests/dispatch-operator-docs.test.ts
+    created_at: 2026-07-17T20:03:56.828Z
+    completed_at: 2026-07-17T20:03:56.828Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Passed build:shared and tsc --noEmit.
+    name: typecheck
+    required: true
+    runner: npm run typecheck
+    created_at: 2026-07-17T20:04:00.990Z
+    completed_at: 2026-07-17T20:04:00.990Z
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Fresh full run: 8 failed, 3 skipped, 10970 passed of 10981. All failures are
+      tests/public-documentation-inventory.test.ts reporting stale tracked Markdown count. Fresh
+      focused rerun reproduced the same 8 failures. Base has 143 tracked Markdown files and a
+      matching manifest count; head has 146 while the manifest remains 143."
+    name: full test suite
+    required: true
+    runner: npm test
+    created_at: 2026-07-17T20:04:04.454Z
+    completed_at: 2026-07-17T20:04:04.454Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Passed with References: OK and the documented 6 deprecated-ref baseline warnings under
+      --warnings-ok."
+    name: kspec validate refs
+    required: true
+    runner: kspec
+    created_at: 2026-07-17T20:04:08.101Z
+    completed_at: 2026-07-17T20:04:08.101Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Passed under --warnings-ok with 56 repository-baseline alignment warnings.
+    name: kspec validate alignment
+    required: true
+    runner: kspec
+    created_at: 2026-07-17T20:04:12.592Z
+    completed_at: 2026-07-17T20:04:12.592Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Passed under --warnings-ok with repository-baseline warnings;
+      @docs-troubleshooting-section ac-1/ac-2/ac-3 annotations were independently located and
+      inspected.
+    name: kspec validate completeness
+    required: true
+    runner: kspec
+    created_at: 2026-07-17T20:04:16.907Z
+    completed_at: 2026-07-17T20:04:16.907Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: 249/249 passed across dispatch-operator-docs, web-ui-docs-rendering, and
+      dispatch-lifecycle-surface-integration.
+    name: focused documentation suite
+    required: true
+    runner: npm test
+    created_at: 2026-07-17T20:04:20.276Z
+    completed_at: 2026-07-17T20:04:20.276Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Passed; Pagefind indexed 48 docs entries.
+    name: docs search build
+    required: true
+    runner: npm run build:docs-search
+    created_at: 2026-07-17T20:04:24.665Z
+    completed_at: 2026-07-17T20:04:24.665Z
 events:
   - _ulid: 01KXRSTYE4DPPPY9VR0Y6Q6EZD
     actor: Jacob Chapel
@@ -17,17 +124,288 @@ events:
       from: draft
       to: open
     timestamp: 2026-07-17T19:46:34.954Z
+  - _ulid: 01KXRTV5ATX03WV839G5G6C23J
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: format
+    timestamp: 2026-07-17T20:03:49.210Z
+  - _ulid: 01KXRTV8PGE9E1WPT54AZF0XN4
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: lint
+    timestamp: 2026-07-17T20:03:52.656Z
+  - _ulid: 01KXRTVD5Z9ER5V10DFN10WK83
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: focused-lint
+    timestamp: 2026-07-17T20:03:57.247Z
+  - _ulid: 01KXRTVH2Y5WA5SGWXA87WKP8D
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: typecheck
+    timestamp: 2026-07-17T20:04:01.246Z
+  - _ulid: 01KXRTVMF5DD3C49Q566SY74A9
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: fail
+      name: full test suite
+    timestamp: 2026-07-17T20:04:04.709Z
+  - _ulid: 01KXRTVR3WFKGAM0Y7YHC9F18W
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate refs
+    timestamp: 2026-07-17T20:04:08.444Z
+  - _ulid: 01KXRTVWFHC6SPB2B5AK0W3KCR
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate alignment
+    timestamp: 2026-07-17T20:04:12.913Z
+  - _ulid: 01KXRTW0MC4M3AAQH1RTVCXKQ5
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate completeness
+    timestamp: 2026-07-17T20:04:17.164Z
+  - _ulid: 01KXRTW3Z5T399FRZKCZ0KT4DH
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: focused documentation suite
+    timestamp: 2026-07-17T20:04:20.581Z
+  - _ulid: 01KXRTW89JNV5FAPG27J2Y4JTA
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: docs search build
+    timestamp: 2026-07-17T20:04:25.010Z
+  - _ulid: 01KXRTWBXHNYBS9RA1921GRP46
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KXRTWBNA5E6P94PTD266ES1F
+    timestamp: 2026-07-17T20:04:28.721Z
+  - _ulid: 01KXRTWF87V0V55N3JFJDHZ8GZ
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KXRTWEZS7CVQKM0AE90F757Q
+    timestamp: 2026-07-17T20:04:32.135Z
+  - _ulid: 01KXRTWK2FVF7SWYKM2E51TQ59
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KXRTWJNJ1N2HX514HC3JSPYE
+    timestamp: 2026-07-17T20:04:36.047Z
+  - _ulid: 01KXRTWR8CH7RPNQGGWBJ6M7F7
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KXRTWQZM8K0T4VWS1YA8R71S
+    timestamp: 2026-07-17T20:04:41.356Z
+  - _ulid: 01KXRTWVP0730FVG8GQ8FPC0F0
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KXRTWVDH8RFKZTR6HCM7V3X0
+    timestamp: 2026-07-17T20:04:44.864Z
+  - _ulid: 01KXRTWZ0RQ6VYPG2SK9PW430Y
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KXRTWYRV36MVXSNE72MF610N
+    timestamp: 2026-07-17T20:04:48.280Z
+  - _ulid: 01KXRTX2SSXN6M630S02B7J5EG
+    actor: pr-reviewer
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: request_changes
+    timestamp: 2026-07-17T20:04:52.153Z
+  - _ulid: 01KXRTX2SSV88PJ8NJB56GQ9QZ
+    actor: pr-reviewer
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-07-17T20:04:52.153Z
 examined_commit: a71126177efc68c959fa2434fea5fe013eb188f1
 external_links: []
-lifecycle_state: open
+lifecycle_state: closed
 related_refs: []
 subject:
   type: task
   content_hash: ""
   ref: "@01KXPPE7MC40EXM9Q3MT0VJNWY"
   shadow_commit: ""
-threads: []
-verdicts: []
+threads:
+  - _ulid: 01KXRTWBNA5E6P94PTD266ES1F
+    anchor:
+      type: code
+      commit: a71126177efc68c959fa2434fea5fe013eb188f1
+      line_end: 15
+      line_start: 13
+      path: docs/troubleshooting/index.md
+      side: head
+    entries:
+      - _ulid: 01KXRTWBNAMPYTXRQ5ZRBSHRN9
+        author: Jacob Chapel
+        body: "MUST-FIX — The three new tracked Markdown pages raise the repository count from 143 at the
+          integration base to 146 at this head, but
+          tests/fixtures/public-documentation-surfaces.json still declares tracked_markdown_count
+          143. Impact: the required fresh full suite fails 8 inventory tests before their intended
+          assertions run. Evidence: npm test -- --fresh failed with stale tracked Markdown count,
+          and a second fresh focused inventory run reproduced all 8 failures; read-only git tree
+          counts show the base matched 143. Update the construction inventory state and verify the
+          fresh inventory/full suite."
+        created_at: 2026-07-17T20:04:28.458Z
+    kind: blocker
+  - _ulid: 01KXRTWEZS7CVQKM0AE90F757Q
+    anchor:
+      type: code
+      commit: a71126177efc68c959fa2434fea5fe013eb188f1
+      line_end: 13
+      line_start: 13
+      path: docs/troubleshooting/dispatch-bootstrap-failures.md
+      side: head
+    entries:
+      - _ulid: 01KXRTWEZSFM4MA9JBBR7YSD57
+        author: Jacob Chapel
+        body: "MUST-FIX — This calls the bootstrap output sanitized and places it in an invocation result.
+          The implementation concatenates stdout/stderr and only slices the last 4,000 code units;
+          it performs no redaction, and DispatchEngine handles this failure before runInvocation,
+          recording it in dispatcher output/task notes. The same page later correctly says printed
+          secrets are exposed. Impact: operators may trust or copy secret-bearing output and look
+          for a result from an invocation that never started. Describe the bounded non-redacted tail
+          and the actual observable failure surfaces consistently, with a regression assertion that
+          rejects sanitized/redacted wording."
+        created_at: 2026-07-17T20:04:31.865Z
+    kind: blocker
+  - _ulid: 01KXRTWJNJ1N2HX514HC3JSPYE
+    anchor:
+      type: code
+      commit: a71126177efc68c959fa2434fea5fe013eb188f1
+      line_end: 61
+      line_start: 57
+      path: docs/troubleshooting/dispatch-bootstrap-failures.md
+      side: head
+    entries:
+      - _ulid: 01KXRTWJNJPMNVRNY6CT5BY4V4
+        author: Jacob Chapel
+        body: "MUST-FIX — A dispatch bootstrap failure does not leave a reviewer task pending_review or make
+          a retry event immediately available. DispatchEngine writes a task note and invokes task
+          block for any bootstrap error before returning;
+          tests/dispatch-runtime-bootstrap-contract.test.ts behaviorally proves that path, and task
+          unblock restores the prior status. The recovery text across this page says retry/resubmit
+          after correcting configuration but omits restoring the blocked task, while this line
+          explicitly claims pending_review remains. Impact: following the page leaves the task
+          blocked and no matching worker/reviewer event can start. Correct the observed state and
+          document the supported unblock/retry lifecycle for every applicable bootstrap symptom."
+        created_at: 2026-07-17T20:04:35.635Z
+    kind: blocker
+  - _ulid: 01KXRTWQZM8K0T4VWS1YA8R71S
+    anchor:
+      type: code
+      commit: a71126177efc68c959fa2434fea5fe013eb188f1
+      line_end: 83
+      line_start: 75
+      path: docs/troubleshooting/dispatch-bootstrap-failures.md
+      side: head
+    entries:
+      - _ulid: 01KXRTWQZN7R0P4QWA3Y544E91
+        author: Jacob Chapel
+        body: "MUST-FIX — The documented invalidation signals do not match ensureWorkspaceBootstrap. The
+          implementation records only prior-bootstrap-failed, bootstrap-config-changed, and
+          canonical-branch-head-changed. A role uses its own roleState or safely reuses worker
+          state; an existing workspace retains its resolved target; and an uncommitted tracked
+          workspace change is not a cached-success invalidation signal. Impact: operators are told
+          to expect a rerun for changes that do not invalidate the cache and to correct a new target
+          that the existing workspace does not adopt. Rewrite this block around the actual signals
+          and bind them to behavioral evidence."
+        created_at: 2026-07-17T20:04:41.077Z
+    kind: blocker
+  - _ulid: 01KXRTWVDH8RFKZTR6HCM7V3X0
+    anchor:
+      type: code
+      commit: a71126177efc68c959fa2434fea5fe013eb188f1
+      line_end: 1858
+      line_start: 1819
+      path: tests/dispatch-operator-docs.test.ts
+      side: head
+    entries:
+      - _ulid: 01KXRTWVDH5VMB6PKY1XAYQP83
+        author: Jacob Chapel
+        body: MUST-FIX — The new bootstrap behavior test calls ensureWorkspaceBootstrap directly and checks
+          only that one documentation block contains two phrases. It bypasses DispatchEngine's
+          public recovery path that records the failure and blocks the task, and it does not bind
+          the page to the implemented invalidation reasons. Consequently the incorrect
+          pending_review/retry and invalidation claims pass while ac-2 is marked covered. Extend
+          behavior-backed documentation coverage through the dispatcher/task lifecycle (and actual
+          invalidation cases) so these recovery guarantees fail when the page drifts; do not replace
+          this with implementation-source scanning.
+        created_at: 2026-07-17T20:04:44.593Z
+    kind: blocker
+  - _ulid: 01KXRTWYRV36MVXSNE72MF610N
+    entries:
+      - _ulid: 01KXRTWYRV0CHV0MM1JKVBGTS7
+        author: Jacob Chapel
+        body: >-
+          REVIEW EVIDENCE LOG (non-finding)
+
+          Files read: all six changed files; surrounding tests/dispatch-operator-docs.test.ts;
+          tests/public-documentation-inventory.test.ts and its fixture;
+          src/agent-runtime/bootstrap.ts and dispatch.ts; existing workspace
+          concept/configuration/lifecycle guides; behavioral bootstrap, remote-sync,
+          lifecycle-route, stop-recovery, and identity tests.
+
+          Commands run: base-to-head git diff/stat/log/status/diff-check; task/spec/plan/review
+          lookups; npm run format:check; npm run lint -- --quiet; focused oxlint; npm run typecheck;
+          npm test -- --fresh; second fresh inventory test; focused 249-test docs/lifecycle suite;
+          npm run build:docs-search; refs/alignment/completeness validation; command help probes and
+          AC annotation search.
+
+          Claims verified: 27 symptom blocks and all links/rendered anchors publish; command paths
+          exist; raw bootstrap tail is observable and non-redacted; divergence is target-scoped;
+          invalid transitions return current status; failed cleanup retains stopped authority and
+          matching cleanup; identity failures are closed and non-mutating.
+
+          Categories searched: correctness, edge cases, error handling, security/secret exposure,
+          test quality, integration, generated/inventory consistency. Shared/package guidance
+          surfaces touched: none, so shared-guidance-neutrality directions and regeneration checks
+          are not applicable.
+        created_at: 2026-07-17T20:04:48.027Z
+    kind: nit
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: request_changes
+    reviewer: pr-reviewer
+    role: reviewer
+    created_at: 2026-07-17T20:04:52.153Z
 created_at: 2026-07-17T19:46:13.580Z
-updated_at: 2026-07-17T19:46:34.680Z
+updated_at: 2026-07-17T20:04:52.153Z
 notes: []
