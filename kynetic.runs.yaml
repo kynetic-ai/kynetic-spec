@@ -83243,7 +83243,7 @@ runs:
     completed_at: 2026-07-17T14:25:16.768Z
   - _ulid: 01KXR8TCTC5KJP7P0AJF088HTY
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -83259,7 +83259,16 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-07-17T14:49:43.174Z
-        completed_at: 2026-07-17T14:49:43.174Z
+        completed_at: 2026-07-17T14:50:09.491Z
+        notes: "Friction: the dispatch prompt required a -review workflow entrypoint that was absent from
+          the installed skill set, requiring inference to kspec-review plus review-gates; the
+          kspec-reflect instructions show kspec workflow show without a run ref, but the current CLI
+          requires run-ref and failed. Minor UX friction: a successful multi-command kspec batch
+          emitted no confirmation, so review get was needed to verify all checks were recorded."
+      - status: completed
+        step_index: 2
+        started_at: 2026-07-17T14:50:09.491Z
+        completed_at: 2026-07-17T14:50:09.491Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-07-17T14:48:49.740Z
