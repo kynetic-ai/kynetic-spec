@@ -1,1 +1,14 @@
-notes: []
+notes:
+  - _ulid: 01KXR2CXN2Q9JC019FD26Y0NNQ
+    content: "Approach: use the frozen dispatch operator facts and existing behavioral tests as source
+      authority; add documentation-facing tests first, then publish a sequential lifecycle guide and
+      link both dispatch guides from the landing page. Edge cases: draining versus durable
+      authority, global versus matching-task cleanup, alias canonicalization, no-op versus invalid
+      transitions, host-stop rejection, failed/retry cleanup, restart recovery, static UI, and
+      unsupported workspace/one-shot claims. Test plan: annotate and cover @docs-guides-section ac-1
+      through ac-3, compare structured command/action tables to the exported Commander tree and
+      public lifecycle facts, then run focused lifecycle suites, docs-search, and all project
+      gates."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-07-17T12:56:36.770Z
