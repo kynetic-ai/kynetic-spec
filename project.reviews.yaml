@@ -30479,7 +30479,7 @@ reviews:
     author: Jacob Chapel
     check_count: 0
     examined_commit: e7dedf15cfc99f987f6904f5a169ba19cbedc917
-    lifecycle_state: draft
+    lifecycle_state: open
     related_refs: []
     subject:
       type: task
@@ -30490,3 +30490,4 @@ reviews:
     unresolved_blocker_count: 0
     verdict_count: 0
     created_at: 2026-07-17T04:38:35.546Z
+    updated_at: 2026-07-17T04:38:50.549Z
