@@ -49,3 +49,13 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-07-17T10:10:11.492Z
+  - _ulid: 01KXQSPSKDCR2DE4Z1C3FD5TC7
+    content: "Fix cycle 1 completed in 7c2bc80a30: updated the tracked Markdown count to 141 without
+      adding Task 7-owned staged inventory records. Re-verified all @docs-guides-section ACs and
+      resolved both review threads. Gates: inventory 17/17; focused docs/config 111/111; docs-search
+      43 entries; format, lint (0 errors and 0 changed-file warnings), typecheck,
+      refs/alignment/completeness under warnings-ok, and fresh full suite (2,835 suites; 10,967
+      passed; 3 expected skips) all pass."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-07-17T10:24:43.117Z

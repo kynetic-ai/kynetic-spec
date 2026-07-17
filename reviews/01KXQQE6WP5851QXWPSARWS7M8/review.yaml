@@ -204,6 +204,30 @@ events:
       from: open
       to: closed
     timestamp: 2026-07-17T10:02:28.903Z
+  - _ulid: 01KXQSPEGFAJQ2HWMGFE39Q7RN
+    actor: Jacob Chapel
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KXQRDVMK04AKHFE19Y51FV2E
+    timestamp: 2026-07-17T10:24:31.759Z
+  - _ulid: 01KXQSPHV7YZ7J7G63YS9P6RT2
+    actor: Jacob Chapel
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KXQRDVMK04AKHFE19Y51FV2E
+    timestamp: 2026-07-17T10:24:35.175Z
+  - _ulid: 01KXQSPN3QB7ZC354SAT2ZNHPP
+    actor: Jacob Chapel
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KXQRDYVEPCH6PZ6PAMJGXRXR
+    timestamp: 2026-07-17T10:24:38.519Z
+  - _ulid: 01KXQSPRDR0PAG4RV4EFC3Y113
+    actor: Jacob Chapel
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KXQRDYVEPCH6PZ6PAMJGXRXR
+    timestamp: 2026-07-17T10:24:41.912Z
 examined_commit: f56e3f97f9eefbf10a0f656b71237cd8904a68d5
 external_links: []
 lifecycle_state: closed
@@ -234,7 +258,16 @@ threads:
           submitted page. Restore a green full suite while preserving the plan ownership contract
           for the staged inventory additions."
         created_at: 2026-07-17T10:02:21.715Z
+      - _ulid: 01KXQSPE7ACCV90E6XVZJZA927
+        author: Jacob Chapel
+        body: "Fixed in 7c2bc80a30: updated tracked_markdown_count from 140 to 141 while leaving the six
+          construction_pending_additions and their Task 7-owned records unchanged. The formerly
+          failing inventory suite passes 17/17, and the fresh full suite passes 2,835/2,835 suites
+          (10,967 tests, 3 expected skips)."
+        created_at: 2026-07-17T10:24:31.464Z
     kind: blocker
+    resolved_at: 2026-07-17T10:24:34.894Z
+    resolved_by: Jacob Chapel
   - _ulid: 01KXQRDYVEPCH6PZ6PAMJGXRXR
     entries:
       - _ulid: 01KXQRDYVEZTY46XC3AS8E0KX7
@@ -256,7 +289,14 @@ threads:
           not applicable. Findings: one deterministic required-gate regression; no additional issues
           found after expanded search."
         created_at: 2026-07-17T10:02:25.006Z
+      - _ulid: 01KXQSPMVE9WJMY62HBDQR1ZA2
+        author: Jacob Chapel
+        body: Acknowledged and rechecked the documented evidence categories after the fix; no additional
+          issue was found. All required focused and repository gates are green.
+        created_at: 2026-07-17T10:24:38.254Z
     kind: nit
+    resolved_at: 2026-07-17T10:24:41.623Z
+    resolved_by: Jacob Chapel
 verdicts:
   - applies_to_version:
       type: entity_version
@@ -266,5 +306,5 @@ verdicts:
     role: reviewer
     created_at: 2026-07-17T10:02:28.903Z
 created_at: 2026-07-17T09:45:04.662Z
-updated_at: 2026-07-17T10:02:28.903Z
+updated_at: 2026-07-17T10:24:41.623Z
 notes: []
