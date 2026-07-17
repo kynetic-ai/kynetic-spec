@@ -165,6 +165,48 @@ checks:
     runner: npm test -- changed documentation and scaffold tests
     created_at: 2026-07-17T23:23:27.262Z
     completed_at: 2026-07-17T23:23:27.262Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: References OK; six documented deprecation warnings accepted by --warnings-ok.
+    name: kspec validate refs
+    required: true
+    runner: kspec
+    created_at: 2026-07-17T23:23:43.225Z
+    completed_at: 2026-07-17T23:23:43.225Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Passed under documented --warnings-ok baseline.
+    name: kspec validate alignment
+    required: true
+    runner: kspec
+    created_at: 2026-07-17T23:23:46.658Z
+    completed_at: 2026-07-17T23:23:46.658Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Passed under documented --warnings-ok baseline; owned AC annotations verified.
+    name: kspec validate completeness
+    required: true
+    runner: kspec
+    created_at: 2026-07-17T23:23:50.050Z
+    completed_at: 2026-07-17T23:23:50.050Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Second worktree-source agents generation reported up to date; plugin built twice.
+      Unrelated pre-existing asymmetric skill-render drift is observation @01KXS2HP and no skill
+      source changed in this task.
+    name: generated guidance
+    required: true
+    runner: worktree CLI generation and build:plugin
+    created_at: 2026-07-17T23:23:53.507Z
+    completed_at: 2026-07-17T23:23:53.507Z
 events:
   - _ulid: 01KXS4TWSA86DSVY5ZK8F1APF1
     actor: Jacob Chapel
@@ -305,6 +347,34 @@ events:
       status: pass
       name: focused tests
     timestamp: 2026-07-17T23:23:27.511Z
+  - _ulid: 01KXS696G4S81HEG0PAJC0YV21
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate refs
+    timestamp: 2026-07-17T23:23:43.492Z
+  - _ulid: 01KXS699W27DYD046KFD1R1A89
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate alignment
+    timestamp: 2026-07-17T23:23:46.946Z
+  - _ulid: 01KXS69D52KWP65ZWC5TAJKPFC
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate completeness
+    timestamp: 2026-07-17T23:23:50.306Z
+  - _ulid: 01KXS69GHFFBNRQ1F84R25NYB6
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: generated guidance
+    timestamp: 2026-07-17T23:23:53.775Z
 examined_commit: 2237b74fea99703c73b3d95ec5db423fd2daddd0
 external_links: []
 lifecycle_state: open
@@ -364,5 +434,5 @@ threads:
     kind: nit
 verdicts: []
 created_at: 2026-07-17T22:58:26.240Z
-updated_at: 2026-07-17T23:23:27.262Z
+updated_at: 2026-07-17T23:23:53.507Z
 notes: []
