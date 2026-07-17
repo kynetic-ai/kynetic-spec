@@ -223,6 +223,12 @@ events:
     payload:
       thread_ulid: 01KXQ3FW4KC9N4NT5ARF6C74SC
     timestamp: 2026-07-17T04:29:04.205Z
+  - _ulid: 01KXQ5BRHTNNTY6WWBB751ZMS9
+    actor: Jacob Chapel
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KXQ3FZ8ZH9P6HA307DWVVABX
+    timestamp: 2026-07-17T04:29:10.074Z
 examined_commit: ed901155061c87d9ef17684aacea4e959afff8ee
 external_links: []
 lifecycle_state: closed
@@ -298,6 +304,15 @@ threads:
           complete record identities/required metadata (or validate each kind with an explicit
           schema and source authority), not only one signature."
         created_at: 2026-07-17T03:56:30.879Z
+      - _ulid: 01KXQ5BR9211D06KGRHFRVDDDD
+        author: Jacob Chapel
+        body: "Fixed in e7dedf15cf: every non-file kind is now compared as a complete independently derived
+          record contract, including stable id, classification, source_of_truth, audit metadata, and
+          kind-specific fields. Source authorities must exist. Negative mutations now cover
+          arbitrary IDs, empty classifications, source drift, omitted/stale records, and the
+          pre-existing pairing cases; the correction also replaced a stale generated-docs authority
+          path with packages/web-ui/vite-plugin-docs.ts."
+        created_at: 2026-07-17T04:29:09.793Z
     kind: blocker
   - _ulid: 01KXQ3G2FRF1C8E6MNHQVCCPY2
     entries:
@@ -329,5 +344,5 @@ verdicts:
     role: reviewer
     created_at: 2026-07-17T03:56:43.384Z
 created_at: 2026-07-17T03:35:46.555Z
-updated_at: 2026-07-17T04:29:03.945Z
+updated_at: 2026-07-17T04:29:09.793Z
 notes: []
