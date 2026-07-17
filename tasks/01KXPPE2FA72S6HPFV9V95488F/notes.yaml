@@ -125,3 +125,18 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-07-17T05:00:06.188Z
+  - _ulid: 01KXQ7Q68NS9PXVPT0Q2MJ696W
+    content: "Fix cycle 4 approach: make freeze ancestry depend only on immutable commits; bind each
+      fact-source matrix group to an exact independently defined authority contract and negative
+      path mutation; enforce complete path-specific Markdown record contracts including
+      classification, source authority, audit topics/status, disposition, and source existence; add
+      all retained workspace/bootstrap/remote-sync/ownership/event-filter facts and all six required
+      limitations with schema/helper/executed-behavior bindings. Re-verified @docs-section-taxonomy
+      ac-1/ac-2 and @auto-cli-docs ac-1/ac-3/ac-4/ac-5. Edge cases: post-merge target advancement,
+      arbitrary existing authority substitution, Markdown metadata drift, dispatch-vs-general
+      bootstrap scope, worker/reviewer reuse differences, remote sync degraded/experimental
+      boundaries, cleanup ownership, event automation filtering, and unsupported
+      scheduler/checkpoint/FIFO/process-control guarantees."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-07-17T05:10:21.717Z
