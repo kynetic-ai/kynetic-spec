@@ -588,6 +588,12 @@ events:
         content_hash: ""
       decision: request_changes
     timestamp: 2026-07-17T20:08:03.279Z
+  - _ulid: 01KXRV4JSAT4J6PPSVS7F8282D
+    actor: Jacob Chapel
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KXRV0VZJ02R0A4ZTS5HVA3YJ
+    timestamp: 2026-07-17T20:08:57.898Z
 examined_commit: a71126177efc68c959fa2434fea5fe013eb188f1
 external_links: []
 lifecycle_state: closed
@@ -752,6 +758,11 @@ threads:
           tests. Update the construction inventory state so the public documentation inventory gate
           passes."
         created_at: 2026-07-17T20:06:56.242Z
+      - _ulid: 01KXRV4JGQSH8F8ZBDG0C7P3JE
+        author: Jacob Chapel
+        body: Duplicate record created during a stale-read retry; canonical finding is thread
+          01KXRTWBNA5E6P94PTD266ES1F.
+        created_at: 2026-07-17T20:08:57.622Z
     kind: blocker
   - _ulid: 01KXRV12SHWV5EWFZTKNWJZMBV
     anchor:
@@ -902,5 +913,5 @@ verdicts:
     role: reviewer
     created_at: 2026-07-17T20:08:03.278Z
 created_at: 2026-07-17T19:46:13.580Z
-updated_at: 2026-07-17T20:08:03.278Z
+updated_at: 2026-07-17T20:08:57.622Z
 notes: []
