@@ -82695,7 +82695,7 @@ runs:
     completed_at: 2026-07-17T08:54:52.765Z
   - _ulid: 01KXQNSEQ22B2H817TV3CHWTPN
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -82708,7 +82708,24 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-07-17T09:17:03.528Z
-        completed_at: 2026-07-17T09:17:03.528Z
+        completed_at: 2026-07-17T09:18:56.078Z
+        notes: "High-confidence candidates: (1) friction—this dispatched Codex review prompt mandated
+          -review, but kspec workflow start @pr-review returned Workflow not found and the prepared
+          workspace contains only kspec-review/kspec-review-plan/review-gates; the live pr-reviewer
+          agent is configured with review, review-gates, merge, and shared-guidance-neutrality, not
+          pr-review. This is a concrete role-entry validation/rendering mismatch against
+          @dispatch-role-workflow-entry-contract ac-1/ac-4. Targeted searches for
+          missing/unavailable pr-review and absent role-entry skills found no existing
+          task/inbox/observation. (2) mapping-probe success is already captured by @01KXQMJ0. (3)
+          public behavior plus exact-field/stale-mutation fact gates are already captured by
+          @01KXQHH4 and @01KXQD1G. (4) full-suite duration/teardown friction is already tracked by
+          @test-suite-perf-reliability and
+          @task-investigate-npm-test-teardown-hang-after-green-suite-run. (5) detached merge helper
+          success is already implemented by @detached-reviewer-merge-helper and related tasks."
+      - status: completed
+        step_index: 2
+        started_at: 2026-07-17T09:18:56.078Z
+        completed_at: 2026-07-17T09:18:56.078Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-07-17T09:16:15.970Z
