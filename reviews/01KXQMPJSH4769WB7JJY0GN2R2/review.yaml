@@ -87,6 +87,19 @@ checks:
     runner: npm test -- task-focused documentation files
     created_at: 2026-07-17T09:14:04.084Z
     completed_at: 2026-07-17T09:14:04.084Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Reviewed b28c2955, integrated 3f22e6c, and frozen target 8f871993 are ancestors of
+      db2173aa; target still equals 8f871993; canonical local/remote branch heads equal db2173aa;
+      all 414 inventory records match 140 tracked Markdown plus 274 typed non-file surfaces; git
+      diff --check passed and snapshot is clean.
+    name: freeze ancestry and inventory audit
+    required: true
+    runner: git and structured inventory audit
+    created_at: 2026-07-17T09:14:10.239Z
+    completed_at: 2026-07-17T09:14:10.239Z
 events:
   - _ulid: 01KXQMPJSH9R501V2M41RPRQ0N
     actor: Jacob Chapel
@@ -157,6 +170,13 @@ events:
       status: pass
       name: focused documentation suite
     timestamp: 2026-07-17T09:14:04.343Z
+  - _ulid: 01KXQNNM73ATGR0CJWA8WYJNAE
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: freeze ancestry and inventory audit
+    timestamp: 2026-07-17T09:14:10.531Z
 examined_commit: db2173aa4b4118648c720f98d2604b9707716cae
 external_links: []
 lifecycle_state: open
@@ -169,5 +189,5 @@ subject:
 threads: []
 verdicts: []
 created_at: 2026-07-17T08:57:13.265Z
-updated_at: 2026-07-17T09:14:04.084Z
+updated_at: 2026-07-17T09:14:10.239Z
 notes: []
