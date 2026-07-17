@@ -421,6 +421,42 @@ events:
     payload:
       thread_ulid: 01KXRH3GVGH21NHASX04PPAT58
     timestamp: 2026-07-17T17:15:26.911Z
+  - _ulid: 01KXRK9F9HEVNPH83ZZD8AC03E
+    actor: Jacob Chapel
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KXRGZKE307PT7VXWTADD8ST0
+    timestamp: 2026-07-17T17:51:49.553Z
+  - _ulid: 01KXRK9JQ2YW3GGEMR0EQTV93M
+    actor: Jacob Chapel
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KXRGZKE307PT7VXWTADD8ST0
+    timestamp: 2026-07-17T17:51:53.058Z
+  - _ulid: 01KXRK9P3N6EG20MT5ZN8HRQY8
+    actor: Jacob Chapel
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KXRGZPRAXC5FWKG9VC1RF6M9
+    timestamp: 2026-07-17T17:51:56.533Z
+  - _ulid: 01KXRK9SFX6XP0BM9RV8ENX9A0
+    actor: Jacob Chapel
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KXRGZPRAXC5FWKG9VC1RF6M9
+    timestamp: 2026-07-17T17:51:59.998Z
+  - _ulid: 01KXRK9WVEPHAM4T1FWS0SYGKZ
+    actor: Jacob Chapel
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KXRGZT7KWRYZ7624WSFJDB63
+    timestamp: 2026-07-17T17:52:03.438Z
+  - _ulid: 01KXRKA05FNQGW05FNCZ9JSQGW
+    actor: Jacob Chapel
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KXRGZT7KWRYZ7624WSFJDB63
+    timestamp: 2026-07-17T17:52:06.832Z
 examined_commit: 7dee50416cccbdab3166159745574c430bb466fa
 external_links: []
 lifecycle_state: closed
@@ -449,7 +485,17 @@ threads:
           apply or inspect the hold described here. Readers are therefore promised a retention
           mechanism that does not exist. Describe the real cleanup/protection condition instead.
         created_at: 2026-07-17T17:11:28.963Z
+      - _ulid: 01KXRK9F03Q8KF3X2PXMS6A57Q
+        author: Jacob Chapel
+        body: "Fixed in c37d951: the concept now states that dispatch evaluates reviewer snapshots for
+          cleanup immediately after review and preserves them only when durable active, in-flight,
+          paused-held, or stopped-pending-cleanup artifact-protection evidence applies. The
+          unsupported retention/debugging-hold claim was removed, and a rendered-doc behavioral
+          assertion covers the corrected wording."
+        created_at: 2026-07-17T17:51:49.251Z
     kind: blocker
+    resolved_at: 2026-07-17T17:51:52.775Z
+    resolved_by: Jacob Chapel
   - _ulid: 01KXRGZPRAXC5FWKG9VC1RF6M9
     anchor:
       type: code
@@ -468,7 +514,16 @@ threads:
           can automatically publish/merge through a third path that does not exist. Rewrite this to
           describe manual merge, pull request, and auto selection accurately.
         created_at: 2026-07-17T17:11:32.362Z
+      - _ulid: 01KXRK9NV5SAPFQJ48XMWPARD3
+        author: Jacob Chapel
+        body: "Fixed in c37d951: the concept now describes the two durable publication paths, manual_merge
+          and pull_request, and explains that auto selects between them from environment
+          capabilities rather than representing a third path. The rendered-doc behavioral test
+          covers the correction."
+        created_at: 2026-07-17T17:51:56.261Z
     kind: blocker
+    resolved_at: 2026-07-17T17:51:59.730Z
+    resolved_by: Jacob Chapel
   - _ulid: 01KXRGZT7KWRYZ7624WSFJDB63
     entries:
       - _ulid: 01KXRGZT7KWV0QCZJKX86R030K
@@ -511,7 +566,15 @@ threads:
           Shared/package guidance surfaces touched: none, so shared-guidance-neutrality directions
           and generated package artifact regeneration are not applicable.
         created_at: 2026-07-17T17:11:35.923Z
+      - _ulid: 01KXRK9WJT7D78KTZTJ3F1W243
+        author: Jacob Chapel
+        body: Acknowledged the review evidence. Re-verified both corrected claims against workspace cleanup,
+          artifact protection, publication resolution, and durable schema sources; fresh focused
+          documentation/setup/inventory verification passes 287/287.
+        created_at: 2026-07-17T17:52:03.162Z
     kind: nit
+    resolved_at: 2026-07-17T17:52:06.561Z
+    resolved_by: Jacob Chapel
   - _ulid: 01KXRH3A1B5RA630GNVEJNNJB3
     anchor:
       type: code
@@ -623,5 +686,5 @@ verdicts:
     role: reviewer
     created_at: 2026-07-17T17:13:51.613Z
 created_at: 2026-07-17T16:50:11.057Z
-updated_at: 2026-07-17T17:15:26.632Z
+updated_at: 2026-07-17T17:52:06.561Z
 notes: []
