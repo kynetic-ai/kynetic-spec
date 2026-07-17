@@ -83542,9 +83542,22 @@ runs:
     completed_at: 2026-07-17T18:25:19.010Z
   - _ulid: 01KXRPV7ZGJ9W9VCQB70P1WRDN
     status: active
-    current_step: 0
+    current_step: 1
     initiated_by: Jacob Chapel
-    step_results: []
+    step_results:
+      - status: completed
+        step_index: 0
+        started_at: 2026-07-17T18:53:57.617Z
+        completed_at: 2026-07-17T18:55:25.332Z
+        notes: "What worked: reading the base-to-head diff before task notes prevented anchoring; prior
+          per-cycle review records made the two factual fixes precise to re-verify;
+          implementation/schema tests independently confirmed cleanup protection and auto
+          publication semantics; fresh focused plus sharded full gates produced strong evidence; the
+          detached merge helper integrated safely without mutating the review snapshot."
+      - status: completed
+        step_index: 1
+        started_at: 2026-07-17T18:55:25.332Z
+        completed_at: 2026-07-17T18:55:25.332Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-07-17T18:53:57.617Z
