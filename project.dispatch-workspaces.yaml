@@ -12565,18 +12565,18 @@ workspaces:
       remote_ref: null
       source: provisioned
     canonical_branch: dispatch/task/task-freeze-doc-facts-and-inventory/01kxppe2
-    canonical_branch_head: 4672cdf4f41c3d0425930e6d55368317482f9dc1
+    canonical_branch_head: db2173aa4b4118648c720f98d2604b9707716cae
     cleanup:
       status: not_scheduled
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-07-17T08:30:52.132Z
+      updated_at: 2026-07-17T08:50:32.571Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-07-17T08:31:49.370Z
+      updated_at: 2026-07-17T08:50:32.571Z
     integration:
       status: pending
       detail: null
@@ -12584,7 +12584,7 @@ workspaces:
       publication_mode: manual_merge
       target_branch: plan/plan-dispatch-lifecycle-pause-resume-and-stop-controls/01kxc2vx
       target_commit: 8f871993d15baf33168818bbf6b60f9e9f29cb4b
-      updated_at: 2026-07-17T08:30:52.132Z
+      updated_at: 2026-07-17T08:50:32.571Z
     lifecycle_state: active
     resolved_base_branch: plan/plan-dispatch-lifecycle-pause-resume-and-stop-controls/01kxc2vx
     task_id: 01KXPPE2FA72S6HPFV9V95488F
@@ -12593,9 +12593,9 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-07-17T08:31:49.370Z
-      last_reconciled_at: 2026-07-17T08:31:49.370Z
+      last_reconciled_at: 2026-07-17T08:50:32.571Z
       created_at: 2026-07-17T00:21:12.790Z
-      updated_at: 2026-07-17T08:31:49.370Z
+      updated_at: 2026-07-17T08:50:32.571Z
     workspace_id: dispatch-workspace-01KXPPE2FA72S6HPFV9V95488F
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
