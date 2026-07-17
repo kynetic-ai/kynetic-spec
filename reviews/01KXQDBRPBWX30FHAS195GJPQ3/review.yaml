@@ -101,6 +101,18 @@ checks:
     runner: git depth-1 reproduction plus focused test
     created_at: 2026-07-17T07:13:30.380Z
     completed_at: 2026-07-17T07:13:30.380Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Reviewed b28c2955, integrated 3f22e6c, and frozen target 8f871993 are available and
+      ancestors of 234998db; all four changed files and all 414 inventory records were read/audited,
+      and git diff --check passed.
+    name: freeze ancestry and inventory audit
+    required: true
+    runner: git and structured inventory audit
+    created_at: 2026-07-17T07:13:36.360Z
+    completed_at: 2026-07-17T07:13:36.360Z
 events:
   - _ulid: 01KXQDBRP20Z3SN4ASCQXRKRRQ
     actor: Jacob Chapel
@@ -199,6 +211,13 @@ events:
       status: pass
       name: shallow checkout compatibility
     timestamp: 2026-07-17T07:13:30.630Z
+  - _ulid: 01KXQERVVG0T043CCZ66GBB09N
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: freeze ancestry and inventory audit
+    timestamp: 2026-07-17T07:13:36.625Z
 examined_commit: 234998db585d23e8f54dc6197bacf001c3df06ff
 external_links: []
 lifecycle_state: open
@@ -272,5 +291,5 @@ threads:
     kind: blocker
 verdicts: []
 created_at: 2026-07-17T06:48:58.827Z
-updated_at: 2026-07-17T07:13:30.380Z
+updated_at: 2026-07-17T07:13:36.360Z
 notes: []
