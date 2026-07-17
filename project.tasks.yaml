@@ -34166,7 +34166,7 @@
   type: task
   spec_ref: "@docs-guides-section"
   plan_ref: "@plan-documentation-completeness-and-dispatch-workspaces"
-  status: needs_work
+  status: in_progress
   blocked_by: []
   depends_on:
     - "@task-freeze-doc-facts-and-inventory"
@@ -34179,7 +34179,7 @@
   notes_count: 10
   todos_count: 0
   created_at: 2026-07-17T00:08:17.808Z
-  started_at: 2026-07-17T11:01:49.079Z
+  started_at: 2026-07-17T11:52:51.891Z
   submitted_at: 2026-07-17T11:17:54.950Z
   automation: eligible
 - _ulid: 01KXPPE3PS8PDPNH0GDYDP4F4M
