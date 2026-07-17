@@ -2,7 +2,101 @@ _ulid: 01KXQ2A03VHMMR0Y9ZCP6NWTMY
 slugs: []
 title: Review freeze final integrated dispatch facts and public-surface inventory gate (cycle 3)
 author: Jacob Chapel
-checks: []
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Exit 0; all 1061 matched files use the correct format.
+    name: format
+    required: true
+    runner: npm run format:check
+    created_at: 2026-07-17T03:55:58.102Z
+    completed_at: 2026-07-17T03:55:58.102Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Exit 0 with 0 errors and the 696-warning repository baseline; focused oxlint on both
+      changed TypeScript tests reported 0 warnings and 0 errors.
+    name: lint
+    required: true
+    runner: npm run lint -- --quiet
+    created_at: 2026-07-17T03:56:01.548Z
+    completed_at: 2026-07-17T03:56:01.548Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Shared package build and tsc --noEmit completed successfully.
+    name: typecheck
+    required: true
+    runner: npm run typecheck
+    created_at: 2026-07-17T03:56:04.774Z
+    completed_at: 2026-07-17T03:56:04.774Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Fresh run passed all 2834 suites; 10955 tests passed and 3 skipped; exit 0.
+    name: full test suite
+    required: true
+    runner: npm test -- --fresh
+    created_at: 2026-07-17T03:56:08.025Z
+    completed_at: 2026-07-17T03:56:08.025Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Exit 0; schema and references OK with the documented six deprecation warnings.
+    name: kspec validate refs
+    required: true
+    runner: kspec validate --refs --warnings-ok
+    created_at: 2026-07-17T03:56:11.383Z
+    completed_at: 2026-07-17T03:56:11.383Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Exit 0 under the existing 59-warning alignment baseline.
+    name: kspec validate alignment
+    required: true
+    runner: kspec validate --alignment --warnings-ok
+    created_at: 2026-07-17T03:56:14.596Z
+    completed_at: 2026-07-17T03:56:14.596Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Exit 0 under the existing completeness baseline; relevant own AC annotations were
+      inspected against both specs.
+    name: kspec validate completeness
+    required: true
+    runner: kspec validate --completeness --warnings-ok
+    created_at: 2026-07-17T03:56:17.770Z
+    completed_at: 2026-07-17T03:56:17.770Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Fresh focused run passed 13 suites and 81 tests across inventory, dispatch facts, and plan
+      parser.
+    name: focused documentation suite
+    required: true
+    runner: npm test -- focused files --fresh
+    created_at: 2026-07-17T03:56:21.037Z
+    completed_at: 2026-07-17T03:56:21.037Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Reviewed b28c2955 and integrated 3f22e6c are ancestors of target 8f871993; HEAD is based
+      on that target. Inventory currently has 140 Markdown, 253 CLI, and 21 other typed surfaces.
+    name: freeze ancestry and inventory cardinality
+    required: true
+    runner: git and structured inventory audits
+    created_at: 2026-07-17T03:56:24.355Z
+    completed_at: 2026-07-17T03:56:24.355Z
 events:
   - _ulid: 01KXQ2A03TZYSFYQYBQ76B7PF1
     actor: Jacob Chapel
@@ -17,6 +111,90 @@ events:
       from: draft
       to: open
     timestamp: 2026-07-17T03:36:02.381Z
+  - _ulid: 01KXQ3EZJXER1RY5BQS8CPWM28
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: format
+    timestamp: 2026-07-17T03:55:58.429Z
+  - _ulid: 01KXQ3F2W7X1W5NEXTQCWM61K6
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: lint
+    timestamp: 2026-07-17T03:56:01.799Z
+  - _ulid: 01KXQ3F60R7HKK89RS97QR4Z8W
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: typecheck
+    timestamp: 2026-07-17T03:56:05.016Z
+  - _ulid: 01KXQ3F97Z04V8YZSJ756VVGQK
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: full test suite
+    timestamp: 2026-07-17T03:56:08.319Z
+  - _ulid: 01KXQ3FCF6P7HE86JVS9X6QFW7
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate refs
+    timestamp: 2026-07-17T03:56:11.622Z
+  - _ulid: 01KXQ3FFM77TTQ6VY6C3B0DP6B
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate alignment
+    timestamp: 2026-07-17T03:56:14.856Z
+  - _ulid: 01KXQ3FJPH9F2XF660QR5CA0WQ
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate completeness
+    timestamp: 2026-07-17T03:56:18.001Z
+  - _ulid: 01KXQ3FNXB08TQR4VVGKSTBX1P
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: focused documentation suite
+    timestamp: 2026-07-17T03:56:21.291Z
+  - _ulid: 01KXQ3FS64Y0EDR1GMCVYZDAH9
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: freeze ancestry and inventory cardinality
+    timestamp: 2026-07-17T03:56:24.644Z
+  - _ulid: 01KXQ3FWC4WVN0F3CGPPJRAQMB
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KXQ3FW4KC9N4NT5ARF6C74SC
+    timestamp: 2026-07-17T03:56:27.909Z
+  - _ulid: 01KXQ3FZH1KDAEDG2W123HJRRV
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KXQ3FZ8ZH9P6HA307DWVVABX
+    timestamp: 2026-07-17T03:56:31.137Z
+  - _ulid: 01KXQ3G2R2DAGSZPD5QH50A81Z
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KXQ3G2FRF1C8E6MNHQVCCPY2
+    timestamp: 2026-07-17T03:56:34.434Z
 examined_commit: ed901155061c87d9ef17684aacea4e959afff8ee
 external_links: []
 lifecycle_state: open
@@ -26,8 +204,84 @@ subject:
   content_hash: ""
   ref: "@01KXPPE2FA72S6HPFV9V95488F"
   shadow_commit: ""
-threads: []
+threads:
+  - _ulid: 01KXQ3FW4KC9N4NT5ARF6C74SC
+    anchor:
+      type: code
+      commit: ed901155061c87d9ef17684aacea4e959afff8ee
+      line_end: 952
+      line_start: 890
+      path: tests/dispatch-operator-docs.test.ts
+      side: head
+    entries:
+      - _ulid: 01KXQ3FW4K5VREXYJXBF89E0B0
+        author: Jacob Chapel
+        body: "MUST-FIX — The fact-drift gate still self-validates several required API, event, and safety
+          leaves instead of binding them to exported schemas or observable behavior.
+          `control_error_includes_current_status`, canonical event task identity, the
+          closed/no-raw-error event contract, interactive confirmation, host-stop rejection,
+          dispatch-owned-only targeting, and failed-cleanup authority are compared only with
+          duplicated booleans or prose literals. `EVENT_PAYLOAD_SCHEMAS` is used only to enumerate
+          names, route introspection checks only method/path, and the black-box stop test covers
+          only noninteractive/JSON `--force`. Impact: those production contracts can change while
+          the frozen fixture and this comparison remain unchanged, so downstream documentation
+          consumes stale facts. Evidence: lines 890-952 contain the literal comparisons; the fresh
+          focused and full suites both pass without exercising these fixture claims. This is the
+          same source-binding class as the prior blocker and must be fixed at the same MUST-FIX
+          severity. Bind every retained required leaf to a schema/helper/executed failure path
+          (including the current-status error envelope and event payload constraints), rather than
+          to another hand-written literal."
+        created_at: 2026-07-17T03:56:27.667Z
+    kind: blocker
+  - _ulid: 01KXQ3FZ8ZH9P6HA307DWVVABX
+    anchor:
+      type: code
+      commit: ed901155061c87d9ef17684aacea4e959afff8ee
+      line_end: 111
+      line_start: 82
+      path: tests/public-documentation-inventory.test.ts
+      side: head
+    entries:
+      - _ulid: 01KXQ3FZ8ZARCP1EZHK5CTBPGA
+        author: Jacob Chapel
+        body: "MUST-FIX — The non-file inventory is exact only over a lossy per-kind signature, so required
+          record identity and authority metadata are not gated. `nonFileSignature` discards stable
+          IDs for API/UI/scaffold/generated/documentation-test records and `validateInventory` never
+          validates their classification or complete source-of-truth set; the UI universe is also a
+          hand-written two-string list. For example, changing `scaffold:setup-project-config` to an
+          arbitrary unique id, or clearing an API record classification while retaining its surface
+          string, still satisfies every comparison. Impact: the declared public inventory can
+          silently drift in stable IDs, classification, ownership evidence, or required UI
+          membership while tests stay green, contrary to the deterministic independently-derived
+          manifest contract. Evidence: lines 82-111 reduce each record to one field, while the
+          metadata checks later apply only to Markdown and generated pairings; all 14 inventory
+          tests pass without a negative mutation for these fields. Compare independently derived
+          complete record identities/required metadata (or validate each kind with an explicit
+          schema and source authority), not only one signature."
+        created_at: 2026-07-17T03:56:30.879Z
+    kind: blocker
+  - _ulid: 01KXQ3G2FRF1C8E6MNHQVCCPY2
+    entries:
+      - _ulid: 01KXQ3G2FR6E816TY9ARCBHADQ
+        author: Jacob Chapel
+        body: "Review evidence log — informational. Files read: all four changed files through full
+          test-source review plus structured audits of all 414 inventory records; all three commits;
+          both historical review records and fix replies; task, plan, and both owned specs;
+          interacting config/control/status/event schemas, dispatch bootstrap/admission helpers, CLI
+          introspection/help, daemon routes, UI lifecycle helpers, and existing event/safety tests.
+          Commands run: git diff/log/status/diff-check and ancestry checks; kspec
+          task/item/plan/review queries; jq inventory/classification/cardinality audits; format,
+          repo/focused lint, typecheck, fresh focused tests, fresh full npm test, and
+          refs/alignment/completeness validations. Claims verified: prior four/five blocker fixes
+          are present; reviewed and integrated lifecycle commits are ancestors of target; current
+          inventory cardinalities are 140/253/21; focused 81/81 and full 10955 passing/3 skipped
+          reproduced independently. Categories searched: correctness, edge/future construction
+          pages, error paths, safety/security, test integrity, AC alignment, staleness, integration,
+          and metadata completeness. Shared/package guidance surfaces touched: none; neutrality was
+          checked for applicability and no generated refresh is required."
+        created_at: 2026-07-17T03:56:34.168Z
+    kind: nit
 verdicts: []
 created_at: 2026-07-17T03:35:46.555Z
-updated_at: 2026-07-17T03:36:02.108Z
+updated_at: 2026-07-17T03:56:34.168Z
 notes: []
