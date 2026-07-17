@@ -81,8 +81,12 @@ description: >
 spec_ref: "@docs-guides-section"
 plan_ref: "@plan-documentation-completeness-and-dispatch-workspaces"
 origin: derived
-status: pending_review
+status: completed
 blocked_by: []
+closed_reason: Merged to plan/plan-dispatch-lifecycle-pause-resume-and-stop-controls/01kxc2vx at
+  5419893afb059e728225d07bdbe9def3070b318a. Published the source-bound dispatch workspace
+  configuration guide, corrected agent dispatch-rule examples, and added schema/help/link/inventory
+  behavioral coverage.
 depends_on:
   - "@task-freeze-doc-facts-and-inventory"
 context: []
@@ -321,8 +325,25 @@ history:
         previous: "@01KXQX5PSY7VVEQCZDSWGCSF26"
     command: review-link
     timestamp: 2026-07-17T12:29:26.073Z
+  - author: Jacob Chapel
+    changes:
+      status:
+        new: completed
+        previous: pending_review
+      closed_reason:
+        new: Merged to plan/plan-dispatch-lifecycle-pause-resume-and-stop-controls/01kxc2vx at
+          5419893afb059e728225d07bdbe9def3070b318a. Published the source-bound dispatch workspace
+          configuration guide, corrected agent dispatch-rule examples, and added
+          schema/help/link/inventory behavioral coverage.
+        previous: null
+      completed_at:
+        new: 2026-07-17T12:48:44.082Z
+        previous: null
+    command: task-complete
+    timestamp: 2026-07-17T12:48:44.096Z
 created_at: 2026-07-17T00:08:17.808Z
 started_at: 2026-07-17T11:52:51.891Z
 submitted_at: 2026-07-17T12:22:06.927Z
+completed_at: 2026-07-17T12:48:44.082Z
 todos: []
 automation: eligible
