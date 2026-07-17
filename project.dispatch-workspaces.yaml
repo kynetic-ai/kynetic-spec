@@ -12566,12 +12566,12 @@ workspaces:
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-07-17T07:19:23.586Z
+      updated_at: 2026-07-17T07:20:58.506Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-07-17T07:20:22.346Z
+      updated_at: 2026-07-17T07:20:58.506Z
     integration:
       status: pending
       detail: null
@@ -12579,7 +12579,7 @@ workspaces:
       publication_mode: manual_merge
       target_branch: plan/plan-dispatch-lifecycle-pause-resume-and-stop-controls/01kxc2vx
       target_commit: 8f871993d15baf33168818bbf6b60f9e9f29cb4b
-      updated_at: 2026-07-17T07:19:23.586Z
+      updated_at: 2026-07-17T07:20:58.506Z
     lifecycle_state: ready
     resolved_base_branch: plan/plan-dispatch-lifecycle-pause-resume-and-stop-controls/01kxc2vx
     task_id: 01KXPPE2FA72S6HPFV9V95488F
@@ -12588,9 +12588,9 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-07-17T06:45:14.682Z
-      last_reconciled_at: 2026-07-17T07:20:22.346Z
+      last_reconciled_at: 2026-07-17T07:20:58.506Z
       created_at: 2026-07-17T00:21:12.790Z
-      updated_at: 2026-07-17T07:20:22.346Z
+      updated_at: 2026-07-17T07:20:58.506Z
     workspace_id: dispatch-workspace-01KXPPE2FA72S6HPFV9V95488F
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
@@ -12599,5 +12599,5 @@ workspaces:
         branch_mode: branch
         branch_ref: dispatch/task/task-freeze-doc-facts-and-inventory/01kxppe2
         head: 234998db585d23e8f54dc6197bacf001c3df06ff
-        last_seen_at: 2026-07-17T06:44:23.326Z
+        last_seen_at: 2026-07-17T07:20:58.506Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-freeze-doc-facts-and-inventory-01kxppe2
