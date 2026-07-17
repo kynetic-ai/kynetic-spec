@@ -1275,6 +1275,36 @@ function relativeMarkdownLinks(markdown: string): string[] {
     .filter((target) => !target.includes(":"));
 }
 
+function markdownTableCells(line: string): string[] {
+  return line
+    .trim()
+    .slice(1, -1)
+    .split("|")
+    .map((cell) => cell.trim());
+}
+
+function markdownTableRows(markdown: string, heading: string): Array<Record<string, string>> {
+  const lines = markdown.split(/\r?\n/);
+  const headingIndex = lines.findIndex((line) => line.trim() === heading);
+  if (headingIndex === -1) throw new Error(`markdown heading not found: ${heading}`);
+  const tableStart = lines.findIndex(
+    (line, index) => index > headingIndex && line.trim().startsWith("|"),
+  );
+  if (tableStart === -1) throw new Error(`markdown table not found after: ${heading}`);
+  const headers = markdownTableCells(lines[tableStart]!);
+  const rows: Array<Record<string, string>> = [];
+  for (const line of lines.slice(tableStart + 2)) {
+    if (!line.trim().startsWith("|")) break;
+    const values = markdownTableCells(line);
+    rows.push(Object.fromEntries(headers.map((header, index) => [header, values[index] ?? ""])));
+  }
+  return rows;
+}
+
+function inlineCodeValues(value: string): string[] {
+  return [...value.matchAll(/`([^`]+)`/g)].map((match) => match[1]!);
+}
+
 interface PublishedDoc {
   slug: string;
   path: string;
@@ -1431,6 +1461,106 @@ describe("dispatch operator fact fixture", () => {
       expect(examples.every((example) => JSON.stringify(example).includes('"on"'))).toBe(true);
       expect(guide).not.toMatch(/^\s+trigger:/m);
       expect(guide).not.toMatch(/^\s+filters:/m);
+    });
+  });
+
+  describe("dispatch lifecycle controls guide", () => {
+    // AC: @docs-guides-section ac-1
+    it("links both dispatch operator guides from the Guides landing page", () => {
+      const index = publishedDoc(publishedDocs(), "guides").content;
+      expect(relativeMarkdownLinks(index)).toEqual(
+        expect.arrayContaining([
+          "./configuring-dispatch-workspaces.md",
+          "./controlling-dispatch-lifecycle.md",
+        ]),
+      );
+    });
+
+    // AC: @docs-guides-section ac-2
+    it("publishes a sequential guide whose action tables match lifecycle facts", () => {
+      const entries = publishedDocs();
+      const entry = publishedDoc(entries, "guides/controlling-dispatch-lifecycle");
+      const guide = entry.content;
+      const goal = guide.indexOf("## Goal");
+      const prerequisites = guide.indexOf("## Prerequisites");
+      const steps = guide.indexOf("## Steps");
+      const verification = guide.lastIndexOf("## Verification");
+      expect(goal).toBeGreaterThan(0);
+      expect(prerequisites).toBeGreaterThan(goal);
+      expect(steps).toBeGreaterThan(prerequisites);
+      expect(verification).toBeGreaterThan(steps);
+
+      const globalRows = markdownTableRows(guide, "#### Global actions");
+      expect(globalRows.map((row) => inlineCodeValues(row.Actions ?? ""))).toEqual([
+        factsFixture.lifecycle.global_actions.stopped,
+        factsFixture.lifecycle.global_actions.running,
+        factsFixture.lifecycle.global_actions.paused,
+        factsFixture.lifecycle.global_actions.stopped_with_cleanup,
+      ]);
+      const taskRows = markdownTableRows(guide, "#### Task actions");
+      expect(taskRows.map((row) => inlineCodeValues(row.Actions ?? ""))).toEqual([
+        factsFixture.lifecycle.task_actions.uncontrolled,
+        factsFixture.lifecycle.task_actions.paused,
+        factsFixture.lifecycle.task_actions.stopped,
+        factsFixture.lifecycle.task_actions.stopped_with_cleanup,
+      ]);
+
+      for (const field of factsFixture.lifecycle.status_fields) expect(guide).toContain(field);
+      for (const event of factsFixture.events.names) expect(guide).toContain(event);
+      for (const limitation of factsFixture.limitations) expect(guide).toContain(limitation);
+      expect(guide).toContain(
+        `${factsFixture.api.control.method} ${factsFixture.api.control.path}`,
+      );
+      expect(guide).toContain(`${factsFixture.api.status.method} ${factsFixture.api.status.path}`);
+      expect(guide).toContain(factsFixture.ui.route);
+      expect(guide).toContain("public API uses snake_case");
+      expect(guide).toContain("UI adapter maps those fields to camelCase");
+
+      for (const target of relativeMarkdownLinks(guide)) {
+        const resolvedTarget = normalize(join(dirname(entry.path), target)).replaceAll("\\", "/");
+        expect(
+          entries.some((candidate) => candidate.path === resolvedTarget),
+          target,
+        ).toBe(true);
+      }
+    });
+
+    // AC: @docs-guides-section ac-3
+    it("matches the public command tree and delegates complete flags to generated help", () => {
+      const guide = publishedDoc(publishedDocs(), "guides/controlling-dispatch-lifecycle").content;
+      const commandRows = markdownTableRows(guide, "#### CLI commands");
+      const documentedCommands = commandRows.flatMap((row) => inlineCodeValues(row.Command ?? ""));
+      expect(documentedCommands).toEqual([
+        ...factsFixture.command_tree.global,
+        ...factsFixture.command_tree.task.map((command) => `${command} <task-ref>`),
+      ]);
+
+      const exportedCommands = flattenCommandTree(extractCommandTree(createProgram())).map(
+        (command) => formatCommandUsage(command).split(" [options]")[0]!,
+      );
+      for (const command of factsFixture.command_tree.global) {
+        expect(
+          exportedCommands.some((usage) => usage.startsWith(command)),
+          command,
+        ).toBe(true);
+      }
+      for (const command of factsFixture.command_tree.task) {
+        expect(
+          exportedCommands.some((usage) => usage.startsWith(command)),
+          command,
+        ).toBe(true);
+      }
+
+      for (const helpPath of [
+        "help agent dispatch",
+        "help agent dispatch task",
+        "help agent status",
+      ]) {
+        expect(guide).toContain(`kspec ${helpPath}`);
+        const result = kspec(helpPath, fixtureDir);
+        expect(result.exitCode, helpPath).toBe(0);
+        expect(result.stdout.length, helpPath).toBeGreaterThan(0);
+      }
     });
   });
 
