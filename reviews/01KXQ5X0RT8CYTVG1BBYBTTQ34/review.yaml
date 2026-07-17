@@ -217,9 +217,25 @@ events:
       kind: nit
       thread_ulid: 01KXQ73RDXM0VET1G2NYCPQV5H
     timestamp: 2026-07-17T04:59:45.192Z
+  - _ulid: 01KXQ74AZ642QSSWN0938N545D
+    actor: pr-reviewer
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: request_changes
+    timestamp: 2026-07-17T05:00:03.942Z
+  - _ulid: 01KXQ74AZ6CVN33C23TV4291AC
+    actor: pr-reviewer
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-07-17T05:00:03.942Z
 examined_commit: e7dedf15cfc99f987f6904f5a169ba19cbedc917
 external_links: []
-lifecycle_state: open
+lifecycle_state: closed
 related_refs: []
 subject:
   type: task
@@ -368,7 +384,14 @@ threads:
           is required."
         created_at: 2026-07-17T04:59:44.958Z
     kind: nit
-verdicts: []
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: request_changes
+    reviewer: pr-reviewer
+    role: reviewer
+    created_at: 2026-07-17T05:00:03.941Z
 created_at: 2026-07-17T04:38:35.546Z
-updated_at: 2026-07-17T04:59:44.958Z
+updated_at: 2026-07-17T05:00:03.942Z
 notes: []
