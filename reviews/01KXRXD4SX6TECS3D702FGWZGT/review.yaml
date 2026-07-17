@@ -210,6 +210,42 @@ events:
       from: open
       to: closed
     timestamp: 2026-07-17T21:08:58.626Z
+  - _ulid: 01KXS049Z8Q1GPN9QRMCQESC4F
+    actor: Jacob Chapel
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KXRYGTX4WP17KZ89ES7Z4FG0
+    timestamp: 2026-07-17T21:36:11.752Z
+  - _ulid: 01KXS04DVQ52SDV1AP8PHM6DGR
+    actor: Jacob Chapel
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KXRYGTX4WP17KZ89ES7Z4FG0
+    timestamp: 2026-07-17T21:36:15.735Z
+  - _ulid: 01KXS04HETC9NXNR6FHNE86MF4
+    actor: Jacob Chapel
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KXRYH18C1JAPQQ8Z4QZM3463
+    timestamp: 2026-07-17T21:36:19.418Z
+  - _ulid: 01KXS04NC5RKRHAN1FDPB8FR2H
+    actor: Jacob Chapel
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KXRYH18C1JAPQQ8Z4QZM3463
+    timestamp: 2026-07-17T21:36:23.429Z
+  - _ulid: 01KXS04RZ0QBY8XJXP48S0ZXRS
+    actor: Jacob Chapel
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KXRYHTKX1D2ZGH55AETG7NYD
+    timestamp: 2026-07-17T21:36:27.104Z
+  - _ulid: 01KXS04WFZ0FYV9VGW721Q107Y
+    actor: Jacob Chapel
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KXRYHTKX1D2ZGH55AETG7NYD
+    timestamp: 2026-07-17T21:36:30.719Z
 examined_commit: 4109f86c5496c238583c213a8c10ac3bbafafe80
 external_links: []
 lifecycle_state: closed
@@ -244,7 +280,16 @@ threads:
           task note/status shows blocked. Extend the behavioral documentation assertion so this
           distinction cannot regress."
         created_at: 2026-07-17T21:08:05.156Z
+      - _ulid: 01KXS049PJ6NZZAWSGZHS7SXEX
+        author: Jacob Chapel
+        body: "Fixed in 771cf3f394: the cache-invalidation block now allows the automatic rerun to succeed
+          without blocking, and limits task unblock to a rerun that actually failed and produced
+          blocked status plus a DISPATCH-BOOTSTRAP note. The behavioral test now proves the rerun
+          succeeds and asserts the conditional prose."
+        created_at: 2026-07-17T21:36:11.473Z
     kind: blocker
+    resolved_at: 2026-07-17T21:36:15.460Z
+    resolved_by: Jacob Chapel
   - _ulid: 01KXRYH18C1JAPQQ8Z4QZM3463
     anchor:
       type: code
@@ -268,7 +313,16 @@ threads:
           provisioning-failure block/unblock rather than checking only command help and section
           shape."
         created_at: 2026-07-17T21:08:11.661Z
+      - _ulid: 01KXS04H68N9241FHPQ24W8CGK
+        author: Jacob Chapel
+        body: "Fixed in 771cf3f394: path-collision recovery now instructs task unblock after the collision
+          is safely corrected. Added dispatcher-backed coverage showing provisioning failure creates
+          a DISPATCH-WORKSPACE note and blocked task, and the public unblock command restores
+          pending status."
+        created_at: 2026-07-17T21:36:19.144Z
     kind: blocker
+    resolved_at: 2026-07-17T21:36:23.137Z
+    resolved_by: Jacob Chapel
   - _ulid: 01KXRYHTKX1D2ZGH55AETG7NYD
     entries:
       - _ulid: 01KXRYHTKXRKG7V401JYFJ1X05
@@ -301,7 +355,14 @@ threads:
           Shared/package surfaces touched: none. Shared-guidance-neutrality direction 1/direction 2
           and generated package artifact regeneration are not applicable.
         created_at: 2026-07-17T21:08:37.629Z
+      - _ulid: 01KXS04RP7F3NSEEKJ16DHFSF2
+        author: Jacob Chapel
+        body: Acknowledged the review evidence log; no additional finding was attached. Fix-cycle
+          verification repeated the focused and full gates.
+        created_at: 2026-07-17T21:36:26.823Z
     kind: nit
+    resolved_at: 2026-07-17T21:36:30.445Z
+    resolved_by: Jacob Chapel
 verdicts:
   - applies_to_version:
       type: entity_version
@@ -311,5 +372,5 @@ verdicts:
     role: reviewer
     created_at: 2026-07-17T21:08:58.599Z
 created_at: 2026-07-17T20:48:35.645Z
-updated_at: 2026-07-17T21:08:58.626Z
+updated_at: 2026-07-17T21:36:30.445Z
 notes: []
