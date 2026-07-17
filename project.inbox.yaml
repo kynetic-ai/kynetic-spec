@@ -5350,3 +5350,17 @@ inbox:
       - bug
     added_by: Jacob Chapel
     created_at: 2026-07-16T19:48:38.119Z
+  - _ulid: 01KXQNZ5F44TGT539C3XJAEPS0
+    text: "Dispatched Codex reviewer prompts can mandate an unavailable $pr-review entrypoint even when
+      the prepared reviewer agent is configured only with review, review-gates, merge, and
+      shared-guidance-neutrality. In the completed @task-freeze-doc-facts-and-inventory review,
+      'kspec workflow start @pr-review' returned Workflow not found and no pr-review skill existed
+      under .agents/skills, so the reviewer had to reconstruct the flow from injected skills. Align
+      dispatch role-entry rendering and validation with @dispatch-role-workflow-entry-contract
+      ac-1/ac-4: render the adapter-appropriate installed review entrypoint, or fail before
+      invocation with actionable configuration guidance; add a regression for a configured prompt
+      token that resolves to neither an installed skill nor workflow."
+    tags:
+      - reflection
+    added_by: Jacob Chapel
+    created_at: 2026-07-17T09:19:23.109Z
