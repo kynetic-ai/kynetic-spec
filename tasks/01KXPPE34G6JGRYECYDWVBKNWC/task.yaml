@@ -81,7 +81,7 @@ description: >
 spec_ref: "@docs-guides-section"
 plan_ref: "@plan-documentation-completeness-and-dispatch-workspaces"
 origin: derived
-status: pending_review
+status: needs_work
 blocked_by: []
 depends_on:
   - "@task-freeze-doc-facts-and-inventory"
@@ -101,7 +101,7 @@ submission_linkage:
   remote: origin
   remote_url: git@github.com:lepahc/kynetic-spec.git
   upstream_ref: refs/heads/dispatch/task/task-document-dispatch-workspace-configuration/01kxppe3
-session_id: 01KXQVRE86HTST73W2403D7M34
+session_id: null
 history:
   - author: Jacob Chapel
     changes:
@@ -264,6 +264,16 @@ history:
         previous: "@01KXQT1V0TNE4H6C3F30VXWKKH"
     command: review-link
     timestamp: 2026-07-17T11:25:20.055Z
+  - author: Jacob Chapel
+    changes:
+      status:
+        new: needs_work
+        previous: pending_review
+      session_id:
+        new: null
+        previous: 01KXQVRE86HTST73W2403D7M34
+    command: review-verdict-needs-work
+    timestamp: 2026-07-17T11:44:06.826Z
 created_at: 2026-07-17T00:08:17.808Z
 started_at: 2026-07-17T11:01:49.079Z
 submitted_at: 2026-07-17T11:17:54.950Z

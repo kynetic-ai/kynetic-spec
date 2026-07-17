@@ -30608,19 +30608,19 @@ reviews:
   - _ulid: 01KXQX5PSY7VVEQCZDSWGCSF26
     slugs: []
     title: "Review: publish source-bound dispatch workspace configuration guide (cycle 3)"
-    disposition: pending
+    disposition: changes_requested
     author: Jacob Chapel
-    check_count: 0
+    check_count: 10
     examined_commit: c309516304139a47a7d4d763a7af589b9adfbc90
-    lifecycle_state: open
+    lifecycle_state: closed
     related_refs: []
     subject:
       type: task
       content_hash: ""
       ref: "@01KXPPE34G6JGRYECYDWVBKNWC"
       shadow_commit: ""
-    thread_count: 0
-    unresolved_blocker_count: 0
-    verdict_count: 0
+    thread_count: 2
+    unresolved_blocker_count: 1
+    verdict_count: 1
     created_at: 2026-07-17T11:25:17.502Z
-    updated_at: 2026-07-17T11:25:44.408Z
+    updated_at: 2026-07-17T11:44:04.758Z

@@ -2,7 +2,110 @@ _ulid: 01KXQX5PSY7VVEQCZDSWGCSF26
 slugs: []
 title: "Review: publish source-bound dispatch workspace configuration guide (cycle 3)"
 author: Jacob Chapel
-checks: []
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: All 1,062 files formatted correctly.
+    name: format
+    required: true
+    runner: npm run format:check
+    created_at: 2026-07-17T11:43:18.746Z
+    completed_at: 2026-07-17T11:43:18.746Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: 0 errors; 696 repository-baseline warnings. Focused oxlint on
+      tests/dispatch-operator-docs.test.ts reported 0 warnings and 0 errors.
+    name: lint
+    required: true
+    runner: npm run lint -- --quiet
+    created_at: 2026-07-17T11:43:22.042Z
+    completed_at: 2026-07-17T11:43:22.042Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Shared package build and tsc --noEmit passed.
+    name: typecheck
+    required: true
+    runner: npm run typecheck
+    created_at: 2026-07-17T11:43:25.340Z
+    completed_at: 2026-07-17T11:43:25.340Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Fresh full suite passed: 2,835/2,835 suites; 10,967 tests passed and 3 expected skips."
+    name: full test suite
+    required: true
+    runner: npm test -- --fresh
+    created_at: 2026-07-17T11:43:28.886Z
+    completed_at: 2026-07-17T11:43:28.886Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: References OK; six documented deprecation warnings under --warnings-ok.
+    name: kspec validate refs
+    required: true
+    runner: kspec validate --refs --warnings-ok
+    created_at: 2026-07-17T11:43:32.897Z
+    completed_at: 2026-07-17T11:43:32.897Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Validation passed with repository baseline warnings under --warnings-ok.
+    name: kspec validate alignment
+    required: true
+    runner: kspec validate --alignment --warnings-ok
+    created_at: 2026-07-17T11:43:36.884Z
+    completed_at: 2026-07-17T11:43:36.884Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Validation passed with repository baseline warnings; @docs-guides-section ac-1/ac-2/ac-3
+      annotations are present.
+    name: kspec validate completeness
+    required: true
+    runner: kspec validate --completeness --warnings-ok
+    created_at: 2026-07-17T11:43:41.209Z
+    completed_at: 2026-07-17T11:43:41.209Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Focused dispatch docs, config, and public inventory run passed: 23 suites and 128 tests."
+    name: focused docs tests
+    required: true
+    runner: npm test
+    created_at: 2026-07-17T11:43:45.019Z
+    completed_at: 2026-07-17T11:43:45.019Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Pagefind indexed 43 documentation entries.
+    name: docs search build
+    required: true
+    runner: npm run build:docs-search
+    created_at: 2026-07-17T11:43:49.008Z
+    completed_at: 2026-07-17T11:43:49.008Z
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: The guide names agent list and agent run but points to parent agent help, whose observable
+      output omits both subcommands' option lists; the AC-3 test repeats the same incomplete path.
+    name: source-bound prose audit
+    required: true
+    runner: manual source and behavior trace
+    created_at: 2026-07-17T11:43:53.049Z
+    completed_at: 2026-07-17T11:43:53.049Z
 events:
   - _ulid: 01KXQX5PSYCC8T1K5GQ7JFNQVR
     actor: Jacob Chapel
@@ -17,17 +120,170 @@ events:
       from: draft
       to: open
     timestamp: 2026-07-17T11:25:44.691Z
+  - _ulid: 01KXQY6PYRFJ5606A7DT2H9FPM
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: format
+    timestamp: 2026-07-17T11:43:19.000Z
+  - _ulid: 01KXQY6T5VH953Z13N17V4HZE0
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: lint
+    timestamp: 2026-07-17T11:43:22.299Z
+  - _ulid: 01KXQY6XCJPD43PCKB7KMWBFGH
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: typecheck
+    timestamp: 2026-07-17T11:43:25.587Z
+  - _ulid: 01KXQY70WMMVG7YR0TGPXC00XY
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: full test suite
+    timestamp: 2026-07-17T11:43:29.172Z
+  - _ulid: 01KXQY74TGC9BFDMZWRQ6RR434
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate refs
+    timestamp: 2026-07-17T11:43:33.200Z
+  - _ulid: 01KXQY78PHYZZXW51MYPT6A5ZN
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate alignment
+    timestamp: 2026-07-17T11:43:37.169Z
+  - _ulid: 01KXQY7CYC2B7RTAVZ0AZ4CD0R
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate completeness
+    timestamp: 2026-07-17T11:43:41.517Z
+  - _ulid: 01KXQY7GNB6TPF2P3H2AVEKCBR
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: focused docs tests
+    timestamp: 2026-07-17T11:43:45.323Z
+  - _ulid: 01KXQY7MJTNCZ1WVDR8V6PBKYV
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: docs search build
+    timestamp: 2026-07-17T11:43:49.338Z
+  - _ulid: 01KXQY7RH1Q4JWDE2N8Q584WC8
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: fail
+      name: source-bound prose audit
+    timestamp: 2026-07-17T11:43:53.377Z
+  - _ulid: 01KXQY7W9K0SZVF3NS41P983A6
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KXQY7W03T932C8D1T2GXAJME
+    timestamp: 2026-07-17T11:43:57.235Z
+  - _ulid: 01KXQY8068JYGMS6AH5Z9E5DA9
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KXQY7ZXJ92CHBJVGTVXS7W72
+    timestamp: 2026-07-17T11:44:01.224Z
+  - _ulid: 01KXQY83MPSH6JPQJFAFEJKRZQ
+    actor: pr-reviewer
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: request_changes
+    timestamp: 2026-07-17T11:44:04.758Z
+  - _ulid: 01KXQY83MPBHD7MZRTRTYF1WTX
+    actor: pr-reviewer
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-07-17T11:44:04.758Z
 examined_commit: c309516304139a47a7d4d763a7af589b9adfbc90
 external_links: []
-lifecycle_state: open
+lifecycle_state: closed
 related_refs: []
 subject:
   type: task
   content_hash: ""
   ref: "@01KXPPE34G6JGRYECYDWVBKNWC"
   shadow_commit: ""
-threads: []
-verdicts: []
+threads:
+  - _ulid: 01KXQY7W03T932C8D1T2GXAJME
+    anchor:
+      type: code
+      commit: c309516304139a47a7d4d763a7af589b9adfbc90
+      line_end: 143
+      line_start: 125
+      path: docs/guides/configuring-dispatch-workspaces.md
+      side: head
+    entries:
+      - _ulid: 01KXQY7W03Q6T9GKEHKYB8CNZN
+        author: Jacob Chapel
+        body: "MUST-FIX: The guide points readers of `kspec agent list` and `kspec agent run` to `kspec
+          agent --help`, but the parent help only lists subcommands and omits their flags. I
+          executed all three help paths: `agent --help` contains neither list's
+          `--status/--tag/--limit/...` options nor run's `--task/--timeout/--budget/...` options,
+          while `agent list --help` and `agent run --help` do. The AC-3 test currently executes only
+          `agent --help`, so it cannot catch this mismatch. Impact: the guide does not provide the
+          promised path to the full flag list for these named commands, violating
+          @docs-guides-section ac-3 and the task's help-backed-path requirement. Point each command
+          to its own help output and add both exact help paths to the behavioral test."
+        created_at: 2026-07-17T11:43:56.932Z
+    kind: blocker
+  - _ulid: 01KXQY7ZXJ92CHBJVGTVXS7W72
+    entries:
+      - _ulid: 01KXQY7ZXJBMJC8KPV16PQA05M
+        author: Jacob Chapel
+        body: "Review evidence log — Files read: all four changed-file diffs; full workspace guide;
+          runner-guide examples; changed docs tests and inventory fixture; prior
+          reviews/task/spec/plan; docs Vite plugin; config/default/base-target/publication
+          resolution; bootstrap schema/runtime and behavioral tests; gitignore setup/upgrade
+          behavior; workspace registry/cleanup ownership; remote-sync runtime/tests; CLI help
+          output. Commands run: exact base/head and fix-cycle diffs; task/spec/plan/review lookups;
+          AC searches; git diff --check and tracked Markdown count; format; repo/focused lint;
+          typecheck; refs/alignment/completeness validation; focused docs/config/inventory tests;
+          docs-search build; fresh full suite; exact agent/list/run help comparison. Claims
+          verified: both prior blockers are fixed; 141 tracked Markdown files and inventory 17/17;
+          examples parse and publish; worker full-suite claim independently reproduced. Categories
+          searched: correctness, edge cases, error/recovery handling, security/output-tail warnings,
+          test quality, integration, help discoverability, lifecycle separation, and additional
+          issues after the finding. Shared-guidance neutrality: no listed package/shared guidance
+          surface changed, so direction-1/direction-2 preservation and generated-artifact refresh
+          checks are not applicable; public prose was still checked for project-specific policy
+          leakage. Finding: one AC-3 help-path blocker; no additional issue found after expanded
+          search."
+        created_at: 2026-07-17T11:44:00.946Z
+    kind: nit
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: request_changes
+    reviewer: pr-reviewer
+    role: reviewer
+    created_at: 2026-07-17T11:44:04.758Z
 created_at: 2026-07-17T11:25:17.502Z
-updated_at: 2026-07-17T11:25:44.408Z
+updated_at: 2026-07-17T11:44:04.758Z
 notes: []
