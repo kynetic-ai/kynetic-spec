@@ -151,6 +151,19 @@ checks:
     runner: npm run typecheck
     created_at: 2026-07-17T20:05:35.893Z
     completed_at: 2026-07-17T20:05:35.893Z
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Failed deterministically: 8 failures in tests/public-documentation-inventory.test.ts,
+      10,970 passed and 3 skipped. A fresh focused rerun reproduced all 8. Base has 143 tracked
+      Markdown files and fixture count 143; reviewed head adds three docs (146 total) without
+      updating the fixture."
+    name: full test suite
+    required: true
+    runner: npm test -- --fresh
+    created_at: 2026-07-17T20:05:42.199Z
+    completed_at: 2026-07-17T20:05:42.199Z
 events:
   - _ulid: 01KXRSTYE4DPPPY9VR0Y6Q6EZD
     actor: Jacob Chapel
@@ -321,6 +334,13 @@ events:
       status: pass
       name: typecheck
     timestamp: 2026-07-17T20:05:36.241Z
+  - _ulid: 01KXRTYKXV80YFQN08D1K50MJM
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: fail
+      name: full test suite
+    timestamp: 2026-07-17T20:05:42.460Z
 examined_commit: a71126177efc68c959fa2434fea5fe013eb188f1
 external_links: []
 lifecycle_state: closed
@@ -476,5 +496,5 @@ verdicts:
     role: reviewer
     created_at: 2026-07-17T20:04:52.153Z
 created_at: 2026-07-17T19:46:13.580Z
-updated_at: 2026-07-17T20:05:35.893Z
+updated_at: 2026-07-17T20:05:42.199Z
 notes: []
