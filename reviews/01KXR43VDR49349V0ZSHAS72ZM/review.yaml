@@ -461,6 +461,54 @@ events:
     payload:
       thread_ulid: 01KXR5CCSGQ8H8Q4QF2N4M7SDQ
     timestamp: 2026-07-17T13:50:25.678Z
+  - _ulid: 01KXR73AE3QP79M1BNTQ4XG4WD
+    actor: Jacob Chapel
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KXR58K110KE3S6DVJ21N60VT
+    timestamp: 2026-07-17T14:18:45.059Z
+  - _ulid: 01KXR73E20RBVQFX37MXCPDQBR
+    actor: Jacob Chapel
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KXR58K110KE3S6DVJ21N60VT
+    timestamp: 2026-07-17T14:18:48.768Z
+  - _ulid: 01KXR73H6F36C41RGF1Q9QP604
+    actor: Jacob Chapel
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KXR58PWM4S7SDWPHRZHZT32K
+    timestamp: 2026-07-17T14:18:51.983Z
+  - _ulid: 01KXR73MENRD1YKDDATD11QXN0
+    actor: Jacob Chapel
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KXR58PWM4S7SDWPHRZHZT32K
+    timestamp: 2026-07-17T14:18:55.317Z
+  - _ulid: 01KXR73QS0NTDQB5C4C5MW4D35
+    actor: Jacob Chapel
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KXR58VBXR5XKDGTN18E6XEYR
+    timestamp: 2026-07-17T14:18:58.720Z
+  - _ulid: 01KXR73W24VWTYMM3KDCRNFY6Q
+    actor: Jacob Chapel
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KXR58VBXR5XKDGTN18E6XEYR
+    timestamp: 2026-07-17T14:19:03.108Z
+  - _ulid: 01KXR73Z80PQH9937GJ0264YCS
+    actor: Jacob Chapel
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KXR58YSNRB2FYBGD0J1KP6CD
+    timestamp: 2026-07-17T14:19:06.368Z
+  - _ulid: 01KXR743B5600Y6X8TM01WF5DR
+    actor: Jacob Chapel
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KXR58YSNRB2FYBGD0J1KP6CD
+    timestamp: 2026-07-17T14:19:10.565Z
 examined_commit: 225953b1c3a2087a7de70d7e53e6208563157132
 external_links: []
 lifecycle_state: closed
@@ -492,7 +540,15 @@ threads:
           equivalents, or use correctly quoted exact child topics, and verify every named command
           family reaches the expected Usage and Options output."
         created_at: 2026-07-17T13:46:40.545Z
+      - _ulid: 01KXR73A5W1JSBDD79A96J72K0
+        author: Jacob Chapel
+        body: "Fixed in 743b76651e: the guide now directs readers to each exact executable --help output,
+          with valid global, task, and status examples. The regression test executes every
+          documented command help path and verifies its command-specific Usage and Options output."
+        created_at: 2026-07-17T14:18:44.793Z
     kind: blocker
+    resolved_at: 2026-07-17T14:18:48.472Z
+    resolved_by: Jacob Chapel
   - _ulid: 01KXR58PWM4S7SDWPHRZHZT32K
     anchor:
       type: code
@@ -510,7 +566,15 @@ threads:
           broken. Assert the requested Usage path and relevant generated Options for each documented
           command or child; the test must fail when help silently resolves to an ancestor topic."
         created_at: 2026-07-17T13:46:44.500Z
+      - _ulid: 01KXR73GYBBFR1M0739HD8XTBP
+        author: Jacob Chapel
+        body: "Fixed in 743b76651e: replaced the exit-code and nonempty-output assertions with per-command
+          checks for the exact Usage prefix and generated Options section across all ten documented
+          lifecycle and status commands."
+        created_at: 2026-07-17T14:18:51.723Z
     kind: blocker
+    resolved_at: 2026-07-17T14:18:55.062Z
+    resolved_by: Jacob Chapel
   - _ulid: 01KXR58VBXR5XKDGTN18E6XEYR
     anchor:
       type: code
@@ -532,7 +596,16 @@ threads:
           output mode that actually exposes every required row; add a behavioral assertion for that
           procedure."
         created_at: 2026-07-17T13:46:49.085Z
+      - _ulid: 01KXR73QHQ6TN0B71BRV00KQ1M
+        author: Jacob Chapel
+        body: "Fixed in 743b76651e: the procedure now separates the human CLI summary, detailed CLI JSON
+          camelCase fields, public API snake_case fields, and UI mapping. It directs detailed row
+          verification to kspec agent dispatch status --json, with a behavioral test that executes
+          that path and asserts the observable contract."
+        created_at: 2026-07-17T14:18:58.487Z
     kind: blocker
+    resolved_at: 2026-07-17T14:19:02.844Z
+    resolved_by: Jacob Chapel
   - _ulid: 01KXR58YSNRB2FYBGD0J1KP6CD
     anchor:
       type: code
@@ -551,7 +624,15 @@ threads:
           count 141. Update the construction-phase inventory evidence consistently so the full suite
           passes without prematurely claiming the pending page is audited."
         created_at: 2026-07-17T13:46:52.597Z
+      - _ulid: 01KXR73YZTA6RXPK9BHSWMHH36
+        author: Jacob Chapel
+        body: "Fixed in 743b76651e: updated the construction-phase tracked Markdown count from 141 to 142
+          while retaining the lifecycle guide as a pending planned addition. Fresh inventory
+          coverage passes, and the fresh full suite passed 10,971 tests with 3 skipped."
+        created_at: 2026-07-17T14:19:06.106Z
     kind: blocker
+    resolved_at: 2026-07-17T14:19:10.182Z
+    resolved_by: Jacob Chapel
   - _ulid: 01KXR5C1D8YCX29842SGSAAK6Q
     anchor:
       type: code
@@ -657,5 +738,5 @@ verdicts:
     role: reviewer
     created_at: 2026-07-17T13:48:59.382Z
 created_at: 2026-07-17T13:26:36.728Z
-updated_at: 2026-07-17T13:50:25.408Z
+updated_at: 2026-07-17T14:19:10.182Z
 notes: []
