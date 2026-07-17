@@ -82917,7 +82917,7 @@ runs:
     started_at: 2026-07-17T10:54:09.962Z
     completed_at: 2026-07-17T10:58:01.615Z
   - _ulid: 01KXQWSA9T74D3284CJS9DR6RS
-    status: active
+    status: completed
     current_step: 3
     initiated_by: Jacob Chapel
     step_results:
@@ -82956,10 +82956,14 @@ runs:
           The absolute-root and transient-sync corrections are task-specific and are durably
           recorded in review @01KXQT1V0TNE4H6C3F30VXWKKH and task notes, so a systemic duplicate
           would add noise."
-      - status: completed
+      - status: skipped
         step_index: 3
         started_at: 2026-07-17T11:20:38.967Z
-        completed_at: 2026-07-17T11:20:38.967Z
+        completed_at: 2026-07-17T11:20:53.333Z
+        notes: "Capture intentionally skipped: every high-confidence candidate has existing durable
+          coverage, and task-specific corrections are already recorded in the review/task history.
+          No observation, inbox item, question, or task was added."
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-07-17T11:18:31.482Z
+    completed_at: 2026-07-17T11:20:53.333Z
