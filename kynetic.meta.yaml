@@ -24414,6 +24414,16 @@ observations:
     resolved: false
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     created_at: 2026-07-17T17:19:07.113Z
+  - _ulid: 01KXRN6C3H986XRX0J6VNS539A
+    type: success
+    content: When the monolithic full npm test run repeatedly hit the known contention-sensitive
+      resistant-process /proc race, running the project's three supported test shards sequentially
+      preserved complete suite coverage (10,974 passed, 3 skipped) and produced deterministic green
+      evidence without changing unrelated code.
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    created_at: 2026-07-17T18:25:05.137Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
