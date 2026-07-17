@@ -82348,7 +82348,7 @@ runs:
     completed_at: 2026-07-17T05:06:02.052Z
   - _ulid: 01KXQ97H32YSCJHG2KYEEH6PAD
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -82365,7 +82365,21 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-07-17T05:37:20.779Z
-        completed_at: 2026-07-17T05:37:20.779Z
+        completed_at: 2026-07-17T05:37:35.169Z
+        notes: "Friction points: (1) review fix-cycle discovery requires a second JSON query because the
+          default review view truncates blocker bodies, adding avoidable round trips; (2) a
+          12-command review reply/resolve batch produced no completion output and an immediate read
+          briefly showed stale unresolved state even though the mutations were still landing, making
+          atomic batch completion difficult to trust; (3) the required fresh full suite took about
+          46 minutes, with long-tail suites appearing after extended quiet periods, which initially
+          resembles the already-known post-green teardown-hang failure mode; (4) four review cycles
+          were needed before fixture authority and complete-record semantics were fully explicit,
+          showing that closure-gate tasks benefit from complete-contract and negative-mutation
+          criteria at initial implementation/review."
+      - status: completed
+        step_index: 2
+        started_at: 2026-07-17T05:37:35.169Z
+        completed_at: 2026-07-17T05:37:35.169Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-07-17T05:36:45.667Z
