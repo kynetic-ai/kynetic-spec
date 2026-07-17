@@ -13121,7 +13121,7 @@ workspaces:
         head: 71a9a195700adfea06d9c6b6728752ecae58633c
         last_seen_at: 2026-07-17T12:27:00.222Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-document-dispatch-workspace-configuration-01kxppe3
-  - active_role: reviewer
+  - active_role: null
     base_branch_point: 5419893afb059e728225d07bdbe9def3070b318a
     bootstrap:
       status: succeeded
@@ -13623,9 +13623,9 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-07-17T14:27:11.947Z
-      last_reconciled_at: 2026-07-17T14:50:53.001Z
+      last_reconciled_at: 2026-07-17T14:53:40.825Z
       created_at: 2026-07-17T12:49:20.096Z
-      updated_at: 2026-07-17T14:50:53.001Z
+      updated_at: 2026-07-17T14:53:40.825Z
     workspace_id: dispatch-workspace-01KXPPE3PS8PDPNH0GDYDP4F4M
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
