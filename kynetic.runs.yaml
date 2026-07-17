@@ -82133,7 +82133,7 @@ runs:
     completed_at: 2026-07-17T02:11:22.660Z
   - _ulid: 01KXPZ4TX0FFX18KH3GKCESBFP
     status: active
-    current_step: 2
+    current_step: 3
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -82159,7 +82159,17 @@ runs:
       - status: completed
         step_index: 2
         started_at: 2026-07-17T02:42:46.873Z
-        completed_at: 2026-07-17T02:42:46.873Z
+        completed_at: 2026-07-17T02:42:57.951Z
+        notes: "Decision: skip the batch/read-consistency friction because @01KXNDDB52657Q6BKF3ZSXQESG
+          already captures the exact cause, effect, and desired remedy; skip the unbounded
+          baseline-list friction because @01KQ8TTNA1MHYWJVDHVWY8BS0Q already tracks it. Capture one
+          unique success observation: reviewers should mutate fixtures into explicitly planned
+          future states, because current-state green gates can miss incompatibility with an allowed
+          construction transition."
+      - status: completed
+        step_index: 3
+        started_at: 2026-07-17T02:42:57.951Z
+        completed_at: 2026-07-17T02:42:57.951Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-07-17T02:40:31.648Z
