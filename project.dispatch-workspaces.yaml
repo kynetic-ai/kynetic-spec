@@ -13086,12 +13086,12 @@ workspaces:
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-07-17T11:21:23.918Z
+      updated_at: 2026-07-17T11:21:58.017Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-07-17T11:21:23.918Z
+      updated_at: 2026-07-17T11:21:58.017Z
     integration:
       status: pending
       detail: null
@@ -13099,8 +13099,8 @@ workspaces:
       publication_mode: manual_merge
       target_branch: plan/plan-dispatch-lifecycle-pause-resume-and-stop-controls/01kxc2vx
       target_commit: 70336e4a0aa030119767947225d9159cbf77225e
-      updated_at: 2026-07-17T11:21:23.918Z
-    lifecycle_state: ready
+      updated_at: 2026-07-17T11:21:58.017Z
+    lifecycle_state: integrating
     resolved_base_branch: plan/plan-dispatch-lifecycle-pause-resume-and-stop-controls/01kxc2vx
     task_id: 01KXPPE34G6JGRYECYDWVBKNWC
     task_ref: "@01KXPPE34G6JGRYECYDWVBKNWC"
@@ -13108,16 +13108,21 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-07-17T11:00:39.654Z
-      last_reconciled_at: 2026-07-17T11:21:23.918Z
+      last_reconciled_at: 2026-07-17T11:21:58.017Z
       created_at: 2026-07-17T09:16:01.948Z
-      updated_at: 2026-07-17T11:21:23.918Z
+      updated_at: 2026-07-17T11:21:58.017Z
     workspace_id: dispatch-workspace-01KXPPE34G6JGRYECYDWVBKNWC
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
-      reviewer: null
+      reviewer:
+        branch_mode: detached
+        branch_ref: null
+        head: c309516304139a47a7d4d763a7af589b9adfbc90
+        last_seen_at: 2026-07-17T11:21:58.017Z
+        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-document-dispatch-workspace-configuration-01kxppe3-review
       worker:
         branch_mode: branch
         branch_ref: dispatch/task/task-document-dispatch-workspace-configuration/01kxppe3
-        head: 7c2bc80a30fb9a4f726938960bf1dc60224195d9
-        last_seen_at: 2026-07-17T11:00:03.636Z
+        head: c309516304139a47a7d4d763a7af589b9adfbc90
+        last_seen_at: 2026-07-17T11:21:58.017Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-document-dispatch-workspace-configuration-01kxppe3
