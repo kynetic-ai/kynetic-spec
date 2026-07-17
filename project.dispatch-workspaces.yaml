@@ -13082,11 +13082,11 @@ workspaces:
     canonical_branch: dispatch/task/task-document-dispatch-workspace-configuration/01kxppe3
     canonical_branch_head: 71a9a195700adfea06d9c6b6728752ecae58633c
     cleanup:
-      status: scheduled
+      status: completed
       detail: integrated-into-base-branch
       eligible: true
       reason: integrated-into-base-branch
-      updated_at: 2026-07-17T12:50:37.162Z
+      updated_at: 2026-07-17T12:56:17.801Z
     health:
       status: healthy
       issues: []
@@ -13100,17 +13100,17 @@ workspaces:
       target_branch: plan/plan-dispatch-lifecycle-pause-resume-and-stop-controls/01kxc2vx
       target_commit: 70336e4a0aa030119767947225d9159cbf77225e
       updated_at: 2026-07-17T12:50:37.162Z
-    lifecycle_state: closing
+    lifecycle_state: closed
     resolved_base_branch: plan/plan-dispatch-lifecycle-pause-resume-and-stop-controls/01kxc2vx
     task_id: 01KXPPE34G6JGRYECYDWVBKNWC
     task_ref: "@01KXPPE34G6JGRYECYDWVBKNWC"
     task_slug: task-document-dispatch-workspace-configuration
     timestamps:
-      closed_at: null
+      closed_at: 2026-07-17T12:56:17.801Z
       last_active_at: 2026-07-17T12:27:35.686Z
       last_reconciled_at: 2026-07-17T12:54:38.466Z
       created_at: 2026-07-17T09:16:01.948Z
-      updated_at: 2026-07-17T12:54:38.466Z
+      updated_at: 2026-07-17T12:56:17.801Z
     workspace_id: dispatch-workspace-01KXPPE34G6JGRYECYDWVBKNWC
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
