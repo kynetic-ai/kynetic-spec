@@ -1,1 +1,15 @@
-notes: []
+notes:
+  - _ulid: 01KXRQ12T4V8ZV5FZ2ZTVR8JQA
+    content: "Approach: extend the creator-owned operator-docs suite first with behavioral
+      publication/render/link/help assertions, then publish three symptom-first pages, index them,
+      and correct assignment admission guidance. Reuse the frozen dispatch facts fixture plus
+      existing workspace concept and lifecycle guide rather than duplicating internals. Edge cases:
+      distinguish global from task cleanup retry; preserve stopped authority after cleanup; keep
+      local-only/transient sync separate from degraded divergence; do not recommend manual
+      lifecycle/registry/worktree edits; describe automation filtering per event rule rather than
+      globally. Test plan: cover @docs-troubleshooting-section ac-1/ac-2/ac-3 with rendered document
+      structure, public links, captured command help, status fixtures, and negative checks for
+      unsupported procedures and blanket claims."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-07-17T18:57:08.933Z
