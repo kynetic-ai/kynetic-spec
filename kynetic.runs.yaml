@@ -82655,7 +82655,7 @@ runs:
     completed_at: 2026-07-17T08:29:31.111Z
   - _ulid: 01KXQMCCV79NQK95N7DC206K6M
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -82667,7 +82667,18 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-07-17T08:52:26.778Z
-        completed_at: 2026-07-17T08:52:26.778Z
+        completed_at: 2026-07-17T08:54:24.653Z
+        notes: "High-confidence candidates: (1) success—one-to-one wire/UI mapping validators become
+          discriminating when a valid input assigns distinct values to competing fields and stale
+          mutations swap both directions; no existing match found. (2) full-suite teardown/duration
+          friction—already tracked by
+          @task-investigate-npm-test-teardown-hang-after-green-suite-run. (3) workflow show run-ref
+          mismatch—already tracked by @01KKBD52 plus multiple inbox/observations. (4) generic
+          test-first debugging success—already tracked by @01KFAM6V and @01KFCS35."
+      - status: completed
+        step_index: 2
+        started_at: 2026-07-17T08:54:24.653Z
+        completed_at: 2026-07-17T08:54:24.653Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-07-17T08:51:39.496Z
