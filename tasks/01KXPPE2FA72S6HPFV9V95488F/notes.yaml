@@ -44,3 +44,14 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-07-17T01:39:55.644Z
+  - _ulid: 01KXPX5EYHMX37BK7KVX8G088A
+    content: "Fix cycle 1: resolved all four blocker threads. Bound the full dispatch fact fixture to
+      production behavior with group mutation checks; made every typed public-surface universe exact
+      with missing/stale/duplicate detection; preserved independent landing-page reading order; and
+      verified complete help metadata across every command. Corrected the stopped-with-cleanup
+      action fact to match production. Re-verified both specs and passed focused tests, format,
+      lint, typecheck, all three kspec validations, and the full suite (2,834 suites; 10,949 passed;
+      3 skipped)."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-07-17T02:05:55.025Z
