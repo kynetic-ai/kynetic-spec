@@ -403,6 +403,36 @@ events:
       kind: nit
       thread_ulid: 01KXPYZ6GNHPX79TA1S8NXJFBM
     timestamp: 2026-07-17T02:37:27.501Z
+  - _ulid: 01KXPZ0BEQ0SFX8RY03B0920HV
+    actor: Jacob Chapel
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KXPYYRT6S43GM06M2ZYJNJTG
+    timestamp: 2026-07-17T02:38:04.760Z
+  - _ulid: 01KXPZ0F9PJCJJM3WPR87G968J
+    actor: Jacob Chapel
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KXPYYW2YV0R969YFNB76GHWE
+    timestamp: 2026-07-17T02:38:08.694Z
+  - _ulid: 01KXPZ0KK0WE4J9N3D256CYZJJ
+    actor: Jacob Chapel
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KXPYYZA0N9EVPXMX9VD6TB8E
+    timestamp: 2026-07-17T02:38:13.089Z
+  - _ulid: 01KXPZ0QZX0W3T7YE33NYYB7WJ
+    actor: Jacob Chapel
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KXPYZ2T4ZGGSHSBD0NYPNJ6C
+    timestamp: 2026-07-17T02:38:17.597Z
+  - _ulid: 01KXPZ0XNW8CF4WW5ZV4NSY03D
+    actor: Jacob Chapel
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KXPYZ6GNHPX79TA1S8NXJFBM
+    timestamp: 2026-07-17T02:38:23.420Z
 examined_commit: 71f5a4c87bb3e38faf1bba0954595545f08894e1
 external_links: []
 lifecycle_state: open
@@ -550,6 +580,8 @@ threads:
           claims that cannot be source-bound."
         created_at: 2026-07-17T02:37:12.903Z
     kind: blocker
+    resolved_at: 2026-07-17T02:38:04.495Z
+    resolved_by: Jacob Chapel
   - _ulid: 01KXPYYW2YV0R969YFNB76GHWE
     anchor:
       type: code
@@ -571,6 +603,8 @@ threads:
           sections or otherwise compare each command's metadata within its own rendered block."
         created_at: 2026-07-17T02:37:16.254Z
     kind: blocker
+    resolved_at: 2026-07-17T02:38:08.415Z
+    resolved_by: Jacob Chapel
   - _ulid: 01KXPYYZA0N9EVPXMX9VD6TB8E
     anchor:
       type: code
@@ -594,6 +628,8 @@ threads:
           every other page/order drift."
         created_at: 2026-07-17T02:37:19.552Z
     kind: blocker
+    resolved_at: 2026-07-17T02:38:12.653Z
+    resolved_by: Jacob Chapel
   - _ulid: 01KXPYZ2T4ZGGSHSBD0NYPNJ6C
     anchor:
       type: code
@@ -615,6 +651,8 @@ threads:
           verifies the observable parent help output."
         created_at: 2026-07-17T02:37:23.140Z
     kind: blocker
+    resolved_at: 2026-07-17T02:38:17.250Z
+    resolved_by: Jacob Chapel
   - _ulid: 01KXPYZ6GNHPX79TA1S8NXJFBM
     entries:
       - _ulid: 01KXPYZ6GPX6SNTNZV7KNTXPT4
@@ -637,7 +675,9 @@ threads:
           skill/agent artifact refresh was required."
         created_at: 2026-07-17T02:37:26.934Z
     kind: nit
+    resolved_at: 2026-07-17T02:38:22.989Z
+    resolved_by: Jacob Chapel
 verdicts: []
 created_at: 2026-07-17T02:14:42.478Z
-updated_at: 2026-07-17T02:37:26.934Z
+updated_at: 2026-07-17T02:38:22.989Z
 notes: []
