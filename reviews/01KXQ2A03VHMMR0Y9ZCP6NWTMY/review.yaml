@@ -229,6 +229,12 @@ events:
     payload:
       thread_ulid: 01KXQ3FZ8ZH9P6HA307DWVVABX
     timestamp: 2026-07-17T04:29:10.074Z
+  - _ulid: 01KXQ5BYG6ZKX51DTN1PAJZ4CC
+    actor: Jacob Chapel
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KXQ3FZ8ZH9P6HA307DWVVABX
+    timestamp: 2026-07-17T04:29:16.166Z
 examined_commit: ed901155061c87d9ef17684aacea4e959afff8ee
 external_links: []
 lifecycle_state: closed
@@ -314,6 +320,8 @@ threads:
           path with packages/web-ui/vite-plugin-docs.ts."
         created_at: 2026-07-17T04:29:09.793Z
     kind: blocker
+    resolved_at: 2026-07-17T04:29:15.908Z
+    resolved_by: Jacob Chapel
   - _ulid: 01KXQ3G2FRF1C8E6MNHQVCCPY2
     entries:
       - _ulid: 01KXQ3G2FR6E816TY9ARCBHADQ
@@ -344,5 +352,5 @@ verdicts:
     role: reviewer
     created_at: 2026-07-17T03:56:43.384Z
 created_at: 2026-07-17T03:35:46.555Z
-updated_at: 2026-07-17T04:29:09.793Z
+updated_at: 2026-07-17T04:29:15.908Z
 notes: []
