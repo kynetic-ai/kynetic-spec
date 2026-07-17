@@ -565,6 +565,13 @@ events:
       kind: blocker
       thread_ulid: 01KXRV1MWW8DXEJYAT13PFTDV4
     timestamp: 2026-07-17T20:07:22.027Z
+  - _ulid: 01KXRV1XQM9B21VJY4GQ1Q8Y31
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KXRV1XBTTGTQ7E5HJ9GNVSB4
+    timestamp: 2026-07-17T20:07:30.804Z
 examined_commit: a71126177efc68c959fa2434fea5fe013eb188f1
 external_links: []
 lifecycle_state: closed
@@ -808,6 +815,26 @@ threads:
           facts so AC-2 cannot pass with these incorrect procedures."
         created_at: 2026-07-17T20:07:21.757Z
     kind: blocker
+  - _ulid: 01KXRV1XBTTGTQ7E5HJ9GNVSB4
+    anchor:
+      type: code
+      commit: a71126177efc68c959fa2434fea5fe013eb188f1
+      line_end: 1858
+      line_start: 1819
+      path: tests/dispatch-operator-docs.test.ts
+      side: head
+    entries:
+      - _ulid: 01KXRV1XBT1ZKKT41Y448MMKVH
+        author: Jacob Chapel
+        body: "MUST-FIX: This behavioral test calls ensureWorkspaceBootstrap directly, bypassing
+          DispatchEngine's task-note and task-block lifecycle, and then asserts only two phrases
+          from one documentation block. It therefore passes while the page incorrectly says a
+          reviewer remains pending_review and omits the required unblock recovery; it also does not
+          bind the claimed invalidation cases. Extend behavior-backed coverage through the
+          dispatcher/task surface and cover the documented bootstrap lifecycle and invalidation
+          facts so AC-2 cannot pass with these incorrect procedures."
+        created_at: 2026-07-17T20:07:30.426Z
+    kind: blocker
 verdicts:
   - applies_to_version:
       type: entity_version
@@ -817,5 +844,5 @@ verdicts:
     role: reviewer
     created_at: 2026-07-17T20:04:52.153Z
 created_at: 2026-07-17T19:46:13.580Z
-updated_at: 2026-07-17T20:07:21.757Z
+updated_at: 2026-07-17T20:07:30.426Z
 notes: []
