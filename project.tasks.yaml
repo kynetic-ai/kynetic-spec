@@ -34214,7 +34214,7 @@
   type: task
   spec_ref: "@docs-concepts-section"
   plan_ref: "@plan-documentation-completeness-and-dispatch-workspaces"
-  status: in_progress
+  status: pending_review
   blocked_by: []
   depends_on:
     - "@task-document-dispatch-lifecycle-controls"
@@ -34224,11 +34224,11 @@
     - dispatch
     - concepts
   review_ref: "@01KXRADDZPTVPCJ7EB41HG0287"
-  notes_count: 5
+  notes_count: 6
   todos_count: 0
   created_at: 2026-07-17T00:08:21.387Z
   started_at: 2026-07-17T16:23:57.584Z
-  submitted_at: 2026-07-17T15:08:24.998Z
+  submitted_at: 2026-07-17T16:42:51.680Z
   automation: eligible
 - _ulid: 01KXPPE7MC40EXM9Q3MT0VJNWY
   slugs:

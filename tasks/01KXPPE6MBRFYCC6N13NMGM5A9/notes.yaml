@@ -50,3 +50,14 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-07-17T16:25:05.037Z
+  - _ulid: 01KXRFB5DW5BTZYNJ74AZDMT88
+    content: "Fix cycle 1: addressed all review threads. Corrected the construction-phase public
+      documentation inventory count to 143 for the new dispatch workspace concept, preserving the
+      six-page pending-addition contract and Task 7 ownership of final inventory closure.
+      Re-verified @docs-concepts-section ac-1/ac-2, the four task-owned default-agent ACs, and
+      lifecycle/readiness/evidence-cleanup authority distinctions. Fresh inventory: 17/17; focused
+      docs/setup: 270/270; docs search: 45 entries; format, lint, focused lint, typecheck,
+      refs/alignment/completeness all passed; uncached full suite: 10,974 passed, 3 skipped."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-07-17T16:42:50.684Z

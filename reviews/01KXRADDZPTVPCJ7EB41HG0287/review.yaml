@@ -207,6 +207,30 @@ events:
       from: open
       to: closed
     timestamp: 2026-07-17T16:10:32.108Z
+  - _ulid: 01KXRFARQXEJA34ZPS2JJ0TFYP
+    actor: Jacob Chapel
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KXRDFSDMFJ6D4P18BSQPRZHR
+    timestamp: 2026-07-17T16:42:37.693Z
+  - _ulid: 01KXRFAW8E968D8S93RDXMBFDR
+    actor: Jacob Chapel
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KXRDFSDMFJ6D4P18BSQPRZHR
+    timestamp: 2026-07-17T16:42:41.294Z
+  - _ulid: 01KXRFB0TJNWJ3SF8K2NQW5K19
+    actor: Jacob Chapel
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KXRDFWR1DH24S4V5DA3YF067
+    timestamp: 2026-07-17T16:42:45.970Z
+  - _ulid: 01KXRFB47MTHA9HVQKPAPCQW33
+    actor: Jacob Chapel
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KXRDFWR1DH24S4V5DA3YF067
+    timestamp: 2026-07-17T16:42:49.460Z
 examined_commit: 288983eab704871471654ca02a86aba90bd68ee8
 external_links: []
 lifecycle_state: closed
@@ -236,7 +260,16 @@ threads:
           construction-phase inventory bookkeeping through the plan-approved owner/scope and rerun
           the uncached full suite."
         created_at: 2026-07-17T16:10:25.076Z
+      - _ulid: 01KXRFARF47JRPRVNJDQWB374Y
+        author: Jacob Chapel
+        body: "Fixed in 7dee50416c: updated tracked_markdown_count from 142 to 143 for the newly tracked
+          dispatch workspace concept while preserving the six plan-approved construction pending
+          additions. Verified with a fresh 17-test inventory run and an uncached full suite: 2,837
+          suites passed, 10,974 tests passed, 3 skipped."
+        created_at: 2026-07-17T16:42:37.409Z
     kind: blocker
+    resolved_at: 2026-07-17T16:42:41.005Z
+    resolved_by: Jacob Chapel
   - _ulid: 01KXRDFWR1DH24S4V5DA3YF067
     entries:
       - _ulid: 01KXRDFWR106F19APFJMP1M3WP
@@ -271,7 +304,15 @@ threads:
           content findings. Shared/package guidance surfaces were not touched, so semantic
           neutrality/local-preservation checks were not applicable.
         created_at: 2026-07-17T16:10:28.481Z
+      - _ulid: 01KXRFB0J851MWDJ4277K8NH16
+        author: Jacob Chapel
+        body: Acknowledged the evidence log and re-verified the full reviewed surface against all task-owned
+          ACs and read-only lifecycle/cleanup authorities. No additional content changes were
+          required; the fresh full-suite regression is now corrected.
+        created_at: 2026-07-17T16:42:45.704Z
     kind: nit
+    resolved_at: 2026-07-17T16:42:49.179Z
+    resolved_by: Jacob Chapel
 verdicts:
   - applies_to_version:
       type: entity_version
@@ -281,5 +322,5 @@ verdicts:
     role: reviewer
     created_at: 2026-07-17T16:10:32.108Z
 created_at: 2026-07-17T15:16:42.102Z
-updated_at: 2026-07-17T16:10:32.108Z
+updated_at: 2026-07-17T16:42:49.179Z
 notes: []
