@@ -1,1 +1,19 @@
-notes: []
+notes:
+  - _ulid: 01KXS24GH8ESPT6TNFMESJQGP7
+    content: "Approach: audit each owned landing/contributor/package/scaffold/template surface against
+      the frozen dispatch facts and current source-backed CLI help. Correct confirmed drift only:
+      the v0.12 publication-mode history, lifecycle discovery in setup/upgrade config scaffolds,
+      stale dispatch commands in the package agent template, and the untouched generic Svelte
+      scaffold README. Preserve README/INSTALL/CONTRIBUTING/SECURITY/issue-template content where
+      evidence shows no drift. Reuse the existing scaffold E2E helpers and generated-guidance
+      pipeline. Edge cases: historical tense, all three publication modes, pause versus hard stop,
+      global versus canonical-task controls, non-TTY --force discovery, project-neutral wording, and
+      generated output convergence. Test plan: add behavioral scaffold assertions for setup and
+      upgrade comments, validate rendered template guidance against source-backed lifecycle
+      command/help facts, parse the corrected release-note section, retain existing
+      @readme-landing-page and release-note rendering coverage, then run the required focused suite,
+      two regeneration passes, clean-diff convergence check, package build, full quality gates, and
+      kspec validations."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-07-17T22:11:15.624Z
