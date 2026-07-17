@@ -15,3 +15,14 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-07-17T09:19:04.408Z
+  - _ulid: 01KXQP3K49VX7QM96K6DT1AY1H
+    content: Implemented the source-bound workspace configuration guide and corrected both agent-runner
+      dispatch-rule examples from legacy trigger/filters to on/filter. The guide covers target
+      precedence, roots, publication, project/agent ordering, role reuse/reruns, tracked mutation
+      safety, runner/environment separation, diagnostic output security, remote-sync limits, managed
+      gitignore behavior, and supported non-destructive recovery. Added behavioral docs coverage
+      that parses tagged examples through exported schemas, executes help paths, validates links,
+      and rejects invented workspace commands. Focused docs/config suite passes (111 tests).
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-07-17T09:21:48.169Z
