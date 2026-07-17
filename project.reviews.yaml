@@ -30724,7 +30724,7 @@ reviews:
     title: Review publish dispatch workspace concept (cycle 3)
     disposition: pending
     author: Jacob Chapel
-    check_count: 0
+    check_count: 9
     examined_commit: c37d95159a8fcd42c102bcf62a7472cd4bd766db
     lifecycle_state: open
     related_refs: []
@@ -30733,8 +30733,8 @@ reviews:
       content_hash: ""
       ref: "@01KXPPE6MBRFYCC6N13NMGM5A9"
       shadow_commit: ""
-    thread_count: 0
+    thread_count: 1
     unresolved_blocker_count: 0
     verdict_count: 0
     created_at: 2026-07-17T18:30:39.329Z
-    updated_at: 2026-07-17T18:31:00.065Z
+    updated_at: 2026-07-17T18:51:45.633Z

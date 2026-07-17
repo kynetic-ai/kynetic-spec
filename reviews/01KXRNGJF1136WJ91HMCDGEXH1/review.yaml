@@ -2,7 +2,102 @@ _ulid: 01KXRNGJF1136WJ91HMCDGEXH1
 slugs: []
 title: Review publish dispatch workspace concept (cycle 3)
 author: Jacob Chapel
-checks: []
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: All 1064 files matched formatting; exit 0.
+    name: format
+    required: true
+    runner: npm run format:check
+    created_at: 2026-07-17T18:51:12.385Z
+    completed_at: 2026-07-17T18:51:12.385Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Repo-wide lint reported 0 errors with the 696-warning baseline; focused npx oxlint
+      tests/dispatch-operator-docs.test.ts reported 0 warnings and 0 errors.
+    name: lint
+    required: true
+    runner: npm run lint -- --quiet
+    created_at: 2026-07-17T18:51:16.057Z
+    completed_at: 2026-07-17T18:51:16.057Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Shared package build and tsc --noEmit passed; exit 0.
+    name: typecheck
+    required: true
+    runner: npm run typecheck
+    created_at: 2026-07-17T18:51:19.317Z
+    completed_at: 2026-07-17T18:51:19.317Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Supported fresh three-shard full gate passed: 2,837 suites; 10,974 tests passed; 3
+      skipped; 0 failed. The previously noted agent-invocation process-identity test passed 14/14 in
+      shard 2."
+    name: full test suite
+    required: true
+    runner: npm run test:shard1/2/3 -- --fresh
+    created_at: 2026-07-17T18:51:22.699Z
+    completed_at: 2026-07-17T18:51:22.699Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Passed with the documented 6-warning deprecation baseline; schema and references OK.
+    name: kspec validate refs
+    required: true
+    runner: kspec validate --refs --warnings-ok
+    created_at: 2026-07-17T18:51:26.192Z
+    completed_at: 2026-07-17T18:51:26.192Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Passed with the documented 57-warning repository baseline (44 orphaned specs and 13 status
+      mismatches).
+    name: kspec validate alignment
+    required: true
+    runner: kspec validate --alignment --warnings-ok
+    created_at: 2026-07-17T18:51:29.595Z
+    completed_at: 2026-07-17T18:51:29.595Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Passed with the documented 325-warning repository baseline; task-owned AC annotations resolve.
+    name: kspec validate completeness
+    required: true
+    runner: kspec validate --completeness --warnings-ok
+    created_at: 2026-07-17T18:51:32.942Z
+    completed_at: 2026-07-17T18:51:32.942Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Fresh dispatch operator docs, web UI docs rendering, setup built-in agents, and public
+      documentation inventory run passed 50 suites and 287/287 tests.
+    name: focused docs tests
+    required: true
+    runner: npm test -- --fresh focused files
+    created_at: 2026-07-17T18:51:36.466Z
+    completed_at: 2026-07-17T18:51:36.466Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Pagefind indexed 45 documentation entries; exit 0.
+    name: docs search build
+    required: true
+    runner: npm run build:docs-search
+    created_at: 2026-07-17T18:51:41.517Z
+    completed_at: 2026-07-17T18:51:41.517Z
 events:
   - _ulid: 01KXRNGJEPWTB01BB6M0P7C4MV
     actor: Jacob Chapel
@@ -17,6 +112,76 @@ events:
       from: draft
       to: open
     timestamp: 2026-07-17T18:31:00.339Z
+  - _ulid: 01KXRPP6W6QH4QR5GZJE9P7NPB
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: format
+    timestamp: 2026-07-17T18:51:12.647Z
+  - _ulid: 01KXRPPAEJN5YFB7AC1R2TVMDB
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: lint
+    timestamp: 2026-07-17T18:51:16.306Z
+  - _ulid: 01KXRPPDMNYPF65P178TE36Y8Q
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: typecheck
+    timestamp: 2026-07-17T18:51:19.573Z
+  - _ulid: 01KXRPPGY2T8GDJ1HNZWYN9BD5
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: full test suite
+    timestamp: 2026-07-17T18:51:22.946Z
+  - _ulid: 01KXRPPMC3EX6C1DG7NM3HREVR
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate refs
+    timestamp: 2026-07-17T18:51:26.467Z
+  - _ulid: 01KXRPPQN7PB0BXB8FD1ADMY5Q
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate alignment
+    timestamp: 2026-07-17T18:51:29.831Z
+  - _ulid: 01KXRPPTY7EE7RG6RSQ9K1DP5W
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate completeness
+    timestamp: 2026-07-17T18:51:33.191Z
+  - _ulid: 01KXRPPYKPHACYSBTCPM9CYAJM
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: focused docs tests
+    timestamp: 2026-07-17T18:51:36.950Z
+  - _ulid: 01KXRPQ3E6DGW3VVX65Q9XTEFD
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: docs search build
+    timestamp: 2026-07-17T18:51:41.895Z
+  - _ulid: 01KXRPQ7B8M54R0NDPTGKR7RXN
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KXRPQ731T8PQ19PK7JHWA4TN
+    timestamp: 2026-07-17T18:51:45.896Z
 examined_commit: c37d95159a8fcd42c102bcf62a7472cd4bd766db
 external_links: []
 lifecycle_state: open
@@ -26,8 +191,44 @@ subject:
   content_hash: ""
   ref: "@01KXPPE6MBRFYCC6N13NMGM5A9"
   shadow_commit: ""
-threads: []
+threads:
+  - _ulid: 01KXRPQ731T8PQ19PK7JHWA4TN
+    entries:
+      - _ulid: 01KXRPQ73197JHXYKX3YQMFVGD
+        author: Jacob Chapel
+        body: >-
+          Review evidence log
+
+
+          Files read: all five changed files; prior cycle reviews; docs/concepts/reviews.md,
+          docs/concepts/agent-runners.md, workspace configuration and lifecycle guides; setup
+          default definitions/tests; workspace publication resolver/schema/prompt construction;
+          reviewer cleanup flow; artifact-protection and cleanup tests; task/spec/plan context.
+
+
+          Commands run: full integration-base-to-head diff and cycle-2-to-cycle-3 diff; git
+          history/status/diff-check and Markdown inventory; AC annotation search; format, repo lint,
+          focused lint, typecheck; refs/alignment/completeness validation; fresh 287-test focused
+          suite; docs-search build; supported fresh three-shard full test gate.
+
+
+          Claims verified: cycle-1 inventory correction remains valid at 143 Markdown files; cycle-2
+          reviewer cleanup wording matches immediate post-invocation cleanup plus centralized
+          active/in-flight/paused-held/stopped-pending-cleanup protection; durable workspace schema
+          stores only pull_request/manual_merge and configured auto selects between them using gh
+          plus a GitHub remote; setup scaffolds the documented configurable, write-authorized agent
+          roster; all links publish and render.
+
+
+          Categories searched: factual correctness, task/spec/AC alignment, detached-review and
+          fix-cycle edge states, publication timing/mode selection, cleanup failure and ambiguous
+          ownership behavior, bootstrap/target continuity, operator safety/security guidance, test
+          quality, rendering/link/search integration, and regressions. No blocking or should-fix
+          findings. Shared/package guidance surfaces were not touched, so shared-guidance-neutrality
+          directions and generated package artifact regeneration were not applicable.
+        created_at: 2026-07-17T18:51:45.633Z
+    kind: nit
 verdicts: []
 created_at: 2026-07-17T18:30:39.329Z
-updated_at: 2026-07-17T18:31:00.065Z
+updated_at: 2026-07-17T18:51:45.633Z
 notes: []
