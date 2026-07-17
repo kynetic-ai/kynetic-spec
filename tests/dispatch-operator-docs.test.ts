@@ -1328,6 +1328,21 @@ function publishedDoc(entries: PublishedDoc[], slug: string): PublishedDoc {
   return entry;
 }
 
+function symptomHeadings(markdown: string): string[] {
+  return markdown
+    .split(/\r?\n/)
+    .filter((line) => line.startsWith("## "))
+    .map((line) => line.slice(3));
+}
+
+function symptomBlock(markdown: string, heading: string): string {
+  const marker = `## ${heading}`;
+  const start = markdown.indexOf(marker);
+  if (start === -1) throw new Error(`symptom heading not found: ${heading}`);
+  const next = markdown.indexOf("\n## ", start + marker.length);
+  return markdown.slice(start, next === -1 ? undefined : next);
+}
+
 describe("dispatch operator fact fixture", () => {
   let fixtureDir: string;
 
@@ -1659,6 +1674,224 @@ describe("dispatch operator fact fixture", () => {
       expect(overview).toContain("`kspec setup` scaffolds default agent definitions");
       expect(overview).toContain("The live agent registry is authoritative");
       expect(overview).not.toContain("kspec ships with four built-in agent definitions");
+    });
+  });
+
+  describe("dispatch recovery pages", () => {
+    const recoveryPages = [
+      {
+        slug: "troubleshooting/dispatch-bootstrap-failures",
+        indexTarget: "./dispatch-bootstrap-failures.md",
+        conceptTarget: "../concepts/dispatch-workspaces.md",
+        openings: ["bootstrap", "workspace"],
+        symptoms: [
+          "A Bootstrap Step Exits Nonzero",
+          "Bootstrap Reports Tracked-File Changes",
+          "A Reviewer Bootstrap Rerun Is Refused",
+          "Previously Successful Bootstrap State Is Invalidated",
+          "The Prepared Workspace Cannot Be Accessed",
+          "A Bootstrap Failure Exposes Unsafe Command Output",
+        ],
+      },
+      {
+        slug: "troubleshooting/dispatch-workspace-sync-and-cleanup",
+        indexTarget: "./dispatch-workspace-sync-and-cleanup.md",
+        conceptTarget: "../concepts/dispatch-workspaces.md",
+        openings: ["workspace", "sync"],
+        symptoms: [
+          "The Workspace Target Does Not Match Configuration",
+          "A Plan Target Changed After the Workspace Was Created",
+          "The Workspace Path Collides With Existing Content",
+          "The Workspace Registry Is Stale or Cannot Be Recovered",
+          "Dispatch Is Running in Local-Only Mode",
+          "Remote Synchronization Fails Transiently",
+          "An Integration Target Is Degraded by Divergence",
+          "The Integration Target Is Checked Out Elsewhere",
+          "Reviewer Target Synchronization Is Deferred",
+          "Cleanup Says an Artifact Is Protected",
+          "The Worktree Root Contains an Unknown Entry",
+          "A Closed Workspace Is Still Retained",
+        ],
+      },
+      {
+        slug: "troubleshooting/dispatch-lifecycle-control-failures",
+        indexTarget: "./dispatch-lifecycle-control-failures.md",
+        conceptTarget: "../concepts/dispatch-workspaces.md",
+        openings: ["lifecycle", "status"],
+        symptoms: [
+          "Start, Resume, or Pause Reports an Invalid Transition",
+          "A Held Task Does Not Start",
+          "A Task Alias Is Missing, Ambiguous, or Mismatched",
+          "Dispatch Is Stopped With Pending or Failed Cleanup",
+          "The Control Store Is Unavailable, Corrupt, or Cannot Commit",
+          "Cleanup Cannot Verify Ownership or Process Identity",
+          "Hard Stop Is Rejected From a Dispatch-Owned Session",
+          "Hard Stop Requires Confirmation or --force",
+          "Lifecycle Controls Are Read-Only in the Static UI",
+        ],
+      },
+    ] as const;
+
+    // AC: @docs-troubleshooting-section ac-1
+    // AC: @docs-troubleshooting-section ac-2
+    it("publishes indexed symptom-first blocks with observable recovery outcomes", () => {
+      const entries = publishedDocs();
+      const index = publishedDoc(entries, "troubleshooting").content;
+
+      for (const page of recoveryPages) {
+        const entry = publishedDoc(entries, page.slug);
+        expect(relativeMarkdownLinks(index), page.slug).toContain(page.indexTarget);
+        const opening = entry.content.split("\n\n").slice(0, 2).join(" ").toLowerCase();
+        for (const term of page.openings) expect(opening).toContain(term);
+        expect(symptomHeadings(entry.content)).toEqual(page.symptoms);
+
+        const rendered = renderDocsMarkdown(entry.content);
+        for (const symptom of page.symptoms) {
+          const block = symptomBlock(entry.content, symptom);
+          expect(block).toContain("### What this means");
+          expect(block).toContain("### What to observe");
+          expect(block).toContain("### Recovery procedure");
+          expect(block).toContain("### Healthy outcome");
+          expect(block).toContain("### Learn more");
+          expect(block).toContain(page.conceptTarget);
+        }
+        for (const heading of rendered.toc) {
+          expect(rendered.html).toContain(`id="${heading.id}"`);
+        }
+      }
+    });
+
+    // AC: @docs-troubleshooting-section ac-2
+    it("backs recovery commands and examples with the public help and status contracts", () => {
+      const entries = publishedDocs();
+      const pages = [
+        ...recoveryPages.map((page) => publishedDoc(entries, page.slug).content),
+        publishedDoc(entries, "troubleshooting/dispatch-refuses-to-assign").content,
+      ].join("\n");
+      const documentedCommands = [
+        "agent status",
+        "agent dispatch status",
+        "agent dispatch watch",
+        "agent dispatch stop",
+        "agent dispatch task stop",
+        "agent dispatch start",
+        "agent dispatch resume",
+        "agent dispatch task resume",
+        "task get",
+        "task set",
+        "tasks ready",
+        "agent list",
+        "plan get",
+        "search",
+        "shadow status",
+        "setup",
+      ];
+      for (const command of documentedCommands) {
+        expect(pages, command).toContain(`kspec ${command}`);
+        const help = kspec(`${command} --help`, fixtureDir);
+        expect(help.exitCode, command).toBe(0);
+        expect(help.stdout, command).toContain(`Usage: kspec ${command}`);
+      }
+
+      const status = kspecJson<Record<string, unknown>>("agent dispatch status --json", fixtureDir);
+      expect(status).toMatchObject({
+        globalAuthority: factsFixture.lifecycle.missing_state_default,
+        projection: "stopped",
+        cleanupState: { status: "idle", entries: [] },
+      });
+      for (const code of [
+        "invalid_transition",
+        "task_not_found",
+        "task_identity_ambiguous",
+        "task_identity_mismatch",
+        "control_store_unavailable",
+        "control_store_corrupt",
+        "control_commit_failed",
+        "cleanup_identity_unverifiable",
+      ]) {
+        expect(factsFixture.safety.control_error_codes).toContain(code);
+        expect(pages).toContain(code);
+      }
+      expect(pages).toContain(factsFixture.safety.failure_authority);
+      expect(pages).toContain(factsFixture.workspace.remote_sync.no_remote);
+    });
+
+    it("binds the unsafe bootstrap-output warning to the observable bounded failure tail", async () => {
+      const projectDir = await createTempDir("dispatch-doc-bootstrap-output-");
+      try {
+        await seedFactProject(projectDir);
+        await writeFile(
+          join(projectDir, "kspec.config.yaml"),
+          [
+            "dispatch:",
+            "  base_branch: main",
+            "  bootstrap:",
+            "    steps:",
+            "      - run: printf 'UNSAFE_OUTPUT_SENTINEL'; exit 9",
+          ].join("\n"),
+          "utf8",
+        );
+        const taskId = testUlid("TASK", 77);
+        const workspace = await provisionDispatchWorkspace({
+          projectDir,
+          taskRef: `@${taskId}`,
+          task: { title: "Unsafe output fact", slugs: ["unsafe-output-fact"] },
+        });
+        const failure = await ensureWorkspaceBootstrap({
+          projectDir,
+          workspaceDir: workspace.cwd,
+          metadataPath: workspace.metadataPath,
+          metadata: workspace.metadata,
+          role: "worker",
+          agent: factAgent(),
+          env: {},
+        }).catch((error: unknown) => error);
+        expect(failure).toBeInstanceOf(DispatchBootstrapError);
+        expect((failure as Error).message).toContain("UNSAFE_OUTPUT_SENTINEL");
+
+        const page = publishedDoc(
+          publishedDocs(),
+          "troubleshooting/dispatch-bootstrap-failures",
+        ).content;
+        const block = symptomBlock(page, "A Bootstrap Failure Exposes Unsafe Command Output");
+        expect(block).toContain("last 4,000 characters");
+        expect(block).toContain("Treat any secret printed by the step as exposed");
+      } finally {
+        await cleanupTempDir(projectDir);
+      }
+    });
+
+    // AC: @docs-troubleshooting-section ac-3
+    it("links primitives to concepts and rejects unsupported recovery shortcuts", () => {
+      const entries = publishedDocs();
+      const pages = recoveryPages.map((page) => publishedDoc(entries, page.slug));
+      for (const page of pages) {
+        for (const target of relativeMarkdownLinks(page.content)) {
+          const resolvedTarget = normalize(join(dirname(page.path), target)).replaceAll("\\", "/");
+          expect(
+            entries.some((candidate) => candidate.path === resolvedTarget),
+            target,
+          ).toBe(true);
+        }
+      }
+
+      const recovery = pages.map((page) => page.content).join("\n");
+      expect(recovery).toContain("Do not edit `.kspec/dispatch-control.yaml`");
+      expect(recovery).toContain("Do not edit the dispatch workspace registry");
+      expect(recovery).toContain("Do not delete or move a managed worktree");
+      expect(recovery).not.toContain("kspec dispatch workspace");
+      expect(recovery).not.toContain("kspec agent dispatch workspace");
+      expect(recovery).not.toContain("git worktree remove --force");
+      expect(recovery).not.toContain("aggregate cleanup blocks");
+
+      const assignment = publishedDoc(
+        entries,
+        "troubleshooting/dispatch-refuses-to-assign",
+      ).content;
+      expect(assignment).toContain("Lifecycle authority and held status");
+      expect(assignment).toContain("automation filtering is evaluated per matching rule and event");
+      expect(assignment).toContain("default worker rules");
+      expect(assignment).not.toContain("Dispatch only picks up tasks where automation");
     });
   });
 
