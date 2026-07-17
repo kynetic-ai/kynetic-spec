@@ -34136,3 +34136,155 @@
   created_at: 2026-07-16T13:46:07.377Z
   started_at: 2026-07-16T13:55:08.447Z
   automation: eligible
+- _ulid: 01KXPPE2FA72S6HPFV9V95488F
+  slugs:
+    - task-freeze-doc-facts-and-inventory
+  title: Freeze final integrated dispatch facts and create the public-surface inventory gate
+  type: task
+  spec_ref: "@docs-section-taxonomy"
+  plan_ref: "@plan-documentation-completeness-and-dispatch-workspaces"
+  status: pending
+  blocked_by: []
+  depends_on: []
+  priority: 1
+  tags:
+    - docs
+    - audit
+    - testing
+  notes_count: 0
+  todos_count: 0
+  created_at: 2026-07-17T00:08:17.130Z
+- _ulid: 01KXPPE34G6JGRYECYDWVBKNWC
+  slugs:
+    - task-document-dispatch-workspace-configuration
+  title: Publish the source-bound dispatch workspace configuration guide
+  type: task
+  spec_ref: "@docs-guides-section"
+  plan_ref: "@plan-documentation-completeness-and-dispatch-workspaces"
+  status: pending
+  blocked_by: []
+  depends_on:
+    - "@task-freeze-doc-facts-and-inventory"
+  priority: 1
+  tags:
+    - docs
+    - dispatch
+    - guides
+  notes_count: 0
+  todos_count: 0
+  created_at: 2026-07-17T00:08:17.808Z
+- _ulid: 01KXPPE3PS8PDPNH0GDYDP4F4M
+  slugs:
+    - task-document-dispatch-lifecycle-controls
+  title: Publish the dispatch lifecycle controls operator guide
+  type: task
+  spec_ref: "@docs-guides-section"
+  plan_ref: "@plan-documentation-completeness-and-dispatch-workspaces"
+  status: pending
+  blocked_by: []
+  depends_on:
+    - "@task-document-dispatch-workspace-configuration"
+  priority: 1
+  tags:
+    - docs
+    - dispatch
+    - lifecycle
+  notes_count: 0
+  todos_count: 0
+  created_at: 2026-07-17T00:08:18.393Z
+- _ulid: 01KXPPE6MBRFYCC6N13NMGM5A9
+  slugs:
+    - task-document-dispatch-workspace-concept
+  title: Publish the dispatch workspace concept and correct the dispatch overview
+  type: task
+  spec_ref: "@docs-concepts-section"
+  plan_ref: "@plan-documentation-completeness-and-dispatch-workspaces"
+  status: pending
+  blocked_by: []
+  depends_on:
+    - "@task-document-dispatch-lifecycle-controls"
+  priority: 1
+  tags:
+    - docs
+    - dispatch
+    - concepts
+  notes_count: 0
+  todos_count: 0
+  created_at: 2026-07-17T00:08:21.387Z
+- _ulid: 01KXPPE7MC40EXM9Q3MT0VJNWY
+  slugs:
+    - task-document-dispatch-recovery
+  title: Publish symptom-first bootstrap workspace and lifecycle recovery pages
+  type: task
+  spec_ref: "@docs-troubleshooting-section"
+  plan_ref: "@plan-documentation-completeness-and-dispatch-workspaces"
+  status: pending
+  blocked_by: []
+  depends_on:
+    - "@task-document-dispatch-workspace-concept"
+  priority: 1
+  tags:
+    - docs
+    - dispatch
+    - troubleshooting
+  notes_count: 0
+  todos_count: 0
+  created_at: 2026-07-17T00:08:22.412Z
+- _ulid: 01KXPPE8H63QJCHCVSXW17G4B7
+  slugs:
+    - task-correct-adjacent-public-guidance
+  title: Correct top-level package scaffold release and generated guidance drift
+  type: task
+  spec_ref: "@readme-landing-page"
+  plan_ref: "@plan-documentation-completeness-and-dispatch-workspaces"
+  status: pending
+  blocked_by: []
+  depends_on:
+    - "@task-document-dispatch-recovery"
+  priority: 2
+  tags:
+    - docs
+    - setup
+    - templates
+    - release
+  notes_count: 0
+  todos_count: 0
+  created_at: 2026-07-17T00:08:23.334Z
+- _ulid: 01KXPPE9FJ6KB5WG47FV2KFRNY
+  slugs:
+    - task-audit-remaining-public-docs
+  title: Audit and correct the remaining declared public documentation universe
+  type: task
+  spec_ref: "@docs-getting-started-section"
+  plan_ref: "@plan-documentation-completeness-and-dispatch-workspaces"
+  status: pending
+  blocked_by: []
+  depends_on:
+    - "@task-correct-adjacent-public-guidance"
+  priority: 2
+  tags:
+    - docs
+    - audit
+    - consistency
+  notes_count: 0
+  todos_count: 0
+  created_at: 2026-07-17T00:08:24.306Z
+- _ulid: 01KXPPEAYMN69MKK49CA73D6AG
+  slugs:
+    - task-close-documentation-drift-gates
+  title: Close structured documentation drift gates and rendered browser validation
+  type: task
+  spec_ref: "@docs-navigation-shape"
+  plan_ref: "@plan-documentation-completeness-and-dispatch-workspaces"
+  status: pending
+  blocked_by: []
+  depends_on:
+    - "@task-audit-remaining-public-docs"
+  priority: 2
+  tags:
+    - docs
+    - testing
+    - web-ui
+  notes_count: 0
+  todos_count: 0
+  created_at: 2026-07-17T00:08:25.812Z

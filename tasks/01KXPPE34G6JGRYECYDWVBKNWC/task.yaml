@@ -1,0 +1,96 @@
+_ulid: 01KXPPE34G6JGRYECYDWVBKNWC
+slugs:
+  - task-document-dispatch-workspace-configuration
+title: Publish the source-bound dispatch workspace configuration guide
+type: task
+description: >
+  Covers (documentation ownership only):
+
+  - @docs-guides-section ac-2, ac-3
+
+
+  Factual source authorities (read-only):
+
+  - @dispatch-remote-branch-sync ac-no-remote, ac-degraded-status-api,
+  ac-degraded-status-api-reason, ac-degraded-status-api-timestamp, ac-pull-ff-only,
+  ac-pull-target-periodic-deferred
+
+  - @dispatch-workspace-cleanup-policy ac-1, ac-2, ac-3, ac-4, ac-5,
+  ac-controlled-evidence-protected
+
+
+  What:
+
+  Create the workspace/bootstrap configuration guide and correct schema-invalid dispatch-rule
+  examples. Keep lifecycle operations out of bootstrap step detail; Task 3 provides lifecycle
+  cross-discovery by indexing both completed guides.
+
+
+  Files:
+
+  - Create: `docs/guides/configuring-dispatch-workspaces.md`
+
+  - Modify once in this plan: `docs/guides/configuring-agent-runners.md`
+
+  - Modify creator-owned test: `tests/dispatch-operator-docs.test.ts`
+
+  - Do not modify `docs/guides/index.md` (Task 3 owns it).
+
+
+  Required sections:
+
+  - Goal and prerequisites; Minimal configuration; Base/plan target resolution; Worktree root;
+  Publication mode; Project bootstrap; Per-agent bootstrap; Step behavior; Environment boundaries;
+  Remote synchronization and limits; Managed `.gitignore`; Supported inspection/recovery;
+  Verification; Related concepts and troubleshooting.
+
+  - Correct legacy `trigger`/`filters` examples to schema-valid `on`/`filter`. Describe only final
+  integrated keys/defaults/enums and point to command help rather than transcribing flags.
+
+  - Keep `manual_merge | pull_request | auto` publication modes accurate. State project-before-agent
+  ordering, role/reviewer behavior, tracked-only mutation guard, named-runner separation, one-shot
+  exclusion, output-tail/security limitation, and remote-sync status exactly as Task 1 proves.
+
+  - State that lifecycle controls do not manage/delete workspaces and no workspace
+  list/show/reset/cleanup command exists. Never recommend editing registry/control state, deleting
+  managed paths, or manual worktree mutation.
+
+
+  Required tests:
+
+  - Validate tagged `yaml kspec-config` and `yaml kspec-agent` examples through public schemas and
+  compare fields/defaults/enums to the fact fixture.
+
+  - Validate links/help-backed paths; prove no workspace command is presented as runnable and the
+  two rule examples no longer use legacy keys.
+
+
+  Verification:
+
+  - `npm test -- tests/dispatch-operator-docs.test.ts tests/parser/config.test.ts`
+
+  - `npm run build:docs-search`
+
+  - `npm run format:check`
+
+
+  Review handoff:
+
+  Reviewer traces every normative statement to Task 1 facts and confirms workspace configuration is
+  not overloaded with lifecycle transition matrices.
+spec_ref: "@docs-guides-section"
+plan_ref: "@plan-documentation-completeness-and-dispatch-workspaces"
+origin: derived
+status: pending
+blocked_by: []
+depends_on:
+  - "@task-freeze-doc-facts-and-inventory"
+context: []
+priority: 1
+tags:
+  - docs
+  - dispatch
+  - guides
+vcs_refs: []
+created_at: 2026-07-17T00:08:17.808Z
+todos: []

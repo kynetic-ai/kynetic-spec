@@ -2,11 +2,19 @@ _ulid: 01KXH4P6W49WWHJ0Z6SD1RRSBB
 slugs:
   - plan-documentation-completeness-and-dispatch-workspaces
 title: Documentation Completeness and Dispatch Workspaces
-status: approved
+status: active
 approved_at: 2026-07-17T00:06:20.402Z
 branch: plan/plan-dispatch-lifecycle-pause-resume-and-stop-controls/01kxc2vx
 derived_specs: []
-derived_tasks: []
+derived_tasks:
+  - "@task-freeze-doc-facts-and-inventory"
+  - "@task-document-dispatch-workspace-configuration"
+  - "@task-document-dispatch-lifecycle-controls"
+  - "@task-document-dispatch-workspace-concept"
+  - "@task-document-dispatch-recovery"
+  - "@task-correct-adjacent-public-guidance"
+  - "@task-audit-remaining-public-docs"
+  - "@task-close-documentation-drift-gates"
 module_ref: null
 resource_summary:
   count: 18

@@ -1,0 +1,133 @@
+_ulid: 01KXPPE3PS8PDPNH0GDYDP4F4M
+slugs:
+  - task-document-dispatch-lifecycle-controls
+title: Publish the dispatch lifecycle controls operator guide
+type: task
+description: >
+  Covers (documentation ownership only):
+
+  - @docs-guides-section ac-1, ac-2, ac-3
+
+
+  Factual source authorities (read-only; no product work):
+
+  - @dispatch-lifecycle-control-authority ac-global-pause-authority,
+  ac-global-paused-work-does-not-start, ac-task-paused-work-does-not-start,
+  ac-global-pause-allows-active-completion, ac-task-pause-allows-active-completion,
+  ac-resume-reconciles-held-work, ac-stop-forbids-new-starts, ac-stop-cancels-active-work,
+  ac-task-control-uses-canonical-identity, ac-task-resume-obeys-global-authority,
+  ac-task-stop-preserves-unrelated-invocations, ac-controls-survive-restart,
+  ac-controls-do-not-change-readiness, ac-stop-failure-retains-stopped-authority,
+  ac-stop-failure-reports-pending-cleanup, ac-interrupted-stop-recovers-on-retry,
+  ac-recovery-requires-session-ownership, ac-recovery-requires-process-birth
+
+  - @cli-agent-commands ac-5, ac-start-reports-authority, ac-pause-reports-authority,
+  ac-resume-reports-authority, ac-lifecycle-command-reports-projection,
+  ac-declined-stop-sends-no-request, ac-declined-stop-exit, ac-task-control-canonicalization,
+  ac-lifecycle-status-authority, ac-lifecycle-status-projection, ac-lifecycle-status-active-count,
+  ac-lifecycle-status-queued-count, ac-lifecycle-status-held-count
+
+  - @daemon-agent-dispatch ac-5, ac-6, ac-public-status-lifecycle-additions,
+  ac-control-missing-identity, ac-control-ref-canonicalization, ac-control-identity-mismatch,
+  ac-control-failure-no-success, ac-cleanup-failure-no-success
+
+  - @ui-agent-dispatch ac-2, ac-3, ac-stopped-actions-valid, ac-control-separated-from-degraded,
+  ac-control-separated-from-blocked, ac-hard-stop-confirmation-cancellation,
+  ac-hard-stop-confirmation-evidence, ac-hard-stop-confirmation-cancelled,
+  ac-lifecycle-controls-labelled, ac-lifecycle-focus-retained, ac-lifecycle-live-update
+
+  - @dispatch-event-taxonomy ac-dispatch-control-domain
+
+  - @dispatch-workspace-cleanup-policy ac-controlled-evidence-protected
+
+
+  Why a dedicated page:
+
+  The implemented surface has two scopes, two transition matrices, hard-stop safety, durable
+  recovery, status projections, canonical identity, API/UI equivalents, accessibility/static
+  behavior, and explicit limitations. Putting this in bootstrap or the short Agents and Dispatch
+  overview would obscure both workflows and duplicate CLI help.
+
+
+  What:
+
+  Create `docs/guides/controlling-dispatch-lifecycle.md`; add both new dispatch guides to
+  `docs/guides/index.md`; keep commands concise and link to generated help.
+
+
+  Files:
+
+  - Create: `docs/guides/controlling-dispatch-lifecycle.md`
+
+  - Modify once in this plan: `docs/guides/index.md`
+
+  - Modify creator-owned test: `tests/dispatch-operator-docs.test.ts`
+
+
+  Required guide sections:
+
+  - Goal/prerequisites; Choose global or task scope; Read
+  authority/projection/counts/held/task-control/cleanup status; Global action table; Task action
+  table; Pause versus hard stop; CLI procedure; API/UI equivalents; Retry and restart recovery;
+  Events for automation (only if retained as public authoring surface); Safety/error semantics;
+  Static/read-only UI; Supported limitations; Verification; Workspace/concept/troubleshooting links.
+
+  - Name the actual global and task commands, but defer full options to `kspec help agent dispatch`
+  and child help. Explain `start` versus `resume`, `draining`, matching-scope cleanup, canonical
+  alias handling, no-op versus invalid transition, hard-stop confirmation/`--force`, dispatch-owned
+  host-stop rejection, and evidence preservation.
+
+  - Mention canonical `POST /api/agent/dispatch/control`, public `GET /api/agent/status`, and
+  agents-view equivalents without duplicating complete generated schemas. Distinguish public
+  snake-case wire fields from UI camelCase only where a public API reader needs it.
+
+  - Do not claim lifecycle control changes task state, clears degraded targets, deletes workspaces,
+  checkpoints work, guarantees exact FIFO, controls arbitrary one-shot runs, or can always finish
+  cleanup when ownership cannot be proven.
+
+
+  Required tests:
+
+  - Compare documented command/action tables to the exported Commander tree and public lifecycle
+  action helpers/fixtures.
+
+  - Exercise global/task transition examples, aliases/canonical ids, matching-scope cleanup, status
+  fields, API/UI projections, hard-stop safety, accessibility/static behavior, and any documented
+  event names through public schemas/helpers/fixtures.
+
+  - Fail on command-tree drift, unsupported action/scope, alias stored as canonical id, blanket
+  aggregate-cleanup gating, or invented workspace procedure; do not snapshot prose style.
+
+
+  Verification:
+
+  - `npm test -- tests/dispatch-operator-docs.test.ts tests/cli-agent-dispatch-lifecycle.test.ts
+  tests/daemon-agent-dispatch-lifecycle.test.ts tests/web-ui/dispatch-lifecycle-controls.test.ts
+  tests/dispatch-control-events.test.ts`
+
+  - `npm run build:docs-search`
+
+  - `npm run format:check`
+
+
+  Review handoff:
+
+  Reviewer walks global pause/resume, global hard stop/retry, task alias pause/resume, task hard
+  stop with unrelated work, static UI, and one failure from source fixture through the guide.
+  Product ACs remain evidence, not documentation deliverables.
+spec_ref: "@docs-guides-section"
+plan_ref: "@plan-documentation-completeness-and-dispatch-workspaces"
+origin: derived
+status: pending
+blocked_by: []
+depends_on:
+  - "@task-document-dispatch-workspace-configuration"
+context: []
+priority: 1
+tags:
+  - docs
+  - dispatch
+  - lifecycle
+vcs_refs: []
+created_at: 2026-07-17T00:08:18.393Z
+todos: []

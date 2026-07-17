@@ -1,0 +1,94 @@
+_ulid: 01KXPPE8H63QJCHCVSXW17G4B7
+slugs:
+  - task-correct-adjacent-public-guidance
+title: Correct top-level package scaffold release and generated guidance drift
+type: task
+description: >
+  Covers (documentation ownership only):
+
+  - @readme-landing-page ac-1, ac-2
+
+  - @docs-release-notes-availability ac-1, ac-2
+
+  - @default-project-agents-and-conventions ac-agents-md-reflects-defaults
+
+
+  Factual source authorities (read-only):
+
+  - @cli-agent-commands ac-start-reports-authority, ac-pause-reports-authority,
+  ac-resume-reports-authority, ac-task-control-canonicalization
+
+  - @dispatch-event-taxonomy ac-dispatch-control-domain
+
+
+  What:
+
+  Audit and factually correct non-`docs/` public landing/contributor/package surfaces, setup/upgrade
+  discoverability, and source-owned generated guidance. Make no product/default change.
+
+
+  Exact owned surfaces:
+
+  - `README.md`, `INSTALL.md`, `CONTRIBUTING.md`, `SECURITY.md`, `RELEASE_NOTES.md`,
+  `packages/web-ui/README.md`, `.github/ISSUE_TEMPLATE/maintainer-approved-issues-and-features.md`.
+
+  - Non-behavioral comments/links only in `src/cli/commands/setup.ts` and
+  `src/cli/commands/upgrade.ts`; do not add keys, change defaults, or change command behavior.
+
+  - `templates/agents-sections/**/*.md`, `templates/skills/**/*.md`, and
+  `templates/skills/manifest.yaml` only where inventory evidence shows factual/discoverability
+  drift. Author only in sources; regenerate tracked `.agents`/`.factory`, `kspec-agents.md`, and
+  ignored plugin output.
+
+
+  Required corrections and tests:
+
+  - Correct the v0.12 publication-mode row to `manual_merge`, `pull_request`, and `auto` while
+  preserving historical tense.
+
+  - Ensure setup/upgrade scaffolds and package guidance discover lifecycle controls/help accurately
+  if they currently mention dispatch operation; do not force lifecycle prose into unaffected
+  surfaces.
+
+  - Keep README concise with one-click Getting Started/Concepts/Guides links. Apply semantic
+  package-neutrality review in both directions.
+
+  - Parse changed snippets, run scaffold snapshots, regenerate twice, and require the second
+  generation to be clean.
+
+
+  Verification:
+
+  - `npm test -- tests/docs-readme-structure.test.ts tests/scaffold-project-config.test.ts
+  tests/upgrade-command.test.ts tests/dispatch-operator-docs.test.ts`
+
+  - `kspec agents generate && kspec skill render && npm run build:plugin`
+
+  - `kspec agents generate && kspec skill render && npm run build:plugin`
+
+  - `git diff --exit-code -- kspec-agents.md .agents .factory`
+
+  - `npm run format:check`
+
+
+  Review handoff:
+
+  Report every changed surface, evidence, generated convergence, and a separate package-neutrality
+  judgment. An inventory disposition of “no drift” is valid and must not force an edit.
+spec_ref: "@readme-landing-page"
+plan_ref: "@plan-documentation-completeness-and-dispatch-workspaces"
+origin: derived
+status: pending
+blocked_by: []
+depends_on:
+  - "@task-document-dispatch-recovery"
+context: []
+priority: 2
+tags:
+  - docs
+  - setup
+  - templates
+  - release
+vcs_refs: []
+created_at: 2026-07-17T00:08:23.334Z
+todos: []

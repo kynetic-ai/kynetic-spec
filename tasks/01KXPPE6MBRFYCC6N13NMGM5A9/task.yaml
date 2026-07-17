@@ -1,0 +1,89 @@
+_ulid: 01KXPPE6MBRFYCC6N13NMGM5A9
+slugs:
+  - task-document-dispatch-workspace-concept
+title: Publish the dispatch workspace concept and correct the dispatch overview
+type: task
+description: >
+  Covers (documentation ownership only):
+
+  - @docs-concepts-section ac-1, ac-2
+
+  - @default-project-agents-and-conventions ac-task-worker-agent, ac-pr-reviewer-agent,
+  ac-primary-dev-agent, ac-plan-reviewer-agent
+
+
+  Factual source authorities (read-only):
+
+  - @dispatch-lifecycle-control-authority ac-controls-do-not-change-readiness,
+  ac-session-evidence-survives-control, ac-workspace-evidence-survives-control
+
+  - @dispatch-workspace-cleanup-policy ac-1, ac-2, ac-controlled-evidence-protected
+
+
+  What:
+
+  Create the durable workspace mental model, index it, and keep `agents-and-dispatch.md` as the
+  short overview linking to workspace configuration, lifecycle controls, and recovery.
+
+
+  Files:
+
+  - Create: `docs/concepts/dispatch-workspaces.md`
+
+  - Modify once in this plan: `docs/concepts/index.md`, `docs/concepts/agents-and-dispatch.md`
+
+  - Modify creator-owned test: `tests/dispatch-operator-docs.test.ts`
+
+
+  Required concept sections:
+
+  - What a dispatch workspace is; Why isolation exists; Target/task identity; Worker continuity;
+  Detached reviewer lifecycle; Fix cycle; Bootstrap state; Integration/publication; Lifecycle
+  authority versus task readiness; Evidence/cleanup ownership; Operator ownership; Current
+  limitations; Related operations.
+
+  - Keep transition procedures on the lifecycle guide. Explain only the durable distinction:
+  controls govern admission/cancellation, while workspace lifecycle and task state remain separate.
+
+  - Replace “kspec ships with four built-in agents” with “`kspec setup` scaffolds default agent
+  definitions”; projects can configure/rename them and the live registry is authoritative.
+
+
+  Required tests:
+
+  - Render headings, index membership, stable links/anchors, overview cross-links, and absence of
+  release-sensitive schema/flag dumps.
+
+  - Verify scaffold wording through setup fixtures and the exact default-agent ACs above.
+
+
+  Verification:
+
+  - `npm test -- tests/dispatch-operator-docs.test.ts tests/web-ui-docs-rendering.test.ts
+  tests/setup-builtin-agents.test.ts`
+
+  - `npm run build:docs-search`
+
+  - `npm run format:check`
+
+
+  Review handoff:
+
+  Confirm the concept separates readiness, lifecycle authority, workspace state, degraded state, and
+  cleanup rather than collapsing them.
+spec_ref: "@docs-concepts-section"
+plan_ref: "@plan-documentation-completeness-and-dispatch-workspaces"
+origin: derived
+status: pending
+blocked_by: []
+depends_on:
+  - "@task-document-dispatch-lifecycle-controls"
+context: []
+priority: 1
+tags:
+  - docs
+  - dispatch
+  - concepts
+vcs_refs: []
+created_at: 2026-07-17T00:08:21.387Z
+todos: []

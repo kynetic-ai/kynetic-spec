@@ -1,0 +1,156 @@
+_ulid: 01KXPPEAYMN69MKK49CA73D6AG
+slugs:
+  - task-close-documentation-drift-gates
+title: Close structured documentation drift gates and rendered browser validation
+type: task
+description: >
+  Covers (documentation ownership only):
+
+  - @docs-navigation-shape ac-1, ac-2
+
+  - @docs-search ac-1, ac-2, ac-3
+
+  - @docs-reachability ac-1, ac-2, ac-3
+
+  - @auto-cli-docs ac-1, ac-3, ac-4, ac-5
+
+
+  Factual source authorities (read-only):
+
+  - @cli-agent-commands ac-declined-stop-sends-no-request, ac-declined-stop-exit,
+  ac-task-control-canonicalization, ac-lifecycle-status-authority, ac-lifecycle-status-projection,
+  ac-lifecycle-status-active-count, ac-lifecycle-status-queued-count, ac-lifecycle-status-held-count
+
+  - @daemon-agent-dispatch ac-5, ac-6, ac-public-status-lifecycle-additions,
+  ac-control-error-current-status
+
+  - @ui-agent-dispatch ac-status-active-work-visible, ac-status-queued-work-visible,
+  ac-status-held-work-visible, ac-stopped-actions-valid, ac-lifecycle-controls-labelled,
+  ac-lifecycle-focus-retained, ac-lifecycle-live-update
+
+  - @dispatch-event-taxonomy ac-dispatch-control-domain
+
+
+  What:
+
+  Harden Task 1 tests after all content exists, validate navigation/search/static rendering and
+  browser accessibility, regenerate package outputs, and report focused success separately from the
+  unrelated refs baseline.
+
+
+  Files:
+
+  - Modify: `tests/public-documentation-inventory.test.ts`, `tests/dispatch-operator-docs.test.ts`,
+  `tests/web-ui-docs-rendering.test.ts`, `tests/web-ui-docs-search.test.ts`,
+  `tests/e2e/docs.spec.ts`
+
+  - Modify `scripts/build-docs-search.cjs` only if a factual indexing defect is exposed.
+
+  - Validate `tests/fixtures/public-documentation-surfaces.json` as closed by Task 7; do not modify
+  it in Task 8.
+
+  - No prose edits except through the declared owner; do not repair prior files in parallel.
+
+
+  Required gates:
+
+  - Structured schema/default/enum comparisons; tagged examples; complete command tree including
+  global/task lifecycle nodes; transition/alias/status/cleanup/recovery/API/UI/event facts;
+  inventory/link/anchor/index closure; generated convergence; search inclusion for all six new
+  pages; desktop/mobile sidebar, current page, TOC anchors, offline/static rendering, and no raw
+  Markdown link leaks.
+
+  - Browser docs QA searches for and reaches workspace configuration, lifecycle controls, workspace
+  concept, and all three recovery pages at wide/narrow viewports. Lifecycle docs links reach the
+  agents UI where available; static/public docs remain readable without daemon mutation.
+  Accessibility assertions use rendered semantics, labels, focus/live behavior fixtures, not
+  CSS/style policing.
+
+  - Negative fixtures target concrete drift: legacy `trigger`/`filters`, unsupported workspace
+  command, wrong global/task action, alias/canonical mismatch, omitted status field, aggregate
+  cleanup used as blanket gate, stale API/UI projection, undocumented event mismatch, missing
+  inventory record, broken anchor, unpaired generated output, and generated file treated as source.
+
+  - Regenerate twice and prove second-run cleanliness. Build docs search/web UI and run focused
+  browser docs QA.
+
+
+  Baseline validation policy:
+
+  - Changed/focused plan gates, formatting, lint, typecheck, tests, generation, search, web build,
+  and docs E2E must pass.
+
+  - Run `kspec validate --alignment --warnings-ok` and `kspec validate --completeness --warnings-ok`
+  as focused state checks.
+
+  - At plan revision time, a fresh verbose `kspec validate --refs --warnings-ok` exits 0 with
+  `References: OK` and six deprecation warnings: `@session-summary-cache` from tasks
+  `01KKB3PHA6MSJDZS7AZ1Z2VN6A`, `01KKSRDQY1HZBENKBD06V6KDGW`, and `01KMMB3WY8E1JYRGHBHZ4RMH9E`; and
+  `@task-activity-git-query` from tasks `01KKW4VPB0MV22C92JHNR7APJZ`, `01KKW6PK9QFXKH69HE6KY8Q40Y`,
+  and `01KKWG44FR0W955X7EFVBHPX6B`.
+
+  - Run a fresh execution-time refs validation under the chosen warnings policy. Require no new or
+  changed reference errors, compare every warning to that fresh baseline, and either preserve an
+  evidenced pre-existing disposition or record an intentional plan-owned disposition. Do not add
+  unrelated deprecation-warning cleanup to this documentation plan; fix a warning here only if this
+  plan introduces or changes it.
+
+  - Claim project-wide refs green only when that fresh execution-time run passes under the
+  explicitly chosen warnings policy; do not infer green from revision-time evidence or from focused
+  documentation gates.
+
+
+  Verification:
+
+  - `npm test -- tests/dispatch-operator-docs.test.ts tests/public-documentation-inventory.test.ts
+  tests/docs-readme-structure.test.ts tests/web-ui-docs-rendering.test.ts
+  tests/web-ui-docs-search.test.ts`
+
+  - `kspec agents generate && kspec skill render && npm run build:plugin`
+
+  - `kspec agents generate && kspec skill render && npm run build:plugin`
+
+  - `git diff --exit-code -- kspec-agents.md .agents .factory`
+
+  - `npm run build:docs-search`
+
+  - `npm run build:web-ui`
+
+  - `npm run test:e2e -- tests/e2e/docs.spec.ts`
+
+  - `npm run format:check`
+
+  - `npm run lint`
+
+  - `npm run typecheck`
+
+  - `npm test`
+
+  - `kspec validate --alignment --warnings-ok`
+
+  - `kspec validate --completeness --warnings-ok`
+
+  - `kspec validate --refs --warnings-ok` (fresh comparison under the chosen warnings policy)
+
+
+  Review handoff:
+
+  Supply inventory diff, final-reviewed-tip source facts, focused/full tests, generated-clean proof,
+  desktop/mobile/static evidence, accessibility evidence, and exact refs-baseline comparison. Claim
+  only this plan's gates, not review approval or project-wide green.
+spec_ref: "@docs-navigation-shape"
+plan_ref: "@plan-documentation-completeness-and-dispatch-workspaces"
+origin: derived
+status: pending
+blocked_by: []
+depends_on:
+  - "@task-audit-remaining-public-docs"
+context: []
+priority: 2
+tags:
+  - docs
+  - testing
+  - web-ui
+vcs_refs: []
+created_at: 2026-07-17T00:08:25.812Z
+todos: []

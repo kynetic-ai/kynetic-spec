@@ -1,0 +1,116 @@
+_ulid: 01KXPPE9FJ6KB5WG47FV2KFRNY
+slugs:
+  - task-audit-remaining-public-docs
+title: Audit and correct the remaining declared public documentation universe
+type: task
+description: >
+  Covers (documentation ownership only):
+
+  - @docs-getting-started-section ac-1, ac-2, ac-3
+
+  - @docs-section-taxonomy ac-1, ac-2
+
+  - @docs-release-notes-availability ac-1, ac-2
+
+
+  Factual source authorities (read-only):
+
+  - @dispatch-lifecycle-control-authority ac-controls-survive-restart,
+  ac-controls-do-not-change-readiness, ac-controls-do-not-change-degraded-targets
+
+  - @cli-agent-commands ac-4, ac-5, ac-6, ac-9, ac-13
+
+  - @dispatch-remote-branch-sync ac-degraded-status-api, ac-no-remote
+
+
+  What:
+
+  Complete the factual pass over every declared surface not owned by Tasks 2-6, refresh all dispatch
+  facts after page slices, and close every inventory record without style-only churn.
+
+
+  Exact owned file sets:
+
+  - Modify `tests/fixtures/public-documentation-surfaces.json` to add the six pages created by Tasks
+  2-5 with their evidence/dispositions.
+
+  - All existing `docs/getting-started/**/*.md`.
+
+  - Existing `docs/guides/**/*.md` excluding `configuring-dispatch-workspaces.md`,
+  `controlling-dispatch-lifecycle.md`, `configuring-agent-runners.md`, and `guides/index.md`.
+
+  - Existing `docs/concepts/**/*.md` excluding `dispatch-workspaces.md`, `agents-and-dispatch.md`,
+  and `concepts/index.md`.
+
+  - Existing `docs/troubleshooting/**/*.md` excluding the three created recovery pages,
+  `dispatch-refuses-to-assign.md`, and `troubleshooting/index.md`.
+
+  - `docs/release-notes/index.md` and remaining active-public `docs/**/*.md` not
+  historical/internal-eval.
+
+  - Historical/internal-eval/internal-agent-guidance/fixture records receive their declared limited
+  checks/disposition only.
+
+  - Modify `tests/public-documentation-inventory.test.ts` to remove the six-path construction
+  allowance and enforce strict closure; do not modify `tests/dispatch-operator-docs.test.ts` or
+  prior-task prose.
+
+
+  Source-of-truth checks:
+
+  - Commands against captured Commander help; YAML/defaults/enums against exported schemas/resolved
+  config; lifecycle/API/UI statements against Task 1 facts and public fixtures; setup/upgrade
+  against scaffold tests; navigation/link/anchor claims against rendering; release notes against
+  canonical source.
+
+  - Recheck approved reviewed lifecycle tip `3f22e6c93c68115d77e1bde062f7cd12034f91d8`, any
+  genuinely later approved lifecycle fix, and current remote-sync status. Correct owned
+  documentation; record product contradictions as limitations/follow-up evidence, not
+  implementation.
+
+  - Add the six pages created by Tasks 2-5 to `tests/fixtures/public-documentation-surfaces.json`,
+  assign evidence/disposition to them and every other manifest record, and remove the temporary
+  pending-addition allowance. Preserve historical text except dangerous unsupported current
+  instructions.
+
+
+  Required tests:
+
+  - Full manifest closure; relative links/anchors; landing membership/order; release-note
+  single-source equivalence; tagged snippet validation; generated-source ownership.
+
+
+  Verification:
+
+  - `npm test -- tests/public-documentation-inventory.test.ts tests/docs-readme-structure.test.ts
+  tests/folder-backed-resource-docs.test.ts tests/resource-ui-task-markdown-docs.test.ts
+  tests/web-ui-docs-rendering.test.ts tests/web-ui-docs-search.test.ts`
+
+  - `npm run build:docs-search`
+
+  - `npm run format:check`
+
+  - `npm run typecheck`
+
+
+  Review handoff:
+
+  Reviewer samples every classification/topic, compares manifest to independently derived universes,
+  and rejects silent omission, unsupported normative commands, style-only sweeps, or edits to prior
+  owners.
+spec_ref: "@docs-getting-started-section"
+plan_ref: "@plan-documentation-completeness-and-dispatch-workspaces"
+origin: derived
+status: pending
+blocked_by: []
+depends_on:
+  - "@task-correct-adjacent-public-guidance"
+context: []
+priority: 2
+tags:
+  - docs
+  - audit
+  - consistency
+vcs_refs: []
+created_at: 2026-07-17T00:08:24.306Z
+todos: []

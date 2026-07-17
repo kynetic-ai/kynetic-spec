@@ -19,3 +19,62 @@ notes:
       checks and zero blocker threads.
     author: Hermes Closure Reviewer
     created_at: 2026-07-17T00:06:20.560Z
+  - _ulid: 01KXPPECA3290QNZJ7JK7NRPDW
+    content: >-
+      ### Slice and page ownership order
+
+
+      1. Task 1 is the sole creator of the manifest, fact fixture, and two shared documentation
+      tests. It starts only from the approved reviewed integrated lifecycle target and refreshes
+      only for a genuinely later approved lifecycle fix/review.
+
+      2. Task 2 owns workspace configuration and runner-example correction. Task 3 depends on it,
+      owns the dedicated lifecycle guide and the guide index, and adds both guide links only after
+      both targets exist.
+
+      3. Task 4 owns the workspace concept, concept index, and short overview. Task 5 owns three
+      recovery pages, troubleshooting index, and assignment correction. Shared-test writes are
+      transitively serialized.
+
+      4. Task 6 owns non-`docs/` public/package/scaffold/generated corrections. Task 7 owns the
+      explicit remainder of `docs/`, adds the six Tasks 2-5 pages to
+      `tests/fixtures/public-documentation-surfaces.json`, and closes the inventory. Its prose file
+      sets exclude Tasks 2-5.
+
+      5. Task 8 modifies shared gates only after all content exists and validates, but does not
+      modify, Task 7's closed manifest. A prose correction returns to its declared owner instead of
+      creating a parallel write. The graph is a single acyclic chain of eight standalone slices.
+
+
+      ### Documentation versus product ownership
+
+
+      No product spec patch is proposed. Lifecycle refs and ACs appear only under “Factual source
+      authorities” so workers know which implemented contracts to verify; `Covers` lists only
+      documentation/spec owners for documentation work. If source review reveals missing product
+      behavior or a genuinely ownerless documentation contract, stop and obtain separate approval
+      rather than adding product scope here.
+
+
+      ### Current integration and conditional freshness
+
+
+      Final task review `@01KXPCP5Y3Y0BEY2KP8KDFXNS8` approved examined commit
+      `b28c29557d3ec15ee1cfc0b14c6d2ee5a57b86aa`, and the completed task is integrated at remote
+      lifecycle target tip `3f22e6c93c68115d77e1bde062f7cd12034f91d8`; no lifecycle review is open.
+      Local and `origin/dev` do not yet contain that reviewed tip, and the lifecycle plan may remain
+      administratively `active`, so Task 1 must start from a target that does contain it. Only a
+      genuinely later approved lifecycle fix/review supersedes this evidence and triggers another
+      fact refresh. The earlier approved documentation reviews `@01KXH7G6DBP8RRS39VKMPWE28M` and
+      `@01KXH7BNXKV4KXA7AVSJ14GGB3` predate this revision and do not approve it.
+
+
+      ### Completion claim
+
+
+      Completion means the documentation plan's changed/focused gates pass and every declared
+      public-surface record has evidence. It does not mean this revised plan has been reviewed or
+      approved, remote sync is complete, unrelated deprecation warnings are fixed, or project-wide
+      refs are green without a fresh passing execution-time run under the chosen warnings policy.
+    author: Jacob Chapel
+    created_at: 2026-07-17T00:08:27.203Z

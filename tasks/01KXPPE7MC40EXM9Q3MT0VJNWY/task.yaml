@@ -1,0 +1,116 @@
+_ulid: 01KXPPE7MC40EXM9Q3MT0VJNWY
+slugs:
+  - task-document-dispatch-recovery
+title: Publish symptom-first bootstrap workspace and lifecycle recovery pages
+type: task
+description: >
+  Covers (documentation ownership only):
+
+  - @docs-troubleshooting-section ac-1, ac-2, ac-3
+
+
+  Factual source authorities (read-only):
+
+  - @dispatch-lifecycle-control-authority ac-stop-failure-retains-stopped-authority,
+  ac-stop-failure-reports-pending-cleanup, ac-stop-failure-reports-no-success,
+  ac-interrupted-stop-recovers-on-startup, ac-interrupted-stop-recovers-on-retry,
+  ac-task-stop-failure-retains-stopped-authority, ac-task-stop-failure-reports-pending-cleanup,
+  ac-task-interrupted-stop-recovers-on-retry, ac-recovery-requires-session-ownership,
+  ac-recovery-requires-process-birth, ac-missing-leader-live-group-remains-pending,
+  ac-unverified-live-group-is-not-signalled
+
+  - @daemon-agent-dispatch ac-control-error-current-status, ac-control-missing-identity,
+  ac-control-identity-mismatch, ac-control-failure-no-success, ac-cleanup-failure-no-success
+
+  - @ui-agent-dispatch ac-stopped-actions-valid, ac-hard-stop-confirmation-cancelled,
+  ac-lifecycle-live-update
+
+  - @dispatch-remote-branch-sync ac-no-remote, ac-transient-no-degrade,
+  ac-divergence-enters-degraded, ac-degraded-status-api
+
+
+  What:
+
+  Create three indexed recovery pages and correct assignment troubleshooting. Recovery stays within
+  supported status, matching-scope retry, configuration correction, normal reconciliation, or
+  escalation.
+
+
+  Files:
+
+  - Create: `docs/troubleshooting/dispatch-bootstrap-failures.md`
+
+  - Create: `docs/troubleshooting/dispatch-workspace-sync-and-cleanup.md`
+
+  - Create: `docs/troubleshooting/dispatch-lifecycle-control-failures.md`
+
+  - Modify once in this plan: `docs/troubleshooting/index.md`,
+  `docs/troubleshooting/dispatch-refuses-to-assign.md`
+
+  - Modify creator-owned test: `tests/dispatch-operator-docs.test.ts`
+
+
+  Required symptom blocks:
+
+  - Bootstrap: nonzero exit, tracked-file mutation, reviewer rerun refusal, invalidated cached
+  state, inaccessible workspace, and unsafe output exposure, only where Task 1 proves an observable.
+
+  - Workspace: target/config mismatch, plan target change, path collision, stale/unrecoverable
+  registry, local-only mode, transient sync, divergence, occupied checkout, deferred reviewer sync,
+  cleanup protection, unknown root entries, and retention, only where proven.
+
+  - Lifecycle: invalid start/resume/pause transition; held task not starting; task alias not
+  found/ambiguous/mismatched; stopped with pending/failed cleanup; control store
+  unavailable/corrupt/commit failure; ownership/birth/group verification limitation; host-stop
+  rejection; confirmation/`--force`; static UI read-only. For each give meaning, supported
+  observation, safe procedure, healthy result, and concept/guide link.
+
+  - Retry only the matching global/task hard stop where status offers it. Successful cleanup leaves
+  stopped authority until explicit start/resume as applicable. Never tell users to edit
+  `.kspec/dispatch-control.yaml`, session ownership, registry metadata, process ids/groups, or
+  managed worktrees manually.
+
+  - In `dispatch-refuses-to-assign.md`, add lifecycle authority/held status as a distinct admission
+  check and describe automation filtering per rule/event; preserve eligible-only worker defaults
+  without claiming every reviewer/arbitrary event is eligible-only.
+
+
+  Required tests:
+
+  - Verify symptom/meaning/procedure/healthy-outcome structure and guide/concept links.
+
+  - Validate every command against captured help; validate failure/status examples through public
+  fixtures; reject unsupported reset/cleanup procedures and blanket eligible-only or
+  aggregate-cleanup claims.
+
+
+  Verification:
+
+  - `npm test -- tests/dispatch-operator-docs.test.ts tests/web-ui-docs-rendering.test.ts
+  tests/dispatch-lifecycle-surface-integration.test.ts`
+
+  - `npm run build:docs-search`
+
+  - `npm run format:check`
+
+
+  Review handoff:
+
+  Walk one bootstrap failure, one target divergence, one invalid lifecycle transition, one failed
+  cleanup, and one identity failure from integrated evidence to safe recovery.
+spec_ref: "@docs-troubleshooting-section"
+plan_ref: "@plan-documentation-completeness-and-dispatch-workspaces"
+origin: derived
+status: pending
+blocked_by: []
+depends_on:
+  - "@task-document-dispatch-workspace-concept"
+context: []
+priority: 1
+tags:
+  - docs
+  - dispatch
+  - troubleshooting
+vcs_refs: []
+created_at: 2026-07-17T00:08:22.412Z
+todos: []

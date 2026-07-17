@@ -1,0 +1,121 @@
+_ulid: 01KXPPE2FA72S6HPFV9V95488F
+slugs:
+  - task-freeze-doc-facts-and-inventory
+title: Freeze final integrated dispatch facts and create the public-surface inventory gate
+type: task
+description: >
+  Covers (documentation ownership only):
+
+  - @docs-section-taxonomy ac-1, ac-2
+
+  - @auto-cli-docs ac-1, ac-3, ac-4, ac-5
+
+
+  Factual source authorities (read-only; no product AC closure):
+
+  - @dispatch-lifecycle-control-authority ac-controls-survive-restart,
+  ac-controls-do-not-change-readiness, ac-status-reports-authority, ac-status-reports-projection,
+  ac-status-reports-active-count, ac-status-reports-queued-count, ac-status-reports-held-count,
+  ac-status-reports-held-task-identity, ac-status-reports-held-task-scope,
+  ac-status-reports-held-task-mode, ac-status-reports-held-task-reason
+
+  - @cli-agent-commands ac-4, ac-5, ac-6, ac-9, ac-13, ac-start-reports-authority,
+  ac-pause-reports-authority, ac-resume-reports-authority, ac-lifecycle-command-reports-projection,
+  ac-task-control-canonicalization, ac-lifecycle-status-authority, ac-lifecycle-status-projection,
+  ac-lifecycle-status-active-count, ac-lifecycle-status-queued-count, ac-lifecycle-status-held-count
+
+  - @daemon-agent-dispatch ac-5, ac-6, ac-public-status-lifecycle-additions,
+  ac-control-error-current-status
+
+  - @ui-agent-dispatch ac-2, ac-3, ac-status-projection, ac-status-active-work-visible,
+  ac-status-queued-work-visible, ac-status-held-work-visible
+
+
+  Preconditions:
+
+  - Current evidence is final task review `@01KXPCP5Y3Y0BEY2KP8KDFXNS8`, which approved examined
+  commit `b28c29557d3ec15ee1cfc0b14c6d2ee5a57b86aa`; the completed task is merged at remote
+  lifecycle tip `3f22e6c93c68115d77e1bde062f7cd12034f91d8`, and no lifecycle review is open. Confirm
+  that reviewed tip is contained in this task's integration target and create the task branch from
+  that target.
+
+  - If a genuinely later lifecycle fix/review appears before execution, record its approved reviewed
+  tip, prove the task target contains it, and refresh all facts from it. Do not rely on the prior
+  documentation-plan approvals as review of this revision.
+
+
+  What:
+
+  Build a structured fact fixture from the final integrated schemas, public helpers, CLI tree/help,
+  API/UI fixtures, and passing behavior tests. Create the deterministic public-surface manifest and
+  comparison test before prose tasks consume them.
+
+
+  Files:
+
+  - Create: `tests/fixtures/public-documentation-surfaces.json`
+
+  - Create: `tests/fixtures/dispatch-operator-facts.json`
+
+  - Create: `tests/public-documentation-inventory.test.ts`
+
+  - Create: `tests/dispatch-operator-docs.test.ts`
+
+  - Do not modify prose or product/runtime files.
+
+
+  Required facts and tests:
+
+  - Cover workspace/bootstrap/remote-sync/default-agent facts retained by this plan plus all ten
+  lifecycle fact groups above: command tree; global/task matrices; alias canonicalization; durable
+  default/restart/admission behavior; status/held/task-control/cleanup projections; API and UI
+  mapping; accessibility/static mode; events only when selected for public docs; safety/errors;
+  evidence and limitations.
+
+  - Use `tests/helpers/cli.ts` with explicit fixture cwd for command help. Validate
+  configuration/control/status through exported schemas, public conversion helpers, route fixtures,
+  or black-box command fixtures. Never regex function bodies.
+
+  - Derive tracked Markdown and non-file records independently. The manifest must exactly match the
+  tracked Markdown universe when Task 1 lands. The inventory test may temporarily classify only
+  `docs/guides/configuring-dispatch-workspaces.md`, `docs/guides/controlling-dispatch-lifecycle.md`,
+  `docs/concepts/dispatch-workspaces.md`, `docs/troubleshooting/dispatch-bootstrap-failures.md`,
+  `docs/troubleshooting/dispatch-workspace-sync-and-cleanup.md`, and
+  `docs/troubleshooting/dispatch-lifecycle-control-failures.md` as reported pending additions so
+  intervening full-suite and selected verification remain satisfiable; all other extras fail, and
+  Task 7 must remove this construction allowance while adding those six records. Negative fixture
+  checks cover a missing/duplicate manifest record, an unexpected extra, unreasoned exclusion,
+  unpaired generated output, missing command node, omitted API/UI/scaffold id, and stale fact
+  fixture.
+
+
+  Verification:
+
+  - `npm test -- tests/public-documentation-inventory.test.ts tests/dispatch-operator-docs.test.ts
+  tests/plan-document-parser.test.ts`
+
+  - `npm run format:check`
+
+  - `npm run typecheck`
+
+
+  Review handoff:
+
+  Provide final-reviewed-tip ancestry, the fact-source matrix, independently derived universes, and
+  negative-fixture results. A stale review-time commit, unclassified surface, or implementation-body
+  regex is a blocker.
+spec_ref: "@docs-section-taxonomy"
+plan_ref: "@plan-documentation-completeness-and-dispatch-workspaces"
+origin: derived
+status: pending
+blocked_by: []
+depends_on: []
+context: []
+priority: 1
+tags:
+  - docs
+  - audit
+  - testing
+vcs_refs: []
+created_at: 2026-07-17T00:08:17.130Z
+todos: []
