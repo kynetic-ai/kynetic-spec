@@ -72,3 +72,15 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-07-17T21:18:56.878Z
+  - _ulid: 01KXS05AXV9RYY3275E7D3898A
+    content: "Fix cycle 2 complete at 771cf3f394: resolved all cycle-2 threads. Cache invalidation now
+      permits a successful automatic rerun without implying task blockage, with unblock conditional
+      on an actual rerun failure. Workspace path-collision recovery now restores the
+      dispatcher-blocked task through public unblock, backed by dispatcher/provisioning-failure
+      behavior. Re-verified @docs-troubleshooting-section ac-1/ac-2/ac-3. Gates: focused
+      docs/lifecycle 251/251; fresh full suite 10,980 passed with 3 expected skips; docs search 48
+      entries; format, repo lint, focused lint, typecheck, refs, alignment, and completeness passed
+      under the documented warnings policy."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-07-17T21:36:45.499Z

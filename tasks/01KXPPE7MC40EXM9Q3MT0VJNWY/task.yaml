@@ -101,7 +101,7 @@ description: >
 spec_ref: "@docs-troubleshooting-section"
 plan_ref: "@plan-documentation-completeness-and-dispatch-workspaces"
 origin: derived
-status: in_progress
+status: pending_review
 blocked_by: []
 depends_on:
   - "@task-document-dispatch-workspace-concept"
@@ -116,8 +116,8 @@ review_ref: "@01KXRXD4SX6TECS3D702FGWZGT"
 submission_linkage:
   review_url: null
   branch: dispatch/task/task-document-dispatch-recovery/01kxppe7
-  captured_at: 2026-07-17T20:41:49.854Z
-  commit: 4109f86c5496c238583c213a8c10ac3bbafafe80
+  captured_at: 2026-07-17T21:36:46.543Z
+  commit: 771cf3f3948fd5f221896e40a1808c609b328d30
   remote: origin
   remote_url: git@github.com:lepahc/kynetic-spec.git
   upstream_ref: refs/heads/dispatch/task/task-document-dispatch-recovery/01kxppe7
@@ -250,8 +250,35 @@ history:
         previous: 2026-07-17T20:17:35.128Z
     command: task-start
     timestamp: 2026-07-17T21:12:46.400Z
+  - author: Jacob Chapel
+    changes:
+      status:
+        new: pending_review
+        previous: in_progress
+      submission_linkage:
+        new:
+          review_url: null
+          branch: dispatch/task/task-document-dispatch-recovery/01kxppe7
+          captured_at: 2026-07-17T21:36:46.543Z
+          commit: 771cf3f3948fd5f221896e40a1808c609b328d30
+          remote: origin
+          remote_url: git@github.com:lepahc/kynetic-spec.git
+          upstream_ref: refs/heads/dispatch/task/task-document-dispatch-recovery/01kxppe7
+        previous:
+          review_url: null
+          branch: dispatch/task/task-document-dispatch-recovery/01kxppe7
+          captured_at: 2026-07-17T20:41:49.854Z
+          commit: 4109f86c5496c238583c213a8c10ac3bbafafe80
+          remote: origin
+          remote_url: git@github.com:lepahc/kynetic-spec.git
+          upstream_ref: refs/heads/dispatch/task/task-document-dispatch-recovery/01kxppe7
+      submitted_at:
+        new: 2026-07-17T21:36:46.551Z
+        previous: 2026-07-17T20:41:49.862Z
+    command: task-submit
+    timestamp: 2026-07-17T21:36:46.551Z
 created_at: 2026-07-17T00:08:22.412Z
 started_at: 2026-07-17T21:12:46.375Z
-submitted_at: 2026-07-17T20:41:49.862Z
+submitted_at: 2026-07-17T21:36:46.551Z
 todos: []
 automation: eligible
