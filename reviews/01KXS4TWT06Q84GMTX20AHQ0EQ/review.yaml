@@ -389,9 +389,25 @@ events:
       kind: nit
       thread_ulid: 01KXS6A8H7QZE65QCQHWQ63N69
     timestamp: 2026-07-17T23:24:18.630Z
+  - _ulid: 01KXS6AR0DZFQNW2AJ8N49Y4F9
+    actor: pr-reviewer
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: request_changes
+    timestamp: 2026-07-17T23:24:34.189Z
+  - _ulid: 01KXS6AR0DHZSTMZ6E2PQECZ7X
+    actor: pr-reviewer
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-07-17T23:24:34.189Z
 examined_commit: 2237b74fea99703c73b3d95ec5db423fd2daddd0
 external_links: []
-lifecycle_state: open
+lifecycle_state: closed
 related_refs: []
 subject:
   type: task
@@ -493,7 +509,14 @@ threads:
           converged; unrelated skill-render asymmetry is pre-existing observation @01KXS2HP."
         created_at: 2026-07-17T23:24:18.343Z
     kind: nit
-verdicts: []
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: request_changes
+    reviewer: pr-reviewer
+    role: reviewer
+    created_at: 2026-07-17T23:24:34.188Z
 created_at: 2026-07-17T22:58:26.240Z
-updated_at: 2026-07-17T23:24:18.343Z
+updated_at: 2026-07-17T23:24:34.189Z
 notes: []
