@@ -101,8 +101,11 @@ description: >
 spec_ref: "@docs-troubleshooting-section"
 plan_ref: "@plan-documentation-completeness-and-dispatch-workspaces"
 origin: derived
-status: pending_review
+status: completed
 blocked_by: []
+closed_reason: Merged to plan/plan-dispatch-lifecycle-pause-resume-and-stop-controls/01kxc2vx at
+  6c0aab657a9f. Published three indexed symptom-first dispatch recovery pages, corrected assignment
+  guidance, and added behavior-backed documentation coverage; all required review gates passed.
 depends_on:
   - "@task-document-dispatch-workspace-concept"
 context: []
@@ -284,8 +287,25 @@ history:
         previous: "@01KXRXD4SX6TECS3D702FGWZGT"
     command: review-link
     timestamp: 2026-07-17T21:43:52.490Z
+  - author: Jacob Chapel
+    changes:
+      status:
+        new: completed
+        previous: pending_review
+      closed_reason:
+        new: Merged to plan/plan-dispatch-lifecycle-pause-resume-and-stop-controls/01kxc2vx at 6c0aab657a9f.
+          Published three indexed symptom-first dispatch recovery pages, corrected assignment
+          guidance, and added behavior-backed documentation coverage; all required review gates
+          passed.
+        previous: null
+      completed_at:
+        new: 2026-07-17T22:04:16.036Z
+        previous: null
+    command: task-complete
+    timestamp: 2026-07-17T22:04:16.067Z
 created_at: 2026-07-17T00:08:22.412Z
 started_at: 2026-07-17T21:12:46.375Z
 submitted_at: 2026-07-17T21:36:46.551Z
+completed_at: 2026-07-17T22:04:16.036Z
 todos: []
 automation: eligible
