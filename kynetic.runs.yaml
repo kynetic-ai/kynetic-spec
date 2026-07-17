@@ -82221,7 +82221,7 @@ runs:
     completed_at: 2026-07-17T03:27:58.396Z
   - _ulid: 01KXQ3K8PEEBK87CN0H34APNWJ
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -82234,7 +82234,19 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-07-17T03:59:06.874Z
-        completed_at: 2026-07-17T03:59:06.874Z
+        completed_at: 2026-07-17T04:00:05.911Z
+        notes: "Candidates evaluated from this session: (1) shadow-mutation lock waits made read commands
+          exceed the command runner's initial yield; concrete but already extensively tracked, (2)
+          human review output truncation made prior-thread inspection awkward; observed once and
+          therefore below the systemic-confidence bar, (3) the fresh full suite took about 47
+          minutes; one run is insufficient to distinguish normal load from systemic regression, (4)
+          atomic batch recording and automatic request_changes-to-needs_work transition worked
+          reliably; useful but already the documented review mechanism, not a novel repeatable
+          discovery."
+      - status: completed
+        step_index: 2
+        started_at: 2026-07-17T04:00:05.911Z
+        completed_at: 2026-07-17T04:00:05.911Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-07-17T03:58:18.830Z
