@@ -13,3 +13,9 @@ notes:
       baseline, and manifest ownership"
     author: Hermes Closure Reviewer
     created_at: 2026-07-16T22:52:13.877Z
+  - _ulid: 01KXPPAGMGZMZEMHBZE4JSACEV
+    content: User explicitly approved approval, derivation, automation eligibility, root-task start, and
+      dispatch after canonical review @01KXPJHH5KWAWPMSGJHHS3GEFB approved with passing required
+      checks and zero blocker threads.
+    author: Hermes Closure Reviewer
+    created_at: 2026-07-17T00:06:20.560Z
