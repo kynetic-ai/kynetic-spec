@@ -1,1 +1,15 @@
-notes: []
+notes:
+  - _ulid: 01KXPQBQTA8CFN4FD22QMXRKN8
+    content: "Approach: derive the tracked Markdown universe with git ls-files and the CLI universe from
+      createProgram()/extractCommandTree(), then compare both against structured fixture records.
+      Freeze dispatch facts from exported config/control/public-status/event schemas, public UI
+      conversion helpers, black-box help, and existing route/scaffold/test authorities; no runtime
+      or prose changes. Edge cases: duplicate/missing/extra manifest records, only the six planned
+      construction paths allowed, missing exclusion reasons, generated records without source/build
+      pairings, absent lifecycle command/API/UI/scaffold/test ids, and review-tip/source drift. Test
+      plan: behavioral fixture validators with explicit negative mutations, help through
+      tests/helpers/cli.ts with fixture cwd, schema/helper round trips for lifecycle facts, plus
+      annotations for @docs-section-taxonomy ac-1/ac-2 and @auto-cli-docs ac-1/ac-3/ac-4/ac-5."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-07-17T00:24:29.259Z
