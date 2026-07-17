@@ -117,7 +117,7 @@ tags:
   - audit
   - testing
 vcs_refs: []
-review_ref: "@01KXQDBRPBWX30FHAS195GJPQ3"
+review_ref: "@01KXQHQ0PKS61GV0Z8DV8R7YE5"
 submission_linkage:
   review_url: null
   branch: dispatch/task/task-freeze-doc-facts-and-inventory/01kxppe2
@@ -507,6 +507,13 @@ history:
         previous: 2026-07-17T06:40:41.043Z
     command: task-submit
     timestamp: 2026-07-17T07:59:12.178Z
+  - author: Jacob Chapel
+    changes:
+      review_ref:
+        new: "@01KXQHQ0PKS61GV0Z8DV8R7YE5"
+        previous: "@01KXQDBRPBWX30FHAS195GJPQ3"
+    command: review-link
+    timestamp: 2026-07-17T08:05:04.355Z
 created_at: 2026-07-17T00:08:17.130Z
 started_at: 2026-07-17T07:23:29.193Z
 submitted_at: 2026-07-17T07:59:12.177Z
