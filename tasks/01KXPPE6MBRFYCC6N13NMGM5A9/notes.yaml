@@ -14,3 +14,12 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-07-17T14:51:04.330Z
+  - _ulid: 01KXR93BVB4YZA3JDZJN3WAXG0
+    content: Implemented the dispatch workspace concept and corrected the overview. The concept now
+      distinguishes task readiness, lifecycle admission authority, workspace/integration state,
+      degraded targets, and evidence cleanup ownership; the overview describes setup defaults as
+      scaffolding and directs readers to the live registry and detailed guides. Focused required
+      tests pass (270 tests across dispatch docs, docs rendering, and setup default agents).
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-07-17T14:53:43.659Z
