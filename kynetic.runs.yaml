@@ -83825,7 +83825,7 @@ runs:
     started_at: 2026-07-17T22:05:03.417Z
     completed_at: 2026-07-17T22:08:12.452Z
   - _ulid: 01KXS4DX8MSYX9R7MXNSBZ6H5N
-    status: active
+    status: completed
     current_step: 5
     initiated_by: Jacob Chapel
     step_results:
@@ -83877,10 +83877,15 @@ runs:
         notes: "Done with reflection: autonomous high-confidence review found no new improvement to discuss
           or approve. Existing records already express every systemic friction point, so the
           decision is to avoid duplicate capture."
-      - status: completed
+      - status: skipped
         step_index: 5
         started_at: 2026-07-17T22:54:40.663Z
-        completed_at: 2026-07-17T22:54:40.663Z
+        completed_at: 2026-07-17T22:54:50.153Z
+        notes: "No capture performed: renderer friction is already @01KXS2HP; stale
+          installed-binary/worktree invocation guidance is already @01KNPE58K and @01KPVSXN;
+          full-suite teardown behavior is already
+          @task-investigate-npm-test-teardown-hang-after-green-suite-run."
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-07-17T22:51:20.724Z
+    completed_at: 2026-07-17T22:54:50.153Z
