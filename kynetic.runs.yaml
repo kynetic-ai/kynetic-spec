@@ -82456,7 +82456,7 @@ runs:
     completed_at: 2026-07-17T06:08:48.884Z
   - _ulid: 01KXQCXQJ23177WT9D6YZZAM99
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -82469,7 +82469,17 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-07-17T06:42:07.856Z
-        completed_at: 2026-07-17T06:42:07.856Z
+        completed_at: 2026-07-17T06:42:52.355Z
+        notes: "High-confidence friction: the loop workflow mandates three unfiltered list commands;
+          observations alone returned 2,113 entries/~267k tokens, so output truncation prevents
+          reliable baseline inspection. High-confidence success: public fact fixtures became robust
+          when every claim was bound to an independently executed/schema-derived authority plus a
+          negative mutation, with a real depth-1 clone proving immutable-OID handling.
+          Candidate-specific searches found no matching observation, inbox item, or task."
+      - status: completed
+        step_index: 2
+        started_at: 2026-07-17T06:42:52.355Z
+        completed_at: 2026-07-17T06:42:52.355Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-07-17T06:41:18.914Z
