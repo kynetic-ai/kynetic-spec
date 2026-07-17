@@ -12,6 +12,7 @@
           "src/schema/meta.ts",
           "src/schema/dispatch-workspace.ts",
           "src/agent-runtime/bootstrap.ts",
+          "src/agent-runtime/dispatch.ts",
           "src/agent-runtime/workspace.ts"
         ],
         "tests": [

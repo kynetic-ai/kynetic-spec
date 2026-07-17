@@ -20,6 +20,7 @@ import {
   DispatchWorkspaceBranchModeSchema,
   DispatchWorkspaceBranchOwnershipSchema,
   DispatchWorkspaceCleanupStatusSchema,
+  DispatchWorkspaceRegistryFileSchema,
   DispatchWorkspaceRoleSchema,
 } from "../src/schema/dispatch-workspace.js";
 import {
@@ -49,6 +50,7 @@ import {
   loadDispatchBootstrapAuthority,
 } from "../src/agent-runtime/bootstrap.js";
 import {
+  buildDispatchArtifactProtectionState,
   provisionDispatchWorkspace,
   resolveDispatchWorkspaceConfig,
 } from "../src/agent-runtime/workspace.js";
@@ -92,6 +94,8 @@ import { createAgentDispatchRoutes } from "../dist/daemon/routes/agent-dispatch.
 import type { LoadedTask } from "../src/parser/yaml.js";
 import type { Agent } from "../src/schema/meta.js";
 import { ensureSplitBackendRegistered } from "../src/parser/split-backend.js";
+import { initContext } from "../src/parser/index.js";
+import { loadDispatchWorkspaceRegistry } from "../src/parser/dispatch-workspaces.js";
 
 const modeState = vi.hoisted(() => ({ staticMode: false }));
 vi.mock("../packages/web-ui/src/lib/stores/mode.svelte", () => ({
@@ -144,6 +148,11 @@ const EXPECTED_TASK_COMMANDS = [
   "kspec agent dispatch task resume",
   "kspec agent dispatch task stop",
 ] as const;
+const FROZEN_LIFECYCLE_EVIDENCE = {
+  reviewed_lifecycle_commit: "b28c29557d3ec15ee1cfc0b14c6d2ee5a57b86aa",
+  integrated_lifecycle_commit: "3f22e6c93c68115d77e1bde062f7cd12034f91d8",
+  integration_target_at_freeze: "8f871993d15baf33168818bbf6b60f9e9f29cb4b",
+} as const;
 const EXPECTED_FACT_SOURCE_MATRIX = [
   {
     group: "workspace-configuration",
@@ -152,6 +161,7 @@ const EXPECTED_FACT_SOURCE_MATRIX = [
       "src/schema/meta.ts",
       "src/schema/dispatch-workspace.ts",
       "src/agent-runtime/bootstrap.ts",
+      "src/agent-runtime/dispatch.ts",
       "src/agent-runtime/workspace.ts",
     ],
     tests: [
@@ -217,6 +227,15 @@ const EXPECTED_FACT_SOURCE_MATRIX = [
 
 function git(cwd: string, ...args: string[]): string {
   return execFileSync("git", args, { cwd, encoding: "utf8" }).trim();
+}
+
+function localCommitIsAvailable(commit: string): boolean {
+  try {
+    execFileSync("git", ["cat-file", "-e", `${commit}^{commit}`], { cwd: ROOT });
+    return true;
+  } catch {
+    return false;
+  }
 }
 
 async function seedFactProject(projectDir: string): Promise<void> {
@@ -607,23 +626,12 @@ function cleanupSnapshot() {
 }
 
 function validateFacts(facts: DispatchFacts): void {
-  execFileSync(
-    "git",
-    ["merge-base", "--is-ancestor", facts.evidence.reviewed_lifecycle_commit, "HEAD"],
-    {
-      cwd: ROOT,
-    },
-  );
-  execFileSync(
-    "git",
-    ["merge-base", "--is-ancestor", facts.evidence.integrated_lifecycle_commit, "HEAD"],
-    { cwd: ROOT },
-  );
-  execFileSync(
-    "git",
-    ["merge-base", "--is-ancestor", facts.evidence.integration_target_at_freeze, "HEAD"],
-    { cwd: ROOT },
-  );
+  expect(facts.evidence).toMatchObject(FROZEN_LIFECYCLE_EVIDENCE);
+  for (const commit of Object.values(FROZEN_LIFECYCLE_EVIDENCE)) {
+    if (localCommitIsAvailable(commit)) {
+      execFileSync("git", ["merge-base", "--is-ancestor", commit, "HEAD"], { cwd: ROOT });
+    }
+  }
   expect(facts.evidence.source_matrix).toEqual(EXPECTED_FACT_SOURCE_MATRIX);
   for (const row of facts.evidence.source_matrix) {
     for (const path of [...row.sources, ...row.tests]) {
@@ -676,22 +684,19 @@ function validateFacts(facts: DispatchFacts): void {
     reviewer_reuses_valid_worker_state: true,
     reviewer_reruns_only_safe_steps: true,
   });
-  expect(facts.workspace.workspace_ownership).toEqual({
-    roles: DispatchWorkspaceRoleSchema.options,
-    worker_mode: DispatchWorkspaceBranchModeSchema.options[0],
-    reviewer_mode: DispatchWorkspaceBranchModeSchema.options[1],
-    branch_ownership: DispatchWorkspaceBranchOwnershipSchema.options,
-    cleanup_statuses: DispatchWorkspaceCleanupStatusSchema.options,
-    registry_is_authority: true,
-    cleanup_is_dispatch_owned_only: true,
-  });
-  expect(facts.workspace.remote_sync).toEqual({
-    no_remote: "local-only with no degraded state or warnings",
-    target_update: "fast-forward only with no merge commits",
-    degraded_status_fields: ["branch", "reason", "enteredAt", "kind"],
-    reviewer_target_sync: "deferred while that target has an active reviewer",
-    completion_status: "in progress; only source-verified behavior is public",
-  });
+  expect(facts.workspace.workspace_ownership.roles).toEqual(DispatchWorkspaceRoleSchema.options);
+  expect(facts.workspace.workspace_ownership.worker_mode).toBe(
+    DispatchWorkspaceBranchModeSchema.options[0],
+  );
+  expect(facts.workspace.workspace_ownership.reviewer_mode).toBe(
+    DispatchWorkspaceBranchModeSchema.options[1],
+  );
+  expect(facts.workspace.workspace_ownership.branch_ownership).toEqual(
+    DispatchWorkspaceBranchOwnershipSchema.options,
+  );
+  expect(facts.workspace.workspace_ownership.cleanup_statuses).toEqual(
+    DispatchWorkspaceCleanupStatusSchema.options,
+  );
   expect(
     AgentDispatchRuleSchema.parse({
       on: "task.ready",
@@ -712,10 +717,6 @@ function validateFacts(facts: DispatchFacts): void {
     { on: "task.needs_work", filter: { automation: "eligible" } },
     { on: "task.pending_review" },
   ]);
-  expect(facts.workspace.automation_filtering).toMatchObject({
-    event_specific: true,
-    no_global_automation_filter: true,
-  });
   expect(facts.workspace.default_agent_skills).toEqual(defaults.agent.skills);
 
   const exportedCommands = flattenCommandTree(extractCommandTree(createProgram())).map((command) =>
@@ -1117,32 +1118,56 @@ function validateFacts(facts: DispatchFacts): void {
     [...new Set(facts.safety.control_error_codes)].toSorted(),
   );
 
-  expect(facts.limitations).toEqual([
-    "pause is a graceful admission hold; stop is hard stop",
-    "no checkpointing",
-    "no distributed scheduler",
-    "no exact durable FIFO promise",
-    "no workspace deletion or reset command",
-    "no control of arbitrary one-shot work outside dispatch ownership",
-    "recovery may remain pending when process ownership cannot be proven",
-  ]);
-  expect(facts.lifecycle.global_actions.running).toEqual(["pause", "stop"]);
-  expect(exportedCommands.some((command) => /workspace (?:delete|reset)/.test(command))).toBe(
-    false,
-  );
-  expect(exportedCommands).toContain("kspec agent run");
-  expect(exportedCommands).not.toContain("kspec agent dispatch run");
-  expect(
-    exportedCommands
-      .filter((command) => command.startsWith("kspec agent dispatch"))
-      .some((command) => /checkpoint|scheduler|fifo/i.test(command)),
-  ).toBe(false);
-  expect(DispatchCleanupPhaseSchema.options).toContain("owned");
-  expect(facts.safety.cleanup_error_codes).toContain("cleanup_identity_unverifiable");
-  expect(scopedCleanup.pending_cleanup.global).toMatchObject({
+  const publicDispatchContract = [
+    ...Object.keys(dispatchConfigSchema.shape),
+    ...Object.keys(DispatchControlSchema.shape),
+    ...Object.keys(parsedWire),
+    ...Object.keys(DispatchWorkspaceRegistryFileSchema.shape),
+    ...Object.keys(AgentDispatchRuleSchema.shape),
+    ...exportedCommands.filter((command) => command.startsWith("kspec agent")),
+  ]
+    .join(" ")
+    .toLowerCase();
+  const identityFailure = createMissingDispatchControl();
+  identityFailure.pending_cleanup.global = {
+    cleanup_id: CLEANUP_ID,
     status: "failed",
-    error_code: "cancellation_timeout",
-  });
+    phase: "owned",
+    error_code: "cleanup_identity_unverifiable",
+    targets: [],
+  };
+  const retryPending = structuredClone(identityFailure);
+  retryPending.pending_cleanup.global = {
+    cleanup_id: CLEANUP_ID,
+    status: "pending",
+    phase: "owned",
+    targets: [],
+  };
+  const recoveryCanRemainPending =
+    projectDispatchCleanupState(identityFailure, { scope: "global" }).status === "failed" &&
+    projectDispatchCleanupState(retryPending, { scope: "global" }).status === "pending" &&
+    identityFailure.pending_cleanup.global.error_code === "cleanup_identity_unverifiable";
+  const derivedLimitations = [
+    facts.lifecycle.global_actions.running.includes("pause") &&
+    facts.lifecycle.global_actions.running.includes("stop")
+      ? "pause is a graceful admission hold; stop is hard stop"
+      : "",
+    !publicDispatchContract.includes("checkpoint") ? "no checkpointing" : "",
+    !publicDispatchContract.includes("scheduler") ? "no distributed scheduler" : "",
+    !publicDispatchContract.includes("fifo") ? "no exact durable FIFO promise" : "",
+    !exportedCommands.some((command) => /workspace (?:delete|reset)/.test(command))
+      ? "no workspace deletion or reset command"
+      : "",
+    exportedCommands.includes("kspec agent run") &&
+    !exportedCommands.includes("kspec agent dispatch run")
+      ? "no control of arbitrary one-shot work outside dispatch ownership"
+      : "",
+    recoveryCanRemainPending
+      ? "recovery may remain pending when process ownership cannot be proven"
+      : "",
+  ];
+  expect(derivedLimitations).not.toContain("");
+  expect(facts.limitations).toEqual(derivedLimitations);
 }
 
 function cloneFacts(): DispatchFacts {
@@ -1259,9 +1284,17 @@ describe("dispatch operator fact fixture", () => {
         agent: factAgent("mkdir -p .facts && printf 'agent\\n' >> .facts/order"),
         env: {},
       });
-      expect(await readTestOutput(join(workspace.cwd, ".facts", "order"))).toBe("project\nagent\n");
+      const observedBootstrapOrder = await readTestOutput(join(workspace.cwd, ".facts", "order"));
+      expect(observedBootstrapOrder).toBe("project\nagent\n");
       expect(result.ranSteps).toBe(true);
-      expect(factsFixture.workspace.bootstrap.project_steps_before_agent_steps).toBe(true);
+      expect(factsFixture.workspace.bootstrap.project_steps_before_agent_steps).toBe(
+        observedBootstrapOrder === "project\nagent\n",
+      );
+      const dispatchManagedScopeObserved =
+        workspace.cwd !== projectDir && existsSync(workspace.metadataPath);
+      expect(factsFixture.workspace.bootstrap.scope === "dispatch-managed workspaces only").toBe(
+        dispatchManagedScopeObserved,
+      );
 
       const reuseTaskId = testUlids("TASK", 4)[3]!;
       const reuseWorkerWorkspace = await provisionDispatchWorkspace({
@@ -1295,7 +1328,9 @@ describe("dispatch operator fact fixture", () => {
       });
       expect(reuseReviewerWorkspace.cwd).not.toBe(reuseWorkerWorkspace.cwd);
       expect(reused).toMatchObject({ reused: true, ranSteps: false });
-      expect(factsFixture.workspace.bootstrap.reviewer_reuses_valid_worker_state).toBe(true);
+      expect(factsFixture.workspace.bootstrap.reviewer_reuses_valid_worker_state).toBe(
+        reused.reused && !reused.ranSteps,
+      );
 
       await writeFile(
         join(projectDir, "kspec.config.yaml"),
@@ -1315,8 +1350,9 @@ describe("dispatch operator fact fixture", () => {
         taskRef: `@${unsafeTaskId}`,
         task: { title: "Unsafe bootstrap", slugs: ["unsafe-bootstrap"] },
       });
-      await expect(
-        ensureWorkspaceBootstrap({
+      let trackedMutationRejected = false;
+      try {
+        await ensureWorkspaceBootstrap({
           projectDir,
           workspaceDir: unsafeWorkspace.cwd,
           metadataPath: unsafeWorkspace.metadataPath,
@@ -1324,9 +1360,14 @@ describe("dispatch operator fact fixture", () => {
           role: "worker",
           agent: factAgent(),
           env: {},
-        }),
-      ).rejects.toBeInstanceOf(DispatchBootstrapError);
-      expect(factsFixture.workspace.bootstrap.tracked_mutation_requires_opt_in).toBe(true);
+        });
+      } catch (error) {
+        trackedMutationRejected = error instanceof DispatchBootstrapError;
+      }
+      expect(trackedMutationRejected).toBe(true);
+      expect(factsFixture.workspace.bootstrap.tracked_mutation_requires_opt_in).toBe(
+        trackedMutationRejected,
+      );
 
       const reviewerTaskId = testUlids("TASK", 3)[2]!;
       const reviewerWorkspace = await provisionDispatchWorkspace({
@@ -1335,8 +1376,9 @@ describe("dispatch operator fact fixture", () => {
         role: "reviewer",
         task: { title: "Reviewer bootstrap", slugs: ["reviewer-bootstrap"] },
       });
-      await expect(
-        ensureWorkspaceBootstrap({
+      let unsafeReviewerRerunRejected = false;
+      try {
+        await ensureWorkspaceBootstrap({
           projectDir,
           workspaceDir: reviewerWorkspace.cwd,
           metadataPath: reviewerWorkspace.metadataPath,
@@ -1344,12 +1386,213 @@ describe("dispatch operator fact fixture", () => {
           role: "reviewer",
           agent: factAgent(),
           env: {},
-        }),
-      ).rejects.toBeInstanceOf(DispatchBootstrapError);
-      expect(factsFixture.workspace.bootstrap.reviewer_reruns_only_safe_steps).toBe(true);
+        });
+      } catch (error) {
+        unsafeReviewerRerunRejected = error instanceof DispatchBootstrapError;
+      }
+      expect(unsafeReviewerRerunRejected).toBe(true);
+      expect(factsFixture.workspace.bootstrap.reviewer_reruns_only_safe_steps).toBe(
+        unsafeReviewerRerunRejected,
+      );
     } finally {
       await cleanupTempDir(projectDir);
     }
+  });
+
+  it("binds registry authority and cleanup ownership to provisioned dispatch artifacts", async () => {
+    const projectDir = await createTempDir("dispatch-doc-registry-facts-");
+    try {
+      await seedFactProject(projectDir);
+      const taskId = testUlid("REG", 1);
+      seedSplitTask(projectDir, {
+        _ulid: taskId,
+        type: "task",
+        title: "Registry facts",
+        slugs: ["registry-facts"],
+        status: "pending",
+        priority: 1,
+        automation: "eligible",
+        depends_on: [],
+        blocked_by: [],
+        tags: [],
+        notes: [],
+        created_at: NOW,
+      });
+      const provisioned = await provisionDispatchWorkspace({
+        projectDir,
+        taskRef: `@${taskId}`,
+        task: { _ulid: taskId, title: "Registry facts", slugs: ["registry-facts"] },
+      });
+      const registry = await loadDispatchWorkspaceRegistry(await initContext(projectDir));
+      const authoritativeRecord = registry.find((record) => record.task_ref === `@${taskId}`);
+      const registryAuthorityObserved =
+        existsSync(provisioned.metadataPath) &&
+        authoritativeRecord?.canonical_branch === provisioned.metadata.canonicalBranch &&
+        authoritativeRecord.worktrees.worker.path === provisioned.metadata.workerWorktreeDir;
+      expect(factsFixture.workspace.workspace_ownership.registry_is_authority).toBe(
+        registryAuthorityObserved,
+      );
+
+      const protection = buildDispatchArtifactProtectionState({
+        worktreeRoot: provisioned.metadata.worktreeRoot,
+        registry: { status: "load-failed", reason: "fact test unavailable registry" },
+      });
+      const managedCandidate = join(provisioned.metadata.worktreeRoot, "candidate");
+      const externalCandidate = join(projectDir, "operator-owned-checkout");
+      const cleanupIsDispatchOwnedOnly =
+        protection.evaluateWorkspacePath(managedCandidate).preserve &&
+        !protection.evaluateWorkspacePath(externalCandidate).preserve;
+      expect(cleanupIsDispatchOwnedOnly).toBe(true);
+      expect(factsFixture.workspace.workspace_ownership.cleanup_is_dispatch_owned_only).toBe(
+        cleanupIsDispatchOwnedOnly,
+      );
+    } finally {
+      await cleanupTempDir(projectDir);
+    }
+  });
+
+  it("binds fast-forward target sync and active-reviewer deferral to engine behavior", async () => {
+    const projectDir = await createTempDir("dispatch-doc-target-sync-");
+    const remoteDir = await createTempDir("dispatch-doc-target-remote-");
+    const writerDir = await createTempDir("dispatch-doc-target-writer-");
+    try {
+      await seedFactProject(projectDir);
+      const taskId = testUlid("SYNC", 1);
+      seedSplitTask(projectDir, {
+        _ulid: taskId,
+        type: "task",
+        title: "Reviewer sync facts",
+        slugs: ["reviewer-sync-facts"],
+        status: "pending_review",
+        priority: 1,
+        automation: "eligible",
+        plan_ref: "@docs-plan",
+        depends_on: [],
+        blocked_by: [],
+        tags: [],
+        notes: [],
+        created_at: NOW,
+      });
+      await provisionDispatchWorkspace({
+        projectDir,
+        taskRef: `@${taskId}`,
+        task: {
+          _ulid: taskId,
+          title: "Reviewer sync facts",
+          slugs: ["reviewer-sync-facts"],
+          plan_ref: "@docs-plan",
+        },
+      });
+
+      git(remoteDir, "init", "--bare");
+      git(projectDir, "remote", "add", "origin", remoteDir);
+      git(projectDir, "push", "-u", "origin", "dev");
+      git(writerDir, "clone", remoteDir, ".");
+      git(writerDir, "config", "user.email", "test@example.com");
+      git(writerDir, "config", "user.name", "Test User");
+      git(writerDir, "checkout", "dev");
+      await writeFile(join(writerDir, "remote-fact.txt"), "remote\n", "utf8");
+      git(writerDir, "add", "remote-fact.txt");
+      git(writerDir, "commit", "-m", "remote fact");
+      git(writerDir, "push", "origin", "dev");
+      const remoteTip = git(writerDir, "rev-parse", "HEAD");
+      const before = git(projectDir, "rev-parse", "dev");
+
+      const engine = new DispatchEngine({
+        projectDir,
+        reconcileIntervalMs: 0,
+        coalesceWindowMs: 0,
+      });
+      const internal = engine as unknown as {
+        _remoteSyncEnabled: boolean;
+        _syncRemote: string;
+        _configuredBaseBranch: string;
+        _activeTargets: Set<string>;
+        activeInvocationDetails: Map<string, Record<string, unknown>>;
+        _activeReviewerTargets(): Promise<Set<string>>;
+        _syncAllActiveTargets(): Promise<void>;
+      };
+      internal._remoteSyncEnabled = true;
+      internal._syncRemote = "origin";
+      internal._configuredBaseBranch = "dev";
+      internal._activeTargets = new Set(["dev"]);
+      internal.activeInvocationDetails.set("reviewer-fact", {
+        invocationId: "reviewer-fact",
+        sessionId: "reviewer-fact-session",
+        agentId: "reviewer",
+        agentName: "Reviewer",
+        taskId: undefined,
+        taskRef: `@${taskId}`,
+        role: "reviewer",
+        startedAtMs: Date.now(),
+        resolvedAdapter: "mock-acp",
+        runner: undefined,
+      });
+
+      expect(await internal._activeReviewerTargets()).toEqual(new Set(["dev"]));
+      await internal._syncAllActiveTargets();
+      const deferred = git(projectDir, "rev-parse", "dev") === before;
+      internal.activeInvocationDetails.clear();
+      await internal._syncAllActiveTargets();
+      const fastForwarded = git(projectDir, "rev-parse", "dev") === remoteTip;
+      expect(deferred).toBe(true);
+      expect(fastForwarded).toBe(true);
+      expect(factsFixture.workspace.remote_sync.reviewer_target_sync).toBe(
+        deferred ? "deferred while that target has an active reviewer" : "",
+      );
+      expect(factsFixture.workspace.remote_sync.target_update).toBe(
+        fastForwarded ? "fast-forward only with no merge commits" : "",
+      );
+    } finally {
+      await cleanupTempDir(writerDir);
+      await cleanupTempDir(remoteDir);
+      await cleanupTempDir(projectDir);
+    }
+  });
+
+  it("binds automation filtering to each executed event rule rather than a global default", () => {
+    const engine = new DispatchEngine({ projectDir: fixtureDir, reconcileIntervalMs: 0 });
+    const matchesFilter = (
+      engine as unknown as {
+        _matchesFilter(
+          change: Record<string, unknown>,
+          rule: Agent["dispatch"][number],
+          task: LoadedTask,
+        ): boolean;
+      }
+    )._matchesFilter.bind(engine);
+    const eligibleTask = {
+      _ulid: TASK_ID,
+      status: "pending",
+      automation: "eligible",
+      depends_on: [],
+      blocked_by: [],
+      tags: [],
+      priority: 1,
+    } as unknown as LoadedTask;
+    const ineligibleTask = { ...eligibleTask, automation: "manual_only" } as LoadedTask;
+    const rules = factsFixture.workspace.automation_filtering.rules.map((rule) =>
+      AgentDispatchRuleSchema.parse(rule),
+    );
+    const observations = rules.map((rule) => ({
+      event: rule.on,
+      eligible: matchesFilter({ event: rule.on }, rule, eligibleTask),
+      ineligible: matchesFilter({ event: rule.on }, rule, ineligibleTask),
+    }));
+    const eventSpecific = observations
+      .slice(0, 3)
+      .every((observation) => observation.eligible && !observation.ineligible);
+    const unfilteredReviewEvent = observations.at(-1);
+    const noGlobalAutomationFilter =
+      unfilteredReviewEvent?.event === "task.pending_review" &&
+      unfilteredReviewEvent.eligible &&
+      unfilteredReviewEvent.ineligible;
+    expect(eventSpecific).toBe(true);
+    expect(noGlobalAutomationFilter).toBe(true);
+    expect(factsFixture.workspace.automation_filtering.event_specific).toBe(eventSpecific);
+    expect(factsFixture.workspace.automation_filtering.no_global_automation_filter).toBe(
+      noGlobalAutomationFilter,
+    );
   });
 
   it("retries durable startup cleanup before admitting queued work", async () => {

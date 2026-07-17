@@ -37,6 +37,10 @@ interface InventoryRecord {
 }
 
 interface InventoryFixture {
+  schema_version: number;
+  reviewed_lifecycle_commit: string;
+  integrated_lifecycle_commit: string;
+  tracked_markdown_count: number;
   construction_pending_additions: string[];
   section_reading_order: Record<string, string[]>;
   records: InventoryRecord[];
@@ -89,6 +93,14 @@ const SOURCE_TEMPLATE_METADATA = {
   audit_status: "pending",
   disposition: "pending-task-7-audit",
 } as const;
+const FIXTURE_OWNERS: Record<string, string> = {
+  "tests/e2e/fixtures/plans/01KG0RRPCA45ZT43W2T6HJMVP1/plan.md": "tests/e2e/plans.spec.ts",
+  "tests/e2e/fixtures/plans/01KG0RRRCA45ZT43W2T6HJMVP2/plan.md": "tests/e2e/plans.spec.ts",
+  "tests/e2e/fixtures/plans/01KG0RRSCA45ZT43W2T6HJMVP3/plan.md": "tests/e2e/plans.spec.ts",
+  "tests/fixtures/multi-dir/README.md": "tests/daemon-context-manager.test.ts",
+  "tests/fixtures/multi-dir/project-invalid/README.md":
+    "tests/daemon-path-validation-middleware.test.ts",
+};
 
 function markdownSurfaceRecord(path: string): InventoryRecord {
   const base = {
@@ -160,12 +172,14 @@ function markdownSurfaceRecord(path: string): InventoryRecord {
     };
   }
   if (path.startsWith("tests/") && path.includes("/fixtures/")) {
+    const owningTest = FIXTURE_OWNERS[path];
+    if (!owningTest) throw new Error(`missing fixture ownership contract for ${path}`);
     return {
       ...base,
       classification: "fixture",
       exclusion_reason:
         "Test input owned by its behavioral fixture consumer, not public documentation.",
-      owning_test: "tests/plan-document-parser.test.ts",
+      owning_test: owningTest,
       ...EXCLUSION_METADATA,
     };
   }
@@ -383,6 +397,16 @@ function normalizedRecord(record: InventoryRecord): string {
 }
 
 function validateInventory(fixture: InventoryFixture): { pendingAdditions: string[] } {
+  if (fixture.schema_version !== factsFixture.schema_version) {
+    throw new Error("unsupported inventory schema version");
+  }
+  if (fixture.reviewed_lifecycle_commit !== factsFixture.evidence.reviewed_lifecycle_commit) {
+    throw new Error("stale reviewed lifecycle evidence");
+  }
+  if (fixture.integrated_lifecycle_commit !== factsFixture.evidence.integrated_lifecycle_commit) {
+    throw new Error("stale integrated lifecycle evidence");
+  }
+
   const ids = fixture.records.map((record) => record.id);
   if (new Set(ids).size !== ids.length) throw new Error("duplicate inventory record id");
 
@@ -393,6 +417,9 @@ function validateInventory(fixture: InventoryFixture): { pendingAdditions: strin
   if (new Set(paths).size !== paths.length) throw new Error("duplicate Markdown manifest record");
 
   const tracked = trackedMarkdown();
+  if (fixture.tracked_markdown_count !== tracked.length) {
+    throw new Error("stale tracked Markdown count");
+  }
   const trackedSet = new Set(tracked);
   const manifestSet = new Set(paths);
   const extras = paths.filter((path) => !trackedSet.has(path));
@@ -610,6 +637,28 @@ describe("public documentation inventory", () => {
     const duplicate = cloneFixture();
     duplicate.records.push(structuredClone(duplicate.records[0]!));
     expect(() => validateInventory(duplicate)).toThrow(/duplicate inventory record id/);
+  });
+
+  it("rejects stale inventory schema, lifecycle evidence, count, and fixture ownership", () => {
+    const mutations: Array<[string, (fixture: InventoryFixture) => void]> = [
+      ["schema", (fixture) => (fixture.schema_version += 1)],
+      ["reviewed evidence", (fixture) => (fixture.reviewed_lifecycle_commit = "0".repeat(40))],
+      ["integrated evidence", (fixture) => (fixture.integrated_lifecycle_commit = "0".repeat(40))],
+      ["Markdown count", (fixture) => (fixture.tracked_markdown_count -= 1)],
+      [
+        "fixture ownership",
+        (fixture) => {
+          fixture.records.find(
+            (record) => record.id === "markdown:tests/fixtures/multi-dir/README.md",
+          )!.owning_test = "tests/plan-document-parser.test.ts";
+        },
+      ],
+    ];
+    for (const [label, mutate] of mutations) {
+      const fixture = cloneFixture();
+      mutate(fixture);
+      expect(() => validateInventory(fixture), label).toThrow();
+    }
   });
 
   it("rejects an unexpected extra or an unreasoned exclusion", () => {

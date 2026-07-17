@@ -1572,7 +1572,7 @@
       "audit_status": "pending",
       "disposition": "pending-task-7-audit",
       "exclusion_reason": "Test input owned by its behavioral fixture consumer, not public documentation.",
-      "owning_test": "tests/plan-document-parser.test.ts"
+      "owning_test": "tests/e2e/plans.spec.ts"
     },
     {
       "id": "markdown:tests/e2e/fixtures/plans/01KG0RRRCA45ZT43W2T6HJMVP2/plan.md",
@@ -1584,7 +1584,7 @@
       "audit_status": "pending",
       "disposition": "pending-task-7-audit",
       "exclusion_reason": "Test input owned by its behavioral fixture consumer, not public documentation.",
-      "owning_test": "tests/plan-document-parser.test.ts"
+      "owning_test": "tests/e2e/plans.spec.ts"
     },
     {
       "id": "markdown:tests/e2e/fixtures/plans/01KG0RRSCA45ZT43W2T6HJMVP3/plan.md",
@@ -1596,7 +1596,7 @@
       "audit_status": "pending",
       "disposition": "pending-task-7-audit",
       "exclusion_reason": "Test input owned by its behavioral fixture consumer, not public documentation.",
-      "owning_test": "tests/plan-document-parser.test.ts"
+      "owning_test": "tests/e2e/plans.spec.ts"
     },
     {
       "id": "markdown:tests/fixtures/multi-dir/README.md",
@@ -1608,7 +1608,7 @@
       "audit_status": "pending",
       "disposition": "pending-task-7-audit",
       "exclusion_reason": "Test input owned by its behavioral fixture consumer, not public documentation.",
-      "owning_test": "tests/plan-document-parser.test.ts"
+      "owning_test": "tests/daemon-context-manager.test.ts"
     },
     {
       "id": "markdown:tests/fixtures/multi-dir/project-invalid/README.md",
@@ -1620,7 +1620,7 @@
       "audit_status": "pending",
       "disposition": "pending-task-7-audit",
       "exclusion_reason": "Test input owned by its behavioral fixture consumer, not public documentation.",
-      "owning_test": "tests/plan-document-parser.test.ts"
+      "owning_test": "tests/daemon-path-validation-middleware.test.ts"
     },
     {
       "id": "cli-help:kspec",
