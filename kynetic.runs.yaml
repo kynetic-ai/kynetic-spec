@@ -82969,7 +82969,7 @@ runs:
     completed_at: 2026-07-17T11:20:53.333Z
   - _ulid: 01KXQYDQMEKK7B37NZBT3H0VS3
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -82983,7 +82983,16 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-07-17T11:49:17.631Z
-        completed_at: 2026-07-17T11:49:17.631Z
+        completed_at: 2026-07-17T11:50:18.936Z
+        notes: "Identified two high-confidence session patterns. Friction: delayed read-after-write
+          visibility after atomic review batches caused duplicated checks on retry; exact existing
+          coverage is @01KXNDDB, with related broader coverage @01KXJ7W7. Success: executing the
+          exact documented subcommand help path exposed a false help-reference claim even though all
+          gates passed; existing coverage is @01KT0CX2 and @docs-guides-section ac-3."
+      - status: completed
+        step_index: 2
+        started_at: 2026-07-17T11:50:18.936Z
+        completed_at: 2026-07-17T11:50:18.936Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-07-17T11:47:09.070Z
