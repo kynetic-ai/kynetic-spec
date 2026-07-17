@@ -193,6 +193,13 @@ events:
       status: fail
       name: shallow checkout compatibility
     timestamp: 2026-07-17T06:02:31.798Z
+  - _ulid: 01KXQAQW82KSKAVA3FEQD9DGVE
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KXQAQW06YJQ47D6FYKNWZWE1
+    timestamp: 2026-07-17T06:03:09.954Z
 examined_commit: c192d23e11c8934a924982e25f6cae10d3143e2d
 external_links: []
 lifecycle_state: open
@@ -202,8 +209,28 @@ subject:
   content_hash: ""
   ref: "@01KXPPE2FA72S6HPFV9V95488F"
   shadow_commit: ""
-threads: []
+threads:
+  - _ulid: 01KXQAQW06YJQ47D6FYKNWZWE1
+    anchor:
+      type: code
+      commit: c192d23e11c8934a924982e25f6cae10d3143e2d
+      line_end: 625
+      line_start: 610
+      path: tests/dispatch-operator-docs.test.ts
+      side: head
+    entries:
+      - _ulid: 01KXQAQW06D20DR8CF7BACVWRV
+        author: Jacob Chapel
+        body: MUST-FIX — The immutable ancestry assertions are unconditional on historical object
+          availability. In a depth-1 clone of this exact canonical head, merge-base cannot resolve
+          b28c2955, 3f22e6c, or 8f871993 and exits fatal for all three. The release workflow checks
+          out main with the default shallow depth and then runs npm test, so this test will break
+          release verification even though the integrated ancestry is correct. Preserve the frozen
+          evidence without requiring unavailable history, or ensure every test-bearing checkout that
+          runs this assertion fetches the required history.
+        created_at: 2026-07-17T06:03:09.702Z
+    kind: blocker
 verdicts: []
 created_at: 2026-07-17T05:43:16.795Z
-updated_at: 2026-07-17T06:02:31.509Z
+updated_at: 2026-07-17T06:03:09.702Z
 notes: []
