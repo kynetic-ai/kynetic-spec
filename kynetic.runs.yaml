@@ -83243,7 +83243,7 @@ runs:
     completed_at: 2026-07-17T14:25:16.768Z
   - _ulid: 01KXR8TCTC5KJP7P0AJF088HTY
     status: active
-    current_step: 4
+    current_step: 5
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -83290,7 +83290,14 @@ runs:
       - status: completed
         step_index: 4
         started_at: 2026-07-17T14:53:01.695Z
-        completed_at: 2026-07-17T14:53:01.695Z
+        completed_at: 2026-07-17T16:13:32.279Z
+        notes: Captured the untracked reviewer-entrypoint availability regression as friction observation
+          @01KXRDMM. Existing workflow-show guidance and batch-output concerns were not duplicated.
+          Prior reflection complete.
+      - status: completed
+        step_index: 5
+        started_at: 2026-07-17T16:13:32.279Z
+        completed_at: 2026-07-17T16:13:32.279Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-07-17T14:48:49.740Z
