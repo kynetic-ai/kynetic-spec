@@ -140,3 +140,17 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-07-17T05:10:21.717Z
+  - _ulid: 01KXQ95VXY0BHGA72G74QT3AVY
+    content: "Fix cycle 4: resolved all five blockers and the informational thread in c192d23e11.
+      Replaced moving-target ancestry with immutable commit ancestry; bound the exact fact-source
+      matrix; enforced complete path-specific Markdown classification/source/audit/disposition
+      contracts; added dispatch-only bootstrap scope, remote-sync/status boundaries, worker/reviewer
+      and registry/cleanup ownership, event-specific automation filtering, and all six required
+      limitations. Reviewed b28c29557d3e, integrated 3f22e6c93c68, and frozen target 8f871993d15b
+      remain ancestors. Re-verified @docs-section-taxonomy ac-1/ac-2 and @auto-cli-docs
+      ac-1/ac-3/ac-4/ac-5. Gates: focused 84/84; format pass; repo lint 0 errors and focused lint 0
+      warnings/errors; typecheck pass; refs/alignment/completeness pass with warnings-ok baselines;
+      fresh full suite 2,834/2,834 suites, 10,958 passed and 3 skipped."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-07-17T05:35:51.230Z
