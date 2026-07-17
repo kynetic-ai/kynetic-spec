@@ -177,6 +177,13 @@ events:
       status: pass
       name: freeze ancestry and inventory audit
     timestamp: 2026-07-17T09:14:10.531Z
+  - _ulid: 01KXQNP4J5N4VVHKAH1N7TJ2FM
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KXQNP49YTEXZ4NBQ8DS9E5F1
+    timestamp: 2026-07-17T09:14:27.269Z
 examined_commit: db2173aa4b4118648c720f98d2604b9707716cae
 external_links: []
 lifecycle_state: open
@@ -186,8 +193,44 @@ subject:
   content_hash: ""
   ref: "@01KXPPE2FA72S6HPFV9V95488F"
   shadow_commit: ""
-threads: []
+threads:
+  - _ulid: 01KXQNP49YTEXZ4NBQ8DS9E5F1
+    entries:
+      - _ulid: 01KXQNP49YTK4S61GQZRNXXFS2
+        author: Jacob Chapel
+        body: >-
+          Review evidence log
+
+
+          Files read: all four changed files in full or semantic structured form
+          (tests/dispatch-operator-docs.test.ts, tests/public-documentation-inventory.test.ts,
+          tests/fixtures/dispatch-operator-facts.json,
+          tests/fixtures/public-documentation-surfaces.json); governing task/spec context; cycle-7
+          review and latest fix diff.
+
+
+          Commands run: base-to-head and cycle-7 diffs, git log/status/diff-check/ancestry and
+          branch-head checks, structured jq/comm inventory audits, AC annotation/source-scanning
+          searches, format, repo/focused lint, typecheck, task-focused tests, fresh full suite, and
+          refs/alignment/completeness validations.
+
+
+          Claims verified: the cycle-7 UI mapping fix uses one valid paused/draining wire state with
+          distinct globalAuthority/projection values and rejects both swap directions;
+          reviewed/integrated/frozen commits are ancestors; integration target remains at the frozen
+          tip; canonical local and remote task heads match the snapshot; the manifest exactly covers
+          140 tracked Markdown and 274 derived typed non-file records; all negative fixture groups
+          execute in the passing focused suite.
+
+
+          Categories searched: correctness/spec alignment, edge cases/stale mutations, error and
+          hard-stop safety, test quality/behavioral coverage, integration/ancestry, inventory
+          completeness, and security/data exposure. No findings. Shared/package guidance surfaces
+          were not changed, so shared-guidance-neutrality directions 1/2 and generated-artifact
+          refresh checks are not applicable.
+        created_at: 2026-07-17T09:14:27.006Z
+    kind: nit
 verdicts: []
 created_at: 2026-07-17T08:57:13.265Z
-updated_at: 2026-07-17T09:14:10.239Z
+updated_at: 2026-07-17T09:14:27.006Z
 notes: []
