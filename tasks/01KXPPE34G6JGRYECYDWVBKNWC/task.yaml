@@ -81,7 +81,7 @@ description: >
 spec_ref: "@docs-guides-section"
 plan_ref: "@plan-documentation-completeness-and-dispatch-workspaces"
 origin: derived
-status: in_progress
+status: pending_review
 blocked_by: []
 depends_on:
   - "@task-freeze-doc-facts-and-inventory"
@@ -92,6 +92,14 @@ tags:
   - dispatch
   - guides
 vcs_refs: []
+submission_linkage:
+  review_url: null
+  branch: dispatch/task/task-document-dispatch-workspace-configuration/01kxppe3
+  captured_at: 2026-07-17T09:38:36.678Z
+  commit: f56e3f97f9eefbf10a0f656b71237cd8904a68d5
+  remote: null
+  remote_url: null
+  upstream_ref: plan/plan-dispatch-lifecycle-pause-resume-and-stop-controls/01kxc2vx
 session_id: 01KXQNSXNKG03P9EN090CPDB66
 history:
   - author: Jacob Chapel
@@ -114,7 +122,28 @@ history:
         previous: null
     command: task-start
     timestamp: 2026-07-17T09:17:44.605Z
+  - author: Jacob Chapel
+    changes:
+      status:
+        new: pending_review
+        previous: in_progress
+      submission_linkage:
+        new:
+          review_url: null
+          branch: dispatch/task/task-document-dispatch-workspace-configuration/01kxppe3
+          captured_at: 2026-07-17T09:38:36.678Z
+          commit: f56e3f97f9eefbf10a0f656b71237cd8904a68d5
+          remote: null
+          remote_url: null
+          upstream_ref: plan/plan-dispatch-lifecycle-pause-resume-and-stop-controls/01kxc2vx
+        previous: null
+      submitted_at:
+        new: 2026-07-17T09:38:36.684Z
+        previous: null
+    command: task-submit
+    timestamp: 2026-07-17T09:38:36.685Z
 created_at: 2026-07-17T00:08:17.808Z
 started_at: 2026-07-17T09:17:44.604Z
+submitted_at: 2026-07-17T09:38:36.684Z
 todos: []
 automation: eligible
