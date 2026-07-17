@@ -2,7 +2,102 @@ _ulid: 01KXPXNJ1EKXPS0WB9NV2NN9BN
 slugs: []
 title: Review freeze final integrated dispatch facts and public-surface inventory gate (cycle 2)
 author: Jacob Chapel
-checks: []
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Exit 0; all 1061 matched files use the correct format.
+    name: format
+    required: true
+    runner: npm run format:check
+    created_at: 2026-07-17T02:34:49.792Z
+    completed_at: 2026-07-17T02:34:49.792Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Exit 0 with 0 errors; 696 repo baseline warnings. Focused npx oxlint on both changed
+      TypeScript files reported 0 warnings and 0 errors.
+    name: lint
+    required: true
+    runner: npm run lint -- --quiet
+    created_at: 2026-07-17T02:34:52.985Z
+    completed_at: 2026-07-17T02:34:52.985Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Shared package build and tsc --noEmit completed successfully.
+    name: typecheck
+    required: true
+    runner: npm run typecheck
+    created_at: 2026-07-17T02:34:56.181Z
+    completed_at: 2026-07-17T02:34:56.181Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Fresh run passed 2834 suites; 10949 tests passed and 3 skipped; exit 0.
+    name: full test suite
+    required: true
+    runner: npm test -- --fresh
+    created_at: 2026-07-17T02:35:00.295Z
+    completed_at: 2026-07-17T02:35:00.295Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Exit 0; schema and references OK with the documented six pre-existing deprecation warnings.
+    name: kspec validate refs
+    required: true
+    runner: kspec validate --refs --warnings-ok
+    created_at: 2026-07-17T02:35:06.194Z
+    completed_at: 2026-07-17T02:35:06.194Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Exit 0; schema/references OK under the existing 59-warning alignment baseline.
+    name: kspec validate alignment
+    required: true
+    runner: kspec validate --alignment --warnings-ok
+    created_at: 2026-07-17T02:35:11.023Z
+    completed_at: 2026-07-17T02:35:11.023Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Exit 0; schema/references OK under the existing completeness warning baseline; relevant AC
+      annotations were inspected manually.
+    name: kspec validate completeness
+    required: true
+    runner: kspec validate --completeness --warnings-ok
+    created_at: 2026-07-17T02:35:15.898Z
+    completed_at: 2026-07-17T02:35:15.898Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Fresh focused run passed 13 suites and 75 tests across inventory, dispatch facts, and plan
+      parser.
+    name: focused documentation suite
+    required: true
+    runner: npm test -- focused files --fresh
+    created_at: 2026-07-17T02:35:19.560Z
+    completed_at: 2026-07-17T02:35:19.560Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Reviewed b28c2955 and integrated 3f22e6c are ancestors of both HEAD and target; freeze
+      merge-base is 8f871993. Inventory has exact 140 Markdown records, 253 CLI records, 21 other
+      typed surfaces, and no classification mismatch against the plan taxonomy.
+    name: freeze ancestry and inventory cardinality
+    required: true
+    runner: git and structured inventory audits
+    created_at: 2026-07-17T02:35:23.142Z
+    completed_at: 2026-07-17T02:35:23.142Z
 events:
   - _ulid: 01KXPXNJ1EDGPJ4JXYF3F48W6Z
     actor: Jacob Chapel
@@ -17,6 +112,104 @@ events:
       from: draft
       to: open
     timestamp: 2026-07-17T02:15:09.321Z
+  - _ulid: 01KXPYTDA1QT0YSB8SD5MYAJH6
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: format
+    timestamp: 2026-07-17T02:34:50.049Z
+  - _ulid: 01KXPYTGDM0Q4KJJRXRZKAMQ03
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: lint
+    timestamp: 2026-07-17T02:34:53.236Z
+  - _ulid: 01KXPYTKH3GFCFFZ80CENJMMR4
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: typecheck
+    timestamp: 2026-07-17T02:34:56.419Z
+  - _ulid: 01KXPYTQTJ5171EG8D58B10RHW
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: full test suite
+    timestamp: 2026-07-17T02:35:00.821Z
+  - _ulid: 01KXPYTXC9MFD25BE70XJ3Q4XS
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate refs
+    timestamp: 2026-07-17T02:35:06.505Z
+  - _ulid: 01KXPYV2677QX7F9AZ3WM10HQ3
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate alignment
+    timestamp: 2026-07-17T02:35:11.431Z
+  - _ulid: 01KXPYV6X16EY52JJF0K3KCKWB
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate completeness
+    timestamp: 2026-07-17T02:35:16.257Z
+  - _ulid: 01KXPYVAC18VP17X8P6EBT9RVM
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: focused documentation suite
+    timestamp: 2026-07-17T02:35:19.809Z
+  - _ulid: 01KXPYVDWD64ZCJRD6J4ET1A8P
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: freeze ancestry and inventory cardinality
+    timestamp: 2026-07-17T02:35:23.405Z
+  - _ulid: 01KXPYVH53VNW44Q6HMZKFWSJT
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KXPYVGXNTZKFZE8HB28783K8
+    timestamp: 2026-07-17T02:35:26.755Z
+  - _ulid: 01KXPYVMDECCB4E05Y90T539TP
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KXPYVM5GM7V3DYCNE49C16ZY
+    timestamp: 2026-07-17T02:35:30.094Z
+  - _ulid: 01KXPYVQNZ2EYE9ZPZFAYVA1SP
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KXPYVQE81AXB0XH1VG9PPVQW
+    timestamp: 2026-07-17T02:35:33.440Z
+  - _ulid: 01KXPYVTSVJVGWVSSA45TXEENR
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KXPYVTHNCAT0QJKWQANWGAAK
+    timestamp: 2026-07-17T02:35:36.635Z
+  - _ulid: 01KXPYVXYPVDQ3HAW2V9GWAMDA
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KXPYVXPWNVAAMSPXEXV8934M
+    timestamp: 2026-07-17T02:35:39.862Z
 examined_commit: 71f5a4c87bb3e38faf1bba0954595545f08894e1
 external_links: []
 lifecycle_state: open
@@ -26,8 +219,120 @@ subject:
   content_hash: ""
   ref: "@01KXPPE2FA72S6HPFV9V95488F"
   shadow_commit: ""
-threads: []
+threads:
+  - _ulid: 01KXPYVGXNTZKFZE8HB28783K8
+    anchor:
+      type: code
+      commit: 71f5a4c87bb3e38faf1bba0954595545f08894e1
+      line_end: 305
+      line_start: 259
+      path: tests/dispatch-operator-docs.test.ts
+      side: head
+    entries:
+      - _ulid: 01KXPYVGXN3S9HEY6GZBXYPVWP
+        author: Jacob Chapel
+        body: "MUST-FIX — The resolved fact-drift blocker remains only partially source-bound. This block
+          compares config keys, path/target precedence, bootstrap order/scope/reviewer behavior, and
+          rule keys to a second hand-written literal rather than the exported schema or observable
+          dispatcher behavior; the same pattern continues for durability ordering/final admission,
+          accessibility/static behavior, and limitations later in validateFacts. The separate
+          bootstrap test observes only loadCommitted and the first startup-order label, not cleanup
+          retry before scheduling or both final admission rechecks. Impact: production can change
+          while the fixture and duplicated literals remain unchanged, leaving this drift gate green
+          and downstream documentation stale. Evidence: the group mutation test only proves
+          self-consistency against these literals, and the fresh focused/full suites still pass.
+          Bind every retained claim to an exported schema/helper or executed behavior, or remove
+          claims that cannot be source-bound."
+        created_at: 2026-07-17T02:35:26.518Z
+    kind: blocker
+  - _ulid: 01KXPYVM5GM7V3DYCNE49C16ZY
+    anchor:
+      type: code
+      commit: 71f5a4c87bb3e38faf1bba0954595545f08894e1
+      line_end: 186
+      line_start: 175
+      path: tests/dispatch-operator-docs.test.ts
+      side: head
+    entries:
+      - _ulid: 01KXPYVM5G7VQM7PRSYKC7YPP2
+        author: Jacob Chapel
+        body: "MUST-FIX — The @auto-cli-docs ac-3 helper is not command-scoped. It normalizes the entire
+          help output and accepts each option signature anywhere, so an option removed from one
+          command still passes when another command prints the same flags and description. Impact:
+          help --all can cease to be a complete reference for an individual command while the
+          annotated test remains green. Evidence: the current exported tree contains 22 commands
+          with the exact '--json Output as JSON' signature, plus many other duplicate option
+          signatures; the fresh suite passes with this global containment check. Parse command
+          sections or otherwise compare each command's metadata within its own rendered block."
+        created_at: 2026-07-17T02:35:29.840Z
+    kind: blocker
+  - _ulid: 01KXPYVQE81AXB0XH1VG9PPVQW
+    anchor:
+      type: code
+      commit: 71f5a4c87bb3e38faf1bba0954595545f08894e1
+      line_end: 249
+      line_start: 245
+      path: tests/public-documentation-inventory.test.ts
+      side: head
+    entries:
+      - _ulid: 01KXPYVQE85KJME3BP2B460NTN
+        author: Jacob Chapel
+        body: "MUST-FIX — The ordered landing-page fix breaks the task's explicit six-page construction
+          allowance. sectionChildPaths includes every page found by docsPlugin, but
+          section_reading_order omits all six planned additions; once Task 2 adds
+          configuring-dispatch-workspaces.md, the exact set equality fails even though
+          validateInventory intentionally allows that path to be missing from records. Impact:
+          intervening full-suite verification becomes red as soon as the next planned task lands,
+          contrary to the task contract. Evidence: guides currently declares 9 children; adding the
+          allowed './configuring-dispatch-workspaces.md' produces 10 actual children and unequal
+          sets. Make ordered coverage account for the same pending additions while still rejecting
+          every other page/order drift."
+        created_at: 2026-07-17T02:35:33.192Z
+    kind: blocker
+  - _ulid: 01KXPYVTHNCAT0QJKWQANWGAAK
+    anchor:
+      type: code
+      commit: 71f5a4c87bb3e38faf1bba0954595545f08894e1
+      line_end: 265
+      line_start: 259
+      path: tests/public-documentation-inventory.test.ts
+      side: head
+    entries:
+      - _ulid: 01KXPYVTHPZFK4EYWPAGA0NX22
+        author: Jacob Chapel
+        body: "MUST-FIX — The test annotated for @auto-cli-docs ac-5 exercises inventory omission, not the
+          specified CLI behavior. Removing a manifest record and checking validateInventory never
+          adds a Commander subcommand or runs 'kspec help <parent>', so it would pass even if parent
+          help stopped auto-listing new subcommands. Existing help.test coverage only re-runs
+          extractCommandTree on a synthetic program and likewise does not execute the CLI help
+          surface. Impact: the task claims AC-5 coverage at the wrong abstraction layer. Add a
+          behavioral CLI test that registers/uses a parent with a newly added subcommand and
+          verifies the observable parent help output."
+        created_at: 2026-07-17T02:35:36.374Z
+    kind: blocker
+  - _ulid: 01KXPYVXPWNVAAMSPXEXV8934M
+    entries:
+      - _ulid: 01KXPYVXPWNXJJWPDC2AGESTAR
+        author: Jacob Chapel
+        body: "Review evidence log — informational; no action requested. Files read: all four changed files
+          (including structured audits of all 414 manifest records), both commits, prior review
+          threads, task/spec/plan context, interacting CLI introspection/help, config/control/status
+          schemas, dispatch lifecycle helpers, API/UI adapters, docs rendering tests, and merge
+          guidance. Commands run: git diff/log/status/diff-check and ancestry checks; kspec
+          task/item/plan/review queries; jq/Node inventory, classification, source,
+          option-duplication, and construction-addition audits; format, repo/focused lint,
+          typecheck, focused tests, fresh full npm test, and refs/alignment/completeness validation.
+          Claims verified: approved lifecycle commit and integrated tip are ancestors of
+          HEAD/target; 140 Markdown + 253 CLI + 21 other surfaces match current derived sets;
+          taxonomy classifications match plan rules; worker's full-suite claim independently
+          reproduced at 2834 suites/10949 passing/3 skipped. Categories searched: correctness, edge
+          cases/future planned additions, error handling, safety/security, test quality, AC
+          alignment, integration, staleness, and generated/shared guidance. Shared/package guidance
+          surfaces touched: none; neutrality directions checked for applicability only, and no
+          skill/agent artifact refresh was required."
+        created_at: 2026-07-17T02:35:39.612Z
+    kind: nit
 verdicts: []
 created_at: 2026-07-17T02:14:42.478Z
-updated_at: 2026-07-17T02:15:09.051Z
+updated_at: 2026-07-17T02:35:39.612Z
 notes: []
