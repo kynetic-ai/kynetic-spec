@@ -530,6 +530,13 @@ events:
       status: pass
       name: docs search build
     timestamp: 2026-07-17T20:06:50.483Z
+  - _ulid: 01KXRV0W8M4QCPSSYP32RJ2T6Z
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KXRV0VZJ02R0A4ZTS5HVA3YJ
+    timestamp: 2026-07-17T20:06:56.532Z
 examined_commit: a71126177efc68c959fa2434fea5fe013eb188f1
 external_links: []
 lifecycle_state: closed
@@ -676,6 +683,25 @@ threads:
           are not applicable.
         created_at: 2026-07-17T20:04:48.027Z
     kind: nit
+  - _ulid: 01KXRV0VZJ02R0A4ZTS5HVA3YJ
+    anchor:
+      type: code
+      commit: a71126177efc68c959fa2434fea5fe013eb188f1
+      line_end: 15
+      line_start: 13
+      path: docs/troubleshooting/index.md
+      side: head
+    entries:
+      - _ulid: 01KXRV0VZJSV69CE4FHJSH8XQ8
+        author: Jacob Chapel
+        body: "MUST-FIX: The branch adds three tracked Markdown pages but does not update
+          tests/fixtures/public-documentation-surfaces.json. Evidence: the base has 143 tracked
+          Markdown files and fixture count 143; this head has 146 while the fixture remains 143.
+          Both a fresh full suite and a fresh focused inventory run deterministically fail eight
+          tests. Update the construction inventory state so the public documentation inventory gate
+          passes."
+        created_at: 2026-07-17T20:06:56.242Z
+    kind: blocker
 verdicts:
   - applies_to_version:
       type: entity_version
@@ -685,5 +711,5 @@ verdicts:
     role: reviewer
     created_at: 2026-07-17T20:04:52.153Z
 created_at: 2026-07-17T19:46:13.580Z
-updated_at: 2026-07-17T20:06:50.227Z
+updated_at: 2026-07-17T20:06:56.242Z
 notes: []
