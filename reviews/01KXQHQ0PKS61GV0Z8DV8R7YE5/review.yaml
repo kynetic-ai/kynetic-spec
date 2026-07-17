@@ -206,6 +206,30 @@ events:
       from: open
       to: closed
     timestamp: 2026-07-17T08:24:48.584Z
+  - _ulid: 01KXQMACKGDMSEK6MGFZ2XG9AR
+    actor: Jacob Chapel
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KXQJV13E6TTYJ3N78AD6WT7Q
+    timestamp: 2026-07-17T08:50:33.712Z
+  - _ulid: 01KXQMAG1B9Z0DDQRHTDSWYN9Y
+    actor: Jacob Chapel
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KXQJV13E6TTYJ3N78AD6WT7Q
+    timestamp: 2026-07-17T08:50:37.227Z
+  - _ulid: 01KXQMAKBDASR10HAT1PQ13CTF
+    actor: Jacob Chapel
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KXQJV4CS72SPM5H6BG2YD8BE
+    timestamp: 2026-07-17T08:50:40.622Z
+  - _ulid: 01KXQMAPNZ7QRA3M29TP1VZV1X
+    actor: Jacob Chapel
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KXQJV4CS72SPM5H6BG2YD8BE
+    timestamp: 2026-07-17T08:50:44.031Z
 examined_commit: 4672cdf4f41c3d0425930e6d55368317482f9dc1
 external_links: []
 lifecycle_state: closed
@@ -239,7 +263,16 @@ threads:
           competing UI field, or otherwise enforce the exact one-to-one conversion relationship, and
           retain a regression mutation for this direction."
         created_at: 2026-07-17T08:24:41.838Z
+      - _ulid: 01KXQMACAWA9XRGAT63F91R147
+        author: Jacob Chapel
+        body: "Fixed in db2173aa4b: both global_authority and projection probes now use the same valid
+          paused/draining wire status, yielding distinct expected UI values. Added the
+          reviewer-reproduced reverse stale mutation (projection -> globalAuthority) alongside the
+          existing forward swap; both are rejected."
+        created_at: 2026-07-17T08:50:33.428Z
     kind: blocker
+    resolved_at: 2026-07-17T08:50:36.936Z
+    resolved_by: Jacob Chapel
   - _ulid: 01KXQJV4CS72SPM5H6BG2YD8BE
     entries:
       - _ulid: 01KXQJV4CSGWS453VP7VVEG896
@@ -272,7 +305,16 @@ threads:
           security exposure. Shared/package guidance surfaces were not changed, so neutrality
           directions 1/2 and generated-artifact refresh are not applicable.
         created_at: 2026-07-17T08:24:45.209Z
+      - _ulid: 01KXQMAK36NNVB8A5ZH1MDKV5B
+        author: Jacob Chapel
+        body: Acknowledged and re-verified for cycle 7. The focused suite passes 90/90; fresh full suite
+          passes 2,834/2,834 suites with 10,964 passed and 3 skipped; format, repo/focused lint,
+          typecheck, refs, alignment, and completeness gates pass under the documented warning
+          baselines.
+        created_at: 2026-07-17T08:50:40.358Z
     kind: nit
+    resolved_at: 2026-07-17T08:50:43.775Z
+    resolved_by: Jacob Chapel
 verdicts:
   - applies_to_version:
       type: entity_version
@@ -282,5 +324,5 @@ verdicts:
     role: reviewer
     created_at: 2026-07-17T08:24:48.584Z
 created_at: 2026-07-17T08:05:01.779Z
-updated_at: 2026-07-17T08:24:48.584Z
+updated_at: 2026-07-17T08:50:43.775Z
 notes: []
