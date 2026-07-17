@@ -153,6 +153,46 @@ const EXPECTED_TASK_COMMANDS = [
   "kspec agent dispatch task resume",
   "kspec agent dispatch task stop",
 ] as const;
+
+describe("adjacent public dispatch guidance", () => {
+  it("lists the source-backed lifecycle controls in package agent guidance", async () => {
+    const guidance = await readTestOutput(
+      join(ROOT, "templates", "agents-sections", "06-agent-dispatch-mode.md"),
+      "utf8",
+    );
+    const exportedCommands = flattenCommandTree(extractCommandTree(createProgram())).map(
+      (command) => formatCommandUsage(command),
+    );
+
+    for (const command of [...EXPECTED_GLOBAL_COMMANDS.slice(0, 6), ...EXPECTED_TASK_COMMANDS]) {
+      expect(exportedCommands.some((usage) => usage.startsWith(command))).toBe(true);
+      expect(guidance).toContain(command);
+    }
+    expect(guidance).toContain("Hard stop dispatch");
+    expect(guidance).toContain("kspec agent dispatch --help");
+    expect(guidance).not.toContain("Stop dispatch gracefully");
+  });
+
+  it("records every publication mode in the historical v0.12 release note", async () => {
+    const releaseNotes = await readTestOutput(join(ROOT, "RELEASE_NOTES.md"), "utf8");
+    const v012 = releaseNotes.match(/## v0\.12\.0(?<section>[\s\S]*?)(?=\n## v|$)/)?.groups
+      ?.section;
+
+    expect(v012).toBeDefined();
+    for (const mode of factsFixture.workspace.publication_modes) {
+      expect(v012).toContain(`\`${mode}\``);
+    }
+    expect(v012).toContain("accepted");
+  });
+
+  it("identifies the web UI as an internal package build input", async () => {
+    const readme = await readTestOutput(join(ROOT, "packages", "web-ui", "README.md"), "utf8");
+
+    expect(readme).toContain("Kynetic Spec web UI");
+    expect(readme).toContain("private workspace package");
+    expect(readme).not.toContain("npx sv create my-app");
+  });
+});
 const FROZEN_LIFECYCLE_EVIDENCE = {
   reviewed_lifecycle_commit: "b28c29557d3ec15ee1cfc0b14c6d2ee5a57b86aa",
   integrated_lifecycle_commit: "3f22e6c93c68115d77e1bde062f7cd12034f91d8",

@@ -355,9 +355,9 @@ and web UI modernization.
 
 ### New or changed configuration
 
-- `kspec.config.yaml` now accepts a `dispatch.publication_mode` key
-  (`manual_merge` or `pull_request`) controlling how dispatched work is
-  published. Defaults preserve prior behavior.
+- `kspec.config.yaml` accepted a `dispatch.publication_mode` key with
+  `manual_merge`, `pull_request`, and `auto` publication modes controlling
+  how dispatched work was published. The default preserved prior behavior.
 - `kspec.config.yaml` gained a `hooks` section for configuring project
   hooks directly during setup.
 - `dispatch.base_branch` in `kspec.config.yaml` now doubles as the
