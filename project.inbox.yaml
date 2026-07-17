@@ -5364,3 +5364,14 @@ inbox:
       - reflection
     added_by: Jacob Chapel
     created_at: 2026-07-17T09:19:23.109Z
+  - _ulid: 01KXR7E5A9Y292SFEY1VY4N18M
+    text: "Improve multiword kspec help handling: kspec help agent dispatch currently accepts extra
+      unquoted words but resolves only agent and exits 0, so callers can receive unrelated ancestor
+      help. Either resolve the full command path or reject surplus arguments, and add behavioral
+      Usage and Options tests for nested topics."
+    tags:
+      - reflection
+      - cli
+      - docs
+    added_by: Jacob Chapel
+    created_at: 2026-07-17T14:24:40.266Z

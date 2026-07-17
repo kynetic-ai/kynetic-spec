@@ -24376,6 +24376,16 @@ observations:
     resolved: false
     workflow_ref: "@session-reflect"
     created_at: 2026-07-17T13:23:37.823Z
+  - _ulid: 01KXR7E5EEME3E46DV3P6V7BFV
+    type: success
+    content: Documentation command references were hardened effectively by executing every exact --help
+      path and asserting the expected Usage prefix and Options section; this catches silent
+      ancestor-topic resolution that exit-code and nonempty-output checks miss.
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    workflow_ref: "@session-reflect-loop"
+    created_at: 2026-07-17T14:24:40.398Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
