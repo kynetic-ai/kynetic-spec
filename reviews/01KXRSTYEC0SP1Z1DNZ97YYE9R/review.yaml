@@ -660,6 +660,12 @@ events:
     payload:
       thread_ulid: 01KXRV1MWW8DXEJYAT13PFTDV4
     timestamp: 2026-07-17T20:10:00.944Z
+  - _ulid: 01KXRV6RNVY3TYX7FJ6N9Z148C
+    actor: Jacob Chapel
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KXRV1XBTTGTQ7E5HJ9GNVSB4
+    timestamp: 2026-07-17T20:10:09.467Z
 examined_commit: a71126177efc68c959fa2434fea5fe013eb188f1
 external_links: []
 lifecycle_state: closed
@@ -967,6 +973,11 @@ threads:
           dispatcher/task surface and cover the documented bootstrap lifecycle and invalidation
           facts so AC-2 cannot pass with these incorrect procedures."
         created_at: 2026-07-17T20:07:30.426Z
+      - _ulid: 01KXRV6RC6SX03MCZ9MDQG0CY5
+        author: Jacob Chapel
+        body: Duplicate record created during a stale-read retry; canonical finding is thread
+          01KXRTWVDH8RFKZTR6HCM7V3X0.
+        created_at: 2026-07-17T20:10:09.158Z
     kind: blocker
   - _ulid: 01KXRV2J9HPQVAY13ADTXDGQF1
     entries:
@@ -1019,5 +1030,5 @@ verdicts:
     role: reviewer
     created_at: 2026-07-17T20:08:03.278Z
 created_at: 2026-07-17T19:46:13.580Z
-updated_at: 2026-07-17T20:10:00.661Z
+updated_at: 2026-07-17T20:10:09.158Z
 notes: []
