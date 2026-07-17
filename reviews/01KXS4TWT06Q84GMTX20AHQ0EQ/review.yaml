@@ -375,6 +375,20 @@ events:
       status: pass
       name: generated guidance
     timestamp: 2026-07-17T23:23:53.775Z
+  - _ulid: 01KXS6A5DTK2GQH7PQGY9GNQRP
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KXS6A55GD8VHKCKRKZG8ZSZF
+    timestamp: 2026-07-17T23:24:15.162Z
+  - _ulid: 01KXS6A8T66N08SZRSJGFMBSEK
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KXS6A8H7QZE65QCQHWQ63N69
+    timestamp: 2026-07-17T23:24:18.630Z
 examined_commit: 2237b74fea99703c73b3d95ec5db423fd2daddd0
 external_links: []
 lifecycle_state: open
@@ -432,7 +446,54 @@ threads:
           converged; unrelated skill-render asymmetry is pre-existing observation @01KXS2HP."
         created_at: 2026-07-17T23:22:43.677Z
     kind: nit
+  - _ulid: 01KXS6A55GD8VHKCKRKZG8ZSZF
+    anchor:
+      type: code
+      commit: 2237b74fea99703c73b3d95ec5db423fd2daddd0
+      line_end: 193
+      line_start: 159
+      path: tests/dispatch-operator-docs.test.ts
+      side: head
+    entries:
+      - _ulid: 01KXS6A55H8V4F0E6HQA1ZN61C
+        author: Jacob Chapel
+        body: "MUST-FIX: The three new tests pass repository source paths to readTestOutput, but that helper
+          is expressly reserved for files produced by a test and is exempted from the
+          no-source-scanning lint rule. This bypass makes lint green while the package-guidance test
+          only searches template text instead of exercising generation. It also fails to prove the
+          required hard-stop syntax: startsWith/toContain still pass if the documented --force flag
+          is removed. Evidence: tests/helpers/cli.ts:615-634 defines the helper contract; lines
+          159-193 read the template, release notes, and README from ROOT. Replace the template scan
+          with behavioral generation into an isolated project and exact command/flag assertions;
+          inspect canonical documentation artifacts through an explicit, justified artifact path
+          rather than the test-output escape hatch."
+        created_at: 2026-07-17T23:24:14.897Z
+    kind: blocker
+  - _ulid: 01KXS6A8H7QZE65QCQHWQ63N69
+    entries:
+      - _ulid: 01KXS6A8H7SVBF4FZ0SYWB2AMY
+        author: Jacob Chapel
+        body: "Review evidence log (non-finding). Files read: RELEASE_NOTES.md; packages/web-ui/README.md
+          and package.json; src/cli/commands/setup.ts and upgrade.ts;
+          templates/agents-sections/06-agent-dispatch-mode.md; generated kspec-agents.md; all three
+          changed test files; tests/helpers/cli.ts; no-source-scanning lint rule; related CLI
+          lifecycle registration and preflight code. Commands run: full and focused diffs;
+          task/spec/plan lookups; AC annotation search; two worktree-source generation passes and
+          plugin builds; focused tests; format; repo and focused lint; typecheck;
+          refs/alignment/completeness validation; full npm test. Claims verified: scaffold tests
+          emit lifecycle help; CLI source requires --force outside TTY/JSON; publication modes and
+          private web workspace facts match authorities; focused and full test counts independently
+          reproduced. Categories searched: correctness, edge cases/non-TTY stop, error handling,
+          security/data exposure, test quality, integration, generated convergence. Shared surfaces
+          touched: templates/agents-sections and generated kspec-agents.md. Neutrality direction 1
+          passes: new shared prose uses universal kspec lifecycle mechanics and configurable
+          identities, with no Kynetic branch/toolchain/external-review policy. Direction 2 is N/A:
+          no Kynetic-only instruction was removed. Local Kynetic policy remains in AGENTS.md,
+          work-gates/review-gates, and dynamic kspec-agents context. Relevant agents generation
+          converged; unrelated skill-render asymmetry is pre-existing observation @01KXS2HP."
+        created_at: 2026-07-17T23:24:18.343Z
+    kind: nit
 verdicts: []
 created_at: 2026-07-17T22:58:26.240Z
-updated_at: 2026-07-17T23:23:53.507Z
+updated_at: 2026-07-17T23:24:18.343Z
 notes: []
