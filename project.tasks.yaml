@@ -34275,6 +34275,7 @@
   notes_count: 0
   todos_count: 0
   created_at: 2026-07-17T00:08:24.306Z
+  automation: eligible
 - _ulid: 01KXPPEAYMN69MKK49CA73D6AG
   slugs:
     - task-close-documentation-drift-gates
