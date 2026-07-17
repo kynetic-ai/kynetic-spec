@@ -477,6 +477,12 @@ events:
     payload:
       thread_ulid: 01KXPV0NDYF9AGW08Q75A1ZZ3E
     timestamp: 2026-07-17T02:04:26.839Z
+  - _ulid: 01KXPX2YR68XWHHFN8G5FFSWN3
+    actor: Jacob Chapel
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KXPV0RMFWN5V61ZNJ53KPE6B
+    timestamp: 2026-07-17T02:04:32.902Z
 examined_commit: 528a4ca8ef3c30d260e96d3d37b681837642f362
 external_links: []
 lifecycle_state: closed
@@ -572,6 +578,12 @@ threads:
           getting-started contains tutorial.md. Compare the observed link sequence against an
           independently defined navigation/reading order without sorting it."
         created_at: 2026-07-17T01:28:23.951Z
+      - _ulid: 01KXPX2YDXVJ8HGTJ040V9BTQN
+        author: Jacob Chapel
+        body: "Fixed: added an independent section_reading_order fixture and compare landing-page links
+          directly in sequence. A separate set equality assertion proves the ordered list also
+          covers every actual child page without sorting away order regressions."
+        created_at: 2026-07-17T02:04:32.572Z
     kind: blocker
   - _ulid: 01KXPV0VX1X8Q9M6KD9S41HE8X
     anchor:
@@ -741,5 +753,5 @@ verdicts:
     role: reviewer
     created_at: 2026-07-17T01:32:06.195Z
 created_at: 2026-07-17T01:05:48.282Z
-updated_at: 2026-07-17T02:04:26.561Z
+updated_at: 2026-07-17T02:04:32.572Z
 notes: []
