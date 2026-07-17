@@ -624,6 +624,12 @@ events:
     payload:
       thread_ulid: 01KXRV1884SHVKP4ZJWSFJ5K7S
     timestamp: 2026-07-17T20:09:29.958Z
+  - _ulid: 01KXRV5R38ARXD3A8CRVG34HB9
+    actor: Jacob Chapel
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KXRV1EW5PB78Q6H4DDGFM318
+    timestamp: 2026-07-17T20:09:36.104Z
 examined_commit: a71126177efc68c959fa2434fea5fe013eb188f1
 external_links: []
 lifecycle_state: closed
@@ -867,6 +873,11 @@ threads:
           operators through a rerun path the product will not take. Name the actual observable
           invalidation signals and recovery."
         created_at: 2026-07-17T20:07:15.590Z
+      - _ulid: 01KXRV5QNWYRWXRNTFR06FGE05
+        author: Jacob Chapel
+        body: Duplicate record created during a stale-read retry; canonical finding is thread
+          01KXRTWQZM8K0T4VWS1YA8R71S.
+        created_at: 2026-07-17T20:09:35.676Z
     kind: blocker
   - _ulid: 01KXRV1MWW8DXEJYAT13PFTDV4
     anchor:
@@ -959,5 +970,5 @@ verdicts:
     role: reviewer
     created_at: 2026-07-17T20:08:03.278Z
 created_at: 2026-07-17T19:46:13.580Z
-updated_at: 2026-07-17T20:09:29.689Z
+updated_at: 2026-07-17T20:09:35.676Z
 notes: []
