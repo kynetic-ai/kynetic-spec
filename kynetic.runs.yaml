@@ -83367,7 +83367,7 @@ runs:
     completed_at: 2026-07-17T15:11:58.245Z
   - _ulid: 01KXRDP014WXA7FFB05GE3KKS7
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -83383,7 +83383,21 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-07-17T16:17:11.148Z
-        completed_at: 2026-07-17T16:17:11.148Z
+        completed_at: 2026-07-17T16:17:39.828Z
+        notes: "High-confidence session patterns: (1) diff-first review plus an uncached full-suite run and
+          exact base/head comparison exposed a branch regression; this success pattern is already
+          covered by multiple diff-first observations and exact fixture-gate success @01KXPXF6. (2)
+          Fresh testing can reveal stale cached outcomes; already covered by @01KNMV7B6. (3)
+          Full-suite duration/teardown friction is already tracked by @test-suite-perf-reliability
+          and @01KM4A3W. (4) Unbounded reflection baselines and unavailable reviewer entrypoints
+          already have coverage, including @01KXQNZ5. The tracked-Markdown count defect is
+          task-specific and is durably recorded in review @01KXRADDZPTVPCJ7EB41HG0287. A new
+          generalized cache-key claim would be low confidence because the conflicting worker note
+          does not prove cache causality."
+      - status: completed
+        step_index: 2
+        started_at: 2026-07-17T16:17:39.828Z
+        completed_at: 2026-07-17T16:17:39.828Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-07-17T16:13:48.452Z
