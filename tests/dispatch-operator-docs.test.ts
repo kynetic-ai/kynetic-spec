@@ -17,6 +17,12 @@ import {
   AgentDispatchRuleSchema,
 } from "../src/schema/meta.js";
 import {
+  DispatchWorkspaceBranchModeSchema,
+  DispatchWorkspaceBranchOwnershipSchema,
+  DispatchWorkspaceCleanupStatusSchema,
+  DispatchWorkspaceRoleSchema,
+} from "../src/schema/dispatch-workspace.js";
+import {
   DispatchCleanupErrorCodeSchema as DurableCleanupErrorCodeSchema,
   DispatchCleanupEntryStatusSchema as DurableCleanupEntryStatusSchema,
   DispatchCleanupStateSchema as DurableCleanupStateSchema,
@@ -137,6 +143,76 @@ const EXPECTED_TASK_COMMANDS = [
   "kspec agent dispatch task pause",
   "kspec agent dispatch task resume",
   "kspec agent dispatch task stop",
+] as const;
+const EXPECTED_FACT_SOURCE_MATRIX = [
+  {
+    group: "workspace-configuration",
+    sources: [
+      "src/parser/config.ts",
+      "src/schema/meta.ts",
+      "src/schema/dispatch-workspace.ts",
+      "src/agent-runtime/bootstrap.ts",
+      "src/agent-runtime/workspace.ts",
+    ],
+    tests: [
+      "tests/dispatch-workspace-config.test.ts",
+      "tests/dispatch-runtime-bootstrap-contract.test.ts",
+      "tests/dispatch-target-sync.test.ts",
+      "tests/dispatch-workspace-registry.test.ts",
+    ],
+  },
+  {
+    group: "lifecycle-authority-and-durability",
+    sources: [
+      "src/schema/dispatch-control.ts",
+      "src/agent-runtime/dispatch-control-store.ts",
+      "src/agent-runtime/dispatch.ts",
+    ],
+    tests: [
+      "tests/dispatch-control-store.test.ts",
+      "tests/dispatch-global-lifecycle.test.ts",
+      "tests/dispatch-task-lifecycle.test.ts",
+      "tests/dispatch-lifecycle-publication-admission.test.ts",
+    ],
+  },
+  {
+    group: "cli-and-identity",
+    sources: ["src/cli/index.ts", "src/cli/introspection.ts", "src/cli/commands/agent.ts"],
+    tests: ["tests/cli-agent-dispatch-lifecycle.test.ts", "tests/dispatch-task-identity.test.ts"],
+  },
+  {
+    group: "api-status-control",
+    sources: ["packages/shared/src/api.ts", "packages/daemon/src/routes/agent-dispatch.ts"],
+    tests: [
+      "tests/daemon-agent-dispatch-lifecycle.test.ts",
+      "tests/dispatch-lifecycle-surface-integration.test.ts",
+    ],
+  },
+  {
+    group: "ui-projection-accessibility",
+    sources: [
+      "packages/web-ui/src/lib/api.ts",
+      "packages/web-ui/src/lib/dispatch-lifecycle.ts",
+      "packages/web-ui/src/routes/agents/+page.svelte",
+    ],
+    tests: [
+      "tests/web-ui/dispatch-lifecycle-controls.test.ts",
+      "tests/e2e/dispatch-lifecycle.spec.ts",
+    ],
+  },
+  {
+    group: "events-safety-recovery",
+    sources: [
+      "src/schema/event-registry.ts",
+      "src/schema/event-payloads.ts",
+      "src/agent-runtime/dispatch.ts",
+    ],
+    tests: [
+      "tests/dispatch-control-events.test.ts",
+      "tests/dispatch-stop-recovery.test.ts",
+      "tests/dispatch-controlled-evidence-protection.test.ts",
+    ],
+  },
 ] as const;
 
 function git(cwd: string, ...args: string[]): string {
@@ -412,7 +488,8 @@ interface DispatchFacts {
   evidence: {
     reviewed_lifecycle_commit: string;
     integrated_lifecycle_commit: string;
-    source_matrix: Array<{ sources: string[]; tests: string[] }>;
+    integration_target_at_freeze: string;
+    source_matrix: Array<{ group: string; sources: string[]; tests: string[] }>;
   };
   workspace: typeof factsFixture.workspace;
   command_tree: typeof factsFixture.command_tree;
@@ -537,30 +614,17 @@ function validateFacts(facts: DispatchFacts): void {
       cwd: ROOT,
     },
   );
-  expect(
-    execFileSync(
-      "git",
-      [
-        "merge-base",
-        "HEAD",
-        "origin/plan/plan-dispatch-lifecycle-pause-resume-and-stop-controls/01kxc2vx",
-      ],
-      { cwd: ROOT, encoding: "utf8" },
-    ).trim(),
-  ).toBe(facts.evidence.integration_target_at_freeze);
-  expect(facts.evidence.source_matrix.map((row) => row.group)).toEqual([
-    "workspace-configuration",
-    "lifecycle-authority-and-durability",
-    "cli-and-identity",
-    "api-status-control",
-    "ui-projection-accessibility",
-    "events-safety-recovery",
-  ]);
   execFileSync(
     "git",
     ["merge-base", "--is-ancestor", facts.evidence.integrated_lifecycle_commit, "HEAD"],
     { cwd: ROOT },
   );
+  execFileSync(
+    "git",
+    ["merge-base", "--is-ancestor", facts.evidence.integration_target_at_freeze, "HEAD"],
+    { cwd: ROOT },
+  );
+  expect(facts.evidence.source_matrix).toEqual(EXPECTED_FACT_SOURCE_MATRIX);
   for (const row of facts.evidence.source_matrix) {
     for (const path of [...row.sources, ...row.tests]) {
       if (!existsSync(resolve(ROOT, path))) throw new Error(`missing fact authority: ${path}`);
@@ -606,9 +670,27 @@ function validateFacts(facts: DispatchFacts): void {
   );
   expect(facts.workspace.bootstrap.step_keys).toEqual(Object.keys(AgentBootstrapStepSchema.shape));
   expect(facts.workspace.bootstrap).toMatchObject({
+    scope: "dispatch-managed workspaces only",
     project_steps_before_agent_steps: true,
     tracked_mutation_requires_opt_in: true,
+    reviewer_reuses_valid_worker_state: true,
     reviewer_reruns_only_safe_steps: true,
+  });
+  expect(facts.workspace.workspace_ownership).toEqual({
+    roles: DispatchWorkspaceRoleSchema.options,
+    worker_mode: DispatchWorkspaceBranchModeSchema.options[0],
+    reviewer_mode: DispatchWorkspaceBranchModeSchema.options[1],
+    branch_ownership: DispatchWorkspaceBranchOwnershipSchema.options,
+    cleanup_statuses: DispatchWorkspaceCleanupStatusSchema.options,
+    registry_is_authority: true,
+    cleanup_is_dispatch_owned_only: true,
+  });
+  expect(facts.workspace.remote_sync).toEqual({
+    no_remote: "local-only with no degraded state or warnings",
+    target_update: "fast-forward only with no merge commits",
+    degraded_status_fields: ["branch", "reason", "enteredAt", "kind"],
+    reviewer_target_sync: "deferred while that target has an active reviewer",
+    completion_status: "in progress; only source-verified behavior is public",
   });
   expect(
     AgentDispatchRuleSchema.parse({
@@ -621,6 +703,19 @@ function validateFacts(facts: DispatchFacts): void {
   });
   expect(facts.workspace.rule_keys).toEqual(Object.keys(AgentDispatchRuleSchema.shape));
   expect(facts.workspace.rule_filter_keys).toEqual(Object.keys(AgentDispatchFilterSchema.shape));
+  const eventScopedRules = facts.workspace.automation_filtering.rules.map((rule) =>
+    AgentDispatchRuleSchema.parse(rule),
+  );
+  expect(eventScopedRules).toEqual([
+    { on: "task.ready", filter: { automation: "eligible" } },
+    { on: "task.in_progress", filter: { automation: "eligible" } },
+    { on: "task.needs_work", filter: { automation: "eligible" } },
+    { on: "task.pending_review" },
+  ]);
+  expect(facts.workspace.automation_filtering).toMatchObject({
+    event_specific: true,
+    no_global_automation_filter: true,
+  });
   expect(facts.workspace.default_agent_skills).toEqual(defaults.agent.skills);
 
   const exportedCommands = flattenCommandTree(extractCommandTree(createProgram())).map((command) =>
@@ -717,6 +812,20 @@ function validateFacts(facts: DispatchFacts): void {
     degraded_targets: wire.degraded_targets,
   });
   expect(facts.lifecycle.status_fields.toSorted()).toEqual(Object.keys(parsedWire).toSorted());
+  const degradedStatus = DispatchLifecycleStatusSchema.parse({
+    ...parsedWire,
+    degraded_targets: [
+      {
+        branch: "plan/docs",
+        reason: "local and remote histories diverged",
+        enteredAt: NOW,
+        kind: "diverged",
+      },
+    ],
+  });
+  expect(Object.keys(degradedStatus.degraded_targets[0]!)).toEqual(
+    facts.workspace.remote_sync.degraded_status_fields,
+  );
   expect(facts.lifecycle.projections).toEqual(["running", "paused", "draining", "stopped"]);
   expect(parsedWire.held_count).toBe(parsedWire.held_tasks.length);
   expect(facts.lifecycle.held_task_fields.toSorted()).toEqual(
@@ -1010,8 +1119,12 @@ function validateFacts(facts: DispatchFacts): void {
 
   expect(facts.limitations).toEqual([
     "pause is a graceful admission hold; stop is hard stop",
+    "no checkpointing",
+    "no distributed scheduler",
+    "no exact durable FIFO promise",
     "no workspace deletion or reset command",
-    "one-shot kspec agent run is separate from dispatch lifecycle control",
+    "no control of arbitrary one-shot work outside dispatch ownership",
+    "recovery may remain pending when process ownership cannot be proven",
   ]);
   expect(facts.lifecycle.global_actions.running).toEqual(["pause", "stop"]);
   expect(exportedCommands.some((command) => /workspace (?:delete|reset)/.test(command))).toBe(
@@ -1019,6 +1132,13 @@ function validateFacts(facts: DispatchFacts): void {
   );
   expect(exportedCommands).toContain("kspec agent run");
   expect(exportedCommands).not.toContain("kspec agent dispatch run");
+  expect(
+    exportedCommands
+      .filter((command) => command.startsWith("kspec agent dispatch"))
+      .some((command) => /checkpoint|scheduler|fifo/i.test(command)),
+  ).toBe(false);
+  expect(DispatchCleanupPhaseSchema.options).toContain("owned");
+  expect(facts.safety.cleanup_error_codes).toContain("cleanup_identity_unverifiable");
   expect(scopedCleanup.pending_cleanup.global).toMatchObject({
     status: "failed",
     error_code: "cancellation_timeout",
@@ -1142,6 +1262,40 @@ describe("dispatch operator fact fixture", () => {
       expect(await readTestOutput(join(workspace.cwd, ".facts", "order"))).toBe("project\nagent\n");
       expect(result.ranSteps).toBe(true);
       expect(factsFixture.workspace.bootstrap.project_steps_before_agent_steps).toBe(true);
+
+      const reuseTaskId = testUlids("TASK", 4)[3]!;
+      const reuseWorkerWorkspace = await provisionDispatchWorkspace({
+        projectDir,
+        taskRef: `@${reuseTaskId}`,
+        task: { title: "Bootstrap reuse facts", slugs: ["bootstrap-reuse-facts"] },
+      });
+      await ensureWorkspaceBootstrap({
+        projectDir,
+        workspaceDir: reuseWorkerWorkspace.cwd,
+        metadataPath: reuseWorkerWorkspace.metadataPath,
+        metadata: reuseWorkerWorkspace.metadata,
+        role: "worker",
+        agent: factAgent(),
+        env: {},
+      });
+      const reuseReviewerWorkspace = await provisionDispatchWorkspace({
+        projectDir,
+        taskRef: `@${reuseTaskId}`,
+        role: "reviewer",
+        task: { title: "Bootstrap reuse facts", slugs: ["bootstrap-reuse-facts"] },
+      });
+      const reused = await ensureWorkspaceBootstrap({
+        projectDir,
+        workspaceDir: reuseReviewerWorkspace.cwd,
+        metadataPath: reuseReviewerWorkspace.metadataPath,
+        metadata: reuseReviewerWorkspace.metadata,
+        role: "reviewer",
+        agent: factAgent(),
+        env: {},
+      });
+      expect(reuseReviewerWorkspace.cwd).not.toBe(reuseWorkerWorkspace.cwd);
+      expect(reused).toMatchObject({ reused: true, ranSteps: false });
+      expect(factsFixture.workspace.bootstrap.reviewer_reuses_valid_worker_state).toBe(true);
 
       await writeFile(
         join(projectDir, "kspec.config.yaml"),
@@ -1575,10 +1729,17 @@ describe("dispatch operator fact fixture", () => {
   it("rejects stale facts in every structured fact group", () => {
     const mutations: Array<[string, (facts: DispatchFacts) => void]> = [
       ["evidence", (facts) => (facts.evidence.integration_target_at_freeze = "0".repeat(40))],
+      ["source matrix", (facts) => (facts.evidence.source_matrix[0]!.sources[0] = "package.json")],
       [
         "workspace",
         (facts) => (facts.workspace.bootstrap.project_steps_before_agent_steps = false),
       ],
+      [
+        "workspace ownership",
+        (facts) => (facts.workspace.workspace_ownership.reviewer_mode = "branch"),
+      ],
+      ["remote sync", (facts) => facts.workspace.remote_sync.degraded_status_fields.pop()],
+      ["event automation filter", (facts) => facts.workspace.automation_filtering.rules.pop()],
       ["command tree", (facts) => facts.command_tree.help_modes.pop()],
       ["identity", (facts) => facts.lifecycle.identity.accepted_aliases.pop()],
       ["durability", (facts) => (facts.lifecycle.durability.path = ".kspec/other.yaml")],

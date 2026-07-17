@@ -30,6 +30,7 @@ interface InventoryRecord {
   exclusion_reason?: string;
   generated_from?: string[];
   build_command?: string;
+  owning_test?: string;
   audit_topics?: string[];
   audit_status?: string;
   disposition?: string;
@@ -64,6 +65,126 @@ const PUBLIC_SURFACE_METADATA = {
   audit_status: "source-verified",
   disposition: "declared",
 } as const;
+const ACTIVE_PUBLIC_ROOTS = new Set([
+  "README.md",
+  "INSTALL.md",
+  "CONTRIBUTING.md",
+  "SECURITY.md",
+  "RELEASE_NOTES.md",
+  "packages/web-ui/README.md",
+  ".github/ISSUE_TEMPLATE/maintainer-approved-issues-and-features.md",
+]);
+const EXCLUSION_METADATA = {
+  audit_topics: ["ownership", "safety", "exclusion"],
+  audit_status: "pending",
+  disposition: "pending-task-7-audit",
+} as const;
+const ACTIVE_PUBLIC_METADATA = {
+  audit_topics: ["factual-accuracy", "navigation", "links"],
+  audit_status: "pending",
+  disposition: "pending-task-7-audit",
+} as const;
+const SOURCE_TEMPLATE_METADATA = {
+  audit_topics: ["factual-accuracy", "package-neutrality", "generated-pairing"],
+  audit_status: "pending",
+  disposition: "pending-task-7-audit",
+} as const;
+
+function markdownSurfaceRecord(path: string): InventoryRecord {
+  const base = {
+    id: `markdown:${path}`,
+    kind: "markdown-file",
+    path,
+    source_of_truth: [path],
+  };
+  if (
+    ACTIVE_PUBLIC_ROOTS.has(path) ||
+    (path.startsWith("docs/") &&
+      !path.startsWith("docs/history/") &&
+      path !== "docs/agents-eval-scenarios.md" &&
+      path !== "docs/prime-mock.md")
+  ) {
+    return { ...base, classification: "active-public", ...ACTIVE_PUBLIC_METADATA };
+  }
+  if (path.startsWith("docs/history/")) {
+    return {
+      ...base,
+      classification: "historical",
+      exclusion_reason:
+        "Historical record retained for context and checked only for dangerous current recovery advice.",
+      ...EXCLUSION_METADATA,
+    };
+  }
+  if (path === "docs/agents-eval-scenarios.md" || path === "docs/prime-mock.md") {
+    return {
+      ...base,
+      classification: "internal-eval",
+      exclusion_reason:
+        "Internal evaluation or design input, not an operator documentation surface.",
+      ...EXCLUSION_METADATA,
+    };
+  }
+  if (path.startsWith("templates/agents-sections/") || path.startsWith("templates/skills/")) {
+    return {
+      ...base,
+      classification: "source-template",
+      exclusion_reason:
+        "Package authoring source audited for factual neutrality; consumers read rendered outputs.",
+      ...SOURCE_TEMPLATE_METADATA,
+    };
+  }
+  if (path === "kspec-agents.md") {
+    const generatedFrom = ["templates/agents-sections/", "project meta conventions/workflows"];
+    return {
+      ...base,
+      classification: "generated",
+      source_of_truth: generatedFrom,
+      exclusion_reason: "Generated output audited through its source and regeneration pairing.",
+      generated_from: generatedFrom,
+      build_command: "kspec agents generate",
+      ...EXCLUSION_METADATA,
+    };
+  }
+  const renderedSkill = path.match(/^\.(?:agents|factory)\/skills\/(.+)$/)?.[1];
+  const renderedSkillSource = renderedSkill?.replace(/^kspec-/, "");
+  if (renderedSkillSource && existsSync(resolve(ROOT, `templates/skills/${renderedSkillSource}`))) {
+    const generatedFrom = [`templates/skills/${renderedSkillSource}`];
+    return {
+      ...base,
+      classification: "generated",
+      source_of_truth: generatedFrom,
+      exclusion_reason: "Generated output audited through its source and regeneration pairing.",
+      generated_from: generatedFrom,
+      build_command: "kspec skill render",
+      ...EXCLUSION_METADATA,
+    };
+  }
+  if (path.startsWith("tests/") && path.includes("/fixtures/")) {
+    return {
+      ...base,
+      classification: "fixture",
+      exclusion_reason:
+        "Test input owned by its behavioral fixture consumer, not public documentation.",
+      owning_test: "tests/plan-document-parser.test.ts",
+      ...EXCLUSION_METADATA,
+    };
+  }
+  if (
+    path === "AGENTS.md" ||
+    path === "CLAUDE.md" ||
+    path.startsWith(".claude/") ||
+    path.startsWith(".agents/") ||
+    path.startsWith(".factory/")
+  ) {
+    return {
+      ...base,
+      classification: "internal-agent-guidance",
+      exclusion_reason: "Project or runtime agent guidance, not public operator documentation.",
+      ...EXCLUSION_METADATA,
+    };
+  }
+  throw new Error(`no Markdown classification contract for ${path}`);
+}
 
 function commandSurfaceRecords(): InventoryRecord[] {
   const generated = flattenCommandTree(extractCommandTree(createProgram())).map((command) => ({
@@ -287,6 +408,14 @@ function validateInventory(fixture: InventoryFixture): { pendingAdditions: strin
   for (const record of markdownRecords) {
     if (!record.classification) throw new Error(`unclassified surface: ${record.path}`);
     if (record.source_of_truth.length === 0) throw new Error(`missing source: ${record.path}`);
+    for (const authority of record.source_of_truth) {
+      if (
+        authority !== "project meta conventions/workflows" &&
+        !existsSync(resolve(ROOT, authority))
+      ) {
+        throw new Error(`missing Markdown source authority: ${record.path}: ${authority}`);
+      }
+    }
     if (
       record.classification !== "active-public" &&
       (!record.exclusion_reason || record.exclusion_reason.trim().length === 0)
@@ -299,6 +428,25 @@ function validateInventory(fixture: InventoryFixture): { pendingAdditions: strin
     ) {
       throw new Error(`unpaired generated output: ${record.path}`);
     }
+  }
+
+  const expectedMarkdownRecords = tracked
+    .filter((path) => manifestSet.has(path) || !allowed.has(path))
+    .map(markdownSurfaceRecord)
+    .map(normalizedRecord)
+    .toSorted();
+  const actualMarkdownRecords = markdownRecords.map(normalizedRecord).toSorted();
+  const missingMarkdownContract = expectedMarkdownRecords.filter(
+    (record) => !actualMarkdownRecords.includes(record),
+  );
+  const staleMarkdownContract = actualMarkdownRecords.filter(
+    (record) => !expectedMarkdownRecords.includes(record),
+  );
+  if (missingMarkdownContract.length > 0) {
+    throw new Error(`missing required Markdown contract: ${missingMarkdownContract.join(", ")}`);
+  }
+  if (staleMarkdownContract.length > 0) {
+    throw new Error(`unexpected stale Markdown contract: ${staleMarkdownContract.join(", ")}`);
   }
 
   for (const record of fixture.records.filter(
@@ -481,6 +629,27 @@ describe("public documentation inventory", () => {
     )!;
     delete historical.exclusion_reason;
     expect(() => validateInventory(unexplained)).toThrow(/unreasoned exclusion/);
+  });
+
+  it("rejects path-specific Markdown classification, authority, and audit metadata drift", () => {
+    const mutations: Array<[string, (record: InventoryRecord) => void]> = [
+      [
+        "classification",
+        (record) => {
+          record.classification = "historical";
+          record.exclusion_reason = "Arbitrary reclassification";
+        },
+      ],
+      ["source authority", (record) => (record.source_of_truth = ["INSTALL.md"])],
+      ["audit topics", (record) => (record.audit_topics = [])],
+      ["audit status", (record) => (record.audit_status = "source-verified")],
+      ["disposition", (record) => (record.disposition = "arbitrary")],
+    ];
+    for (const [label, mutate] of mutations) {
+      const fixture = cloneFixture();
+      mutate(fixture.records.find((record) => record.id === "markdown:README.md")!);
+      expect(() => validateInventory(fixture), label).toThrow(/Markdown contract/);
+    }
   });
 
   it("rejects an unpaired generated output", () => {

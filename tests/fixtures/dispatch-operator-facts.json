@@ -10,12 +10,15 @@
         "sources": [
           "src/parser/config.ts",
           "src/schema/meta.ts",
-          "src/schema/dispatch-workspace.ts"
+          "src/schema/dispatch-workspace.ts",
+          "src/agent-runtime/bootstrap.ts",
+          "src/agent-runtime/workspace.ts"
         ],
         "tests": [
           "tests/dispatch-workspace-config.test.ts",
           "tests/dispatch-runtime-bootstrap-contract.test.ts",
-          "tests/dispatch-target-sync.test.ts"
+          "tests/dispatch-target-sync.test.ts",
+          "tests/dispatch-workspace-registry.test.ts"
         ]
       },
       {
@@ -94,12 +97,20 @@
     },
     "publication_modes": ["pull_request", "manual_merge", "auto"],
     "remote_sync_default": "enabled exactly when a remote exists",
+    "remote_sync": {
+      "no_remote": "local-only with no degraded state or warnings",
+      "target_update": "fast-forward only with no merge commits",
+      "degraded_status_fields": ["branch", "reason", "enteredAt", "kind"],
+      "reviewer_target_sync": "deferred while that target has an active reviewer",
+      "completion_status": "in progress; only source-verified behavior is public"
+    },
     "worktree_root_resolution": "relative paths resolve from the project root; absolute paths remain absolute",
     "base_target_precedence": {
       "plan_over_configured": true,
       "configured_over_fallback": true
     },
     "bootstrap": {
+      "scope": "dispatch-managed workspaces only",
       "roles": ["worker", "reviewer"],
       "step_keys": [
         "run",
@@ -111,10 +122,30 @@
       ],
       "project_steps_before_agent_steps": true,
       "tracked_mutation_requires_opt_in": true,
+      "reviewer_reuses_valid_worker_state": true,
       "reviewer_reruns_only_safe_steps": true
+    },
+    "workspace_ownership": {
+      "roles": ["worker", "reviewer"],
+      "worker_mode": "branch",
+      "reviewer_mode": "detached",
+      "branch_ownership": ["dispatcher-managed", "adopted"],
+      "cleanup_statuses": ["not_scheduled", "scheduled", "blocked", "completed"],
+      "registry_is_authority": true,
+      "cleanup_is_dispatch_owned_only": true
     },
     "rule_keys": ["on", "filter"],
     "rule_filter_keys": ["automation", "tags", "priority"],
+    "automation_filtering": {
+      "event_specific": true,
+      "no_global_automation_filter": true,
+      "rules": [
+        { "on": "task.ready", "filter": { "automation": "eligible" } },
+        { "on": "task.in_progress", "filter": { "automation": "eligible" } },
+        { "on": "task.needs_work", "filter": { "automation": "eligible" } },
+        { "on": "task.pending_review" }
+      ]
+    },
     "default_agent_skills": {
       "task_work": "/kspec:task-work",
       "reflect": "/kspec:reflect",
@@ -321,7 +352,11 @@
   },
   "limitations": [
     "pause is a graceful admission hold; stop is hard stop",
+    "no checkpointing",
+    "no distributed scheduler",
+    "no exact durable FIFO promise",
     "no workspace deletion or reset command",
-    "one-shot kspec agent run is separate from dispatch lifecycle control"
+    "no control of arbitrary one-shot work outside dispatch ownership",
+    "recovery may remain pending when process ownership cannot be proven"
   ]
 }
