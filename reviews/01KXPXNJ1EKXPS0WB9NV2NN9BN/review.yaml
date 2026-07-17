@@ -368,6 +368,41 @@ events:
       status: pass
       name: freeze ancestry and inventory cardinality
     timestamp: 2026-07-17T02:36:47.888Z
+  - _ulid: 01KXPYYS2YQ0VQSWGHEJBC8H9Z
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KXPYYRT6S43GM06M2ZYJNJTG
+    timestamp: 2026-07-17T02:37:13.182Z
+  - _ulid: 01KXPYYWAY5XBBVZ01JRJTQA6N
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KXPYYW2YV0R969YFNB76GHWE
+    timestamp: 2026-07-17T02:37:16.510Z
+  - _ulid: 01KXPYYZK8QYBCV5V0YF2WF8TR
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KXPYYZA0N9EVPXMX9VD6TB8E
+    timestamp: 2026-07-17T02:37:19.848Z
+  - _ulid: 01KXPYZ328028SY010JBXRJNXH
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KXPYZ2T4ZGGSHSBD0NYPNJ6C
+    timestamp: 2026-07-17T02:37:23.400Z
+  - _ulid: 01KXPYZ72DFGS2Q7Q5D4GBRG2K
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KXPYZ6GNHPX79TA1S8NXJFBM
+    timestamp: 2026-07-17T02:37:27.501Z
 examined_commit: 71f5a4c87bb3e38faf1bba0954595545f08894e1
 external_links: []
 lifecycle_state: open
@@ -490,7 +525,119 @@ threads:
           skill/agent artifact refresh was required."
         created_at: 2026-07-17T02:35:39.612Z
     kind: nit
+  - _ulid: 01KXPYYRT6S43GM06M2ZYJNJTG
+    anchor:
+      type: code
+      commit: 71f5a4c87bb3e38faf1bba0954595545f08894e1
+      line_end: 305
+      line_start: 259
+      path: tests/dispatch-operator-docs.test.ts
+      side: head
+    entries:
+      - _ulid: 01KXPYYRT7Z7ZJX4H08CR5XH9Y
+        author: Jacob Chapel
+        body: "MUST-FIX — The resolved fact-drift blocker remains only partially source-bound. This block
+          compares config keys, path/target precedence, bootstrap order/scope/reviewer behavior, and
+          rule keys to a second hand-written literal rather than the exported schema or observable
+          dispatcher behavior; the same pattern continues for durability ordering/final admission,
+          accessibility/static behavior, and limitations later in validateFacts. The separate
+          bootstrap test observes only loadCommitted and the first startup-order label, not cleanup
+          retry before scheduling or both final admission rechecks. Impact: production can change
+          while the fixture and duplicated literals remain unchanged, leaving this drift gate green
+          and downstream documentation stale. Evidence: the group mutation test only proves
+          self-consistency against these literals, and the fresh focused/full suites still pass.
+          Bind every retained claim to an exported schema/helper or executed behavior, or remove
+          claims that cannot be source-bound."
+        created_at: 2026-07-17T02:37:12.903Z
+    kind: blocker
+  - _ulid: 01KXPYYW2YV0R969YFNB76GHWE
+    anchor:
+      type: code
+      commit: 71f5a4c87bb3e38faf1bba0954595545f08894e1
+      line_end: 186
+      line_start: 175
+      path: tests/dispatch-operator-docs.test.ts
+      side: head
+    entries:
+      - _ulid: 01KXPYYW2YAVAF4T9BHR14D385
+        author: Jacob Chapel
+        body: "MUST-FIX — The @auto-cli-docs ac-3 helper is not command-scoped. It normalizes the entire
+          help output and accepts each option signature anywhere, so an option removed from one
+          command still passes when another command prints the same flags and description. Impact:
+          help --all can cease to be a complete reference for an individual command while the
+          annotated test remains green. Evidence: the current exported tree contains 22 commands
+          with the exact '--json Output as JSON' signature, plus many other duplicate option
+          signatures; the fresh suite passes with this global containment check. Parse command
+          sections or otherwise compare each command's metadata within its own rendered block."
+        created_at: 2026-07-17T02:37:16.254Z
+    kind: blocker
+  - _ulid: 01KXPYYZA0N9EVPXMX9VD6TB8E
+    anchor:
+      type: code
+      commit: 71f5a4c87bb3e38faf1bba0954595545f08894e1
+      line_end: 249
+      line_start: 245
+      path: tests/public-documentation-inventory.test.ts
+      side: head
+    entries:
+      - _ulid: 01KXPYYZA0XJ7FGTGJP3FTGNCD
+        author: Jacob Chapel
+        body: "MUST-FIX — The ordered landing-page fix breaks the task's explicit six-page construction
+          allowance. sectionChildPaths includes every page found by docsPlugin, but
+          section_reading_order omits all six planned additions; once Task 2 adds
+          configuring-dispatch-workspaces.md, the exact set equality fails even though
+          validateInventory intentionally allows that path to be missing from records. Impact:
+          intervening full-suite verification becomes red as soon as the next planned task lands,
+          contrary to the task contract. Evidence: guides currently declares 9 children; adding the
+          allowed './configuring-dispatch-workspaces.md' produces 10 actual children and unequal
+          sets. Make ordered coverage account for the same pending additions while still rejecting
+          every other page/order drift."
+        created_at: 2026-07-17T02:37:19.552Z
+    kind: blocker
+  - _ulid: 01KXPYZ2T4ZGGSHSBD0NYPNJ6C
+    anchor:
+      type: code
+      commit: 71f5a4c87bb3e38faf1bba0954595545f08894e1
+      line_end: 265
+      line_start: 259
+      path: tests/public-documentation-inventory.test.ts
+      side: head
+    entries:
+      - _ulid: 01KXPYZ2T4HJM8XTGXPQ4Y0774
+        author: Jacob Chapel
+        body: "MUST-FIX — The test annotated for @auto-cli-docs ac-5 exercises inventory omission, not the
+          specified CLI behavior. Removing a manifest record and checking validateInventory never
+          adds a Commander subcommand or runs 'kspec help <parent>', so it would pass even if parent
+          help stopped auto-listing new subcommands. Existing help.test coverage only re-runs
+          extractCommandTree on a synthetic program and likewise does not execute the CLI help
+          surface. Impact: the task claims AC-5 coverage at the wrong abstraction layer. Add a
+          behavioral CLI test that registers/uses a parent with a newly added subcommand and
+          verifies the observable parent help output."
+        created_at: 2026-07-17T02:37:23.140Z
+    kind: blocker
+  - _ulid: 01KXPYZ6GNHPX79TA1S8NXJFBM
+    entries:
+      - _ulid: 01KXPYZ6GPX6SNTNZV7KNTXPT4
+        author: Jacob Chapel
+        body: "Review evidence log — informational; no action requested. Files read: all four changed files
+          (including structured audits of all 414 manifest records), both commits, prior review
+          threads, task/spec/plan context, interacting CLI introspection/help, config/control/status
+          schemas, dispatch lifecycle helpers, API/UI adapters, docs rendering tests, and merge
+          guidance. Commands run: git diff/log/status/diff-check and ancestry checks; kspec
+          task/item/plan/review queries; jq/Node inventory, classification, source,
+          option-duplication, and construction-addition audits; format, repo/focused lint,
+          typecheck, focused tests, fresh full npm test, and refs/alignment/completeness validation.
+          Claims verified: approved lifecycle commit and integrated tip are ancestors of
+          HEAD/target; 140 Markdown + 253 CLI + 21 other surfaces match current derived sets;
+          taxonomy classifications match plan rules; worker's full-suite claim independently
+          reproduced at 2834 suites/10949 passing/3 skipped. Categories searched: correctness, edge
+          cases/future planned additions, error handling, safety/security, test quality, AC
+          alignment, integration, staleness, and generated/shared guidance. Shared/package guidance
+          surfaces touched: none; neutrality directions checked for applicability only, and no
+          skill/agent artifact refresh was required."
+        created_at: 2026-07-17T02:37:26.934Z
+    kind: nit
 verdicts: []
 created_at: 2026-07-17T02:14:42.478Z
-updated_at: 2026-07-17T02:36:47.379Z
+updated_at: 2026-07-17T02:37:26.934Z
 notes: []
