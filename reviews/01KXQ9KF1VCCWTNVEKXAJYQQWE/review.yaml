@@ -2,7 +2,17 @@ _ulid: 01KXQ9KF1VCCWTNVEKXAJYQQWE
 slugs: []
 title: Review freeze final integrated dispatch facts and public-surface inventory gate (cycle 5)
 author: Jacob Chapel
-checks: []
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Exit 0; all 1061 matched files use the correct format.
+    name: format
+    required: true
+    runner: npm run format:check
+    created_at: 2026-07-17T06:01:37.923Z
+    completed_at: 2026-07-17T06:01:37.923Z
 events:
   - _ulid: 01KXQ9KF1NYMAD8E178VTH0VP7
     actor: Jacob Chapel
@@ -17,6 +27,13 @@ events:
       from: draft
       to: open
     timestamp: 2026-07-17T05:43:30.949Z
+  - _ulid: 01KXQAN2M6MN58FBNMT884534J
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: format
+    timestamp: 2026-07-17T06:01:38.183Z
 examined_commit: c192d23e11c8934a924982e25f6cae10d3143e2d
 external_links: []
 lifecycle_state: open
@@ -29,5 +46,5 @@ subject:
 threads: []
 verdicts: []
 created_at: 2026-07-17T05:43:16.795Z
-updated_at: 2026-07-17T05:43:30.684Z
+updated_at: 2026-07-17T06:01:37.923Z
 notes: []
