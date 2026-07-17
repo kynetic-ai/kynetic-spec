@@ -544,6 +544,13 @@ events:
       kind: blocker
       thread_ulid: 01KXRV12SHWV5EWFZTKNWJZMBV
     timestamp: 2026-07-17T20:07:03.582Z
+  - _ulid: 01KXRV18GATNMMJB3GG6WGCH2M
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KXRV1884SHVKP4ZJWSFJ5K7S
+    timestamp: 2026-07-17T20:07:09.066Z
 examined_commit: a71126177efc68c959fa2434fea5fe013eb188f1
 external_links: []
 lifecycle_state: closed
@@ -728,6 +735,25 @@ threads:
           the bounded, non-redacted bootstrap tail and its actual recorded surface."
         created_at: 2026-07-17T20:07:03.217Z
     kind: blocker
+  - _ulid: 01KXRV1884SHVKP4ZJWSFJ5K7S
+    anchor:
+      type: code
+      commit: a71126177efc68c959fa2434fea5fe013eb188f1
+      line_end: 61
+      line_start: 57
+      path: docs/troubleshooting/dispatch-bootstrap-failures.md
+      side: head
+    entries:
+      - _ulid: 01KXRV1884907JRJX50XZRT6HT
+        author: Jacob Chapel
+        body: "MUST-FIX: A reviewer bootstrap failure does not leave the task pending_review. Dispatch
+          catches every bootstrap failure, writes a [DISPATCH-BOOTSTRAP] task note, and runs task
+          block before returning, so retry/resubmit alone cannot recover the task. Document the
+          supported unblock plus retry lifecycle here and in the other bootstrap recovery blocks
+          where the same dispatcher behavior applies, while preserving the prior lifecycle state
+          restored by unblock."
+        created_at: 2026-07-17T20:07:08.804Z
+    kind: blocker
 verdicts:
   - applies_to_version:
       type: entity_version
@@ -737,5 +763,5 @@ verdicts:
     role: reviewer
     created_at: 2026-07-17T20:04:52.153Z
 created_at: 2026-07-17T19:46:13.580Z
-updated_at: 2026-07-17T20:07:03.217Z
+updated_at: 2026-07-17T20:07:08.804Z
 notes: []
