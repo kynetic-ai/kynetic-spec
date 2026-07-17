@@ -83647,7 +83647,7 @@ runs:
     completed_at: 2026-07-17T19:42:23.965Z
   - _ulid: 01KXRVA0X4518P9E2C43XY8EB8
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -83660,7 +83660,16 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-07-17T20:13:01.817Z
-        completed_at: 2026-07-17T20:13:01.817Z
+        completed_at: 2026-07-17T20:14:56.676Z
+        notes: "High-confidence friction: an atomic review batch/verdict became visible only after an
+          initially stale review get, and blind retry created duplicate checks/threads.
+          High-confidence success: fresh full-suite failure plus read-only base/head inventory
+          counts separated a branch regression from baseline. Also observed the workflow baseline
+          itself is noisy at 433 inbox items and 1715 tasks."
+      - status: completed
+        step_index: 2
+        started_at: 2026-07-17T20:14:56.676Z
+        completed_at: 2026-07-17T20:14:56.676Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-07-17T20:11:56.196Z
