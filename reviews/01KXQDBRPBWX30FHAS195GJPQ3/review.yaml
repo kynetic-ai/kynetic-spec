@@ -24,6 +24,13 @@ events:
       kind: blocker
       thread_ulid: 01KXQENYNWZR4ACAJNXG06JJQX
     timestamp: 2026-07-17T07:12:01.470Z
+  - _ulid: 01KXQEP4HXS4FKKERVSN9ZN9E9
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KXQEP4A3Y729XPP5852H149X
+    timestamp: 2026-07-17T07:12:07.229Z
 examined_commit: 234998db585d23e8f54dc6197bacf001c3df06ff
 external_links: []
 lifecycle_state: open
@@ -55,7 +62,27 @@ threads:
           verified public contract."
         created_at: 2026-07-17T07:12:01.212Z
     kind: blocker
+  - _ulid: 01KXQEP4A3Y729XPP5852H149X
+    anchor:
+      type: code
+      commit: 234998db585d23e8f54dc6197bacf001c3df06ff
+      line_end: 872
+      line_start: 869
+      path: tests/dispatch-operator-docs.test.ts
+      side: head
+    entries:
+      - _ulid: 01KXQEP4A35MV40VE0657PP72B
+        author: Jacob Chapel
+        body: "MUST-FIX: The UI mapping assertion proves only that both named properties exist, not that
+          each wire key maps to its declared UI key. Because every key on each side exists,
+          permuting entries such as global_authority→projection and projection→globalAuthority still
+          passes lines 869-872 while the fixture publishes a false compatibility mapping. This is
+          the same source-binding class previously treated as blocking for the compatibility wire
+          map. Assert the actual conversion relationship for every pair (and include a
+          mapping-specific stale mutation), rather than independent definedness."
+        created_at: 2026-07-17T07:12:06.979Z
+    kind: blocker
 verdicts: []
 created_at: 2026-07-17T06:48:58.827Z
-updated_at: 2026-07-17T07:12:01.212Z
+updated_at: 2026-07-17T07:12:06.979Z
 notes: []
