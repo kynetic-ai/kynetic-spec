@@ -13,6 +13,17 @@ checks:
     runner: npm run format:check
     created_at: 2026-07-17T06:01:37.923Z
     completed_at: 2026-07-17T06:01:37.923Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Exit 0 with 0 errors and the 696-warning repository baseline; focused oxlint on both
+      changed TypeScript tests reported 0 warnings and 0 errors.
+    name: lint
+    required: true
+    runner: npm run lint -- --quiet
+    created_at: 2026-07-17T06:01:44.202Z
+    completed_at: 2026-07-17T06:01:44.202Z
 events:
   - _ulid: 01KXQ9KF1NYMAD8E178VTH0VP7
     actor: Jacob Chapel
@@ -34,6 +45,13 @@ events:
       status: pass
       name: format
     timestamp: 2026-07-17T06:01:38.183Z
+  - _ulid: 01KXQAN8RDPD608AM7X726E3XT
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: lint
+    timestamp: 2026-07-17T06:01:44.462Z
 examined_commit: c192d23e11c8934a924982e25f6cae10d3143e2d
 external_links: []
 lifecycle_state: open
@@ -46,5 +64,5 @@ subject:
 threads: []
 verdicts: []
 created_at: 2026-07-17T05:43:16.795Z
-updated_at: 2026-07-17T06:01:37.923Z
+updated_at: 2026-07-17T06:01:44.202Z
 notes: []
