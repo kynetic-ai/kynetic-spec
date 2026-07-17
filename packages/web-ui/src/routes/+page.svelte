@@ -23,6 +23,8 @@
 		fetchObservations,
 		fetchValidation,
 		fetchAgentStatus,
+		DispatchLifecycleApiError,
+		formatDispatchLifecycleError,
 		type AgentDispatchStatus
 	} from '$lib/api';
 	import {
@@ -34,6 +36,7 @@
 	import { Badge } from '$lib/components/ui/badge';
 	import { Skeleton } from '$lib/components/ui/skeleton';
 	import ReferenceLink from '$lib/components/ReferenceLink.svelte';
+	import LifecycleEvidence from '$lib/components/agents/LifecycleEvidence.svelte';
 	import { isInitialized as isProjectInitialized } from '$lib/stores/project.svelte';
 	import { subscribe, unsubscribe, on, off } from '$lib/stores/connection.svelte';
 	import { isStaticMode } from '$lib/stores/mode.svelte';
@@ -122,10 +125,13 @@
 		return newCounts;
 	});
 
-	let agentStatus = $derived<AgentDispatchStatus | null>(agentStatusQuery.data ?? null);
+	let agentStatus = $derived<AgentDispatchStatus | null>(
+		agentStatusQuery.data ??
+			(agentStatusQuery.error instanceof DispatchLifecycleApiError ? agentStatusQuery.error.status ?? null : null)
+	);
 
 	let hasActiveWork = $derived(
-		agentStatus?.dispatch_enabled && (agentStatus?.active_invocations?.length ?? 0) > 0
+		(agentStatus?.activeInvocations.length ?? 0) > 0
 	);
 
 	// Buffered output state per agent session (same pattern as board)
@@ -156,6 +162,7 @@
 		if (taskSummaryQuery.error) return taskSummaryQuery.error.message;
 		if (inboxQuery.error) return inboxQuery.error.message;
 		if (observationsQuery.error) return observationsQuery.error.message;
+		if (agentStatusQuery.error) return formatDispatchLifecycleError(agentStatusQuery.error);
 		return null;
 	});
 
@@ -292,7 +299,7 @@
 		// Clean up stale session states based on refreshed agent status
 		if (agentStatusQuery.data) {
 			const activeSessions = new Set(
-				agentStatusQuery.data.active_invocations.map((inv) => inv.session_id)
+				agentStatusQuery.data.activeInvocations.map((inv) => inv.sessionId)
 			);
 			for (const sessionId of Object.keys(sessionStates)) {
 				if (!activeSessions.has(sessionId)) {
@@ -377,19 +384,22 @@
 	{:else}
 		<!-- AC: @ui-dashboard-overview ac-1 — Active work section -->
 		<section data-testid="active-work-section">
+			{#if agentStatus}
+				<LifecycleEvidence status={agentStatus} />
+			{/if}
 			{#if hasActiveWork}
 				<div class="mb-4">
 					<div class="flex items-center gap-2 mb-2">
 						<Activity class="size-4 text-status-in-progress" />
 						<h2 class="text-sm font-medium">Active Fleet</h2>
 						<Badge variant="secondary" class="text-[10px]">
-							{agentStatus?.active_invocations.length} running
+							{agentStatus?.activeInvocations.length} running
 						</Badge>
 					</div>
 					<div class="flex gap-3 overflow-x-auto pb-2" data-testid="active-fleet-row">
-						{#each agentStatus?.active_invocations ?? [] as invocation (invocation.session_id)}
-							{@const title = invocation.task_title ?? undefined}
-							{@const sessionState = sessionStates[invocation.session_id]}
+						{#each agentStatus?.activeInvocations ?? [] as invocation (invocation.sessionId)}
+							{@const title = invocation.taskTitle ?? undefined}
+							{@const sessionState = sessionStates[invocation.sessionId]}
 							{@const lines = sessionState?.lines ?? []}
 							<div
 								class="flex-shrink-0 w-72 rounded-lg border bg-card p-3 ds-breathe"
@@ -397,12 +407,12 @@
 							>
 								<div class="flex items-center gap-2 mb-1.5">
 									<Bot class="size-4 text-muted-foreground" />
-									<span class="text-xs font-medium truncate">{invocation.agent_id}</span>
+									<span class="text-xs font-medium truncate">{invocation.agentId}</span>
 								</div>
 
-								{#if invocation.task_ref}
+								{#if invocation.taskRef}
 									<div class="truncate mb-1">
-										<ReferenceLink ref={invocation.task_ref} type="task" title={title} class="text-xs" />
+										<ReferenceLink ref={invocation.taskRef} type="task" title={title} class="text-xs" />
 									</div>
 								{/if}
 
@@ -417,11 +427,11 @@
 												class="relative inline-flex size-2 rounded-full bg-status-in-progress"
 											></span>
 										</span>
-										<span>{formatElapsed(invocation.elapsed_ms)}</span>
+										<span>{formatElapsed(invocation.elapsedMs)}</span>
 									</div>
 
 									<a
-										href="{base}/sessions/{invocation.session_id}"
+										href="{base}/sessions/{invocation.sessionId}"
 										class="inline-flex items-center gap-1 text-primary hover:underline"
 									>
 										Stream
@@ -434,7 +444,7 @@
 									<div
 										class="mt-1.5 rounded bg-muted/50 p-1.5 font-mono text-[10px] leading-tight text-muted-foreground overflow-hidden max-h-10"
 										aria-live="polite"
-										aria-label="Agent output for {title ?? invocation.agent_id}"
+										aria-label="Agent output for {title ?? invocation.agentId}"
 										data-testid="fleet-output"
 									>
 										{#each lines.slice(-2) as line}
@@ -445,7 +455,7 @@
 									<div
 										class="mt-1.5 flex items-center gap-1 text-[10px] text-muted-foreground/50"
 										aria-live="polite"
-										aria-label="Agent output for {title ?? invocation.agent_id}"
+										aria-label="Agent output for {title ?? invocation.agentId}"
 										data-testid="fleet-output-empty"
 									>
 										<TerminalIcon class="size-3" />

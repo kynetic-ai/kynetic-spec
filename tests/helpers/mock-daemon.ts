@@ -128,6 +128,8 @@ export interface StartMockDaemonOptions {
    * the daemon's degraded health shape. Omitted from /api/health when unset.
    */
   healthCommandDispatch?: Record<string, unknown>;
+  /** Optional payload returned by GET /api/agent/dispatch/status. */
+  agentDispatchStatus?: unknown;
   /**
    * Explicit env overrides for the spawned child (child-process mode only).
    *
@@ -241,6 +243,7 @@ function handleInProcessRequest(
   ctx: InProcessHandlerContext,
   mode: MockDaemonMode,
   healthCommandDispatch?: Record<string, unknown>,
+  agentDispatchStatus?: unknown,
 ): void {
   const path = ctx.url.pathname;
   const method = ctx.request.method;
@@ -277,12 +280,53 @@ function handleInProcessRequest(
     });
   }
   if (path === "/api/agent/dispatch/status") {
+    return respondJson(
+      ctx.response,
+      200,
+      agentDispatchStatus ?? {
+        running: false,
+        activeInvocations: 0,
+        queuedInvocations: 0,
+        invocations: [],
+        queued: [],
+        globalAuthority: "stopped",
+        projection: "stopped",
+        cleanupState: { status: "idle", entries: [] },
+        heldCount: 0,
+        heldTasks: [],
+        taskControls: [],
+      },
+    );
+  }
+  if (path === "/api/agent/dispatch/control" && method === "POST") {
+    const request = JSON.parse(ctx.body || "{}") as {
+      action?: string;
+      scope?: string;
+      task_ref?: string;
+    };
+    const authority =
+      request.action === "pause" ? "paused" : request.action === "stop" ? "stopped" : "running";
     return respondJson(ctx.response, 200, {
-      running: false,
-      activeInvocations: 0,
-      queuedInvocations: 0,
-      invocations: [],
-      queued: [],
+      ok: true,
+      data: {
+        global_authority: authority,
+        projection: authority,
+        cleanup_state: { status: "idle", entries: [] },
+        active_count: 0,
+        queue_depth: 0,
+        held_count: 0,
+        held_tasks: [],
+        task_controls: [],
+        degraded_targets: [],
+        outcome: "applied",
+        ...(request.scope === "task"
+          ? {
+              task_id: "01KXH2PT5BATGSN8TNY7W7NE55",
+              task_ref: request.task_ref ?? null,
+            }
+          : {}),
+      },
+      error: null,
     });
   }
   if (path === "/api/agent/dispatch/start" && method === "POST") {
@@ -340,6 +384,7 @@ async function startInProcessMockDaemon(
   bindHost: string,
   mode: MockDaemonMode,
   healthCommandDispatch?: Record<string, unknown>,
+  agentDispatchStatus?: unknown,
 ): Promise<MockDaemonClient | null> {
   return new Promise((resolve) => {
     const recorded: RecordedMockRequest[] = [];
@@ -360,6 +405,7 @@ async function startInProcessMockDaemon(
         { body, url, request: req, response: res },
         mode,
         healthCommandDispatch,
+        agentDispatchStatus,
       );
     });
     server.on("connection", (socket: Socket) => {
@@ -463,6 +509,7 @@ async function startChildMockDaemon(
   startupTimeoutMs: number,
   envOverrides: Record<string, string>,
   healthCommandDispatch?: Record<string, unknown>,
+  agentDispatchStatus?: unknown,
 ): Promise<MockDaemonClient | null> {
   return new Promise((resolve) => {
     const child: ChildProcess = spawn(
@@ -477,6 +524,9 @@ async function startChildMockDaemon(
         recordPath,
         ...(healthCommandDispatch
           ? ["--health-command-dispatch", JSON.stringify(healthCommandDispatch)]
+          : []),
+        ...(agentDispatchStatus !== undefined
+          ? ["--agent-dispatch-status", JSON.stringify(agentDispatchStatus)]
           : []),
         ...injectArgs,
       ],
@@ -636,9 +686,15 @@ export async function startMockDaemon(
       startupTimeoutMs,
       envOverrides,
       opts.healthCommandDispatch,
+      opts.agentDispatchStatus,
     );
   }
-  return startInProcessMockDaemon(bindHost, mode, opts.healthCommandDispatch);
+  return startInProcessMockDaemon(
+    bindHost,
+    mode,
+    opts.healthCommandDispatch,
+    opts.agentDispatchStatus,
+  );
 }
 
 // ── Metadata writing ──────────────────────────────────────────────────

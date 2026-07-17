@@ -47,6 +47,27 @@ import { registerAdapter } from "../src/agents/adapters.js";
 
 const MOCK_KSPEC_CLI = path.join(__dirname, "mocks", "kspec-capture-mock.cjs");
 
+async function admitMockInvocation(options: invocationModule.InvocationOptions) {
+  const handoff = await options.beforeCreate?.();
+  if (handoff) {
+    await options.onOwnershipPersisted?.({
+      invocation_id: handoff.invocationId,
+      session_id: handoff.sessionId,
+      task_id: handoff.taskId,
+      agent_id: handoff.agentId,
+      adapter: handoff.adapter,
+      owner_instance_id: handoff.ownerInstanceId,
+      pid: process.pid,
+      pgid: process.pid,
+      process_start_ticks: "1",
+      process_identity_platform: "linux_proc_stat_v1",
+      captured_at: new Date().toISOString(),
+      group_members: [{ pid: process.pid, process_start_ticks: "1" }],
+    });
+  }
+  return handoff;
+}
+
 /**
  * Build a lightweight mock workspace metadata object for tests that need to
  * mock provisionDispatchWorkspace/ensureWorkspaceBootstrap without caring
@@ -1454,6 +1475,9 @@ describe("AC-8: Bootstrap evaluates existing tasks on start", () => {
 
     // Bootstrap should have evaluated the pending task
     expect(enqueueCount).toBeGreaterThanOrEqual(1);
+    // Traditional-layout fixtures retain their historical running default;
+    // real shadow projects load the committed lifecycle authority first.
+    expect(engine.getLifecycleStatus().globalAuthority).toBe("running");
 
     await engine.stop();
   });
@@ -2500,10 +2524,13 @@ describe("Dispatch runner resolution preflight", () => {
       const runInvocationGate = new Promise<void>((resolve) => {
         releaseRunInvocation = resolve;
       });
-      const runSpy = vi.spyOn(invocationModule, "runInvocation").mockImplementation(async () => {
-        await runInvocationGate;
-        return { session: {} as any, outcome: "success", durationMs: 1 };
-      });
+      const runSpy = vi
+        .spyOn(invocationModule, "runInvocation")
+        .mockImplementation(async (options) => {
+          await admitMockInvocation(options);
+          await runInvocationGate;
+          return { session: {} as any, outcome: "success", durationMs: 1 };
+        });
 
       const engine = new DispatchEngine({
         projectDir: testDir,
@@ -3200,7 +3227,8 @@ describe("Active fleet cleanup on invocation completion", () => {
     const statusDuringSecondInvocation: Array<ReturnType<DispatchEngine["getStatus"]>> = [];
     let invocationCount = 0;
 
-    vi.spyOn(invocationModule, "runInvocation").mockImplementation(async () => {
+    vi.spyOn(invocationModule, "runInvocation").mockImplementation(async (options) => {
+      await admitMockInvocation(options);
       invocationCount++;
       if (invocationCount === 2) {
         // During the second invocation (spawned by drain), check if the first
@@ -3317,11 +3345,15 @@ describe("Active fleet cleanup on invocation completion", () => {
     });
     const runSpy = vi
       .spyOn(invocationModule, "runInvocation")
-      .mockImplementationOnce(async () => {
+      .mockImplementationOnce(async (options) => {
+        await admitMockInvocation(options);
         await quietInvocationGate;
         return { session: {} as never, outcome: "success", durationMs: 1 };
       })
-      .mockRejectedValueOnce(new Error("early failure"));
+      .mockImplementationOnce(async (options) => {
+        await admitMockInvocation(options);
+        throw new Error("early failure");
+      });
 
     const quietEngine = new DispatchEngine({
       projectDir: testDir,

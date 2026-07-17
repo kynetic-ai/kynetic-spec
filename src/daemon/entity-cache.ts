@@ -73,6 +73,10 @@ import {
 } from "../sessions/store.js";
 import type { Dir } from "fs";
 import * as fs from "fs/promises";
+import {
+  getOrCreateDispatchControlStore,
+  unregisterDispatchControlStore,
+} from "../agent-runtime/dispatch-control-store.js";
 
 async function closeDirectoryHandle(dir: Dir): Promise<void> {
   try {
@@ -661,6 +665,8 @@ export function fileToDomain(
 export class ProjectEntityCache {
   private projectPath: string;
   private sessionConfig: SessionCacheConfig;
+  private dispatchControlPublicationVersion = 0;
+  private agentStatusPublicationVersion = 0;
 
   // Per-domain stores
   private tasks: TaskDomainStore = {
@@ -1535,6 +1541,23 @@ export class ProjectEntityCache {
       }
       await Promise.all(domains.map((d) => this.invalidateDomain(d)));
     }
+  }
+
+  /** Invalidate lifecycle-derived views only after committed control publication. */
+  invalidateDispatchControlPublication(): void {
+    if (this.disposed) return;
+    this.dispatchControlPublicationVersion += 1;
+    this.agentStatusPublicationVersion += 1;
+  }
+
+  getDispatchControlPublicationVersions(): {
+    dispatchControl: number;
+    agentStatus: number;
+  } {
+    return {
+      dispatchControl: this.dispatchControlPublicationVersion,
+      agentStatus: this.agentStatusPublicationVersion,
+    };
   }
 
   /**
@@ -2620,6 +2643,26 @@ const cacheRegistry = new Map<string, ProjectEntityCache>();
  */
 export function getEntityCache(projectPath: string): ProjectEntityCache | null {
   return cacheRegistry.get(projectPath) ?? null;
+}
+
+export async function registerDispatchControlPublication(projectPath: string): Promise<void> {
+  const store = getOrCreateDispatchControlStore(projectPath);
+  store.setPublicationListener("entity-cache", () => {
+    getEntityCache(projectPath)?.invalidateDispatchControlPublication();
+  });
+  await store.loadCommitted();
+}
+
+export async function handleDispatchControlFileEvent(
+  projectPath: string,
+  observedHead: string | null,
+): Promise<void> {
+  const store = getOrCreateDispatchControlStore(projectPath);
+  await store.observeWorktreeEvent(observedHead);
+}
+
+export function unregisterDispatchControlPublication(projectPath: string): void {
+  unregisterDispatchControlStore(projectPath);
 }
 
 /**

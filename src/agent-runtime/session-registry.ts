@@ -36,6 +36,12 @@ export interface SessionHandle {
   requestClose(reason: string): void;
 }
 
+export interface SessionRegistration {
+  handle: SessionHandle;
+  taskId: string | null;
+  invocationId: string | null;
+}
+
 // ─── Registry ────────────────────────────────────────────────────────────────
 
 /**
@@ -47,15 +53,23 @@ export interface SessionHandle {
  * AC: @active-session-registry ac-1 through ac-4
  */
 export class SessionRegistry {
-  private readonly sessions = new Map<string, SessionHandle>();
+  private readonly sessions = new Map<string, SessionRegistration>();
 
   /**
    * Register a session handle for the given identifier.
    *
    * AC: @active-session-registry ac-1
    */
-  register(id: string, handle: SessionHandle): void {
-    this.sessions.set(id, handle);
+  register(
+    id: string,
+    handle: SessionHandle,
+    identity: { taskId?: string | null; invocationId?: string | null } = {},
+  ): void {
+    this.sessions.set(id, {
+      handle,
+      taskId: identity.taskId ?? null,
+      invocationId: identity.invocationId ?? null,
+    });
   }
 
   /**
@@ -76,7 +90,7 @@ export class SessionRegistry {
    * AC: @active-session-registry ac-3
    */
   get(id: string): SessionHandle | undefined {
-    return this.sessions.get(id);
+    return this.sessions.get(id)?.handle;
   }
 
   /**
@@ -84,6 +98,27 @@ export class SessionRegistry {
    */
   listActive(): string[] {
     return Array.from(this.sessions.keys());
+  }
+
+  listRegistrations(): Array<SessionRegistration & { sessionId: string }> {
+    return [...this.sessions].map(([sessionId, registration]) => ({
+      sessionId,
+      ...registration,
+    }));
+  }
+
+  closeMatching(predicate: (registration: SessionRegistration) => boolean, reason: string): void {
+    let firstError: unknown;
+    for (const [id, registration] of this.sessions) {
+      if (!predicate(registration)) continue;
+      try {
+        registration.handle.requestClose(reason);
+        this.sessions.delete(id);
+      } catch (error) {
+        firstError ??= error;
+      }
+    }
+    if (firstError) throw firstError;
   }
 
   /**
@@ -100,7 +135,7 @@ export class SessionRegistry {
    * AC: @active-session-registry ac-4
    */
   closeAll(reason: string): void {
-    for (const [_id, handle] of this.sessions) {
+    for (const [_id, { handle }] of this.sessions) {
       try {
         handle.requestClose(reason);
       } catch {

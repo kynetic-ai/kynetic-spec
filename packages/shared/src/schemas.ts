@@ -75,7 +75,14 @@ export type AgentDispatchEvent =
   // Action run tracking events
   | "action.started"
   | "action.completed"
-  | "action.failed";
+  | "action.failed"
+  // Dispatch lifecycle control outcomes
+  | "dispatch_control.start_applied"
+  | "dispatch_control.pause_applied"
+  | "dispatch_control.resume_applied"
+  | "dispatch_control.stop_applied"
+  | "dispatch_control.noop"
+  | "dispatch_control.failed";
 
 /**
  * All valid dispatch events as a const array — for form dropdowns and validation.
@@ -99,6 +106,12 @@ export const AGENT_DISPATCH_EVENTS: readonly AgentDispatchEvent[] = [
   "action.started",
   "action.completed",
   "action.failed",
+  "dispatch_control.start_applied",
+  "dispatch_control.pause_applied",
+  "dispatch_control.resume_applied",
+  "dispatch_control.stop_applied",
+  "dispatch_control.noop",
+  "dispatch_control.failed",
 ] as const;
 
 /**

@@ -38,7 +38,11 @@ import type {
   AgentUpdatePayload,
   ValidationAggregation,
   TaskStatusSummary,
+  DispatchCleanupErrorCode,
+  DispatchLifecycleControlErrorCode,
+  DispatchLifecycleStatus,
 } from "@kynetic-ai/shared";
+import { DispatchControlErrorCodeSchema, DispatchLifecycleStatusSchema } from "@kynetic-ai/shared";
 import type { TriageRecord } from "./types/triage";
 import {
   getSelectedProjectPath,
@@ -913,13 +917,13 @@ export type { AgentDefinition, AgentUpdatePayload };
  * AC: @runner-operator-surfaces ac-daemon-dispatch-active-api-includes-runner
  */
 export interface ActiveInvocation {
-  session_id: string;
-  agent_id: string;
-  task_ref: string | null;
-  task_title: string | null;
-  elapsed_ms: number;
+  sessionId: string;
+  agentId: string;
+  taskRef: string | null;
+  taskTitle: string | null;
+  elapsedMs: number;
   /** Resolved adapter identity for the active invocation. */
-  resolved_adapter?: string;
+  resolvedAdapter?: string;
   /** Named runner that resolved this invocation, when one was configured. */
   runner?: string;
 }
@@ -929,12 +933,12 @@ export interface ActiveInvocation {
  * AC: @runner-operator-surfaces ac-daemon-dispatch-queued-api-includes-runner
  */
 export interface QueuedInvocation {
-  agent_id: string;
-  task_ref: string | null;
-  task_title: string | null;
-  wait_ms: number;
+  agentId: string;
+  taskRef: string | null;
+  taskTitle: string | null;
+  waitMs: number;
   /** Resolved adapter identity (registry lookup or legacy adapter fallback). */
-  resolved_adapter?: string;
+  resolvedAdapter?: string;
   /** Runner reference declared on the agent definition, when present. */
   runner?: string;
 }
@@ -943,21 +947,367 @@ export interface QueuedInvocation {
  * Agent dispatch status from GET /api/agent/status
  */
 export interface AgentDispatchStatus {
-  dispatch_enabled: boolean;
-  active_invocations: ActiveInvocation[];
-  queued_invocations?: QueuedInvocation[];
-  queue_depth: number;
-  agent_definitions: Array<{
+  dispatchEnabled: boolean;
+  activeInvocations: ActiveInvocation[];
+  queuedInvocations: QueuedInvocation[];
+  queueDepth: number;
+  agentDefinitions: Array<{
     id: string;
     name: string;
     adapter: string;
     /** Resolved adapter identity (runner-aware). */
-    resolved_adapter?: string;
+    resolvedAdapter?: string;
     /** Runner reference declared on the agent definition. */
     runner?: string;
-    completed_sessions?: number;
+    completedSessions?: number;
+    runnerValidation?: unknown;
   }>;
+  degraded: { active: boolean; reason: string; enteredAt: string | null };
+  globalAuthority: "stopped" | "running" | "paused";
+  projection: "running" | "paused" | "draining" | "stopped" | "legacy_unknown_stopping";
+  cleanupState: DispatchCleanupState;
+  activeCount: number;
+  heldCount: number;
+  heldTasks: DispatchHeldTask[];
+  taskControls: DispatchTaskControl[];
+  degradedTargets: DispatchDegradedTarget[];
 }
+
+export interface DispatchCleanupEntry {
+  cleanupId: string;
+  scope: "global" | "task";
+  taskId?: string;
+  status: "pending" | "failed";
+  phase: "owned" | "signals_sent" | "sessions_closed";
+  errorCode?: DispatchCleanupErrorCode;
+}
+
+export interface DispatchCleanupState {
+  status: "idle" | "pending" | "failed";
+  entries: DispatchCleanupEntry[];
+}
+
+export interface DispatchHeldTask {
+  taskId: string;
+  taskRef: string | null;
+  title: string | null;
+  scope: "global" | "task";
+  mode: "paused" | "stopped";
+  reason: string;
+  actor: string;
+  source: "cli" | "api" | "ui" | "daemon_startup" | "daemon_shutdown" | "recovery";
+  controlledAt: string;
+  updatedAt: string;
+}
+
+export interface DispatchTaskControl extends Omit<DispatchHeldTask, "scope"> {
+  cleanupState: DispatchCleanupState;
+}
+
+export interface DispatchDegradedTarget {
+  branch: string;
+  reason: string;
+  enteredAt: string;
+  kind: string;
+}
+
+type WireRecord = Record<string, unknown>;
+
+const LIFECYCLE_CAMEL_KEYS = [
+  "dispatchEnabled",
+  "activeInvocations",
+  "queuedInvocations",
+  "agentDefinitions",
+  "globalAuthority",
+  "cleanupState",
+  "activeCount",
+  "queueDepth",
+  "heldCount",
+  "heldTasks",
+  "taskControls",
+  "degradedTargets",
+] as const;
+
+const AGENT_STATUS_WIRE_KEYS = [
+  "dispatch_enabled",
+  "active_invocations",
+  "queued_invocations",
+  "queue_depth",
+  "agent_definitions",
+  "degraded",
+  "global_authority",
+  "projection",
+  "cleanup_state",
+  "active_count",
+  "held_count",
+  "held_tasks",
+  "task_controls",
+  "degraded_targets",
+] as const;
+
+const LIFECYCLE_STATUS_WIRE_KEYS = [
+  "global_authority",
+  "projection",
+  "cleanup_state",
+  "active_count",
+  "queue_depth",
+  "held_count",
+  "held_tasks",
+  "task_controls",
+  "degraded_targets",
+] as const;
+
+function rejectUnknownKeys(record: WireRecord, keys: readonly string[], label: string): void {
+  const allowed = new Set(keys);
+  const unknown = Object.keys(record).find((key) => !allowed.has(key));
+  if (unknown) throw new Error(`Invalid ${label}: unknown field ${unknown}`);
+}
+
+function rejectCamelKeys(record: WireRecord, keys: readonly string[], label: string): void {
+  for (const key of keys) {
+    if (key in record) throw new Error(`Invalid dispatch status: mixed-case ${label}.${key}`);
+  }
+}
+
+function wireRecord(value: unknown, label: string): WireRecord {
+  if (!value || typeof value !== "object" || Array.isArray(value)) {
+    throw new Error(`Invalid dispatch status: ${label} must be an object`);
+  }
+  return value as WireRecord;
+}
+
+function wireString(value: unknown, label: string): string {
+  if (typeof value !== "string") throw new Error(`Invalid dispatch status: ${label}`);
+  return value;
+}
+
+function wireNullableString(value: unknown, label: string): string | null {
+  if (value === null) return null;
+  return wireString(value, label);
+}
+
+function wireNumber(value: unknown, label: string): number {
+  if (typeof value !== "number" || !Number.isFinite(value) || value < 0) {
+    throw new Error(`Invalid dispatch status: ${label}`);
+  }
+  return value;
+}
+
+function wireArray(value: unknown, label: string): unknown[] {
+  if (!Array.isArray(value)) throw new Error(`Invalid dispatch status: ${label}`);
+  return value;
+}
+
+function mapCleanupState(state: DispatchLifecycleStatus["cleanup_state"]): DispatchCleanupState {
+  return {
+    status: state.status,
+    entries: state.entries.map((entry) => ({
+      cleanupId: entry.cleanup_id,
+      scope: entry.scope,
+      ...(entry.task_id === undefined ? {} : { taskId: entry.task_id }),
+      status: entry.status,
+      phase: entry.phase,
+      ...(entry.error_code === undefined ? {} : { errorCode: entry.error_code }),
+    })),
+  };
+}
+
+function mapHeldTask(task: DispatchLifecycleStatus["held_tasks"][number]): DispatchHeldTask {
+  return {
+    taskId: task.task_id,
+    taskRef: task.task_ref,
+    title: task.title,
+    scope: task.scope,
+    mode: task.mode,
+    reason: task.reason,
+    actor: task.actor,
+    source: task.source,
+    controlledAt: task.controlled_at,
+    updatedAt: task.updated_at,
+  };
+}
+
+function mapTaskControl(
+  control: DispatchLifecycleStatus["task_controls"][number],
+): DispatchTaskControl {
+  return {
+    taskId: control.task_id,
+    taskRef: control.task_ref,
+    title: control.title,
+    mode: control.mode,
+    reason: control.reason,
+    actor: control.actor,
+    source: control.source,
+    controlledAt: control.controlled_at,
+    updatedAt: control.updated_at,
+    cleanupState: mapCleanupState(control.cleanup_state),
+  };
+}
+
+function lifecycleStatusWireFields(record: WireRecord): Record<string, unknown> {
+  return Object.fromEntries(LIFECYCLE_STATUS_WIRE_KEYS.map((key) => [key, record[key]]));
+}
+
+function parseLifecycleWire(record: WireRecord): DispatchLifecycleStatus | null {
+  for (const key of LIFECYCLE_CAMEL_KEYS) {
+    if (key in record) throw new Error(`Invalid dispatch status: mixed-case field ${key}`);
+  }
+  if (!("global_authority" in record)) return null;
+  return DispatchLifecycleStatusSchema.parse({
+    global_authority: record.global_authority,
+    projection: record.projection,
+    cleanup_state: record.cleanup_state,
+    active_count: record.active_count,
+    queue_depth: record.queue_depth,
+    held_count: record.held_count,
+    held_tasks: record.held_tasks,
+    task_controls: record.task_controls,
+    degraded_targets: record.degraded_targets,
+  });
+}
+
+function mapActiveInvocation(value: unknown): ActiveInvocation {
+  const row = wireRecord(value, "active invocation");
+  rejectCamelKeys(
+    row,
+    ["sessionId", "agentId", "taskRef", "taskTitle", "elapsedMs", "resolvedAdapter"],
+    "active invocation",
+  );
+  return {
+    sessionId: wireString(row.session_id, "session_id"),
+    agentId: wireString(row.agent_id, "agent_id"),
+    taskRef: wireNullableString(row.task_ref, "task_ref"),
+    taskTitle: wireNullableString(row.task_title, "task_title"),
+    elapsedMs: wireNumber(row.elapsed_ms, "elapsed_ms"),
+    ...(row.resolved_adapter === undefined
+      ? {}
+      : { resolvedAdapter: wireString(row.resolved_adapter, "resolved_adapter") }),
+    ...(row.runner === undefined ? {} : { runner: wireString(row.runner, "runner") }),
+  };
+}
+
+function mapQueuedInvocation(value: unknown): QueuedInvocation {
+  const row = wireRecord(value, "queued invocation");
+  rejectCamelKeys(
+    row,
+    ["agentId", "taskRef", "taskTitle", "waitMs", "resolvedAdapter"],
+    "queued invocation",
+  );
+  return {
+    agentId: wireString(row.agent_id, "agent_id"),
+    taskRef: wireNullableString(row.task_ref, "task_ref"),
+    taskTitle: wireNullableString(row.task_title, "task_title"),
+    waitMs: wireNumber(row.wait_ms, "wait_ms"),
+    ...(row.resolved_adapter === undefined
+      ? {}
+      : { resolvedAdapter: wireString(row.resolved_adapter, "resolved_adapter") }),
+    ...(row.runner === undefined ? {} : { runner: wireString(row.runner, "runner") }),
+  };
+}
+
+function mapAgentDefinition(value: unknown): AgentDispatchStatus["agentDefinitions"][number] {
+  const row = wireRecord(value, "agent definition");
+  rejectCamelKeys(row, ["resolvedAdapter", "completedSessions", "runnerValidation"], "agent");
+  return {
+    id: wireString(row.id, "agent id"),
+    name: wireString(row.name, "agent name"),
+    adapter: wireString(row.adapter, "agent adapter"),
+    ...(row.resolved_adapter === undefined
+      ? {}
+      : { resolvedAdapter: wireString(row.resolved_adapter, "resolved_adapter") }),
+    ...(row.runner === undefined ? {} : { runner: wireString(row.runner, "runner") }),
+    ...(row.completed_sessions === undefined
+      ? {}
+      : { completedSessions: wireNumber(row.completed_sessions, "completed_sessions") }),
+    ...(row.runner_validation === undefined ? {} : { runnerValidation: row.runner_validation }),
+  };
+}
+
+export function parseAgentDispatchStatusWire(value: unknown): AgentDispatchStatus {
+  const record = wireRecord(value, "root");
+  rejectUnknownKeys(record, AGENT_STATUS_WIRE_KEYS, "dispatch status");
+  if (typeof record.dispatch_enabled !== "boolean") {
+    throw new Error("Invalid dispatch status: dispatch_enabled");
+  }
+  const activeInvocations = wireArray(record.active_invocations, "active_invocations").map(
+    mapActiveInvocation,
+  );
+  const queuedInvocations = wireArray(record.queued_invocations ?? [], "queued_invocations").map(
+    mapQueuedInvocation,
+  );
+  const queueDepth = wireNumber(record.queue_depth, "queue_depth");
+  const agentDefinitions = wireArray(record.agent_definitions, "agent_definitions").map(
+    mapAgentDefinition,
+  );
+  const lifecycle = parseLifecycleWire(record);
+  const degradedRecord = wireRecord(
+    record.degraded ?? { active: false, reason: "", enteredAt: null },
+    "degraded",
+  );
+  const degraded = {
+    active: degradedRecord.active === true,
+    reason: typeof degradedRecord.reason === "string" ? degradedRecord.reason : "",
+    enteredAt: typeof degradedRecord.enteredAt === "string" ? degradedRecord.enteredAt : null,
+  };
+
+  if (!lifecycle) {
+    const stopping = !record.dispatch_enabled && activeInvocations.length > 0;
+    return {
+      dispatchEnabled: record.dispatch_enabled,
+      activeInvocations,
+      queuedInvocations,
+      queueDepth,
+      agentDefinitions,
+      degraded,
+      globalAuthority: record.dispatch_enabled ? "running" : "stopped",
+      projection: stopping
+        ? "legacy_unknown_stopping"
+        : record.dispatch_enabled
+          ? "running"
+          : "stopped",
+      cleanupState: { status: "idle", entries: [] },
+      activeCount: activeInvocations.length,
+      heldCount: 0,
+      heldTasks: [],
+      taskControls: [],
+      degradedTargets: [],
+    };
+  }
+
+  return {
+    dispatchEnabled: record.dispatch_enabled,
+    activeInvocations,
+    queuedInvocations,
+    queueDepth,
+    agentDefinitions,
+    degraded,
+    globalAuthority: lifecycle.global_authority,
+    projection: lifecycle.projection,
+    cleanupState: mapCleanupState(lifecycle.cleanup_state),
+    activeCount: lifecycle.active_count,
+    heldCount: lifecycle.held_count,
+    heldTasks: lifecycle.held_tasks.map(mapHeldTask),
+    taskControls: lifecycle.task_controls.map(mapTaskControl),
+    degradedTargets: lifecycle.degraded_targets,
+  };
+}
+
+export const EMPTY_AGENT_DISPATCH_STATUS: AgentDispatchStatus = {
+  dispatchEnabled: false,
+  activeInvocations: [],
+  queuedInvocations: [],
+  queueDepth: 0,
+  agentDefinitions: [],
+  degraded: { active: false, reason: "", enteredAt: null },
+  globalAuthority: "stopped",
+  projection: "stopped",
+  cleanupState: { status: "idle", entries: [] },
+  activeCount: 0,
+  heldCount: 0,
+  heldTasks: [],
+  taskControls: [],
+  degradedTargets: [],
+};
 
 /**
  * Fetch agent dispatch status (dispatch state + active invocations)
@@ -965,21 +1315,18 @@ export interface AgentDispatchStatus {
  */
 export async function fetchAgentStatus(): Promise<AgentDispatchStatus> {
   if (isStaticMode()) {
-    return {
-      dispatch_enabled: false,
-      active_invocations: [],
-      queued_invocations: [],
-      queue_depth: 0,
-      agent_definitions: [],
-    };
+    return structuredClone(EMPTY_AGENT_DISPATCH_STATUS);
   }
   const response = await fetch(`${API_BASE}/api/agent/status`, {
     headers: getProjectHeaders(),
   });
+  const body: unknown = await response.json();
   if (!response.ok) {
-    await handleResponseError(response);
+    const invalidProjectMessage = recoverInvalidProject(response, body);
+    if (invalidProjectMessage) throw new Error(invalidProjectMessage);
+    throwLifecycleError(body);
   }
-  return response.json();
+  return parseAgentDispatchStatusWire(body);
 }
 
 /**
@@ -1006,23 +1353,220 @@ export async function fetchAgentDefinitions(): Promise<{
  * Start or stop the dispatch engine
  * AC: @ui-agent-dispatch ac-2
  */
-export async function controlDispatch(
-  action: "start" | "stop",
-): Promise<{ dispatch_enabled: boolean }> {
+const LIFECYCLE_ERROR_COPY: Record<
+  DispatchLifecycleControlErrorCode,
+  { message: string; suggestion: string }
+> = {
+  validation_failed: {
+    message: "Invalid lifecycle control request",
+    suggestion: "Correct the typed request fields and retry.",
+  },
+  task_not_found: {
+    message: "Task not found",
+    suggestion: "Use an existing canonical task identifier or resolvable task reference.",
+  },
+  task_identity_ambiguous: {
+    message: "Task identity is ambiguous",
+    suggestion: "Retry with the canonical task identifier.",
+  },
+  task_identity_mismatch: {
+    message: "Task identity fields do not agree",
+    suggestion: "Use matching task identity values.",
+  },
+  invalid_transition: {
+    message: "Invalid dispatch lifecycle transition",
+    suggestion: "Refresh lifecycle status and choose an allowed action.",
+  },
+  control_store_unavailable: {
+    message: "Dispatch control store is unavailable",
+    suggestion: "Restore the project shadow worktree and retry.",
+  },
+  control_store_corrupt: {
+    message: "Dispatch control store is corrupt",
+    suggestion: "Repair the committed dispatch control data and retry.",
+  },
+  control_commit_failed: {
+    message: "Dispatch control commit failed",
+    suggestion: "Resolve the shadow worktree commit failure and retry.",
+  },
+  cancellation_timeout: {
+    message: "Dispatch cancellation timed out",
+    suggestion: "Retry hard stop after inspecting the controlled process.",
+  },
+  cancellation_failed: {
+    message: "Dispatch cancellation failed",
+    suggestion: "Inspect durable cleanup evidence and retry hard stop.",
+  },
+  session_closure_failed: {
+    message: "Dispatch session closure failed",
+    suggestion: "Inspect durable session evidence and retry hard stop.",
+  },
+  cleanup_ownership_mismatch: {
+    message: "Dispatch cleanup ownership does not match",
+    suggestion: "Verify the recorded invocation ownership before retrying.",
+  },
+  cleanup_process_birth_mismatch: {
+    message: "Dispatch cleanup process identity does not match",
+    suggestion: "Verify the recorded process identity before retrying.",
+  },
+  cleanup_leader_missing_group_alive: {
+    message: "Dispatch cleanup process group remains alive",
+    suggestion: "Inspect the recorded process group before retrying.",
+  },
+  cleanup_identity_unverifiable: {
+    message: "Dispatch cleanup identity cannot be verified",
+    suggestion: "Restore process identity evidence before retrying.",
+  },
+  cleanup_group_unverifiable: {
+    message: "Dispatch cleanup process group cannot be verified",
+    suggestion: "Restore process-group evidence before retrying.",
+  },
+  internal_error: {
+    message: "Dispatch lifecycle operation failed",
+    suggestion: "Retry after checking daemon health.",
+  },
+};
+
+export class DispatchLifecycleApiError extends Error {
+  constructor(
+    readonly code: DispatchLifecycleControlErrorCode,
+    readonly suggestion: string,
+    readonly status?: AgentDispatchStatus,
+  ) {
+    super(LIFECYCLE_ERROR_COPY[code].message);
+    this.name = "DispatchLifecycleApiError";
+  }
+}
+
+export function formatDispatchLifecycleError(error: unknown): string {
+  return error instanceof DispatchLifecycleApiError
+    ? `${error.message}. ${error.suggestion}`
+    : "Dispatch lifecycle operation failed. Retry after checking daemon health.";
+}
+
+function recoverInvalidProject(response: Response, body: unknown): string | undefined {
+  if (typeof body !== "object" || body === null || Array.isArray(body)) return undefined;
+  const record = body as Record<string, unknown>;
+  const message =
+    typeof record.message === "string"
+      ? record.message
+      : typeof record.error === "string"
+        ? record.error
+        : undefined;
+  if (!isInvalidProjectError(response, message)) return undefined;
+  clearInvalidSelection();
+  return message;
+}
+
+function throwLifecycleError(body: unknown): never {
+  const envelope = wireRecord(body, "lifecycle error");
+  rejectUnknownKeys(envelope, ["ok", "data", "error"], "lifecycle error envelope");
+  const error = wireRecord(envelope.error ?? {}, "lifecycle error detail");
+  rejectUnknownKeys(error, ["code", "message", "suggestion"], "lifecycle error detail");
+  const parsedCode = DispatchControlErrorCodeSchema.safeParse(error.code);
+  const code = parsedCode.success ? parsedCode.data : "internal_error";
+  const status = envelope.data
+    ? (() => {
+        const data = wireRecord(envelope.data, "lifecycle error status");
+        rejectUnknownKeys(data, LIFECYCLE_STATUS_WIRE_KEYS, "lifecycle error status");
+        return parseAgentDispatchStatusWire({
+          dispatch_enabled: false,
+          active_invocations: [],
+          queued_invocations: [],
+          agent_definitions: [],
+          ...data,
+        });
+      })()
+    : undefined;
+  const copy = LIFECYCLE_ERROR_COPY[code];
+  throw new DispatchLifecycleApiError(code, copy.suggestion, status);
+}
+
+export type DispatchLifecycleControlRequest =
+  | { scope: "global"; action: "start" | "pause" | "resume" | "stop"; reason?: string }
+  | {
+      scope: "task";
+      action: "pause" | "resume" | "stop";
+      taskRef: string;
+      reason?: string;
+    };
+
+export interface DispatchLifecycleControlResult {
+  status: AgentDispatchStatus;
+  outcome: "applied" | "noop";
+  taskId?: string;
+  taskRef?: string | null;
+}
+
+export async function controlDispatchLifecycle(
+  request: DispatchLifecycleControlRequest,
+): Promise<DispatchLifecycleControlResult> {
   assertWritable("control dispatch");
 
-  const response = await fetch(`${API_BASE}/api/agent/dispatch`, {
+  const response = await fetch(`${API_BASE}/api/agent/dispatch/control`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
       ...getProjectHeaders(),
     },
-    body: JSON.stringify({ action }),
+    body: JSON.stringify({
+      scope: request.scope,
+      action: request.action,
+      ...(request.scope === "task" ? { task_ref: request.taskRef } : {}),
+      ...(request.reason === undefined ? {} : { reason: request.reason }),
+    }),
   });
+  const body: unknown = await response.json();
   if (!response.ok) {
-    await handleResponseError(response);
+    const invalidProjectMessage = recoverInvalidProject(response, body);
+    if (invalidProjectMessage) throw new Error(invalidProjectMessage);
+    throwLifecycleError(body);
   }
-  return response.json();
+  const envelope = wireRecord(body, "lifecycle response");
+  rejectUnknownKeys(envelope, ["ok", "data", "error"], "lifecycle response envelope");
+  if (envelope.ok !== true || envelope.error !== null) {
+    throw new Error("Invalid lifecycle response: envelope");
+  }
+  const data = wireRecord(envelope.data, "lifecycle response data");
+  rejectUnknownKeys(
+    data,
+    [...LIFECYCLE_STATUS_WIRE_KEYS, "outcome", "task_id", "task_ref"],
+    "lifecycle response data",
+  );
+  const status = parseAgentDispatchStatusWire({
+    dispatch_enabled: data.global_authority === "running",
+    active_invocations: [],
+    queued_invocations: [],
+    agent_definitions: [],
+    ...lifecycleStatusWireFields(data),
+  });
+  if (data.outcome !== "applied" && data.outcome !== "noop") {
+    throw new Error("Invalid lifecycle response: outcome");
+  }
+  if (
+    (request.scope === "global" && (data.task_id !== undefined || data.task_ref !== undefined)) ||
+    (request.scope === "task" && (data.task_id === undefined || data.task_ref === undefined))
+  ) {
+    throw new Error("Invalid lifecycle response: task identity conditional");
+  }
+  return {
+    status,
+    outcome: data.outcome,
+    ...(request.scope === "task"
+      ? {
+          taskId: wireString(data.task_id, "task_id"),
+          taskRef: wireNullableString(data.task_ref, "task_ref"),
+        }
+      : {}),
+  };
+}
+
+/** Legacy UI compatibility wrapper. */
+export async function controlDispatch(
+  action: "start" | "stop",
+): Promise<{ dispatchEnabled: boolean }> {
+  const result = await controlDispatchLifecycle({ scope: "global", action });
+  return { dispatchEnabled: result.status.dispatchEnabled };
 }
 
 /**

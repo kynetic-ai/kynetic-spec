@@ -29,6 +29,13 @@ export const EXIT_CODES = {
   VALIDATION_WARNINGS: 6,
 } as const;
 
+/** Closed semantic exit mapping used by dispatch lifecycle controls. */
+export const LIFECYCLE_EXIT_CODES = {
+  VALIDATION: EXIT_CODES.ERROR,
+  USER_CANCELLED: EXIT_CODES.USAGE_ERROR,
+  RUNTIME: EXIT_CODES.NOT_FOUND,
+} as const;
+
 /**
  * Type for exit codes
  */

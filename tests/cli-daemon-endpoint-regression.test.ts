@@ -195,28 +195,36 @@ describe("CLI daemon clients use the metadata-advertised endpoint", () => {
 
   // AC: @daemon-network-endpoint-contract ac-clients-use-metadata
   // AC: @trait-daemon-endpoint-consumer ac-uses-reported-endpoint
-  it("`agent dispatch start` POSTs /api/agent/dispatch/start at the advertised api_url", async () => {
+  it("`agent dispatch start` POSTs canonical control at the advertised api_url", async () => {
     await startMock();
     writeMockDaemonMetadata({ home: isolated, client: mock! });
 
     const result = runCli("agent dispatch start");
     expect(result.exitCode).toBe(0);
 
-    const req = findRequest((r) => r.method === "POST" && r.url === "/api/agent/dispatch/start");
-    expectRequestAtAdvertisedHost(req, "POST /api/agent/dispatch/start");
+    const req = findRequest((r) => r.method === "POST" && r.url === "/api/agent/dispatch/control");
+    expectRequestAtAdvertisedHost(req, "POST /api/agent/dispatch/control");
+    expect(JSON.parse(req!.body)).toEqual({ scope: "global", action: "start" });
+    expect(
+      mock!.requests().some((r) => /\/api\/agent\/dispatch(?:\/start|\/stop)?$/.test(r.url)),
+    ).toBe(false);
   });
 
   // AC: @daemon-network-endpoint-contract ac-clients-use-metadata
   // AC: @trait-daemon-endpoint-consumer ac-uses-reported-endpoint
-  it("`agent dispatch stop` POSTs /api/agent/dispatch/stop at the advertised api_url", async () => {
+  it("`agent dispatch stop` POSTs canonical control at the advertised api_url", async () => {
     await startMock();
     writeMockDaemonMetadata({ home: isolated, client: mock! });
 
-    const result = runCli("agent dispatch stop");
+    const result = runCli("agent dispatch stop --force");
     expect(result.exitCode).toBe(0);
 
-    const req = findRequest((r) => r.method === "POST" && r.url === "/api/agent/dispatch/stop");
-    expectRequestAtAdvertisedHost(req, "POST /api/agent/dispatch/stop");
+    const req = findRequest((r) => r.method === "POST" && r.url === "/api/agent/dispatch/control");
+    expectRequestAtAdvertisedHost(req, "POST /api/agent/dispatch/control");
+    expect(JSON.parse(req!.body)).toEqual({ scope: "global", action: "stop" });
+    expect(
+      mock!.requests().some((r) => /\/api\/agent\/dispatch(?:\/start|\/stop)?$/.test(r.url)),
+    ).toBe(false);
   });
 
   // AC: @daemon-network-endpoint-contract ac-clients-use-metadata
@@ -230,6 +238,7 @@ describe("CLI daemon clients use the metadata-advertised endpoint", () => {
 
     const req = findRequest((r) => r.method === "GET" && r.url === "/api/agent/dispatch/status");
     expectRequestAtAdvertisedHost(req, "GET /api/agent/dispatch/status");
+    expect(findRequest((r) => r.url === "/api/agent/status")).toBeUndefined();
   });
 
   // AC: @daemon-network-endpoint-contract ac-clients-use-metadata
@@ -243,6 +252,7 @@ describe("CLI daemon clients use the metadata-advertised endpoint", () => {
 
     const req = findRequest((r) => r.method === "GET" && r.url === "/api/agent/dispatch/status");
     expectRequestAtAdvertisedHost(req, "GET /api/agent/dispatch/status");
+    expect(findRequest((r) => r.url === "/api/agent/status")).toBeUndefined();
   });
 
   // AC: @daemon-network-endpoint-contract ac-clients-use-metadata

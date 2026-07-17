@@ -81,3 +81,6 @@ export {
 } from "./schedule-engine.js";
 
 export { SessionRegistry, type SessionHandle, type SessionState } from "./session-registry.js";
+
+export * from "./dispatch-control-store.js";
+export * from "./dispatch-shadow-transaction.js";

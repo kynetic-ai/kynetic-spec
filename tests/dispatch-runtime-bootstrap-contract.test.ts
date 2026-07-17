@@ -9,7 +9,10 @@ import { DispatchEngine } from "../src/agent-runtime/dispatch.js";
 import {
   ensureWorkspaceBootstrap,
   DispatchBootstrapError,
+  loadDispatchBootstrapAuthority,
 } from "../src/agent-runtime/bootstrap.js";
+import { createMissingDispatchControl } from "../src/schema/dispatch-control.js";
+import type { DispatchLifecycleAuthorityStore } from "../src/agent-runtime/dispatch-control-store.js";
 import { DAEMON_RUNTIME_MODE_ENV_KEYS } from "../src/cli/commands/serve.js";
 import {
   provisionDispatchWorkspace,
@@ -171,6 +174,24 @@ describe("dispatch runtime bootstrap contract", { timeout: 60_000 }, () => {
       process.env.KSPEC_CAPTURE_FILE = originalCaptureFile;
     }
     await cleanupTempDir(tempDir);
+  });
+
+  // AC: @dispatch-lifecycle-control-authority ac-controls-survive-restart
+  it("loads committed dispatch authority at the bootstrap scheduling boundary", async () => {
+    const snapshot = {
+      ...createMissingDispatchControl(),
+      revision: 7,
+      global: { authority: "paused" as const },
+    };
+    const publication = {
+      snapshot,
+      token: { revision: 7, commit_oid: "committed-head" },
+    };
+    const loadCommitted = vi.fn<() => Promise<typeof publication>>(async () => publication);
+    const store = { loadCommitted } as unknown as DispatchLifecycleAuthorityStore;
+
+    await expect(loadDispatchBootstrapAuthority(store)).resolves.toEqual(publication);
+    expect(loadCommitted).toHaveBeenCalledTimes(1);
   });
 
   // AC: @dispatch-runtime-bootstrap-contract ac-1

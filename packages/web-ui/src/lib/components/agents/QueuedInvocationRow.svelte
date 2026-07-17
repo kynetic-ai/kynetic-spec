@@ -13,7 +13,7 @@
 
 	let { invocation, taskTitle = null }: Props = $props();
 
-	let waitFormatted = $derived(formatWait(invocation.wait_ms));
+	let waitFormatted = $derived(formatWait(invocation.waitMs));
 
 	// AC: @runner-operator-surfaces ac-web-ui-invocation-rows-show-resolved-adapter
 	// Provide a row-level accessible label that combines agent, runner
@@ -34,15 +34,15 @@
 	}
 
 	function buildAccessibleLabel(inv: QueuedInvocation): string {
-		const parts: string[] = [`Queued invocation for ${inv.agent_id}`];
+		const parts: string[] = [`Queued invocation for ${inv.agentId}`];
 		if (inv.runner) {
 			parts.push(`runner ${inv.runner}`);
 		}
-		if (inv.resolved_adapter) {
-			parts.push(`adapter ${inv.resolved_adapter}`);
+		if (inv.resolvedAdapter) {
+			parts.push(`adapter ${inv.resolvedAdapter}`);
 		}
-		if (inv.task_ref) {
-			parts.push(`task ${inv.task_ref}`);
+		if (inv.taskRef) {
+			parts.push(`task ${inv.taskRef}`);
 		}
 		return parts.join(', ');
 	}
@@ -57,7 +57,7 @@
 >
 	<div class="flex items-center gap-3 min-w-0">
 		<Badge variant="secondary" class="shrink-0">
-			{invocation.agent_id}
+			{invocation.agentId}
 		</Badge>
 
 		{#if invocation.runner}
@@ -70,7 +70,7 @@
 			</Badge>
 		{/if}
 
-		{#if invocation.resolved_adapter}
+		{#if invocation.resolvedAdapter}
 			<!-- AC: @runner-operator-surfaces ac-web-ui-invocation-rows-show-resolved-adapter -->
 			<!-- Resolved adapter rendered as visible text (not only a title
 				 attribute) so assistive technology can read it and legacy
@@ -80,13 +80,13 @@
 				class="text-xs shrink-0 text-muted-foreground"
 				data-testid="queued-invocation-resolved-adapter"
 			>
-				adapter: {invocation.resolved_adapter}
+				adapter: {invocation.resolvedAdapter}
 			</Badge>
 		{/if}
 
-		{#if invocation.task_ref}
+		{#if invocation.taskRef}
 			<span data-testid="queued-invocation-task-ref">
-				<ReferenceLink ref={invocation.task_ref} type="task" title={taskTitle} class="text-sm" />
+				<ReferenceLink ref={invocation.taskRef} type="task" title={taskTitle} class="text-sm" />
 			</span>
 		{:else}
 			<span class="text-sm text-muted-foreground italic">No task</span>

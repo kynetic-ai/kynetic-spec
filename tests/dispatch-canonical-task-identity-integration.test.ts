@@ -616,11 +616,28 @@ describe("dispatch canonical task identity: scheduler", { timeout: 60_000 }, () 
       reason: null,
       metadata: null,
     });
-    const runSpy = vi.spyOn(invocationModule, "runInvocation").mockResolvedValue({
-      session: {} as never,
-      outcome: "success",
-      durationMs: 1,
-    });
+    const runSpy = vi
+      .spyOn(invocationModule, "runInvocation")
+      .mockImplementation(async (options) => {
+        const handoff = await options.beforeCreate?.();
+        if (handoff) {
+          await options.onOwnershipPersisted?.({
+            invocation_id: handoff.invocationId,
+            session_id: handoff.sessionId,
+            task_id: handoff.taskId,
+            agent_id: handoff.agentId,
+            adapter: handoff.adapter,
+            owner_instance_id: handoff.ownerInstanceId,
+            pid: process.pid,
+            pgid: process.pid,
+            process_start_ticks: "1",
+            process_identity_platform: "linux_proc_stat_v1",
+            captured_at: new Date().toISOString(),
+            group_members: [{ pid: process.pid, process_start_ticks: "1" }],
+          });
+        }
+        return { session: {} as never, outcome: "success", durationMs: 1 };
+      });
 
     const events: InvocationEvent[] = [];
     const engine = new DispatchEngine({

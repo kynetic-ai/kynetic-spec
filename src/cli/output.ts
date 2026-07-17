@@ -252,6 +252,21 @@ export function error(message: string, details?: unknown): void {
 }
 
 /**
+ * Emit the closed lifecycle-command failure envelope without decorating or
+ * interpolating daemon-provided details. Lifecycle controls deliberately use
+ * this narrower surface because paths and raw recovery errors must not cross
+ * the CLI boundary.
+ */
+export function lifecycleError(code: string, message: string, suggestion: string): void {
+  if (isJsonMode()) {
+    console.error(JSON.stringify({ ok: false, data: null, error: { code, message, suggestion } }));
+    return;
+  }
+  console.error(`Error: ${message}`);
+  console.error(`Suggestion: ${suggestion}`);
+}
+
+/**
  * Output warning message
  * AC: @output-format-option ac-yaml-no-ansi
  */

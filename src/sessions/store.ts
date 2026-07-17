@@ -9,6 +9,7 @@
  * Storage structure:
  *   .kspec-sessions/{session-id}/
  *     session.yaml      # Metadata
+ *     dispatch-ownership.yaml # Last valid dispatch process ownership envelope
  *     events.jsonl      # Append-only event log
  */
 
@@ -25,6 +26,8 @@ import {
   type SessionMetadata,
   type SessionMetadataInput,
   SessionMetadataSchema,
+  type DispatchOwnership,
+  DispatchOwnershipSchema,
   type SessionStatus,
   type TaskBudget,
   TaskBudgetSchema,
@@ -40,6 +43,7 @@ import {
 // ─── Constants ───────────────────────────────────────────────────────────────
 
 const METADATA_FILE = "session.yaml";
+const DISPATCH_OWNERSHIP_FILE = "dispatch-ownership.yaml";
 const EVENTS_FILE = "events.jsonl";
 const BUDGET_FILE = "budget.json";
 const BLOBS_DIR = "blobs";
@@ -117,6 +121,49 @@ export function getSessionMetadataPath(sessionsDir: string, sessionId: string): 
   return path.join(getSessionDir(sessionsDir, sessionId), METADATA_FILE);
 }
 
+function getSessionDispatchOwnershipPath(sessionsDir: string, sessionId: string): string {
+  return path.join(getSessionDir(sessionsDir, sessionId), DISPATCH_OWNERSHIP_FILE);
+}
+
+async function writeSessionDispatchOwnershipArchive(
+  sessionsDir: string,
+  sessionId: string,
+  ownership: DispatchOwnership,
+): Promise<void> {
+  const archivePath = getSessionDispatchOwnershipPath(sessionsDir, sessionId);
+  const temporaryPath = `${archivePath}.${process.pid}-${randomUUID()}.tmp`;
+  try {
+    await fsPromises.writeFile(
+      temporaryPath,
+      YAML.stringify(DispatchOwnershipSchema.parse(ownership), {
+        indent: 2,
+        lineWidth: 100,
+        sortMapEntries: false,
+      }),
+      "utf-8",
+    );
+    await fsPromises.rename(temporaryPath, archivePath);
+  } finally {
+    await fsPromises.rm(temporaryPath, { force: true }).catch(() => {});
+  }
+}
+
+/** Read the last valid ownership envelope independently of mutable session metadata. */
+export async function getArchivedSessionDispatchOwnership(
+  sessionsDir: string,
+  sessionId: string,
+): Promise<DispatchOwnership | null> {
+  try {
+    const content = await fsPromises.readFile(
+      getSessionDispatchOwnershipPath(sessionsDir, sessionId),
+      "utf-8",
+    );
+    return DispatchOwnershipSchema.parse(YAML.parse(content));
+  } catch {
+    return null;
+  }
+}
+
 /**
  * Get the path to a session's events file.
  */
@@ -185,6 +232,7 @@ export async function createSession(
     trigger: input.trigger,
     // AC: @runner-resolution-and-preflight ac-session-metadata-records-runner
     runner: input.runner,
+    dispatch_ownership: input.dispatch_ownership,
     status: input.status ?? "active",
     started_at: input.started_at ?? new Date().toISOString(),
     ended_at: undefined,
@@ -198,11 +246,75 @@ export async function createSession(
     sortMapEntries: false,
   });
   await fsPromises.writeFile(metadataPath, content, "utf-8");
+  if (validated.dispatch_ownership) {
+    await writeSessionDispatchOwnershipArchive(sessionsDir, input.id, validated.dispatch_ownership);
+  }
 
   // AC: @session-branch-worktree ac-commit-boundaries — commit on session create
   await commitAtLifecycleBoundary(sessionsDir, `session: create (${input.id})`);
 
   return validated;
+}
+
+/** Atomically replace the durable dispatch ownership envelope for a session. */
+export async function updateSessionDispatchOwnership(
+  sessionsDir: string,
+  sessionId: string,
+  ownership: DispatchOwnership,
+): Promise<SessionMetadata | null> {
+  return mutateSessionDispatchOwnership(sessionsDir, sessionId, () => ownership);
+}
+
+const sessionMetadataMutationTails = new Map<string, Promise<void>>();
+
+/** Serialize every session metadata read-modify-write for one session. */
+async function withSessionMetadataMutation<T>(
+  sessionsDir: string,
+  sessionId: string,
+  mutation: () => Promise<T>,
+): Promise<T> {
+  const metadataPath = getSessionMetadataPath(sessionsDir, sessionId);
+  const previous = sessionMetadataMutationTails.get(metadataPath) ?? Promise.resolve();
+  let release!: () => void;
+  const gate = new Promise<void>((resolve) => (release = resolve));
+  const currentTail = previous.then(() => gate);
+  sessionMetadataMutationTails.set(metadataPath, currentTail);
+  await previous;
+  try {
+    return await mutation();
+  } finally {
+    release();
+    if (sessionMetadataMutationTails.get(metadataPath) === currentTail) {
+      sessionMetadataMutationTails.delete(metadataPath);
+    }
+  }
+}
+
+/** Serialize a durable dispatch-ownership read-modify-write for one session. */
+export async function mutateSessionDispatchOwnership(
+  sessionsDir: string,
+  sessionId: string,
+  mutation: (current: DispatchOwnership | undefined) => DispatchOwnership | null,
+): Promise<SessionMetadata | null> {
+  return withSessionMetadataMutation(sessionsDir, sessionId, async () => {
+    const metadataPath = getSessionMetadataPath(sessionsDir, sessionId);
+    const metadata = await getSession(sessionsDir, sessionId);
+    if (!metadata) return null;
+    const ownership = mutation(metadata.dispatch_ownership);
+    if (!ownership) return metadata;
+    const updated = SessionMetadataSchema.parse({ ...metadata, dispatch_ownership: ownership });
+    const content = YAML.stringify(updated, {
+      indent: 2,
+      lineWidth: 100,
+      sortMapEntries: false,
+    });
+    const temporaryPath = `${metadataPath}.ownership-${process.pid}-${randomUUID()}.tmp`;
+    await fsPromises.writeFile(temporaryPath, content, "utf-8");
+    await fsPromises.rename(temporaryPath, metadataPath);
+    await writeSessionDispatchOwnershipArchive(sessionsDir, sessionId, ownership);
+    await commitAtLifecycleBoundary(sessionsDir, `session: ownership (${sessionId})`);
+    return updated;
+  });
 }
 
 /**
@@ -248,27 +360,29 @@ export async function updateSessionStatus(
   sessionId: string,
   status: SessionStatus,
 ): Promise<SessionMetadata | null> {
-  const metadata = await getSession(sessionsDir, sessionId);
-  if (!metadata) {
-    return null;
-  }
+  return withSessionMetadataMutation(sessionsDir, sessionId, async () => {
+    const metadata = await getSession(sessionsDir, sessionId);
+    if (!metadata) {
+      return null;
+    }
 
-  // Update status and ended_at if transitioning away from active
-  const updated: SessionMetadata = {
-    ...metadata,
-    status,
-    ended_at: status !== "active" ? new Date().toISOString() : metadata.ended_at,
-  };
+    // Update status and ended_at if transitioning away from active
+    const updated: SessionMetadata = {
+      ...metadata,
+      status,
+      ended_at: status !== "active" ? new Date().toISOString() : metadata.ended_at,
+    };
 
-  const metadataPath = getSessionMetadataPath(sessionsDir, sessionId);
-  const content = YAML.stringify(updated, {
-    indent: 2,
-    lineWidth: 100,
-    sortMapEntries: false,
+    const metadataPath = getSessionMetadataPath(sessionsDir, sessionId);
+    const content = YAML.stringify(updated, {
+      indent: 2,
+      lineWidth: 100,
+      sortMapEntries: false,
+    });
+    await fsPromises.writeFile(metadataPath, content, "utf-8");
+
+    return updated;
   });
-  await fsPromises.writeFile(metadataPath, content, "utf-8");
-
-  return updated;
 }
 
 /**
@@ -349,26 +463,28 @@ export async function requestEndLoop(
   sessionId: string,
   reason?: string,
 ): Promise<SessionMetadata | null> {
-  const metadata = await getSession(sessionsDir, sessionId);
-  if (!metadata) {
-    return null;
-  }
+  return withSessionMetadataMutation(sessionsDir, sessionId, async () => {
+    const metadata = await getSession(sessionsDir, sessionId);
+    if (!metadata) {
+      return null;
+    }
 
-  const updated: SessionMetadata = {
-    ...metadata,
-    end_requested: true,
-    end_reason: reason,
-  };
+    const updated: SessionMetadata = {
+      ...metadata,
+      end_requested: true,
+      end_reason: reason,
+    };
 
-  const metadataPath = getSessionMetadataPath(sessionsDir, sessionId);
-  const content = YAML.stringify(updated, {
-    indent: 2,
-    lineWidth: 100,
-    sortMapEntries: false,
+    const metadataPath = getSessionMetadataPath(sessionsDir, sessionId);
+    const content = YAML.stringify(updated, {
+      indent: 2,
+      lineWidth: 100,
+      sortMapEntries: false,
+    });
+    await fsPromises.writeFile(metadataPath, content, "utf-8");
+
+    return updated;
   });
-  await fsPromises.writeFile(metadataPath, content, "utf-8");
-
-  return updated;
 }
 
 /**
@@ -420,41 +536,43 @@ export async function closeSession(
   status: SessionStatus,
   reason: string,
 ): Promise<SessionMetadata | null> {
-  const metadata = await getSession(sessionsDir, sessionId);
-  if (!metadata) {
-    return null;
-  }
+  return withSessionMetadataMutation(sessionsDir, sessionId, async () => {
+    const metadata = await getSession(sessionsDir, sessionId);
+    if (!metadata) {
+      return null;
+    }
 
-  // AC: @daemon-entity-cache ac-session-stats-persist — compute stats from events.jsonl
-  // and persist in session metadata so list endpoints never need to scan event data.
-  const [eventCount, iterationCount, tasksCompleted] = await Promise.all([
-    countEventLines(sessionsDir, sessionId),
-    countIterations(sessionsDir, sessionId),
-    countTaskCompletions(sessionsDir, sessionId),
-  ]);
+    // AC: @daemon-entity-cache ac-session-stats-persist — compute stats from events.jsonl
+    // and persist in session metadata so list endpoints never need to scan event data.
+    const [eventCount, iterationCount, tasksCompleted] = await Promise.all([
+      countEventLines(sessionsDir, sessionId),
+      countIterations(sessionsDir, sessionId),
+      countTaskCompletions(sessionsDir, sessionId),
+    ]);
 
-  const updated: SessionMetadata = {
-    ...metadata,
-    status,
-    ended_at: new Date().toISOString(),
-    close_reason: reason,
-    event_count: eventCount,
-    iteration_count: iterationCount,
-    tasks_completed: tasksCompleted,
-  };
+    const updated: SessionMetadata = {
+      ...metadata,
+      status,
+      ended_at: new Date().toISOString(),
+      close_reason: reason,
+      event_count: eventCount,
+      iteration_count: iterationCount,
+      tasks_completed: tasksCompleted,
+    };
 
-  const metadataPath = getSessionMetadataPath(sessionsDir, sessionId);
-  const content = YAML.stringify(updated, {
-    indent: 2,
-    lineWidth: 100,
-    sortMapEntries: false,
+    const metadataPath = getSessionMetadataPath(sessionsDir, sessionId);
+    const content = YAML.stringify(updated, {
+      indent: 2,
+      lineWidth: 100,
+      sortMapEntries: false,
+    });
+    await fsPromises.writeFile(metadataPath, content, "utf-8");
+
+    // AC: @session-branch-worktree ac-commit-boundaries — commit on session close
+    await commitAtLifecycleBoundary(sessionsDir, `session: close ${status} (${sessionId})`);
+
+    return updated;
   });
-  await fsPromises.writeFile(metadataPath, content, "utf-8");
-
-  // AC: @session-branch-worktree ac-commit-boundaries — commit on session close
-  await commitAtLifecycleBoundary(sessionsDir, `session: close ${status} (${sessionId})`);
-
-  return updated;
 }
 
 // ─── Event Storage ───────────────────────────────────────────────────────────
@@ -1652,23 +1770,25 @@ export async function applyAutoAbandonMetadata(
 
     if (dryRun) continue;
 
-    const metadata = await getSession(sessionsDir, candidate.sessionId);
-    if (!metadata) continue;
+    await withSessionMetadataMutation(sessionsDir, candidate.sessionId, async () => {
+      const metadata = await getSession(sessionsDir, candidate.sessionId);
+      if (!metadata) return;
 
-    const updated: SessionMetadata = {
-      ...metadata,
-      status: "abandoned",
-      ended_at: endedAt,
-      close_reason: closeReason,
-    };
+      const updated: SessionMetadata = {
+        ...metadata,
+        status: "abandoned",
+        ended_at: endedAt,
+        close_reason: closeReason,
+      };
 
-    const metadataPath = getSessionMetadataPath(sessionsDir, candidate.sessionId);
-    const content = YAML.stringify(updated, {
-      indent: 2,
-      lineWidth: 100,
-      sortMapEntries: false,
+      const metadataPath = getSessionMetadataPath(sessionsDir, candidate.sessionId);
+      const content = YAML.stringify(updated, {
+        indent: 2,
+        lineWidth: 100,
+        sortMapEntries: false,
+      });
+      await fsPromises.writeFile(metadataPath, content, "utf-8");
     });
-    await fsPromises.writeFile(metadataPath, content, "utf-8");
   }
 
   // AC: @session-branch-worktree ac-commit-boundaries — commit on stale cleanup

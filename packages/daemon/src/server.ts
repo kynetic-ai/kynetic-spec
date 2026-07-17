@@ -733,6 +733,7 @@ export async function createServer(options: ServerOptions) {
         );
       },
     );
+    await entityCacheModule.registerDispatchControlPublication(projectPath);
     entityCache.loadAll().catch((err: unknown) => {
       console.error(`[entity-cache] Error during initial load for ${projectPath}:`, err);
     });
@@ -1140,12 +1141,17 @@ export async function createServer(options: ServerOptions) {
     },
   );
 
+  projectContextManager.setDispatchControlFileCallback((projectPath, observedHead) =>
+    entityCacheModule.handleDispatchControlFileEvent(projectPath, observedHead),
+  );
+
   // AC: @daemon-entity-cache ac-unregister-cleanup — dispose cache on any unregister path
   // (including watcher permanent failure, not just API-driven unregister)
   // AC: @config-shadow ac-15 — stop shadow sync when project is removed
   projectContextManager.setUnregisterCallback((projectPath) => {
     stopSessionSyncForProject(projectPath);
     stopShadowSyncForProject(projectPath);
+    entityCacheModule.unregisterDispatchControlPublication(projectPath);
     entityCacheModule.unregisterEntityCache(projectPath);
   });
 

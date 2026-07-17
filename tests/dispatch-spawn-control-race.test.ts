@@ -1,0 +1,574 @@
+import { afterEach, describe, expect, it, vi } from "vitest";
+import * as fs from "node:fs/promises";
+import * as path from "node:path";
+import * as YAML from "yaml";
+import {
+  DispatchEngine,
+  type DispatchLifecycleAuthorityStore,
+  type DispatchStopRecoveryRuntime,
+} from "../src/agent-runtime/dispatch.js";
+import type {
+  DispatchControl,
+  DispatchControlMutation,
+  DispatchControlPublication,
+} from "../src/agent-runtime/dispatch-control-store.js";
+import { createMissingDispatchControl } from "../src/schema/dispatch-control.js";
+import { ensureSplitBackendRegistered } from "../src/parser/split-backend.js";
+import * as invocationModule from "../src/agent-runtime/invocation.js";
+import * as spawnerModule from "../src/agents/spawner.js";
+import * as storeModule from "../src/sessions/store.js";
+import * as workspaceModule from "../src/agent-runtime/workspace.js";
+import * as bootstrapModule from "../src/agent-runtime/bootstrap.js";
+import {
+  cleanupTempDir,
+  createTempDir,
+  initGitRepo,
+  seedSplitTask,
+  testUlid,
+} from "./helpers/cli.js";
+
+ensureSplitBackendRegistered();
+const MOCK_KSPEC_CLI = path.join(__dirname, "mocks", "kspec-capture-mock.cjs");
+
+class MemoryControlStore implements DispatchLifecycleAuthorityStore {
+  private publication: DispatchControlPublication;
+  private listener: ((publication: DispatchControlPublication) => void) | undefined;
+
+  constructor(snapshot: DispatchControl) {
+    this.publication = { snapshot, token: { revision: snapshot.revision, commit_oid: "memory" } };
+  }
+
+  setPublicationListener(
+    _key: string,
+    listener: (publication: DispatchControlPublication) => void,
+  ): void {
+    this.listener = listener;
+  }
+
+  async loadCommitted(): Promise<DispatchControlPublication> {
+    this.listener?.(this.publication);
+    return this.publication;
+  }
+
+  getPublication(): DispatchControlPublication {
+    return this.publication;
+  }
+
+  getDegradedReason(): string | null {
+    return null;
+  }
+
+  async mutate(
+    _operation: string,
+    mutation: DispatchControlMutation,
+  ): Promise<DispatchControlPublication> {
+    const next = await mutation(structuredClone(this.publication.snapshot));
+    if (next) this.commit(next);
+    return this.publication;
+  }
+
+  commit(snapshot: DispatchControl): void {
+    this.publication = {
+      snapshot,
+      token: { revision: snapshot.revision, commit_oid: `memory-${snapshot.revision}` },
+    };
+    this.listener?.(this.publication);
+  }
+}
+
+export function beforeCreateBarrier() {
+  let release!: () => void;
+  let markEntered!: () => void;
+  const entered = new Promise<void>((resolve) => {
+    markEntered = resolve;
+  });
+  const blocked = new Promise<void>((resolve) => {
+    release = resolve;
+  });
+  return { entered, wait: async () => (markEntered(), blocked), release };
+}
+
+export function artifactRecorder() {
+  return {
+    processes: 0,
+    sessions: 0,
+    signals: [] as number[],
+    handoffs: [] as invocationModule.InvocationCreateHandoff[],
+  };
+}
+
+type SpawnGateHarness = Awaited<ReturnType<typeof createSpawnGateHarness>>;
+const harnesses: SpawnGateHarness[] = [];
+
+export async function createSpawnGateHarness(
+  options: { realInvocation?: boolean; secondTask?: boolean; maxConcurrent?: number } = {},
+) {
+  const projectDir = await createTempDir("dispatch-spawn-gate-");
+  initGitRepo(projectDir);
+  const taskId = testUlid("TASK", 1);
+  await fs.writeFile(
+    path.join(projectDir, "kynetic.yaml"),
+    YAML.stringify({ kynetic: "1.1", title: "Spawn gate", task_storage: { format: "split" } }),
+  );
+  await fs.writeFile(
+    path.join(projectDir, "kynetic.meta.yaml"),
+    YAML.stringify({
+      kynetic_meta: "1.0",
+      agents: [
+        {
+          _ulid: testUlid("AGNT", 1),
+          id: "worker",
+          name: "Worker",
+          adapter: "mock-acp",
+          capabilities: [],
+          tools: [],
+          conventions: [],
+          skills: [],
+          auto_approve: false,
+          concurrency: { max_concurrent: options.maxConcurrent ?? 1 },
+          budget: { max_retries: 0 },
+          dispatch: [{ on: "task.ready" }],
+        },
+      ],
+    }),
+  );
+  seedSplitTask(projectDir, {
+    _ulid: taskId,
+    type: "task",
+    title: "Spawn gate task",
+    slugs: ["task-spawn-gate"],
+    status: "pending",
+    priority: 1,
+    automation: "eligible",
+    depends_on: [],
+    blocked_by: [],
+    tags: [],
+    notes: [],
+    created_at: new Date().toISOString(),
+  });
+  if (options.secondTask) {
+    seedSplitTask(projectDir, {
+      _ulid: testUlid("TASK", 2),
+      type: "task",
+      title: "Second spawn gate task",
+      slugs: ["task-second-spawn-gate"],
+      status: "pending",
+      priority: 1,
+      automation: "eligible",
+      depends_on: [],
+      blocked_by: [],
+      tags: [],
+      notes: [],
+      created_at: new Date().toISOString(),
+    });
+  }
+
+  const initial = {
+    ...createMissingDispatchControl(),
+    revision: 1,
+    global: { authority: "running" as const },
+  };
+  const store = new MemoryControlStore(initial);
+  const artifacts = artifactRecorder();
+  const stopRecoveryRuntime: DispatchStopRecoveryRuntime = {
+    readProcess: async () => null,
+    listProcessGroup: async () => [],
+    signalProcessGroup: async (pgid) => {
+      artifacts.signals.push(pgid);
+    },
+    waitForProcessGroupExit: async () => true,
+    closeSession: async () => undefined,
+  };
+  const engine = new DispatchEngine({
+    projectDir,
+    specDir: projectDir,
+    kspecCliPath: MOCK_KSPEC_CLI,
+    reconcileIntervalMs: 0,
+    coalesceWindowMs: 0,
+    lifecycleStore: store,
+    stopRecoveryRuntime,
+  });
+  const metadata = {
+    workspaceId: "spawn-gate-workspace",
+    taskRef: "@task-spawn-gate",
+    taskSlug: "task-spawn-gate",
+    canonicalBranch: "dispatch/task/task-spawn-gate/test",
+    canonicalBranchHead: "abc123",
+    integrationTargetBranch: "dev",
+    mergeTargetBranch: "dev",
+    baseBranch: "dev",
+    integrationTargetCommit: "abc123",
+    publicationMode: "manual_merge",
+    integrationState: "pending",
+    integrationOutcome: "none",
+    lifecycleState: "ready",
+    activeRole: null,
+    workerWorktreeDir: projectDir,
+    reviewerWorktreeDir: null,
+    bootstrap: {
+      status: "ready",
+      lastRole: "worker",
+      roleStates: {
+        worker: { status: "ready", steps: [], invalidationReasons: [] },
+        reviewer: { status: "not_run", steps: [], invalidationReasons: [] },
+      },
+    },
+  };
+  const provisioned = {
+    cwd: projectDir,
+    metadataPath: path.join(projectDir, ".kspec-dispatch-workspace.json"),
+    metadata: metadata as never,
+  };
+  vi.spyOn(workspaceModule, "getDispatchWorkspaceHealth").mockResolvedValue({
+    exists: true,
+    healthy: true,
+    reason: null,
+    metadata: metadata as never,
+  });
+  vi.spyOn(workspaceModule, "reconcileDispatchWorkspaceRegistry").mockResolvedValue();
+  vi.spyOn(workspaceModule, "reconcileDispatchWorkspaceArtifacts").mockResolvedValue();
+  vi.spyOn(workspaceModule, "reconcileDispatchWorkspaceLifecycle").mockResolvedValue();
+  vi.spyOn(workspaceModule, "provisionDispatchWorkspace").mockResolvedValue(provisioned);
+  vi.spyOn(workspaceModule, "markDispatchWorkspaceActive").mockResolvedValue(provisioned);
+  vi.spyOn(workspaceModule, "markDispatchWorkspaceIdle").mockResolvedValue(provisioned);
+  vi.spyOn(bootstrapModule, "ensureWorkspaceBootstrap").mockResolvedValue({
+    metadata: metadata as never,
+  });
+
+  const beforeCreate = beforeCreateBarrier();
+  const completion = beforeCreateBarrier();
+  const internal = engine as unknown as {
+    _admitInvocationCreation: (input: unknown) => Promise<invocationModule.InvocationCreateHandoff>;
+  };
+  const admitInvocationCreation = internal._admitInvocationCreation.bind(engine);
+  let markAdmissionSettled!: () => void;
+  const admissionSettled = new Promise<void>((resolve) => {
+    markAdmissionSettled = resolve;
+  });
+  vi.spyOn(internal, "_admitInvocationCreation").mockImplementation(async (input) => {
+    await beforeCreate.wait();
+    try {
+      return await admitInvocationCreation(input);
+    } finally {
+      markAdmissionSettled();
+    }
+  });
+  if (options.realInvocation) {
+    vi.spyOn(spawnerModule, "spawnAndInitialize").mockImplementation(async () => {
+      artifacts.processes++;
+      throw new Error("adapter spawn must remain unreachable when lifecycle control wins");
+    });
+  }
+  let completedNaturally = false;
+  let observedAbort = false;
+  if (!options.realInvocation) {
+    vi.spyOn(invocationModule, "runInvocation").mockImplementation(async (invocationOptions) => {
+      const handoff = await invocationOptions.beforeCreate?.();
+      if (!handoff) throw new Error("dispatch invocation omitted the final create gate");
+      await invocationOptions.onOwnershipPersisted?.({
+        invocation_id: handoff.invocationId,
+        session_id: handoff.sessionId,
+        task_id: handoff.taskId,
+        agent_id: handoff.agentId,
+        adapter: handoff.adapter,
+        owner_instance_id: handoff.ownerInstanceId,
+        pid: process.pid,
+        pgid: process.pid,
+        process_start_ticks: "1",
+        process_identity_platform: "linux_proc_stat_v1",
+        captured_at: new Date().toISOString(),
+        group_members: [{ pid: process.pid, process_start_ticks: "1" }],
+      });
+      artifacts.handoffs.push(handoff);
+      artifacts.sessions++;
+      artifacts.processes++;
+      if (invocationOptions.abortSignal?.aborted) observedAbort = true;
+      await completion.wait();
+      if (invocationOptions.abortSignal?.aborted) observedAbort = true;
+      completedNaturally = !observedAbort;
+      return { session: {} as never, outcome: "success", durationMs: 1, turnCount: 1 };
+    });
+  }
+
+  const refreshPersistedSessionCount = async () => {
+    const sessionsDir = path.join(projectDir, ".kspec-sessions");
+    artifacts.sessions = await fs
+      .readdir(sessionsDir)
+      .then((entries) => entries.length)
+      .catch((error: NodeJS.ErrnoException) => {
+        if (error.code === "ENOENT") return 0;
+        throw error;
+      });
+  };
+
+  const harness = {
+    projectDir,
+    taskId,
+    store,
+    engine,
+    beforeCreate,
+    completion,
+    artifacts,
+    admissionSettled,
+    refreshPersistedSessionCount,
+    get completedNaturally() {
+      return completedNaturally;
+    },
+    get observedAbort() {
+      return observedAbort;
+    },
+  };
+  harnesses.push(harness);
+  return harness;
+}
+
+function stopSnapshot(harness: SpawnGateHarness, scope: "global" | "task"): DispatchControl {
+  const current = harness.store.getPublication().snapshot;
+  const timestamp = new Date().toISOString();
+  return {
+    ...current,
+    revision: current.revision + 1,
+    ...(scope === "global" ? { global: { authority: "stopped" as const } } : {}),
+    tasks:
+      scope === "task"
+        ? {
+            ...current.tasks,
+            [harness.taskId]: {
+              mode: "stopped",
+              reason: "stop won gate",
+              actor: "test",
+              source: "api",
+              controlled_at: timestamp,
+              updated_at: timestamp,
+            },
+          }
+        : current.tasks,
+  };
+}
+
+afterEach(async () => {
+  vi.restoreAllMocks();
+  await Promise.all(
+    harnesses.splice(0).map(async ({ engine, projectDir, beforeCreate, completion }) => {
+      beforeCreate.release();
+      completion.release();
+      await engine.stop().catch(() => undefined);
+      await cleanupTempDir(projectDir);
+    }),
+  );
+});
+
+describe("final ordered dispatch create gate", () => {
+  // AC: @dispatch-lifecycle-control-authority ac-final-gate-prevents-process-creation
+  // AC: @dispatch-lifecycle-control-authority ac-final-gate-prevents-session-creation
+  it.each(["global", "task"] as const)(
+    "%s pause wins before creation and restores one held candidate",
+    async (scope) => {
+      const harness = await createSpawnGateHarness({ realInvocation: true });
+      await harness.engine.start();
+      await harness.beforeCreate.entered;
+
+      if (scope === "global") {
+        await harness.engine.applyGlobalLifecycleAction("pause");
+      } else {
+        await harness.engine.applyTaskLifecycleAction("pause", { taskId: harness.taskId });
+      }
+      expect(harness.artifacts).toMatchObject({ processes: 0, sessions: 0, handoffs: [] });
+      harness.beforeCreate.release();
+
+      await harness.admissionSettled;
+      await vi.waitFor(() => expect(harness.engine.getLifecycleStatus().heldCount).toBe(1));
+      await harness.refreshPersistedSessionCount();
+      expect(harness.artifacts).toMatchObject({ processes: 0, sessions: 0, handoffs: [] });
+      expect(harness.engine.getLifecycleStatus()).toMatchObject({ activeCount: 0, queueDepth: 1 });
+    },
+  );
+
+  // AC: @dispatch-lifecycle-control-authority ac-final-gate-prevents-process-creation
+  // AC: @dispatch-lifecycle-control-authority ac-final-gate-prevents-session-creation
+  it.each(["global", "task"] as const)(
+    "%s stop wins before creation and discards the candidate",
+    async (scope) => {
+      const harness = await createSpawnGateHarness({ realInvocation: true });
+      await harness.engine.start();
+      await harness.beforeCreate.entered;
+
+      harness.store.commit(stopSnapshot(harness, scope));
+      expect(harness.artifacts).toMatchObject({ processes: 0, sessions: 0, handoffs: [] });
+      harness.beforeCreate.release();
+
+      await harness.admissionSettled;
+      await harness.refreshPersistedSessionCount();
+      expect(harness.artifacts).toMatchObject({ processes: 0, sessions: 0, handoffs: [] });
+      expect(harness.engine.getLifecycleStatus()).toMatchObject({ activeCount: 0, queueDepth: 0 });
+    },
+  );
+
+  // AC: @dispatch-lifecycle-control-authority ac-spawn-win-pause-allows-completion
+  it("publishes one active handoff before global pause and completes naturally", async () => {
+    const harness = await createSpawnGateHarness();
+    await harness.engine.start();
+    await harness.beforeCreate.entered;
+    const current = harness.store.getPublication().snapshot;
+    harness.store.commit({
+      ...current,
+      revision: current.revision + 1,
+      pending_cleanup: {
+        [testUlid("TASK", 2)]: {
+          cleanup_id: testUlid("CLNP", 2),
+          status: "pending",
+          phase: "owned",
+          targets: [],
+        },
+      },
+    });
+    harness.beforeCreate.release();
+
+    await vi.waitFor(() => expect(harness.artifacts.handoffs).toHaveLength(1));
+    expect(harness.engine.getStatus()).toMatchObject({ activeInvocations: 1 });
+    expect(harness.artifacts.handoffs[0]).toMatchObject({
+      sessionId: expect.any(String),
+      invocationId: expect.any(String),
+      taskId: harness.taskId,
+      agentId: "worker",
+      adapter: "mock-acp",
+    });
+
+    await harness.engine.applyGlobalLifecycleAction("pause");
+    harness.completion.release();
+    await vi.waitFor(() => expect(harness.completedNaturally).toBe(true));
+    expect(harness.observedAbort).toBe(false);
+    expect(harness.artifacts).toMatchObject({ processes: 1, sessions: 1 });
+  });
+
+  it("exposes a spawn-winner handoff to later stop recovery without cancelling here", async () => {
+    const harness = await createSpawnGateHarness();
+    await harness.engine.start();
+    await harness.beforeCreate.entered;
+    harness.beforeCreate.release();
+    await vi.waitFor(() => expect(harness.artifacts.handoffs).toHaveLength(1));
+
+    harness.store.commit(stopSnapshot(harness, "task"));
+    expect(harness.engine.getStatus().activeInvocations).toBe(1);
+    expect(harness.observedAbort).toBe(false);
+    expect(harness.artifacts.handoffs[0]?.taskId).toBe(harness.taskId);
+
+    harness.completion.release();
+    await vi.waitFor(() => expect(harness.completedNaturally).toBe(true));
+  });
+
+  it("releases the admitted stop reservation when dispatched-event persistence fails", async () => {
+    const harness = await createSpawnGateHarness({ realInvocation: true });
+    const originalAppendEvent = storeModule.appendEvent;
+    let failedDispatched = false;
+    vi.spyOn(storeModule, "appendEvent").mockImplementation(async (dir, input) => {
+      if (input.type === "agent.dispatched" && !failedDispatched) {
+        failedDispatched = true;
+        throw new Error("injected dispatched-event failure");
+      }
+      return originalAppendEvent(dir, input);
+    });
+    await harness.engine.start();
+    await harness.beforeCreate.entered;
+    harness.beforeCreate.release();
+    await harness.admissionSettled;
+
+    await expect(harness.engine.applyGlobalLifecycleAction("stop")).resolves.toMatchObject({
+      authority: "stopped",
+    });
+
+    expect(failedDispatched).toBe(true);
+    expect(harness.artifacts.processes).toBe(0);
+    expect(harness.engine.getLifecycleStatus()).toMatchObject({
+      globalAuthority: "stopped",
+      cleanupState: { status: "idle" },
+    });
+  });
+
+  // AC: @dispatch-lifecycle-control-authority ac-status-reports-active-count
+  it("preserves another active invocation count when a second ownership publication fails", async () => {
+    const originalRunInvocation = invocationModule.runInvocation;
+    const harness = await createSpawnGateHarness({
+      realInvocation: true,
+      secondTask: true,
+      maxConcurrent: 2,
+    });
+    let invocationNumber = 0;
+    vi.spyOn(invocationModule, "runInvocation").mockImplementation(async (invocationOptions) => {
+      invocationNumber++;
+      if (invocationNumber > 1) return originalRunInvocation(invocationOptions);
+      const handoff = await invocationOptions.beforeCreate?.();
+      if (!handoff) throw new Error("first invocation omitted ownership handoff");
+      await invocationOptions.onOwnershipPersisted?.({
+        invocation_id: handoff.invocationId,
+        session_id: handoff.sessionId,
+        task_id: handoff.taskId,
+        agent_id: handoff.agentId,
+        adapter: handoff.adapter,
+        owner_instance_id: handoff.ownerInstanceId,
+        pid: process.pid,
+        pgid: process.pid,
+        process_start_ticks: "1",
+        process_identity_platform: "linux_proc_stat_v1",
+        captured_at: new Date().toISOString(),
+        group_members: [{ pid: process.pid, process_start_ticks: "1" }],
+      });
+      await harness.completion.wait();
+      return { session: {} as never, outcome: "success", durationMs: 1, turnCount: 1 };
+    });
+    const originalAppendEvent = storeModule.appendEvent;
+    let dispatchedEvents = 0;
+    vi.spyOn(storeModule, "appendEvent").mockImplementation(async (dir, input) => {
+      if (input.type === "agent.dispatched" && ++dispatchedEvents === 2) {
+        throw new Error("injected second dispatched-event failure");
+      }
+      return originalAppendEvent(dir, input);
+    });
+
+    await harness.engine.start();
+    harness.beforeCreate.release();
+    await vi.waitFor(() => expect(dispatchedEvents).toBe(2));
+    await vi.waitFor(() => expect(harness.engine.getLifecycleStatus().activeCount).toBe(1));
+  });
+
+  // AC: @dispatch-lifecycle-control-authority ac-stop-failure-reports-pending-cleanup
+  // AC: @dispatch-lifecycle-control-authority ac-stop-failure-reports-no-success
+  it.each([
+    ["global", "missing"],
+    ["global", "corrupt"],
+    ["task", "missing"],
+    ["task", "corrupt"],
+  ] as const)(
+    "fails %s stop without signalling when active ownership metadata is %s",
+    async (scope, metadataState) => {
+      const harness = await createSpawnGateHarness();
+      await harness.engine.start();
+      await harness.beforeCreate.entered;
+      harness.beforeCreate.release();
+      await vi.waitFor(() => expect(harness.engine.getStatus().activeInvocations).toBe(1));
+      if (metadataState === "corrupt") {
+        const sessionId = harness.engine.getStatus().invocations[0]!.sessionId;
+        const sessionDir = path.join(harness.projectDir, ".kspec-sessions", sessionId);
+        await fs.mkdir(sessionDir, { recursive: true });
+        await fs.writeFile(path.join(sessionDir, "session.yaml"), "not: [valid");
+      }
+
+      const stop =
+        scope === "global"
+          ? harness.engine.applyGlobalLifecycleAction("stop")
+          : harness.engine.applyTaskLifecycleAction("stop", { taskId: harness.taskId });
+      await expect(stop).rejects.toMatchObject({ code: "cleanup_identity_unverifiable" });
+      expect(harness.artifacts.signals).toEqual([]);
+      expect(harness.observedAbort).toBe(false);
+      if (scope === "global") {
+        expect(harness.engine.getLifecycleStatus().globalAuthority).toBe("stopped");
+      } else {
+        expect(harness.store.getPublication().snapshot.tasks[harness.taskId]?.mode).toBe("stopped");
+      }
+      expect(harness.engine.getLifecycleStatus().cleanupState).toMatchObject({
+        status: "failed",
+        entries: [{ status: "failed", error_code: "cleanup_identity_unverifiable" }],
+      });
+    },
+  );
+});

@@ -60,6 +60,43 @@ function createTestProgram(): Command {
   return program;
 }
 
+function lifecycleStatus(overrides: Record<string, unknown> = {}) {
+  return {
+    running: false,
+    activeInvocations: 0,
+    queuedInvocations: 0,
+    invocations: [],
+    queued: [],
+    globalAuthority: "stopped",
+    projection: "stopped",
+    cleanupState: { status: "idle", entries: [] },
+    heldCount: 0,
+    heldTasks: [],
+    taskControls: [],
+    ...overrides,
+  };
+}
+
+function lifecycleControl(action: "start" | "stop") {
+  const authority = action === "start" ? "running" : "stopped";
+  return {
+    ok: true,
+    data: {
+      global_authority: authority,
+      projection: authority,
+      cleanup_state: { status: "idle", entries: [] },
+      active_count: 0,
+      queue_depth: 0,
+      held_count: 0,
+      held_tasks: [],
+      task_controls: [],
+      degraded_targets: [],
+      outcome: "applied",
+    },
+    error: null,
+  };
+}
+
 // ─── Fixtures ────────────────────────────────────────────────────────────────
 
 function makeTestAgent(overrides: Partial<Agent> = {}): Agent {
@@ -1326,12 +1363,9 @@ describe("AC-4: kspec agent dispatch start with running daemon", () => {
     vi.spyOn(PidFileManager.prototype, "readPort").mockReturnValue(9999);
 
     // Mock fetch to return a successful response
-    const fetchMock = vi.fn().mockResolvedValue({
+    const fetchMock = vi.fn<typeof fetch>().mockResolvedValue({
       ok: true,
-      json: async () => ({
-        started: true,
-        status: { running: true, activeInvocations: 0, queuedInvocations: 0 },
-      }),
+      json: async () => lifecycleControl("start"),
     } as Response);
     vi.stubGlobal("fetch", fetchMock);
 
@@ -1360,7 +1394,7 @@ describe("AC-4: kspec agent dispatch start with running daemon", () => {
 
     // AC: @cli-agent-commands ac-4 - dispatch engine started
     expect(fetchMock).toHaveBeenCalledWith(
-      expect.stringContaining("/api/agent/dispatch/start"),
+      expect.stringContaining("/api/agent/dispatch/control"),
       expect.objectContaining({
         method: "POST",
         headers: expect.not.objectContaining({
@@ -1403,12 +1437,9 @@ describe("AC-4: kspec agent dispatch start with running daemon", () => {
     vi.spyOn(PidFileManager.prototype, "isDaemonRunning").mockReturnValue(true);
     vi.spyOn(PidFileManager.prototype, "readPort").mockReturnValue(9999);
 
-    const fetchMock = vi.fn().mockResolvedValue({
+    const fetchMock = vi.fn<typeof fetch>().mockResolvedValue({
       ok: true,
-      json: async () => ({
-        started: true,
-        status: { running: true, activeInvocations: 0, queuedInvocations: 0 },
-      }),
+      json: async () => lifecycleControl("start"),
     } as Response);
     vi.stubGlobal("fetch", fetchMock);
 
@@ -1420,7 +1451,7 @@ describe("AC-4: kspec agent dispatch start with running daemon", () => {
     }
 
     expect(fetchMock).toHaveBeenCalledWith(
-      expect.stringContaining("/api/agent/dispatch/start"),
+      expect.stringContaining("/api/agent/dispatch/control"),
       expect.objectContaining({
         method: "POST",
         headers: expect.objectContaining({
@@ -1461,11 +1492,14 @@ describe("AC-4: kspec agent dispatch start with running daemon", () => {
     vi.spyOn(PidFileManager.prototype, "isDaemonRunning").mockReturnValue(true);
     vi.spyOn(PidFileManager.prototype, "readPort").mockReturnValue(9999);
 
-    const fetchMock = vi.fn().mockResolvedValue({
+    const fetchMock = vi.fn<typeof fetch>().mockResolvedValue({
       ok: false,
       status: 409,
-      text: async () =>
-        "Dispatch engine already running for /tmp/main-project with cwd /tmp/worktrees/a",
+      json: async () => ({
+        ok: false,
+        data: null,
+        error: { code: "invalid_transition", message: "raw", suggestion: "raw" },
+      }),
     } as Response);
     vi.stubGlobal("fetch", fetchMock);
 
@@ -1484,8 +1518,8 @@ describe("AC-4: kspec agent dispatch start with running daemon", () => {
       console.error = origError;
     }
 
-    expect(errors.join("\n")).toContain("409");
-    expect(errors.join("\n")).toContain("/tmp/worktrees/a");
+    expect(errors.join("\n")).toContain("Dispatch lifecycle transition is not valid");
+    expect(errors.join("\n")).not.toContain("/tmp/worktrees/a");
   });
 });
 
@@ -1515,13 +1549,15 @@ describe("AC-5: kspec agent dispatch stop graceful shutdown", () => {
   });
 
   it("should call daemon dispatch/stop and report success when daemon is running", async () => {
+    const dispatchSession = process.env.KSPEC_SESSION_ID;
+    delete process.env.KSPEC_SESSION_ID;
     const { PidFileManager } = await import("../src/cli/pid-utils.js");
     vi.spyOn(PidFileManager.prototype, "isDaemonRunning").mockReturnValue(true);
     vi.spyOn(PidFileManager.prototype, "readPort").mockReturnValue(9999);
 
-    const fetchMock = vi.fn().mockResolvedValue({
+    const fetchMock = vi.fn<typeof fetch>().mockResolvedValue({
       ok: true,
-      json: async () => ({ stopped: true }),
+      json: async () => lifecycleControl("stop"),
     } as Response);
     vi.stubGlobal("fetch", fetchMock);
 
@@ -1536,7 +1572,7 @@ describe("AC-5: kspec agent dispatch stop graceful shutdown", () => {
       const origCwd = process.cwd();
       process.chdir(testDir);
       try {
-        await program.parseAsync(["agent", "dispatch", "stop"], { from: "user" });
+        await program.parseAsync(["agent", "dispatch", "stop", "--force"], { from: "user" });
       } finally {
         process.chdir(origCwd);
       }
@@ -1544,11 +1580,12 @@ describe("AC-5: kspec agent dispatch stop graceful shutdown", () => {
       // suppress exitOverride
     } finally {
       console.log = origLog;
+      if (dispatchSession) process.env.KSPEC_SESSION_ID = dispatchSession;
     }
 
     // AC: @cli-agent-commands ac-5 - dispatch engine stopped gracefully
     expect(fetchMock).toHaveBeenCalledWith(
-      expect.stringContaining("/api/agent/dispatch/stop"),
+      expect.stringContaining("/api/agent/dispatch/control"),
       expect.objectContaining({ method: "POST" }),
     );
     expect(logs.some((l) => /stop|stopped/i.test(l))).toBe(true);
@@ -1589,23 +1626,24 @@ describe("AC-6: kspec agent status with running daemon", () => {
     const testSessionId = "01JTEST000SESSION0000001";
     const testInvocationId = "01JTEST000INVOC00000001";
 
-    const fetchMock = vi.fn().mockResolvedValue({
+    const fetchMock = vi.fn<typeof fetch>().mockResolvedValue({
       ok: true,
-      json: async () => ({
-        running: true,
-        activeInvocations: 1,
-        queuedInvocations: 0,
-        invocations: [
-          {
-            invocationId: testInvocationId,
-            sessionId: testSessionId,
-            agentId: "worker",
-            agentName: "Worker Agent",
-            taskRef: "@01JTASK001",
-            elapsedMs: 45000,
-          },
-        ],
-      }),
+      json: async () =>
+        lifecycleStatus({
+          running: true,
+          activeInvocations: 1,
+          queuedInvocations: 0,
+          invocations: [
+            {
+              invocationId: testInvocationId,
+              sessionId: testSessionId,
+              agentId: "worker",
+              agentName: "Worker Agent",
+              taskRef: "@01JTASK001",
+              elapsedMs: 45000,
+            },
+          ],
+        }),
     } as Response);
     vi.stubGlobal("fetch", fetchMock);
 
@@ -1655,28 +1693,29 @@ describe("AC-6: kspec agent status with running daemon", () => {
     vi.spyOn(PidFileManager.prototype, "isDaemonRunning").mockReturnValue(true);
     vi.spyOn(PidFileManager.prototype, "readPort").mockReturnValue(9999);
 
-    const fetchMock = vi.fn().mockResolvedValue({
+    const fetchMock = vi.fn<typeof fetch>().mockResolvedValue({
       ok: true,
-      json: async () => ({
-        running: true,
-        activeInvocations: 0,
-        queuedInvocations: 2,
-        invocations: [],
-        queued: [
-          {
-            agentId: "worker",
-            agentName: "Worker Agent",
-            taskRef: "@01QTASK002",
-            waitMs: 12000,
-          },
-          {
-            agentId: "reviewer",
-            agentName: "Reviewer Agent",
-            taskRef: "@01QTASK003",
-            waitMs: 3000,
-          },
-        ],
-      }),
+      json: async () =>
+        lifecycleStatus({
+          running: true,
+          activeInvocations: 0,
+          queuedInvocations: 2,
+          invocations: [],
+          queued: [
+            {
+              agentId: "worker",
+              agentName: "Worker Agent",
+              taskRef: "@01QTASK002",
+              waitMs: 12000,
+            },
+            {
+              agentId: "reviewer",
+              agentName: "Reviewer Agent",
+              taskRef: "@01QTASK003",
+              waitMs: 3000,
+            },
+          ],
+        }),
     } as Response);
     vi.stubGlobal("fetch", fetchMock);
 

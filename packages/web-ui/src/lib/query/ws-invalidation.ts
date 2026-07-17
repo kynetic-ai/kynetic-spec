@@ -156,11 +156,11 @@ function getInvalidationKeys(
       // These represent actual dispatch state changes — invalidate both agents
       // and sessions.
       if (event.event === "agent_invocation") {
-        return [queryKeys.agents.all, queryKeys.sessions.all];
+        return [queryKeys.agents.all, queryKeys.sessions.all, queryKeys.automation.events()];
       }
       // Other agent-topic events (for example sync_state degraded/recovered
       // broadcasts) affect dispatch status but not per-session detail views.
-      return [queryKeys.agents.all];
+      return [queryKeys.agents.all, queryKeys.automation.events()];
     }
 
     case "sessions":
