@@ -83770,7 +83770,7 @@ runs:
     started_at: 2026-07-17T21:37:43.021Z
     completed_at: 2026-07-17T21:39:51.129Z
   - _ulid: 01KXS1S51SNXM4TS2N1K1VCVC4
-    status: active
+    status: completed
     current_step: 5
     initiated_by: Jacob Chapel
     step_results:
@@ -83814,10 +83814,13 @@ runs:
         completed_at: 2026-07-17T22:08:05.009Z
         notes: No decision is required because the coverage check left no untracked improvement to propose.
           Conclude the reflection without duplicate capture.
-      - status: completed
+      - status: skipped
         step_index: 5
         started_at: 2026-07-17T22:08:05.009Z
-        completed_at: 2026-07-17T22:08:05.009Z
+        completed_at: 2026-07-17T22:08:12.452Z
+        notes: "No items captured: every friction candidate is already represented by an existing inbox
+          item, spec, task, or observation, and no new improvement was proposed."
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-07-17T22:05:03.417Z
+    completed_at: 2026-07-17T22:08:12.452Z
