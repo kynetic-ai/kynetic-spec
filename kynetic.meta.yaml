@@ -24424,6 +24424,26 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-07-17T18:25:05.137Z
+  - _ulid: 01KXRSKTB4JBP9Y7D3TZ1VZHW6
+    type: friction
+    content: The test runner reused a cached failure after new documentation files were created as
+      untracked files, reporting repository state unchanged until --fresh was used, despite project
+      guidance stating untracked files participate in the cache key. This can hide implementation
+      progress whenever a test depends on newly created untracked inputs.
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    created_at: 2026-07-17T19:42:20.004Z
+  - _ulid: 01KXRSKTNSVSH51YG312R29HEX
+    type: success
+    content: Behavioral documentation validation through the real docs plugin plus an executed runtime
+      failure fixture caught and corrected a false bootstrap-output redaction claim before
+      submission. Pairing rendered-page assertions with observable source-authority fixtures is
+      effective for source-bound operator documentation.
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    created_at: 2026-07-17T19:42:20.345Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
