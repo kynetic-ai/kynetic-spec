@@ -231,6 +231,18 @@ checks:
     runner: manual source and behavior trace
     created_at: 2026-07-17T12:47:11.036Z
     completed_at: 2026-07-17T12:47:11.036Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: No listed package/shared guidance surface changed. Public prose remains project-neutral;
+      no Kynetic-only instruction was removed, so direction-2 relocation and package artifact
+      regeneration are not applicable.
+    name: shared-guidance neutrality
+    required: false
+    runner: semantic reviewer checklist
+    created_at: 2026-07-17T12:47:32.262Z
+    completed_at: 2026-07-17T12:47:32.262Z
 events:
   - _ulid: 01KXR0V2K7QEW08VFGDHRBGP7E
     actor: Jacob Chapel
@@ -399,6 +411,20 @@ events:
       status: pass
       name: source-bound prose audit
     timestamp: 2026-07-17T12:47:11.291Z
+  - _ulid: 01KXR1WA6GE883YMKS67F5PXTH
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: shared-guidance neutrality
+    timestamp: 2026-07-17T12:47:32.560Z
+  - _ulid: 01KXR1WDKJFT8MFXQ5CH489BK8
+    actor: pr-reviewer
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KXR1WDBBZ4JGHEGAPTZX6S7F
+    timestamp: 2026-07-17T12:47:36.050Z
 examined_commit: 71a9a195700adfea06d9c6b6728752ecae58633c
 external_links: []
 lifecycle_state: open
@@ -434,7 +460,32 @@ threads:
           applicable. Findings: none."
         created_at: 2026-07-17T12:46:09.364Z
     kind: nit
+  - _ulid: 01KXR1WDBBZ4JGHEGAPTZX6S7F
+    entries:
+      - _ulid: 01KXR1WDBBM6G2MJFT5K3GHXNQ
+        author: pr-reviewer
+        body: "Review evidence log — Files read: all four changed-file diffs; full workspace guide;
+          runner-guide examples and surrounding guide; changed documentation tests and inventory
+          fixture; task, spec, plan, all prior reviews, frozen facts, docs Vite plugin,
+          config/default/base-target/publication resolution, bootstrap schema/runtime/tests,
+          gitignore setup and upgrade behavior, workspace registry and cleanup ownership,
+          remote-sync runtime/tests, and CLI help. Commands run: exact base/head and cycle-3 diffs;
+          task/spec/plan/review lookups; AC searches; git diff --check; tracked Markdown count;
+          exact list/run help; format; repo and focused lint; typecheck; refs/alignment/completeness
+          validation; focused 128-test docs/config/inventory run; docs-search build; fresh full
+          2,835-suite run. Claims verified: all three earlier fix cycles are correctly resolved; 141
+          tracked Markdown files match inventory; examples parse through current public schemas and
+          publish through the docs bundle; every named command in the new guide points to exact
+          help; full-suite claim independently reproduced. Categories searched: correctness, edge
+          cases, error and recovery handling, security and output-tail disclosure, test quality,
+          integration, help discoverability, lifecycle separation, and additional issues after prior
+          findings. Shared-guidance neutrality: no listed shared/package surface changed; direction
+          1 public prose remains project-neutral; direction 2 is not triggered because no
+          Kynetic-only instruction was removed; package generated-artifact refresh is not
+          applicable. Findings: none."
+        created_at: 2026-07-17T12:47:35.787Z
+    kind: nit
 verdicts: []
 created_at: 2026-07-17T12:29:23.437Z
-updated_at: 2026-07-17T12:47:11.036Z
+updated_at: 2026-07-17T12:47:35.787Z
 notes: []
