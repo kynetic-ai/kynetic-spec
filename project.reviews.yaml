@@ -30648,7 +30648,7 @@ reviews:
     title: Review dispatch lifecycle controls operator guide
     disposition: changes_requested
     author: Jacob Chapel
-    check_count: 11
+    check_count: 18
     examined_commit: 225953b1c3a2087a7de70d7e53e6208563157132
     lifecycle_state: closed
     related_refs: []
@@ -30661,4 +30661,4 @@ reviews:
     unresolved_blocker_count: 4
     verdict_count: 1
     created_at: 2026-07-17T13:26:36.728Z
-    updated_at: 2026-07-17T13:47:10.607Z
+    updated_at: 2026-07-17T13:48:01.397Z
