@@ -453,6 +453,12 @@ events:
       from: open
       to: closed
     timestamp: 2026-07-17T01:32:06.195Z
+  - _ulid: 01KXPX27ZV7FA8S116J13PBBJV
+    actor: Jacob Chapel
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KXPV0J1KE7X2A8MVXC7HPNEW
+    timestamp: 2026-07-17T02:04:09.596Z
 examined_commit: 528a4ca8ef3c30d260e96d3d37b681837642f362
 external_links: []
 lifecycle_state: closed
@@ -486,6 +492,13 @@ threads:
           despite no assertion binding these fixture leaves. Add source-bound behavioral/schema
           checks and negative mutations for the required fact groups."
         created_at: 2026-07-17T01:28:17.204Z
+      - _ulid: 01KXPX27RGZXCJ1MZ68JQ84QNX
+        author: Jacob Chapel
+        body: "Fixed: expanded the fact contract into source-bound behavioral checks for schemas,
+          configuration, transition and cleanup helpers, daemon routes, CLI safety behavior, API/UI
+          wiring, events, evidence, and limitations. Added group-specific mutation tests, and
+          corrected the stopped-with-cleanup action fact to match the production lifecycle helper."
+        created_at: 2026-07-17T02:04:09.360Z
     kind: blocker
   - _ulid: 01KXPV0NDYF9AGW08Q75A1ZZ3E
     anchor:
@@ -700,5 +713,5 @@ verdicts:
     role: reviewer
     created_at: 2026-07-17T01:32:06.195Z
 created_at: 2026-07-17T01:05:48.282Z
-updated_at: 2026-07-17T01:32:06.195Z
+updated_at: 2026-07-17T02:04:09.360Z
 notes: []
