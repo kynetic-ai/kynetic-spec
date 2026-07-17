@@ -83009,9 +83009,20 @@ runs:
     completed_at: 2026-07-17T11:50:27.087Z
   - _ulid: 01KXR0F7S6J25G69AKD3XY4SKM
     status: active
-    current_step: 0
+    current_step: 1
     initiated_by: Jacob Chapel
-    step_results: []
+    step_results:
+      - status: completed
+        step_index: 0
+        started_at: 2026-07-17T12:22:55.526Z
+        completed_at: 2026-07-17T12:25:03.257Z
+        notes: Mandatory baseline completed across 2,117 observations, 432 inbox items, and 1,715 tasks
+          before candidate evaluation. The unbounded output was truncated, matching existing
+          reflection-baseline coverage @01KXQD1G6 and @01KXKCX5Y.
+      - status: completed
+        step_index: 1
+        started_at: 2026-07-17T12:25:03.257Z
+        completed_at: 2026-07-17T12:25:03.257Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-07-17T12:22:55.526Z
