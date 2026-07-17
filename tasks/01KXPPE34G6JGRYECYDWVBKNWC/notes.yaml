@@ -1,1 +1,17 @@
-notes: []
+notes:
+  - _ulid: 01KXQNYK6RM86DHCKSC7FDW7Z1
+    content: "Approach: extend the creator-owned dispatch operator docs test first, then publish a
+      sequential workspace/bootstrap guide and correct the two agent-runner dispatch examples. Reuse
+      the frozen dispatch fact fixture plus exported KspecConfigSchema, AgentDispatchRuleSchema, and
+      AgentBootstrapStepSchema; no runtime behavior or shared package guidance changes. Edge cases:
+      plan target precedence, relative versus absolute worktree roots, all publication
+      modes/defaults, worker/reviewer bootstrap reuse and rerun safety, tracked-file mutation
+      opt-in, runner/bootstrap environment separation, bounded unredacted output tails, no-remote
+      local-only behavior, degraded fast-forward sync, managed gitignore handling, and the absence
+      of workspace management commands. Test plan: parse every tagged kspec-config/kspec-agent
+      example through public schemas and compare keys/defaults/enums to the fixture; execute
+      documented help paths, validate relative links, reject runnable workspace commands and legacy
+      trigger/filters keys, and annotate @docs-guides-section ac-2/ac-3 coverage."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-07-17T09:19:04.408Z
