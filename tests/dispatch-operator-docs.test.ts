@@ -96,6 +96,7 @@ import type { Agent } from "../src/schema/meta.js";
 import { ensureSplitBackendRegistered } from "../src/parser/split-backend.js";
 import { initContext } from "../src/parser/index.js";
 import { loadDispatchWorkspaceRegistry } from "../src/parser/dispatch-workspaces.js";
+import { resolveTaskDataManager } from "../src/parser/task-data-manager.js";
 
 const modeState = vi.hoisted(() => ({ staticMode: false }));
 vi.mock("../packages/web-ui/src/lib/stores/mode.svelte", () => ({
@@ -663,6 +664,11 @@ function validateFacts(facts: DispatchFacts): void {
   expect(resolveDispatchRemoteSync(defaults, false)).toBe(false);
   expect(resolveDispatchRemoteSync(defaults, true)).toBe(true);
   expect(facts.workspace.remote_sync_default).toBe("enabled exactly when a remote exists");
+  expect(facts.workspace.remote_sync.no_remote).toBe(
+    resolveDispatchRemoteSync(defaults, false)
+      ? ""
+      : "local-only with no degraded state or warnings",
+  );
   expect(facts.workspace.worktree_root_resolution).toBe(
     "relative paths resolve from the project root; absolute paths remain absolute",
   );
@@ -776,6 +782,7 @@ function validateFacts(facts: DispatchFacts): void {
     pending_cleanup_is_durable: true,
     final_admission_checks_global_and_task_authority: true,
   });
+  expect(facts.lifecycle.controls_preserve_task_readiness).toBe(true);
 
   expect(facts.lifecycle.global_actions).toEqual({
     stopped: ["start"],
@@ -866,9 +873,71 @@ function validateFacts(facts: DispatchFacts): void {
     heldCount: 1,
   });
   expect(uiStatus.heldTasks[0]).toMatchObject({ taskId: TASK_ID, scope: "global" });
+  const uiMappingProbes: Record<string, { wireValues: Record<string, unknown>; uiValue: unknown }> =
+    {
+      global_authority: { wireValues: { global_authority: "running" }, uiValue: "running" },
+      projection: { wireValues: { projection: "paused" }, uiValue: "paused" },
+      cleanup_state: {
+        wireValues: {
+          cleanup_state: {
+            status: "pending",
+            entries: [
+              {
+                cleanup_id: CLEANUP_ID,
+                scope: "global",
+                status: "pending",
+                phase: "owned",
+              },
+            ],
+          },
+        },
+        uiValue: {
+          status: "pending",
+          entries: [
+            {
+              cleanupId: CLEANUP_ID,
+              scope: "global",
+              status: "pending",
+              phase: "owned",
+            },
+          ],
+        },
+      },
+      active_count: { wireValues: { active_count: 7 }, uiValue: 7 },
+      queue_depth: { wireValues: { queue_depth: 8 }, uiValue: 8 },
+      held_count: { wireValues: { held_count: 0, held_tasks: [] }, uiValue: 0 },
+      held_tasks: { wireValues: { held_count: 0, held_tasks: [] }, uiValue: [] },
+      task_controls: { wireValues: { task_controls: [] }, uiValue: [] },
+      degraded_targets: {
+        wireValues: {
+          degraded_targets: [
+            {
+              branch: "plan/ui-mapping-probe",
+              reason: "mapping probe",
+              enteredAt: NOW,
+              kind: "diverged",
+            },
+          ],
+        },
+        uiValue: [
+          {
+            branch: "plan/ui-mapping-probe",
+            reason: "mapping probe",
+            enteredAt: NOW,
+            kind: "diverged",
+          },
+        ],
+      },
+    };
+  expect(Object.keys(facts.ui.mapping).toSorted()).toEqual(Object.keys(uiMappingProbes).toSorted());
   for (const [wireKey, uiKey] of Object.entries(facts.ui.mapping)) {
-    expect((uiStatus as unknown as Record<string, unknown>)[uiKey]).toBeDefined();
-    expect((wire as unknown as Record<string, unknown>)[wireKey]).toBeDefined();
+    const probe = uiMappingProbes[wireKey];
+    expect(probe, `missing UI mapping probe for ${wireKey}`).toBeDefined();
+    const projected = parseAgentDispatchStatusWire({
+      ...wire,
+      ...probe?.wireValues,
+    }) as unknown as Record<string, unknown>;
+    expect(projected[uiKey], `${wireKey} must map to ${uiKey}`).toEqual(probe?.uiValue);
   }
   expect(facts.ui.route).toBe("/agents");
   expect(facts.ui.writable_actions).toEqual({
@@ -1550,6 +1619,57 @@ describe("dispatch operator fact fixture", () => {
     }
   });
 
+  it("binds the no-remote fact to silent local-only engine behavior", async () => {
+    const projectDir = await createTempDir("dispatch-doc-no-remote-");
+    const log = vi.spyOn(console, "log").mockImplementation(() => undefined);
+    const warn = vi.spyOn(console, "warn").mockImplementation(() => undefined);
+    const error = vi.spyOn(console, "error").mockImplementation(() => undefined);
+    let engine: DispatchEngine | undefined;
+    try {
+      await seedFactProject(projectDir);
+      engine = new DispatchEngine({ projectDir, reconcileIntervalMs: 0 });
+      await engine.start();
+      const status = engine.getTargetSyncStatus();
+      const observedFact =
+        !status.enabled &&
+        status.remote === null &&
+        status.degradedTargets.length === 0 &&
+        log.mock.calls.length === 0 &&
+        warn.mock.calls.length === 0 &&
+        error.mock.calls.length === 0
+          ? "local-only with no degraded state or warnings"
+          : "";
+
+      expect(factsFixture.workspace.remote_sync.no_remote).toBe(observedFact);
+    } finally {
+      await engine?.stop().catch(() => undefined);
+      await cleanupTempDir(projectDir);
+    }
+  });
+
+  it("binds lifecycle control to preservation of semantic task readiness", async () => {
+    const harness = await createAdmissionHarness(createMissingDispatchControl());
+    try {
+      const ctx = await initContext(harness.projectDir);
+      const manager = resolveTaskDataManager(ctx);
+      const beforeTask = (await manager.loadAllTasks(ctx)).find(
+        (task) => task._ulid === harness.taskId,
+      );
+      expect(beforeTask).toBeDefined();
+
+      expect((await harness.engine.applyGlobalLifecycleAction("start")).outcome).toBe("applied");
+
+      const afterTask = (await manager.loadAllTasks(ctx)).find(
+        (task) => task._ulid === harness.taskId,
+      );
+      expect(afterTask).toEqual(beforeTask);
+      expect(factsFixture.lifecycle.controls_preserve_task_readiness).toBe(true);
+    } finally {
+      await harness.engine.stop().catch(() => undefined);
+      await cleanupTempDir(harness.projectDir);
+    }
+  });
+
   it("binds automation filtering to each executed event rule rather than a global default", () => {
     const engine = new DispatchEngine({ projectDir: fixtureDir, reconcileIntervalMs: 0 });
     const matchesFilter = (
@@ -1981,14 +2101,20 @@ describe("dispatch operator fact fixture", () => {
         "workspace ownership",
         (facts) => (facts.workspace.workspace_ownership.reviewer_mode = "branch"),
       ],
-      ["remote sync", (facts) => facts.workspace.remote_sync.degraded_status_fields.pop()],
+      ["remote sync status", (facts) => facts.workspace.remote_sync.degraded_status_fields.pop()],
+      ["remote sync no-remote", (facts) => (facts.workspace.remote_sync.no_remote = "warns")],
       ["event automation filter", (facts) => facts.workspace.automation_filtering.rules.pop()],
       ["command tree", (facts) => facts.command_tree.help_modes.pop()],
       ["identity", (facts) => facts.lifecycle.identity.accepted_aliases.pop()],
       ["durability", (facts) => (facts.lifecycle.durability.path = ".kspec/other.yaml")],
+      [
+        "readiness preservation",
+        (facts) => (facts.lifecycle.controls_preserve_task_readiness = false),
+      ],
       ["status fields", (facts) => facts.lifecycle.held_task_fields.pop()],
       ["cleanup", (facts) => (facts.lifecycle.cleanup.aggregate_is_observability_only = false)],
       ["API", (facts) => (facts.api.compatibility_status.path = "/api/other")],
+      ["UI mapping", (facts) => (facts.ui.mapping.global_authority = facts.ui.mapping.projection)],
       ["UI", (facts) => (facts.ui.static_mode = "writable")],
       ["events", (facts) => (facts.events.failure_contract = "raw errors")],
       ["safety", (facts) => facts.safety.evidence_preserved.pop()],

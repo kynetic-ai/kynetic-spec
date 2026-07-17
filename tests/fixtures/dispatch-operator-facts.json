@@ -102,8 +102,7 @@
       "no_remote": "local-only with no degraded state or warnings",
       "target_update": "fast-forward only with no merge commits",
       "degraded_status_fields": ["branch", "reason", "enteredAt", "kind"],
-      "reviewer_target_sync": "deferred while that target has an active reviewer",
-      "completion_status": "in progress; only source-verified behavior is public"
+      "reviewer_target_sync": "deferred while that target has an active reviewer"
     },
     "worktree_root_resolution": "relative paths resolve from the project root; absolute paths remain absolute",
     "base_target_precedence": {
@@ -205,6 +204,7 @@
       "pending_cleanup_is_durable": true,
       "final_admission_checks_global_and_task_authority": true
     },
+    "controls_preserve_task_readiness": true,
     "status_fields": [
       "global_authority",
       "projection",
