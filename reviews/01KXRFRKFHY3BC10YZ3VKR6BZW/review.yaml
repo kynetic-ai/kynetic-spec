@@ -95,6 +95,98 @@ checks:
     runner: npm run build:docs-search
     created_at: 2026-07-17T17:11:25.595Z
     completed_at: 2026-07-17T17:11:25.595Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: All 1064 files matched formatting; exit 0.
+    name: format
+    required: true
+    runner: npm run format:check
+    created_at: 2026-07-17T17:12:59.031Z
+    completed_at: 2026-07-17T17:12:59.031Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: 0 errors; repository baseline 696 warnings. Focused oxlint on
+      tests/dispatch-operator-docs.test.ts reported 0 warnings and 0 errors.
+    name: lint
+    required: true
+    runner: npm run lint -- --quiet
+    created_at: 2026-07-17T17:13:02.551Z
+    completed_at: 2026-07-17T17:13:02.551Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Shared package build and tsc --noEmit passed.
+    name: typecheck
+    required: true
+    runner: npm run typecheck
+    created_at: 2026-07-17T17:13:05.996Z
+    completed_at: 2026-07-17T17:13:05.996Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Uncached npm test -- --fresh: 2,837 suites passed; 10,974 tests passed; 3 skipped; 0 failed."
+    name: full test suite
+    required: true
+    runner: npm test
+    created_at: 2026-07-17T17:13:09.466Z
+    completed_at: 2026-07-17T17:13:09.466Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: kspec validate --refs --warnings-ok passed with the documented 6-warning baseline.
+    name: kspec validate refs
+    required: true
+    runner: kspec
+    created_at: 2026-07-17T17:13:12.994Z
+    completed_at: 2026-07-17T17:13:12.994Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: kspec validate --alignment --warnings-ok passed with the documented 57-warning baseline.
+    name: kspec validate alignment
+    required: true
+    runner: kspec
+    created_at: 2026-07-17T17:13:16.588Z
+    completed_at: 2026-07-17T17:13:16.588Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: kspec validate --completeness --warnings-ok passed with the documented 325-warning baseline.
+    name: kspec validate completeness
+    required: true
+    runner: kspec
+    created_at: 2026-07-17T17:13:20.067Z
+    completed_at: 2026-07-17T17:13:20.067Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Fresh focused run of inventory, dispatch operator docs, web UI docs rendering, and setup
+      built-in agents: 287/287 passed."
+    name: focused docs tests
+    required: true
+    runner: npm test
+    created_at: 2026-07-17T17:13:23.468Z
+    completed_at: 2026-07-17T17:13:23.468Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Pagefind indexed 45 documentation entries; exit 0.
+    name: docs search build
+    required: true
+    runner: npm run build:docs-search
+    created_at: 2026-07-17T17:13:26.944Z
+    completed_at: 2026-07-17T17:13:26.944Z
 events:
   - _ulid: 01KXRFRKF6JSJM6RSQKAJV9GKJ
     actor: Jacob Chapel
@@ -193,6 +285,90 @@ events:
       kind: nit
       thread_ulid: 01KXRGZT7KWRYZ7624WSFJDB63
     timestamp: 2026-07-17T17:11:36.183Z
+  - _ulid: 01KXRH2BN88J2V012M2YVSNNY3
+    actor: pr-reviewer
+    event_type: check_added
+    payload:
+      status: pass
+      name: format
+    timestamp: 2026-07-17T17:12:59.305Z
+  - _ulid: 01KXRH2F28FZ04WS6XKTQ6Q19X
+    actor: pr-reviewer
+    event_type: check_added
+    payload:
+      status: pass
+      name: lint
+    timestamp: 2026-07-17T17:13:02.792Z
+  - _ulid: 01KXRH2JEP5NVB2ZWY4EDPP7YW
+    actor: pr-reviewer
+    event_type: check_added
+    payload:
+      status: pass
+      name: typecheck
+    timestamp: 2026-07-17T17:13:06.262Z
+  - _ulid: 01KXRH2NW2416NN3T8ERQ2Y9VD
+    actor: pr-reviewer
+    event_type: check_added
+    payload:
+      status: pass
+      name: full test suite
+    timestamp: 2026-07-17T17:13:09.762Z
+  - _ulid: 01KXRH2S9916H64Z1R73J4AV7A
+    actor: pr-reviewer
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate refs
+    timestamp: 2026-07-17T17:13:13.257Z
+  - _ulid: 01KXRH2WSXGSAQ70T4B3Z20FSA
+    actor: pr-reviewer
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate alignment
+    timestamp: 2026-07-17T17:13:16.862Z
+  - _ulid: 01KXRH3067AD1WMDEC5SNDE6QR
+    actor: pr-reviewer
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate completeness
+    timestamp: 2026-07-17T17:13:20.327Z
+  - _ulid: 01KXRH33GGF96E1MQRGFBR0RZY
+    actor: pr-reviewer
+    event_type: check_added
+    payload:
+      status: pass
+      name: focused docs tests
+    timestamp: 2026-07-17T17:13:23.728Z
+  - _ulid: 01KXRH36X36B07DG3V6TYECNWT
+    actor: pr-reviewer
+    event_type: check_added
+    payload:
+      status: pass
+      name: docs search build
+    timestamp: 2026-07-17T17:13:27.203Z
+  - _ulid: 01KXRH3A9D9JS6VVYWE74QTKD5
+    actor: pr-reviewer
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KXRH3A1B5RA630GNVEJNNJB3
+    timestamp: 2026-07-17T17:13:30.670Z
+  - _ulid: 01KXRH3DQ61P6SC0SVP1EHGGAJ
+    actor: pr-reviewer
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KXRH3DE4RSNPCWFS1H3NGJNE
+    timestamp: 2026-07-17T17:13:34.182Z
+  - _ulid: 01KXRH3H3YC2XN2RMRAQYGD1CT
+    actor: pr-reviewer
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KXRH3GVGH21NHASX04PPAT58
+    timestamp: 2026-07-17T17:13:37.662Z
 examined_commit: 7dee50416cccbdab3166159745574c430bb466fa
 external_links: []
 lifecycle_state: open
@@ -284,7 +460,88 @@ threads:
           and generated package artifact regeneration are not applicable.
         created_at: 2026-07-17T17:11:35.923Z
     kind: nit
+  - _ulid: 01KXRH3A1B5RA630GNVEJNNJB3
+    anchor:
+      type: code
+      commit: 7dee50416cccbdab3166159745574c430bb466fa
+      line_end: 31
+      line_start: 31
+      path: docs/concepts/dispatch-workspaces.md
+      side: head
+    entries:
+      - _ulid: 01KXRH3A1BHNJC336WR4PHWWV7
+        author: pr-reviewer
+        body: MUST-FIX — This invents a reviewer-snapshot retention/debugging-hold condition that has no
+          supported configuration, schema, status, or command surface. The dispatch runtime calls
+          cleanupReviewerDispatchWorkspace immediately after each pending-review invocation; cleanup
+          can be prevented by the actual artifact-protection/ownership state, but operators cannot
+          apply or inspect the hold described here. Readers are therefore promised a retention
+          mechanism that does not exist. Describe the real cleanup/protection condition instead.
+        created_at: 2026-07-17T17:13:30.411Z
+    kind: blocker
+  - _ulid: 01KXRH3DE4RSNPCWFS1H3NGJNE
+    anchor:
+      type: code
+      commit: 7dee50416cccbdab3166159745574c430bb466fa
+      line_end: 47
+      line_start: 47
+      path: docs/concepts/dispatch-workspaces.md
+      side: head
+    entries:
+      - _ulid: 01KXRH3DE4JEBNQR7YEAEN52E2
+        author: pr-reviewer
+        body: MUST-FIX — Configured auto publication is environment-based selection, not an automatic
+          publication path. resolvePublicationMode maps auto to pull_request only when gh and a
+          GitHub remote are available, otherwise to manual_merge; the durable workspace publication
+          schema stores only pull_request or manual_merge. This wording tells operators that kspec
+          can automatically publish/merge through a third path that does not exist. Rewrite this to
+          describe manual merge, pull request, and auto selection accurately.
+        created_at: 2026-07-17T17:13:33.892Z
+    kind: blocker
+  - _ulid: 01KXRH3GVGH21NHASX04PPAT58
+    entries:
+      - _ulid: 01KXRH3GVGTFK6ZEXE7B7B0R1S
+        author: pr-reviewer
+        body: >-
+          Review evidence log
+
+
+          Files read: docs/concepts/agents-and-dispatch.md; docs/concepts/dispatch-workspaces.md;
+          docs/concepts/index.md; tests/dispatch-operator-docs.test.ts;
+          tests/fixtures/public-documentation-surfaces.json;
+          tests/public-documentation-inventory.test.ts; tests/setup-builtin-agents.test.ts;
+          docs/concepts/reviews.md; docs/concepts/agent-runners.md;
+          docs/guides/configuring-dispatch-workspaces.md;
+          docs/guides/controlling-dispatch-lifecycle.md; src/agent-runtime/workspace.ts;
+          src/agent-runtime/dispatch.ts; src/schema/dispatch-workspace.ts;
+          src/parser/dispatch-workspaces.ts; src/parser/config.ts;
+          src/cli/commands/setup-defaults.ts; prior review @01KXRADD.
+
+
+          Commands run: full base-to-head diff and fix-cycle diff; git ls-files Markdown count;
+          format check; repo and focused lint; typecheck; refs/alignment/completeness validation;
+          fresh focused tests; docs-search build; uncached full npm test.
+
+
+          Claims verified: the prior inventory blocker is fixed (143 tracked Markdown files and
+          fixture count 143); the overview setup roster/rules/write authorization match the setup
+          defaults and all four exact default-agent AC tests pass; worker continuity, detached
+          review, readiness/lifecycle/degraded/cleanup separation match runtime and protection
+          tests. Publication auto-path and reviewer-hold claims were disproved against the resolver
+          and cleanup flow.
+
+
+          Categories searched: correctness/factual accuracy; task/spec alignment and AC annotations;
+          edge states for detached review, fix cycles, degraded targets, and cleanup protection;
+          error/recovery guidance; test quality; docs rendering/link/search integration;
+          security/safety guidance against manual state/worktree mutation.
+
+
+          Shared/package guidance surfaces touched: none, so shared-guidance-neutrality directions
+          and generated package artifact regeneration are not applicable.
+        created_at: 2026-07-17T17:13:37.392Z
+    kind: nit
 verdicts: []
 created_at: 2026-07-17T16:50:11.057Z
-updated_at: 2026-07-17T17:11:35.923Z
+updated_at: 2026-07-17T17:13:37.392Z
 notes: []
