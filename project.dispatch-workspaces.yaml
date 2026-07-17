@@ -12091,7 +12091,7 @@ workspaces:
         head: b28c29557d3ec15ee1cfc0b14c6d2ee5a57b86aa
         last_seen_at: 2026-07-16T21:15:28.684Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-verify-ui-lifecycle-browser-01kxh2py
-  - active_role: null
+  - active_role: worker
     base_branch_point: 8f871993d15baf33168818bbf6b60f9e9f29cb4b
     bootstrap:
       status: succeeded
@@ -12576,7 +12576,7 @@ workspaces:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-07-17T08:30:52.132Z
+      updated_at: 2026-07-17T08:31:49.370Z
     integration:
       status: pending
       detail: null
@@ -12585,17 +12585,17 @@ workspaces:
       target_branch: plan/plan-dispatch-lifecycle-pause-resume-and-stop-controls/01kxc2vx
       target_commit: 8f871993d15baf33168818bbf6b60f9e9f29cb4b
       updated_at: 2026-07-17T08:30:52.132Z
-    lifecycle_state: ready
+    lifecycle_state: active
     resolved_base_branch: plan/plan-dispatch-lifecycle-pause-resume-and-stop-controls/01kxc2vx
     task_id: 01KXPPE2FA72S6HPFV9V95488F
     task_ref: "@01KXPPE2FA72S6HPFV9V95488F"
     task_slug: task-freeze-doc-facts-and-inventory
     timestamps:
       closed_at: null
-      last_active_at: 2026-07-17T08:03:13.743Z
-      last_reconciled_at: 2026-07-17T08:30:52.132Z
+      last_active_at: 2026-07-17T08:31:49.370Z
+      last_reconciled_at: 2026-07-17T08:31:49.370Z
       created_at: 2026-07-17T00:21:12.790Z
-      updated_at: 2026-07-17T08:31:34.279Z
+      updated_at: 2026-07-17T08:31:49.370Z
     workspace_id: dispatch-workspace-01KXPPE2FA72S6HPFV9V95488F
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
