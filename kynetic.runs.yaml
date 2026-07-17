@@ -83417,9 +83417,21 @@ runs:
     completed_at: 2026-07-17T16:18:00.275Z
   - _ulid: 01KXRFCFNR9N54DJQMKT6K5TWS
     status: active
-    current_step: 0
+    current_step: 1
     initiated_by: Jacob Chapel
-    step_results: []
+    step_results:
+      - status: completed
+        step_index: 0
+        started_at: 2026-07-17T16:43:33.944Z
+        completed_at: 2026-07-17T16:45:37.884Z
+        notes: "Mandatory baseline completed: ran kspec meta observations list, kspec inbox list, and kspec
+          tasks list. Targeted duplicate searches for test cache tracked/untracked state, git
+          ls-files cache behavior, git index cache keys, untracked-to-tracked transitions, and
+          test-runner tracking status all returned no matches."
+      - status: completed
+        step_index: 1
+        started_at: 2026-07-17T16:45:37.884Z
+        completed_at: 2026-07-17T16:45:37.884Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-07-17T16:43:33.944Z
