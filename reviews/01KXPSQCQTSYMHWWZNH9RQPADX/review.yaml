@@ -465,6 +465,12 @@ events:
     payload:
       thread_ulid: 01KXPV0J1KE7X2A8MVXC7HPNEW
     timestamp: 2026-07-17T02:04:15.428Z
+  - _ulid: 01KXPX2KDGBH7HKWFXKEBQ2DVZ
+    actor: Jacob Chapel
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KXPV0NDYF9AGW08Q75A1ZZ3E
+    timestamp: 2026-07-17T02:04:21.296Z
 examined_commit: 528a4ca8ef3c30d260e96d3d37b681837642f362
 external_links: []
 lifecycle_state: closed
@@ -532,6 +538,12 @@ threads:
           required non-file class from its authority where possible and compare exact typed record
           sets, including stale-extra mutations."
         created_at: 2026-07-17T01:28:20.671Z
+      - _ulid: 01KXPX2K5DEBJS8T20JED0ZQ7J
+        author: Jacob Chapel
+        body: "Fixed: replaced the non-Markdown subset checks with independently derived exact universes for
+          every typed surface class. The gate now reports missing entries, stale extras, and
+          duplicates per class, with negative tests for both omissions and stale additions."
+        created_at: 2026-07-17T02:04:21.037Z
     kind: blocker
   - _ulid: 01KXPV0RMFWN5V61ZNJ53KPE6B
     anchor:
@@ -721,5 +733,5 @@ verdicts:
     role: reviewer
     created_at: 2026-07-17T01:32:06.195Z
 created_at: 2026-07-17T01:05:48.282Z
-updated_at: 2026-07-17T02:04:15.147Z
+updated_at: 2026-07-17T02:04:21.037Z
 notes: []
