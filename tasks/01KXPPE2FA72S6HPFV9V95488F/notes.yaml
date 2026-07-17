@@ -103,3 +103,20 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-07-17T04:06:42.013Z
+  - _ulid: 01KXQ5CSN7BGPMZRBPHS4BF2E4
+    content: "Fix cycle 3: resolved all review threads in e7dedf15cf. Replaced lossy non-file signatures
+      with complete record contracts covering stable IDs, classification, source authorities, audit
+      metadata, and kind-specific fields; added identity/classification/source negative mutations
+      and verified every declared authority exists. Bound current-status error envelopes, canonical
+      event identity, closed event errors, interactive/noninteractive/JSON/host hard-stop safety,
+      and failed-cleanup retry authority to exported schemas/public helpers or executed CLI
+      behavior; removed unsupported ownership prose leaves. Corrected the generated web-docs source
+      authority to packages/web-ui/vite-plugin-docs.ts. Reviewed b28c29557d3e and integrated
+      3f22e6c93c68 remain ancestors of unchanged target 8f871993d15b. Re-verified
+      @docs-section-taxonomy ac-1/ac-2 and @auto-cli-docs ac-1/ac-3/ac-4/ac-5. Gates: focused 83/83;
+      format pass; repo lint 0 errors and focused lint 0 warnings/errors; typecheck pass;
+      refs/alignment/completeness pass with warnings-ok baselines; full suite 2,834/2,834 suites,
+      10,957 passed and 3 skipped."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-07-17T04:29:43.975Z
