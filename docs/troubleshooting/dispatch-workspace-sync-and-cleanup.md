@@ -58,7 +58,7 @@ Inspect the reported path with read-only filesystem checks and `git status --sho
 
 ### Recovery procedure
 
-Choose a non-colliding `dispatch.worktree_root` for future work, or move the unrelated content through its owner's normal process. If the entry may be dispatch evidence, leave it in place and allow registry reconciliation to identify it.
+Choose a non-colliding `dispatch.worktree_root` for future work, or move the unrelated content through its owner's normal process. If the entry may be dispatch evidence, leave it in place and allow registry reconciliation to identify it. Provisioning failure blocks the requesting task, so after the collision is safely corrected, run `kspec task unblock @task-ref` to restore its prior status and make it selectable again.
 
 ### Healthy outcome
 

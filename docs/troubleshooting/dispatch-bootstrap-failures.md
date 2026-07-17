@@ -76,15 +76,15 @@ Dispatch reruns cached preparation for exactly three recorded signals: `prior-bo
 
 ### What to observe
 
-Read those invalidation reasons in the workspace outcome, then inspect the blocked task with `kspec task get @task-ref` and the current dispatch projection with `kspec agent status`.
+Read those invalidation reasons in the workspace outcome and allow the automatic rerun to finish. If the automatic rerun succeeds, the workspace records a new successful result and the task is not blocked merely because its cache was invalidated. Only when the rerun itself fails will `kspec task get @task-ref` show a blocked task and a `[DISPATCH-BOOTSTRAP]` note; use `kspec agent status` for the current dispatch projection.
 
 ### Recovery procedure
 
-Correct a previously failed step or unintended bootstrap configuration. If the canonical branch advanced intentionally, keep that branch state and allow preparation to run against its new head. Then run `kspec task unblock @task-ref` to restore the prior task status and trigger the matching attempt. Do not mark cached state valid manually.
+Allow dispatch to rerun preparation automatically. Correct a previously failed step or unintended bootstrap configuration if that rerun reports an error. If the canonical branch advanced intentionally, keep that branch state and let preparation run against its new head. Only when the rerun failed and the task is actually blocked should you run `kspec task unblock @task-ref` after correcting the failure; unblock restores the prior task status for another matching attempt. Do not mark cached state valid manually.
 
 ### Healthy outcome
 
-The task is no longer blocked; bootstrap runs against the recorded configuration and canonical branch head, records a new ready result, and the role starts without reusing stale preparation.
+Bootstrap runs against the recorded configuration and canonical branch head, records a new successful result, and the role starts without reusing stale preparation. A successful automatic rerun leaves the task unblocked; after a failed rerun, the corrected and explicitly unblocked task returns to its prior status and reaches the same result.
 
 ### Learn more
 

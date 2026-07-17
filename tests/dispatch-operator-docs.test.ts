@@ -2035,6 +2035,7 @@ describe("dispatch operator fact fixture", () => {
         expect(result.metadata.bootstrap.invalidationReasons).toContain(
           "canonical-branch-head-changed",
         );
+        expect(result.metadata.bootstrap.status).toBe("succeeded");
 
         const block = symptomBlock(
           publishedDoc(publishedDocs(), "troubleshooting/dispatch-bootstrap-failures").content,
@@ -2047,6 +2048,9 @@ describe("dispatch operator fact fixture", () => {
         ]) {
           expect(block).toContain(reason);
         }
+        expect(block).toContain("If the automatic rerun succeeds");
+        expect(block).toContain("Only when the rerun itself fails");
+        expect(block).not.toContain("Then run `kspec task unblock @task-ref`");
         expect(block).not.toMatch(/target change|role change|tracked workspace change/i);
       } finally {
         await cleanupTempDir(projectDir);
@@ -2144,6 +2148,110 @@ describe("dispatch operator fact fixture", () => {
         "relative paths resolve from the project root; absolute paths remain absolute",
       );
     } finally {
+      await cleanupTempDir(projectDir);
+    }
+  });
+
+  it("binds workspace provisioning failure recovery to task block and public unblock", async () => {
+    const projectDir = await createTempDir("dispatch-doc-workspace-recovery-");
+    const taskId = testUlid("TASK", 80);
+    const taskRef = `@${taskId}`;
+    const taskSlug = "workspace-collision-recovery-fact";
+    const agent = {
+      ...factAgent(),
+      adapter: "mock-acp",
+      dispatch: [{ on: "task.ready" as const }],
+    };
+    const control = createMissingDispatchControl();
+    control.global.authority = "running";
+    const engine = new DispatchEngine({
+      projectDir,
+      specDir: projectDir,
+      kspecCliPath: REAL_KSPEC_CLI,
+      reconcileIntervalMs: 0,
+      coalesceWindowMs: 0,
+      lifecycleStore: new FactLifecycleStore(control),
+    });
+    try {
+      await seedFactProject(projectDir);
+      await writeFile(
+        join(projectDir, "kynetic.meta.yaml"),
+        YAML.stringify({
+          kynetic_meta: "1.0",
+          agents: [agent],
+        }),
+        "utf8",
+      );
+      seedSplitTask(projectDir, {
+        _ulid: taskId,
+        type: "task",
+        title: "Workspace collision recovery fact",
+        slugs: [taskSlug],
+        status: "pending",
+        priority: 1,
+        automation: "eligible",
+        depends_on: [],
+        blocked_by: [],
+        tags: [],
+        notes: [],
+        context: [],
+        vcs_refs: [],
+        todos: [],
+        created_at: NOW,
+      });
+      await writeFile(
+        join(projectDir, "kspec.config.yaml"),
+        "dispatch:\n  base_branch: main\n  worktree_root: .kspec/worktrees\n",
+        "utf8",
+      );
+      (engine as unknown as { running: boolean }).running = true;
+      const change = {
+        taskId,
+        taskRef,
+        fromStatus: "in_progress",
+        toStatus: "pending",
+        timestamp: Date.now(),
+        task: kspecJson<LoadedTask>(`task get ${taskRef}`, projectDir),
+      };
+      type EngineInternal = {
+        _spawnInvocation: (
+          candidate: Agent,
+          entry: { agent: Agent; change: typeof change; retryCount: number; nextRetryAt: number },
+        ) => Promise<boolean>;
+      };
+      const spawned = await (engine as unknown as EngineInternal)._spawnInvocation(agent, {
+        agent,
+        change,
+        retryCount: 0,
+        nextRetryAt: 0,
+      });
+
+      expect(spawned).toBe(false);
+      const blocked = kspecJson<{ status: string; notes: Array<{ content: string }> }>(
+        `task get ${taskRef}`,
+        projectDir,
+      );
+      expect(blocked.status).toBe("blocked");
+      expect(blocked.notes.some((note) => note.content.includes("[DISPATCH-WORKSPACE]"))).toBe(
+        true,
+      );
+      expect(
+        blocked.notes.some((note) => note.content.includes("inside the shadow worktree")),
+      ).toBe(true);
+
+      expect(kspec(`task unblock ${taskRef}`, projectDir).exitCode).toBe(0);
+      expect(kspecJson<{ status: string }>(`task get ${taskRef}`, projectDir).status).toBe(
+        "pending",
+      );
+
+      const block = symptomBlock(
+        publishedDoc(publishedDocs(), "troubleshooting/dispatch-workspace-sync-and-cleanup")
+          .content,
+        "The Workspace Path Collides With Existing Content",
+      );
+      expect(block).toContain("kspec task unblock @task-ref");
+    } finally {
+      await engine.stop().catch(() => undefined);
       await cleanupTempDir(projectDir);
     }
   });
