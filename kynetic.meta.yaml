@@ -24300,6 +24300,18 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-07-17T02:43:09.109Z
+  - _ulid: 01KXQB1YWSQXCTBN1QJHWWPR8D
+    type: success
+    content: "Reviewer reproduction of the release workflow's actual repository topology caught a
+      publication-only regression: the normal full-clone gates passed, but rerunning the changed
+      Git-history tests in a depth-1 clone matching the release checkout exposed unconditional
+      historical merge-base assertions that fail before npm test can publish. When behavior depends
+      on Git ancestry, matching CI checkout depth is a high-value review gate beyond rerunning the
+      same command in a full developer clone."
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    created_at: 2026-07-17T06:08:40.345Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
