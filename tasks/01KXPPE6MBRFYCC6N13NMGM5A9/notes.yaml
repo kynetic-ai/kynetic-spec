@@ -37,3 +37,16 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-07-17T16:10:34.583Z
+  - _ulid: 01KXREAMRDG25AHP5TN5WBGHB0
+    content: "Fix-cycle approach: update only the construction-phase tracked Markdown count from 142 to
+      143, preserving the six-page pending-addition allowance and Task 7's ownership of final
+      inventory records. Evidence: the plan explicitly requires intervening full-suite verification
+      to remain satisfiable as Tasks 2-5 add those pages; this task adds
+      docs/concepts/dispatch-workspaces.md and git ls-files now returns 143. Re-verified
+      @docs-concepts-section ac-1/ac-2, all four task-owned default-agent ACs, and the
+      lifecycle/readiness/evidence cleanup authority ACs. Test plan: run the fresh inventory suite
+      first, then the required focused docs/setup suite, docs-search build, all project gates, and
+      an uncached full suite."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-07-17T16:25:05.037Z
