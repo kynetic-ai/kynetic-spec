@@ -400,6 +400,36 @@ events:
       status: fail
       name: source-bound prose audit
     timestamp: 2026-07-17T10:50:17.394Z
+  - _ulid: 01KXQV7CP7ATMJP649QR39VGNW
+    actor: pr-reviewer
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KXQV7CE7C32EWFW6JP41HGWG
+    timestamp: 2026-07-17T10:51:15.527Z
+  - _ulid: 01KXQV7FXR5G5D8R2RPAQM0JMR
+    actor: pr-reviewer
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KXQV7FNY0THWW2DS1M0EHJBZ
+    timestamp: 2026-07-17T10:51:18.840Z
+  - _ulid: 01KXQV7MB9QZ50AV1YGPC72ZXG
+    actor: pr-reviewer
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KXQV7M3CNAH0PK8D6EWE3KFD
+    timestamp: 2026-07-17T10:51:23.369Z
+  - _ulid: 01KXQV7QNDFYP4H64PB8ATE86N
+    actor: pr-reviewer
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: request_changes
+    timestamp: 2026-07-17T10:51:26.765Z
 examined_commit: 7c2bc80a30fb9a4f726938960bf1dc60224195d9
 external_links: []
 lifecycle_state: closed
@@ -479,6 +509,75 @@ threads:
           found after expanded search."
         created_at: 2026-07-17T10:49:10.760Z
     kind: nit
+  - _ulid: 01KXQV7CE7C32EWFW6JP41HGWG
+    anchor:
+      type: code
+      commit: 7c2bc80a30fb9a4f726938960bf1dc60224195d9
+      line_end: 68
+      line_start: 68
+      path: docs/guides/configuring-dispatch-workspaces.md
+      side: head
+    entries:
+      - _ulid: 01KXQV7CE7PYBBSYQYYX35GH84
+        author: pr-reviewer
+        body: "MUST-FIX: This sentence says an absolute worktree root is outside the repository, but that is
+          not an enforced invariant. resolveDispatchWorkspaceConfig preserves any absolute path and
+          ensureUsableWorktreeRoot rejects only paths under .kspec; the submitted behavioral test at
+          tests/dispatch-operator-docs.test.ts:1464-1470 deliberately accepts an absolute root
+          inside projectDir. buildKspecGitignoreEntries nevertheless omits every absolute root from
+          the managed block. Impact: an operator can choose a supported absolute in-repository root
+          and, based on this guide, miss that it receives no managed ignore entry, leaving dispatch
+          worktrees visible as unignored repository content. State that absolute roots receive no
+          managed repository-relative ignore entry and recommend placing them outside the
+          repository, without claiming they necessarily are outside."
+        created_at: 2026-07-17T10:51:15.271Z
+    kind: blocker
+  - _ulid: 01KXQV7FNY0THWW2DS1M0EHJBZ
+    anchor:
+      type: code
+      commit: 7c2bc80a30fb9a4f726938960bf1dc60224195d9
+      line_end: 151
+      line_start: 151
+      path: docs/guides/configuring-dispatch-workspaces.md
+      side: head
+    entries:
+      - _ulid: 01KXQV7FNYKNFT1YD94PP08GB0
+        author: pr-reviewer
+        body: "MUST-FIX: The universal statement that remote failures are reported as degraded target state
+          contradicts the remote-sync contract. DispatchEngine._syncTarget classifies
+          fetch/connectivity failures as transient_failure, logs a warning, and explicitly does not
+          enter degraded state; tests/dispatch-target-sync.test.ts covers this under
+          @dispatch-remote-branch-sync ac-transient-no-degrade. Degradation applies to unsafe target
+          mutation or divergence, not every remote failure. Impact: operators will look for degraded
+          status fields that legitimately never appear during transient fetch failures. Qualify
+          which failures degrade and distinguish transient warnings from degraded topology/state
+          failures."
+        created_at: 2026-07-17T10:51:18.590Z
+    kind: blocker
+  - _ulid: 01KXQV7M3CNAH0PK8D6EWE3KFD
+    entries:
+      - _ulid: 01KXQV7M3CY9TFBQ7MFXZK115S
+        author: pr-reviewer
+        body: "Review evidence log — Files read: all four changed-file diffs; full new workspace guide;
+          surrounding runner-guide examples; changed docs-test helpers/cases; inventory
+          fixture/gate; docs Vite plugin; config/default resolution; workspace target/root/ownership
+          code; bootstrap schema/runtime; gitignore setup/upgrade paths; publication resolution;
+          target-sync runtime/tests; prior-cycle review and task/spec/plan context. Commands run:
+          exact base/head diff and commits; task/spec/plan/prior-review lookups; AC searches;
+          tracked Markdown count; source fact searches; git diff --check; format; repo/focused lint;
+          typecheck; refs/alignment/completeness validation; focused docs/config/inventory tests;
+          docs-search build; fresh full suite. Claims verified: prior blocker is fixed (141 tracked
+          Markdown files and inventory 17/17); worker full-suite claim independently reproduced
+          (2,835 suites, 10,967 passing, 3 expected skips); examples parse and docs publish.
+          Categories searched: correctness, edge cases, recovery/error handling,
+          security/output-tail warning, test quality, integration, discoverability, lifecycle
+          separation, and additional issues after the first finding. Shared-guidance neutrality: no
+          listed package/shared guidance surface changed; public prose was still checked for
+          universal Kynetic-only policy, with no new leak. Direction 2 and generated-artifact
+          refresh are not applicable. Findings: two source-alignment blockers; no additional issue
+          found after expanded search."
+        created_at: 2026-07-17T10:51:23.116Z
+    kind: nit
 verdicts:
   - applies_to_version:
       type: entity_version
@@ -487,6 +586,13 @@ verdicts:
     reviewer: pr-reviewer
     role: reviewer
     created_at: 2026-07-17T10:49:14.558Z
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: request_changes
+    reviewer: pr-reviewer
+    role: reviewer
+    created_at: 2026-07-17T10:51:26.764Z
 created_at: 2026-07-17T10:30:45.018Z
-updated_at: 2026-07-17T10:50:17.127Z
+updated_at: 2026-07-17T10:51:26.764Z
 notes: []
