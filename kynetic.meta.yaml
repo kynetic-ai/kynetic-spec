@@ -24276,6 +24276,18 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-07-16T21:13:44.795Z
+  - _ulid: 01KXPXF6897EZW9SN9YCKXP9SF
+    type: success
+    content: Exact fixture drift gates are strongest when the expected fixture is compared against an
+      independently derived complete observed universe, every fact group is bound to exported or
+      black-box production behavior, and negative mutations prove both omission and stale-extra
+      rejection. In @01KXPPE2FA72S6HPFV9V95488F this pattern converted partial subset checks into
+      bidirectional contracts and exposed a genuinely stale stopped-with-cleanup lifecycle action
+      before resubmission.
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    created_at: 2026-07-17T02:11:13.801Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
