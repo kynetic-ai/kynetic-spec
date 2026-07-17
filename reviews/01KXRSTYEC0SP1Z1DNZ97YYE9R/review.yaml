@@ -110,6 +110,16 @@ checks:
     runner: npm run build:docs-search
     created_at: 2026-07-17T20:04:24.665Z
     completed_at: 2026-07-17T20:04:24.665Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Passed: Prettier checked all 1,067 files."
+    name: format
+    required: true
+    runner: npm run format:check
+    created_at: 2026-07-17T20:05:16.487Z
+    completed_at: 2026-07-17T20:05:16.487Z
 events:
   - _ulid: 01KXRSTYE4DPPPY9VR0Y6Q6EZD
     actor: Jacob Chapel
@@ -252,6 +262,13 @@ events:
       from: open
       to: closed
     timestamp: 2026-07-17T20:04:52.153Z
+  - _ulid: 01KXRTXTTEEW9741GF7PXE6BGK
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: format
+    timestamp: 2026-07-17T20:05:16.750Z
 examined_commit: a71126177efc68c959fa2434fea5fe013eb188f1
 external_links: []
 lifecycle_state: closed
@@ -407,5 +424,5 @@ verdicts:
     role: reviewer
     created_at: 2026-07-17T20:04:52.153Z
 created_at: 2026-07-17T19:46:13.580Z
-updated_at: 2026-07-17T20:04:52.153Z
+updated_at: 2026-07-17T20:05:16.487Z
 notes: []
