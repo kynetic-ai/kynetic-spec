@@ -385,6 +385,42 @@ events:
       from: open
       to: closed
     timestamp: 2026-07-17T17:13:51.619Z
+  - _ulid: 01KXRH6ANEGXZ9PC60GSF3M6DZ
+    actor: pr-reviewer
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KXRH3A1B5RA630GNVEJNNJB3
+    timestamp: 2026-07-17T17:15:09.358Z
+  - _ulid: 01KXRH6DZMSG005JVPCX0GJA1A
+    actor: pr-reviewer
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KXRH3A1B5RA630GNVEJNNJB3
+    timestamp: 2026-07-17T17:15:12.756Z
+  - _ulid: 01KXRH6H9HKYM9NBK6C5TY8AK1
+    actor: pr-reviewer
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KXRH3DE4RSNPCWFS1H3NGJNE
+    timestamp: 2026-07-17T17:15:16.145Z
+  - _ulid: 01KXRH6MKXNVHT1JZM68VM0W79
+    actor: pr-reviewer
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KXRH3DE4RSNPCWFS1H3NGJNE
+    timestamp: 2026-07-17T17:15:19.549Z
+  - _ulid: 01KXRH6R90BTP5X57BW7DX7H9J
+    actor: pr-reviewer
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KXRH3GVGH21NHASX04PPAT58
+    timestamp: 2026-07-17T17:15:23.296Z
+  - _ulid: 01KXRH6VSZM2ZR5ZRY596WHS9B
+    actor: pr-reviewer
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KXRH3GVGH21NHASX04PPAT58
+    timestamp: 2026-07-17T17:15:26.911Z
 examined_commit: 7dee50416cccbdab3166159745574c430bb466fa
 external_links: []
 lifecycle_state: closed
@@ -494,7 +530,14 @@ threads:
           apply or inspect the hold described here. Readers are therefore promised a retention
           mechanism that does not exist. Describe the real cleanup/protection condition instead.
         created_at: 2026-07-17T17:13:30.411Z
+      - _ulid: 01KXRH6AD3Z9RKFJ6R1HSWQ046
+        author: pr-reviewer
+        body: Duplicate review entry created by a delayed atomic batch; canonical finding is thread
+          01KXRGZKE307PT7VXWTADD8ST0.
+        created_at: 2026-07-17T17:15:09.087Z
     kind: blocker
+    resolved_at: 2026-07-17T17:15:12.501Z
+    resolved_by: pr-reviewer
   - _ulid: 01KXRH3DE4RSNPCWFS1H3NGJNE
     anchor:
       type: code
@@ -513,7 +556,14 @@ threads:
           can automatically publish/merge through a third path that does not exist. Rewrite this to
           describe manual merge, pull request, and auto selection accurately.
         created_at: 2026-07-17T17:13:33.892Z
+      - _ulid: 01KXRH6H1EW5ZG72FDRH2QWBPW
+        author: pr-reviewer
+        body: Duplicate review entry created by a delayed atomic batch; canonical finding is thread
+          01KXRGZPRAXC5FWKG9VC1RF6M9.
+        created_at: 2026-07-17T17:15:15.886Z
     kind: blocker
+    resolved_at: 2026-07-17T17:15:19.279Z
+    resolved_by: pr-reviewer
   - _ulid: 01KXRH3GVGH21NHASX04PPAT58
     entries:
       - _ulid: 01KXRH3GVGTFK6ZEXE7B7B0R1S
@@ -556,7 +606,14 @@ threads:
           Shared/package guidance surfaces touched: none, so shared-guidance-neutrality directions
           and generated package artifact regeneration are not applicable.
         created_at: 2026-07-17T17:13:37.392Z
+      - _ulid: 01KXRH6R0K8MFK887BH6DS3BKT
+        author: pr-reviewer
+        body: Duplicate evidence-log entry created by a delayed atomic batch; canonical evidence log is
+          thread 01KXRGZT7KWRYZ7624WSFJDB63.
+        created_at: 2026-07-17T17:15:23.027Z
     kind: nit
+    resolved_at: 2026-07-17T17:15:26.632Z
+    resolved_by: pr-reviewer
 verdicts:
   - applies_to_version:
       type: entity_version
@@ -566,5 +623,5 @@ verdicts:
     role: reviewer
     created_at: 2026-07-17T17:13:51.613Z
 created_at: 2026-07-17T16:50:11.057Z
-updated_at: 2026-07-17T17:13:51.619Z
+updated_at: 2026-07-17T17:15:26.632Z
 notes: []
