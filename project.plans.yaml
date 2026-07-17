@@ -2139,7 +2139,7 @@ plans:
     slugs:
       - plan-dispatch-lifecycle-pause-resume-and-stop-controls
     title: Dispatch Lifecycle Pause Resume and Stop Controls
-    status: active
+    status: completed
     approved_at: 2026-07-14T19:46:24.344Z
     branch: plan/plan-dispatch-lifecycle-pause-resume-and-stop-controls/01kxc2vx
     derived_specs:
