@@ -1,7 +1,7 @@
 import { execFileSync } from "node:child_process";
 import { existsSync } from "node:fs";
 import { writeFile } from "node:fs/promises";
-import { dirname, join, resolve } from "node:path";
+import { dirname, join, normalize, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import { afterAll, afterEach, beforeAll, describe, expect, it, vi } from "vitest";
 import * as YAML from "yaml";
@@ -96,7 +96,9 @@ import type { Agent } from "../src/schema/meta.js";
 import { ensureSplitBackendRegistered } from "../src/parser/split-backend.js";
 import { initContext } from "../src/parser/index.js";
 import { loadDispatchWorkspaceRegistry } from "../src/parser/dispatch-workspaces.js";
+import { buildKspecGitignoreEntries } from "../src/parser/gitignore.js";
 import { resolveTaskDataManager } from "../src/parser/task-data-manager.js";
+import { docsPlugin } from "../packages/web-ui/vite-plugin-docs.js";
 
 const modeState = vi.hoisted(() => ({ staticMode: false }));
 vi.mock("../packages/web-ui/src/lib/stores/mode.svelte", () => ({
@@ -1249,6 +1251,52 @@ function cloneFacts(): DispatchFacts {
   return structuredClone(factsFixture) as unknown as DispatchFacts;
 }
 
+function taggedYaml(markdown: string, tag: "kspec-config" | "kspec-agent"): unknown[] {
+  const fence = "```";
+  return [
+    ...markdown.matchAll(new RegExp(`${fence}yaml ${tag}\\n([\\s\\S]*?)\\n${fence}`, "g")),
+  ].map((match) => YAML.parse(match[1]!));
+}
+
+function validateAgentExample(example: unknown): void {
+  const document = example as {
+    agents?: unknown[];
+    dispatch?: unknown[];
+    bootstrap?: { steps?: unknown[] };
+  };
+  for (const agent of document.agents ?? []) validateAgentExample(agent);
+  for (const rule of document.dispatch ?? []) AgentDispatchRuleSchema.parse(rule);
+  for (const step of document.bootstrap?.steps ?? []) AgentBootstrapStepSchema.parse(step);
+}
+
+function relativeMarkdownLinks(markdown: string): string[] {
+  return [...markdown.matchAll(/\[[^\]]+\]\(([^)#]+)(?:#[^)]+)?\)/g)]
+    .map((match) => match[1]!)
+    .filter((target) => !target.includes(":"));
+}
+
+interface PublishedDoc {
+  slug: string;
+  path: string;
+  content: string;
+}
+
+function publishedDocs(): PublishedDoc[] {
+  const plugin = docsPlugin(join(ROOT, "docs"));
+  const load = plugin.load as (id: string) => string | undefined;
+  const moduleSource = load("\0virtual:docs");
+  if (!moduleSource) throw new Error("docs plugin did not produce a manifest");
+  return (
+    JSON.parse(moduleSource.slice("export default ".length, -1)) as { entries: PublishedDoc[] }
+  ).entries;
+}
+
+function publishedDoc(entries: PublishedDoc[], slug: string): PublishedDoc {
+  const entry = entries.find((candidate) => candidate.slug === slug);
+  if (!entry) throw new Error(`published docs entry not found: ${slug}`);
+  return entry;
+}
+
 describe("dispatch operator fact fixture", () => {
   let fixtureDir: string;
 
@@ -1264,6 +1312,126 @@ describe("dispatch operator fact fixture", () => {
     modeState.staticMode = false;
     vi.unstubAllGlobals();
     vi.restoreAllMocks();
+  });
+
+  describe("dispatch workspace configuration guide", () => {
+    // AC: @docs-guides-section ac-2
+    it("publishes a sequential, source-bound guide with schema-valid examples", () => {
+      const entries = publishedDocs();
+      const entry = publishedDoc(entries, "guides/configuring-dispatch-workspaces");
+      const guide = entry.content;
+      const goal = guide.indexOf("## Goal");
+      const prerequisites = guide.indexOf("## Prerequisites");
+      const steps = guide.indexOf("## Steps");
+      const verification = guide.lastIndexOf("## Verification");
+      expect(goal).toBeGreaterThan(0);
+      expect(prerequisites).toBeGreaterThan(goal);
+      expect(steps).toBeGreaterThan(prerequisites);
+      expect(verification).toBeGreaterThan(steps);
+
+      const configExamples = taggedYaml(guide, "kspec-config");
+      expect(configExamples).toHaveLength(1);
+      const parsedConfig = KspecConfigSchema.parse(configExamples[0]);
+      expect(Object.keys(parsedConfig.dispatch ?? {}).toSorted()).toEqual(
+        factsFixture.workspace.config_keys.toSorted(),
+      );
+      const defaultDispatch = getDefaultConfig().dispatch;
+      expect(defaultDispatch).toMatchObject({
+        base_branch: factsFixture.workspace.defaults.base_branch,
+        worktree_root: factsFixture.workspace.defaults.worktree_root,
+        publication_mode: factsFixture.workspace.defaults.publication_mode,
+        sync_interval: factsFixture.workspace.defaults.sync_interval,
+        remote_sync: factsFixture.workspace.defaults.remote_sync,
+      });
+      expect(defaultDispatch.bootstrap.steps).toEqual(
+        factsFixture.workspace.defaults.bootstrap_steps,
+      );
+      for (const publicationMode of factsFixture.workspace.publication_modes) {
+        expect(
+          KspecConfigSchema.parse({ dispatch: { publication_mode: publicationMode } }).dispatch
+            ?.publication_mode,
+        ).toBe(publicationMode);
+      }
+
+      const agentExamples = taggedYaml(guide, "kspec-agent");
+      expect(agentExamples).toHaveLength(1);
+      for (const example of agentExamples) validateAgentExample(example);
+      const agentExample = agentExamples[0] as {
+        dispatch: Array<{ filter?: Record<string, unknown> }>;
+        bootstrap: { steps: Array<Record<string, unknown>> };
+      };
+      expect(Object.keys(agentExample.bootstrap.steps[0]!).toSorted()).toEqual(
+        factsFixture.workspace.bootstrap.step_keys.toSorted(),
+      );
+      expect(
+        [...new Set(agentExample.dispatch.flatMap((rule) => Object.keys(rule)))].toSorted(),
+      ).toEqual(factsFixture.workspace.rule_keys.toSorted());
+      expect(
+        [
+          ...new Set(agentExample.dispatch.flatMap((rule) => Object.keys(rule.filter ?? {}))),
+        ].toSorted(),
+      ).toEqual(factsFixture.workspace.rule_filter_keys.toSorted());
+
+      for (const target of relativeMarkdownLinks(guide)) {
+        const resolvedTarget = normalize(join(dirname(entry.path), target)).replaceAll("\\", "/");
+        expect(
+          entries.some((candidate) => candidate.path === resolvedTarget),
+          target,
+        ).toBe(true);
+      }
+
+      const relativeRoot = "relative/worktrees";
+      const absoluteRoot = join(ROOT, "absolute-worktrees");
+      expect(buildKspecGitignoreEntries(undefined, relativeRoot)).toContain(`${relativeRoot}/`);
+      expect(buildKspecGitignoreEntries(undefined, absoluteRoot)).not.toContain(`${absoluteRoot}/`);
+      expect(guide).toContain(
+        "An absolute root receives no managed repository-relative ignore entry, even when the chosen path is inside the repository",
+      );
+      expect(guide).toContain(
+        "Transient fetch or connectivity failures emit warnings and leave the target out of degraded state",
+      );
+      expect(guide).toContain(
+        "Failures that make target mutation unsafe, including divergence, are reported as degraded target state",
+      );
+      expect(guide).not.toContain("Remote failures are reported as degraded target state");
+    });
+
+    // AC: @docs-guides-section ac-3
+    it("backs named commands with help and presents no workspace command as runnable", () => {
+      const guide = publishedDoc(publishedDocs(), "guides/configuring-dispatch-workspaces").content;
+      expect(guide).toContain("kspec agent list --help");
+      expect(guide).toContain("kspec agent run --help");
+      for (const helpPath of [
+        "setup --help",
+        "agent list --help",
+        "agent run --help",
+        "agent status --help",
+        "agent runners validate --help",
+        "task get --help",
+      ]) {
+        const result = kspec(helpPath, fixtureDir);
+        expect(result.exitCode, helpPath).toBe(0);
+        expect(result.stdout.length, helpPath).toBeGreaterThan(0);
+      }
+      const runnableCommands = [...guide.matchAll(/```bash\n([\s\S]*?)\n```/g)].flatMap((match) =>
+        match[1]!
+          .split("\n")
+          .map((line) => line.trim())
+          .filter((line) => line.startsWith("kspec ")),
+      );
+      expect(runnableCommands.some((command) => /\bworkspace(?:s)?\b/.test(command))).toBe(false);
+      expect(guide).toContain("no workspace list, show, reset, or cleanup command");
+    });
+
+    it("keeps both agent-runner rule examples on the current dispatch schema", () => {
+      const guide = publishedDoc(publishedDocs(), "guides/configuring-agent-runners").content;
+      const examples = taggedYaml(guide, "kspec-agent");
+      expect(examples).toHaveLength(2);
+      for (const example of examples) validateAgentExample(example);
+      expect(examples.every((example) => JSON.stringify(example).includes('"on"'))).toBe(true);
+      expect(guide).not.toMatch(/^\s+trigger:/m);
+      expect(guide).not.toMatch(/^\s+filters:/m);
+    });
   });
 
   // AC: @auto-cli-docs ac-3
