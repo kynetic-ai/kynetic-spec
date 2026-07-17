@@ -2,7 +2,116 @@ _ulid: 01KXR43VDR49349V0ZSHAS72ZM
 slugs: []
 title: Review dispatch lifecycle controls operator guide
 author: Jacob Chapel
-checks: []
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: All 1063 files matched formatting.
+    name: format
+    required: true
+    runner: npm run format:check
+    created_at: 2026-07-17T13:46:04.426Z
+    completed_at: 2026-07-17T13:46:04.426Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Repo lint: 0 errors with the existing 696-warning baseline. Focused npx oxlint
+      tests/dispatch-operator-docs.test.ts: 0 warnings and 0 errors."
+    name: lint
+    required: true
+    runner: npm run lint -- --quiet
+    created_at: 2026-07-17T13:46:07.761Z
+    completed_at: 2026-07-17T13:46:07.761Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Shared package build and tsc --noEmit passed.
+    name: typecheck
+    required: true
+    runner: npm run typecheck
+    created_at: 2026-07-17T13:46:11.111Z
+    completed_at: 2026-07-17T13:46:11.111Z
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Fresh run: 10,962 passed, 3 skipped, 8 failed of 10,973. All failures are in
+      tests/public-documentation-inventory.test.ts due stale tracked Markdown count. Focused rerun
+      reproduced 8/17 failures. Exact base has 141 tracked Markdown files and fixture count 141;
+      reviewed head has 142 tracked Markdown files but fixture count remains 141."
+    name: full test suite
+    required: true
+    runner: npm test -- --fresh
+    created_at: 2026-07-17T13:46:14.454Z
+    completed_at: 2026-07-17T13:46:14.454Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Passed with the documented six deprecation warnings.
+    name: kspec validate refs
+    required: true
+    runner: kspec
+    created_at: 2026-07-17T13:46:18.160Z
+    completed_at: 2026-07-17T13:46:18.160Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Passed under --warnings-ok with the existing 58-warning baseline.
+    name: kspec validate alignment
+    required: true
+    runner: kspec
+    created_at: 2026-07-17T13:46:23.194Z
+    completed_at: 2026-07-17T13:46:23.194Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Passed under --warnings-ok with the existing project completeness warning baseline;
+      @docs-guides-section ac-1 through ac-3 annotations are present.
+    name: kspec validate completeness
+    required: true
+    runner: kspec
+    created_at: 2026-07-17T13:46:27.206Z
+    completed_at: 2026-07-17T13:46:27.206Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Indexed 44 documentation entries.
+    name: docs search
+    required: true
+    runner: npm run build:docs-search
+    created_at: 2026-07-17T13:46:33.068Z
+    completed_at: 2026-07-17T13:46:33.068Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Files read: docs/guides/controlling-dispatch-lifecycle.md, docs/guides/index.md,
+      tests/dispatch-operator-docs.test.ts, tests/fixtures/dispatch-operator-facts.json,
+      tests/public-documentation-inventory.test.ts,
+      tests/fixtures/public-documentation-surfaces.json, src/cli/commands/agent.ts,
+      src/cli/commands/help.ts, src/agent-runtime/dispatch.ts,
+      packages/web-ui/src/lib/dispatch-lifecycle.ts, packages/web-ui/src/routes/agents/+page.svelte,
+      surrounding lifecycle and docs-rendering tests. Commands run: exact base/head diff,
+      task/spec/plan/review lookups, source CLI help probes, format, repo and focused lint,
+      typecheck, docs-search, refs/alignment/completeness validation, fresh full tests, focused
+      inventory rerun, and base/head tree-count comparison. Claims verified: transition matrices,
+      command tree, canonical identity, scoped cleanup, API/UI mapping, static mode, events,
+      hard-stop force/host protection, link resolution, and worker gate claims. Categories searched:
+      correctness, edge cases, error handling, safety/security, test quality, integration, AC
+      coverage. Shared/package guidance surfaces touched: none; shared-guidance-neutrality direction
+      checks and regeneration are not applicable."
+    name: review evidence log
+    required: true
+    runner: manual review
+    created_at: 2026-07-17T13:46:36.735Z
+    completed_at: 2026-07-17T13:46:36.735Z
 events:
   - _ulid: 01KXR43VDK6CVZTBDR7ZGHS58W
     actor: Jacob Chapel
@@ -17,17 +126,212 @@ events:
       from: draft
       to: open
     timestamp: 2026-07-17T13:27:02.259Z
+  - _ulid: 01KXR57G0EHTEFTD7MM374PKE0
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: format
+    timestamp: 2026-07-17T13:46:04.686Z
+  - _ulid: 01KXR57K8E0RGM22K2REGCZE8N
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: lint
+    timestamp: 2026-07-17T13:46:08.014Z
+  - _ulid: 01KXR57PH4NQVT4V178T9897SK
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: typecheck
+    timestamp: 2026-07-17T13:46:11.364Z
+  - _ulid: 01KXR57SSRFB0HWDEX4944D5MP
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: fail
+      name: full test suite
+    timestamp: 2026-07-17T13:46:14.712Z
+  - _ulid: 01KXR57XS112YFERKJVTMXDV8G
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate refs
+    timestamp: 2026-07-17T13:46:18.785Z
+  - _ulid: 01KXR582FBKM0K8MD82MMAQF9P
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate alignment
+    timestamp: 2026-07-17T13:46:23.595Z
+  - _ulid: 01KXR586R5WRWPXWA8BH7CFKK6
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate completeness
+    timestamp: 2026-07-17T13:46:27.973Z
+  - _ulid: 01KXR58BZQVXREPY6DSRWAR1RH
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: docs search
+    timestamp: 2026-07-17T13:46:33.335Z
+  - _ulid: 01KXR58FQ3CS8H6BA7K5M0C2JF
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: review evidence log
+    timestamp: 2026-07-17T13:46:37.155Z
+  - _ulid: 01KXR58K8X24C8S0WN1DPKH4HE
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KXR58K110KE3S6DVJ21N60VT
+    timestamp: 2026-07-17T13:46:40.797Z
+  - _ulid: 01KXR58Q4Q8G68HVWAVXKEFZDJ
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KXR58PWM4S7SDWPHRZHZT32K
+    timestamp: 2026-07-17T13:46:44.759Z
+  - _ulid: 01KXR58VMH53BP137TJQEFH0Z4
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KXR58VBXR5XKDGTN18E6XEYR
+    timestamp: 2026-07-17T13:46:49.361Z
+  - _ulid: 01KXR58Z1PCFZW02BYVS5KJ7HS
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KXR58YSNRB2FYBGD0J1KP6CD
+    timestamp: 2026-07-17T13:46:52.854Z
+  - _ulid: 01KXR592ETNMPKGAK82VHC8V6Q
+    actor: pr-reviewer
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: request_changes
+    timestamp: 2026-07-17T13:46:56.346Z
+  - _ulid: 01KXR592ETFTBK16PH3WKKMXS8
+    actor: pr-reviewer
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-07-17T13:46:56.346Z
 examined_commit: 225953b1c3a2087a7de70d7e53e6208563157132
 external_links: []
-lifecycle_state: open
+lifecycle_state: closed
 related_refs: []
 subject:
   type: task
   content_hash: ""
   ref: "@01KXPPE3PS8PDPNH0GDYDP4F4M"
   shadow_commit: ""
-threads: []
-verdicts: []
+threads:
+  - _ulid: 01KXR58K110KE3S6DVJ21N60VT
+    anchor:
+      type: code
+      commit: 225953b1c3a2087a7de70d7e53e6208563157132
+      line_end: 14
+      line_start: 14
+      path: docs/guides/controlling-dispatch-lifecycle.md
+      side: head
+    entries:
+      - _ulid: 01KXR58K114TDRD5TA254MFTK6
+        author: Jacob Chapel
+        body: "MUST-FIX: The help references do not lead a copying reader to the claimed full option lists.
+          The extended-help command accepts one topic argument, so `kspec help agent dispatch` and
+          the longer unquoted forms resolve only the `agent` topic; I reproduced the top-level agent
+          help from all three documented commands. Quoting `agent dispatch` reaches that parent, but
+          parent help still lists only children and not each child option set. This violates
+          @docs-guides-section ac-3 and leaves operators without the promised flags. Point to
+          executable per-command help such as `kspec agent dispatch stop --help` and task child
+          equivalents, or use correctly quoted exact child topics, and verify every named command
+          family reaches the expected Usage and Options output."
+        created_at: 2026-07-17T13:46:40.545Z
+    kind: blocker
+  - _ulid: 01KXR58PWM4S7SDWPHRZHZT32K
+    anchor:
+      type: code
+      commit: 225953b1c3a2087a7de70d7e53e6208563157132
+      line_end: 1562
+      line_start: 1554
+      path: tests/dispatch-operator-docs.test.ts
+      side: head
+    entries:
+      - _ulid: 01KXR58PWMQQ8R2QZBCGHA9G3T
+        author: Jacob Chapel
+        body: "MUST-FIX: This AC-tagged test passes even when the requested help topic is wrong because it
+          asserts only exit code 0 and nonempty stdout. `help agent dispatch` currently returns the
+          nonempty top-level agent help, so the test reports coverage while the guide promise is
+          broken. Assert the requested Usage path and relevant generated Options for each documented
+          command or child; the test must fail when help silently resolves to an ancestor topic."
+        created_at: 2026-07-17T13:46:44.500Z
+    kind: blocker
+  - _ulid: 01KXR58VBXR5XKDGTN18E6XEYR
+    anchor:
+      type: code
+      commit: 225953b1c3a2087a7de70d7e53e6208563157132
+      line_end: 51
+      line_start: 28
+      path: docs/guides/controlling-dispatch-lifecycle.md
+      side: head
+    entries:
+      - _ulid: 01KXR58VBXJT7N0SM0W0QFDJWV
+        author: Jacob Chapel
+        body: "MUST-FIX: The CLI procedure asks operators to run plain `kspec agent status` and then inspect
+          held-task rows, task controls, scoped cleanup entries, and degraded-target rows under
+          snake_case names. The human renderer exposes only Authority, Projection, Active, Queued,
+          Held, and aggregate Cleanup; its JSON mode exposes the internal camelCase contract
+          (`globalAuthority`, `heldTasks`, `taskControls`, and so on), while snake_case belongs to
+          the public API. The documented procedure therefore cannot perform its own verification.
+          Separate human CLI, CLI JSON, public API, and UI field names, and direct readers to an
+          output mode that actually exposes every required row; add a behavioral assertion for that
+          procedure."
+        created_at: 2026-07-17T13:46:49.085Z
+    kind: blocker
+  - _ulid: 01KXR58YSNRB2FYBGD0J1KP6CD
+    anchor:
+      type: code
+      commit: 225953b1c3a2087a7de70d7e53e6208563157132
+      line_end: 1
+      line_start: 1
+      path: docs/guides/controlling-dispatch-lifecycle.md
+      side: head
+    entries:
+      - _ulid: 01KXR58YSNTEJXBGPMTQMK79T5
+        author: Jacob Chapel
+        body: "MUST-FIX: Adding this tracked Markdown file raises the head inventory to 142 files, but
+          tests/fixtures/public-documentation-surfaces.json still declares `tracked_markdown_count:
+          141`. A fresh full suite fails 8 inventory tests, and a focused rerun reproduces them.
+          This is branch-introduced: the exact integration base contains 141 Markdown files with
+          count 141. Update the construction-phase inventory evidence consistently so the full suite
+          passes without prematurely claiming the pending page is audited."
+        created_at: 2026-07-17T13:46:52.597Z
+    kind: blocker
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: request_changes
+    reviewer: pr-reviewer
+    role: reviewer
+    created_at: 2026-07-17T13:46:56.344Z
 created_at: 2026-07-17T13:26:36.728Z
-updated_at: 2026-07-17T13:27:01.983Z
+updated_at: 2026-07-17T13:46:56.346Z
 notes: []
