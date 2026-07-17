@@ -82597,7 +82597,7 @@ runs:
     completed_at: 2026-07-17T08:02:01.789Z
   - _ulid: 01KXQJWR45NQ6TXG8D11FW52P6
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -82612,7 +82612,17 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-07-17T08:27:00.614Z
-        completed_at: 2026-07-17T08:27:00.614Z
+        completed_at: 2026-07-17T08:27:15.717Z
+        notes: "Friction: (1) kspec-reflect documents  without a run ref, but the CLI rejected it as a
+          missing required argument; this is repeatable guidance/CLI drift. (2) The mandatory fresh
+          full suite took about 45 minutes and emitted hundreds of incremental PASS lines, requiring
+          repeated polling; potentially existing test-runner performance/output work. Task-specific
+          projection-probe weakness is already captured as the current review blocker and should not
+          be duplicated as systemic tracking."
+      - status: completed
+        step_index: 2
+        started_at: 2026-07-17T08:27:15.717Z
+        completed_at: 2026-07-17T08:27:15.717Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-07-17T08:25:38.182Z
