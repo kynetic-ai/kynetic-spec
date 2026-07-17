@@ -82456,9 +82456,20 @@ runs:
     completed_at: 2026-07-17T06:08:48.884Z
   - _ulid: 01KXQCXQJ23177WT9D6YZZAM99
     status: active
-    current_step: 0
+    current_step: 1
     initiated_by: Jacob Chapel
-    step_results: []
+    step_results:
+      - status: completed
+        step_index: 0
+        started_at: 2026-07-17T06:41:18.914Z
+        completed_at: 2026-07-17T06:42:07.856Z
+        notes: "Baseline completed in parallel: observations list (2,113 entries), inbox list, and task
+          list. The combined output was very large and truncated, so candidate-specific kspec
+          searches will be used before any capture."
+      - status: completed
+        step_index: 1
+        started_at: 2026-07-17T06:42:07.856Z
+        completed_at: 2026-07-17T06:42:07.856Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-07-17T06:41:18.914Z
