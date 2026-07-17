@@ -211,6 +211,12 @@ events:
       from: open
       to: closed
     timestamp: 2026-07-17T03:56:43.385Z
+  - _ulid: 01KXQ5BCDF5AE7YATRSN0E65A3
+    actor: Jacob Chapel
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KXQ3FW4KC9N4NT5ARF6C74SC
+    timestamp: 2026-07-17T04:28:57.647Z
 examined_commit: ed901155061c87d9ef17684aacea4e959afff8ee
 external_links: []
 lifecycle_state: closed
@@ -248,6 +254,15 @@ threads:
           (including the current-status error envelope and event payload constraints), rather than
           to another hand-written literal."
         created_at: 2026-07-17T03:56:27.667Z
+      - _ulid: 01KXQ5BC5C42YPW82ZXY6PBYRM
+        author: Jacob Chapel
+        body: "Fixed in e7dedf15cf: event task identity and closed-error/no-raw-path claims now execute
+          DispatchControlEventPayloadSchema; current-status errors execute the public UI control
+          helper against a failure envelope; interactive, noninteractive, JSON, and dispatch-host
+          stop safety execute CLI paths; failed cleanup authority is derived from durable cleanup
+          projection plus public retry actions. Removed the unsupported dispatch_owned_only and
+          duplicate ownership-limitation prose leaves instead of self-validating them."
+        created_at: 2026-07-17T04:28:57.388Z
     kind: blocker
   - _ulid: 01KXQ3FZ8ZH9P6HA307DWVVABX
     anchor:
@@ -306,5 +321,5 @@ verdicts:
     role: reviewer
     created_at: 2026-07-17T03:56:43.384Z
 created_at: 2026-07-17T03:35:46.555Z
-updated_at: 2026-07-17T03:56:43.385Z
+updated_at: 2026-07-17T04:28:57.388Z
 notes: []
