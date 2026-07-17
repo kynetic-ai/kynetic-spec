@@ -471,6 +471,12 @@ events:
     payload:
       thread_ulid: 01KXPV0NDYF9AGW08Q75A1ZZ3E
     timestamp: 2026-07-17T02:04:21.296Z
+  - _ulid: 01KXPX2RTQQB568KPV5FKZYMQR
+    actor: Jacob Chapel
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KXPV0NDYF9AGW08Q75A1ZZ3E
+    timestamp: 2026-07-17T02:04:26.839Z
 examined_commit: 528a4ca8ef3c30d260e96d3d37b681837642f362
 external_links: []
 lifecycle_state: closed
@@ -545,6 +551,8 @@ threads:
           duplicates per class, with negative tests for both omissions and stale additions."
         created_at: 2026-07-17T02:04:21.037Z
     kind: blocker
+    resolved_at: 2026-07-17T02:04:26.561Z
+    resolved_by: Jacob Chapel
   - _ulid: 01KXPV0RMFWN5V61ZNJ53KPE6B
     anchor:
       type: code
@@ -733,5 +741,5 @@ verdicts:
     role: reviewer
     created_at: 2026-07-17T01:32:06.195Z
 created_at: 2026-07-17T01:05:48.282Z
-updated_at: 2026-07-17T02:04:21.037Z
+updated_at: 2026-07-17T02:04:26.561Z
 notes: []
