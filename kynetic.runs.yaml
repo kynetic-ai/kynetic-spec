@@ -83686,7 +83686,7 @@ runs:
     completed_at: 2026-07-17T20:15:05.250Z
   - _ulid: 01KXRX2RFD3Q4V9DCPP984VY7T
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -83698,7 +83698,19 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-07-17T20:43:46.342Z
-        completed_at: 2026-07-17T20:43:46.342Z
+        completed_at: 2026-07-17T20:44:53.264Z
+        notes: "High-confidence candidates: (1) friction — stale-read retry during review comment creation
+          produced duplicate blocker threads and evidence logs in one review; distinct from
+          @01KPQQKXG, which concerns shell payload corruption. (2) success — binding operator
+          documentation to a real DispatchEngine failure plus public CLI recovery exposed incorrect
+          task-state/output claims and now prevents prose drift. Skipped full-suite duration because
+          it is already tracked by inbox @01KNTB8Z4; skipped teardown concerns because
+          @task-investigate-npm-test-teardown-hang-after-green-suite-run exists and this run
+          completed normally."
+      - status: completed
+        step_index: 2
+        started_at: 2026-07-17T20:44:53.264Z
+        completed_at: 2026-07-17T20:44:53.264Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-07-17T20:42:55.342Z
