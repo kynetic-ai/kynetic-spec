@@ -76,6 +76,17 @@ checks:
     runner: kspec validate --completeness --warnings-ok
     created_at: 2026-07-17T09:13:57.936Z
     completed_at: 2026-07-17T09:13:57.936Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Task verification command passed 13 suites and 90 tests across inventory, dispatch
+      operator facts, plan parser, and imported suites.
+    name: focused documentation suite
+    required: true
+    runner: npm test -- task-focused documentation files
+    created_at: 2026-07-17T09:14:04.084Z
+    completed_at: 2026-07-17T09:14:04.084Z
 events:
   - _ulid: 01KXQMPJSH9R501V2M41RPRQ0N
     actor: Jacob Chapel
@@ -139,6 +150,13 @@ events:
       status: pass
       name: kspec validate completeness
     timestamp: 2026-07-17T09:13:58.241Z
+  - _ulid: 01KXQNNE5QG0RZG2W3QKDKB5GP
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: focused documentation suite
+    timestamp: 2026-07-17T09:14:04.343Z
 examined_commit: db2173aa4b4118648c720f98d2604b9707716cae
 external_links: []
 lifecycle_state: open
@@ -151,5 +169,5 @@ subject:
 threads: []
 verdicts: []
 created_at: 2026-07-17T08:57:13.265Z
-updated_at: 2026-07-17T09:13:57.936Z
+updated_at: 2026-07-17T09:14:04.084Z
 notes: []
