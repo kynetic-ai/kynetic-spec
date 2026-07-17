@@ -2,7 +2,110 @@ _ulid: 01KXS0J9ADHMPGNPSJHHRF2MXF
 slugs: []
 title: Review task-document-dispatch-recovery (cycle 3)
 author: Jacob Chapel
-checks: []
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: All 1067 matched files use the correct format.
+    name: format
+    required: true
+    runner: npm run format:check
+    created_at: 2026-07-17T22:02:56.661Z
+    completed_at: 2026-07-17T22:02:56.661Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Repo lint completed with 0 errors; 696 baseline warnings. Focused oxlint on
+      tests/dispatch-operator-docs.test.ts completed with 0 warnings and 0 errors.
+    name: lint
+    required: true
+    runner: npm run lint -- --quiet
+    created_at: 2026-07-17T22:03:00.528Z
+    completed_at: 2026-07-17T22:03:00.528Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Shared package build and TypeScript no-emit check passed.
+    name: typecheck
+    required: true
+    runner: npm run typecheck
+    created_at: 2026-07-17T22:03:04.388Z
+    completed_at: 2026-07-17T22:03:04.388Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Fresh full suite passed: 2838 suites, 10980 tests passed, 3 expected skips."
+    name: full test suite
+    required: true
+    runner: npm test -- --fresh
+    created_at: 2026-07-17T22:03:09.146Z
+    completed_at: 2026-07-17T22:03:09.146Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: References OK; exited 0 with the six documented deprecated-ref baseline warnings.
+    name: kspec validate refs
+    required: true
+    runner: kspec validate --refs --warnings-ok
+    created_at: 2026-07-17T22:03:13.847Z
+    completed_at: 2026-07-17T22:03:13.847Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Alignment validation exited 0 with 56 existing baseline warnings.
+    name: kspec validate alignment
+    required: true
+    runner: kspec validate --alignment --warnings-ok
+    created_at: 2026-07-17T22:03:17.937Z
+    completed_at: 2026-07-17T22:03:17.937Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Completeness validation exited 0 under warnings policy; @docs-troubleshooting-section
+      ac-1, ac-2, and ac-3 annotations are present and behaviorally exercised.
+    name: kspec validate completeness
+    required: true
+    runner: kspec validate --completeness --warnings-ok
+    created_at: 2026-07-17T22:03:22.340Z
+    completed_at: 2026-07-17T22:03:22.340Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Focused run passed: 45 suites and 251 tests."
+    name: focused documentation suite
+    required: true
+    runner: npm test -- tests/dispatch-operator-docs.test.ts tests/web-ui-docs-rendering.test.ts
+      tests/dispatch-lifecycle-surface-integration.test.ts
+    created_at: 2026-07-17T22:03:26.938Z
+    completed_at: 2026-07-17T22:03:26.938Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Pagefind indexed 48 documentation entries.
+    name: docs search
+    required: true
+    runner: npm run build:docs-search
+    created_at: 2026-07-17T22:03:30.315Z
+    completed_at: 2026-07-17T22:03:30.315Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Base-to-head diff has no whitespace errors.
+    name: diff hygiene
+    required: true
+    runner: git diff --check
+    created_at: 2026-07-17T22:03:33.914Z
+    completed_at: 2026-07-17T22:03:33.914Z
 events:
   - _ulid: 01KXS0J9A2B92VM9AQWCV90GV7
     actor: Jacob Chapel
@@ -17,17 +120,149 @@ events:
       from: draft
       to: open
     timestamp: 2026-07-17T21:44:03.664Z
+  - _ulid: 01KXS1N9H0XHGPJZ956A78QVJ8
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: format
+    timestamp: 2026-07-17T22:02:56.929Z
+  - _ulid: 01KXS1ND9NVKTGA95DFE8QQF1N
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: lint
+    timestamp: 2026-07-17T22:03:00.789Z
+  - _ulid: 01KXS1NH40R0TPB54MBMHXPRHB
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: typecheck
+    timestamp: 2026-07-17T22:03:04.705Z
+  - _ulid: 01KXS1NNS0KEQ3KS7SPCYX8AY5
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: full test suite
+    timestamp: 2026-07-17T22:03:09.472Z
+  - _ulid: 01KXS1NTAZGMZ274N86W7B94TH
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate refs
+    timestamp: 2026-07-17T22:03:14.143Z
+  - _ulid: 01KXS1NYFNN1DQH5E1Q0V38WAW
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate alignment
+    timestamp: 2026-07-17T22:03:18.389Z
+  - _ulid: 01KXS1P2TZYFECVKHQ4W7VC4GM
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate completeness
+    timestamp: 2026-07-17T22:03:22.847Z
+  - _ulid: 01KXS1P730XXA002CZXJ3HMJ97
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: focused documentation suite
+    timestamp: 2026-07-17T22:03:27.200Z
+  - _ulid: 01KXS1PAD3X2K2M445910X7H4E
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: docs search
+    timestamp: 2026-07-17T22:03:30.595Z
+  - _ulid: 01KXS1PDXE0VAGFPKXK062PES0
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: diff hygiene
+    timestamp: 2026-07-17T22:03:34.190Z
+  - _ulid: 01KXS1PH9F54VV206EKR4XTPK7
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KXS1PH11WTH4GDQCDAHWG8NS
+    timestamp: 2026-07-17T22:03:37.647Z
+  - _ulid: 01KXS1PNKS8DKK8DE1X9013YC5
+    actor: pr-reviewer
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: approve
+    timestamp: 2026-07-17T22:03:42.074Z
+  - _ulid: 01KXS1PNKTF2D1NPS0W055N9ZY
+    actor: pr-reviewer
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-07-17T22:03:42.074Z
 examined_commit: 771cf3f3948fd5f221896e40a1808c609b328d30
 external_links: []
-lifecycle_state: open
+lifecycle_state: closed
 related_refs: []
 subject:
   type: task
   content_hash: ""
   ref: "@01KXPPE7MC40EXM9Q3MT0VJNWY"
   shadow_commit: ""
-threads: []
-verdicts: []
+threads:
+  - _ulid: 01KXS1PH11WTH4GDQCDAHWG8NS
+    entries:
+      - _ulid: 01KXS1PH127CS9ZW42P6Z3Z4DG
+        author: Jacob Chapel
+        body: >-
+          REVIEW EVIDENCE LOG (non-finding)
+
+          Files read: all seven changed files; docs/concepts/dispatch-workspaces.md;
+          docs/guides/configuring-dispatch-workspaces.md;
+          docs/guides/controlling-dispatch-lifecycle.md; src/agent-runtime/bootstrap.ts; relevant
+          workspace provisioning and dispatcher recovery paths; prior cycle review threads and fix
+          diffs.
+
+          Commands run: base-to-head and cycle-2-to-head git diff/stat/log/status/diff-check;
+          task/spec/plan/review lookups; AC annotation search; runtime/test evidence searches;
+          focused documentation suite; docs search build; format; repo lint; focused oxlint;
+          typecheck; fresh full npm test; refs/alignment/completeness validation.
+
+          Claims verified: cycle-2 cache invalidation recovery is conditional on actual rerun
+          failure; successful reruns remain unblocked; workspace provisioning failures create
+          DISPATCH-WORKSPACE evidence and block the task; public unblock restores prior status; all
+          27 symptom blocks publish with required structure and valid concept links; every
+          documented kspec command resolves through public help.
+
+          Categories searched: correctness, edge cases, error handling, secret exposure/security,
+          test quality, source-scanning/stub patterns, integration, navigation/rendering, command
+          validity, and inventory consistency. Findings: none.
+
+          Shared/package surfaces touched: none; shared-guidance-neutrality and generated package
+          artifact regeneration are not applicable.
+        created_at: 2026-07-17T22:03:37.378Z
+    kind: nit
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: approve
+    reviewer: pr-reviewer
+    role: reviewer
+    created_at: 2026-07-17T22:03:42.073Z
 created_at: 2026-07-17T21:43:49.837Z
-updated_at: 2026-07-17T21:44:03.372Z
+updated_at: 2026-07-17T22:03:42.074Z
 notes: []
