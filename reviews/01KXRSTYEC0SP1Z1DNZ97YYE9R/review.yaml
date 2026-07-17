@@ -214,6 +214,17 @@ checks:
     runner: kspec validate --alignment --warnings-ok
     created_at: 2026-07-17T20:06:07.486Z
     completed_at: 2026-07-17T20:06:07.486Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Passed 249/249 tests.
+    name: focused docs suite
+    required: false
+    runner: npm test -- tests/dispatch-operator-docs.test.ts tests/web-ui-docs-rendering.test.ts
+      tests/dispatch-lifecycle-surface-integration.test.ts
+    created_at: 2026-07-17T20:06:11.150Z
+    completed_at: 2026-07-17T20:06:11.150Z
 events:
   - _ulid: 01KXRSTYE4DPPPY9VR0Y6Q6EZD
     actor: Jacob Chapel
@@ -426,6 +437,13 @@ events:
       status: pass
       name: kspec validate alignment
     timestamp: 2026-07-17T20:06:07.789Z
+  - _ulid: 01KXRTZG7Y9E4MSVYEMT2D2MHC
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: focused docs suite
+    timestamp: 2026-07-17T20:06:11.454Z
 examined_commit: a71126177efc68c959fa2434fea5fe013eb188f1
 external_links: []
 lifecycle_state: closed
@@ -581,5 +599,5 @@ verdicts:
     role: reviewer
     created_at: 2026-07-17T20:04:52.153Z
 created_at: 2026-07-17T19:46:13.580Z
-updated_at: 2026-07-17T20:06:07.486Z
+updated_at: 2026-07-17T20:06:11.150Z
 notes: []
