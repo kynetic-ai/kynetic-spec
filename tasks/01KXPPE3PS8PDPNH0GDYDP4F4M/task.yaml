@@ -118,7 +118,7 @@ description: >
 spec_ref: "@docs-guides-section"
 plan_ref: "@plan-documentation-completeness-and-dispatch-workspaces"
 origin: derived
-status: pending
+status: in_progress
 blocked_by: []
 depends_on:
   - "@task-document-dispatch-workspace-configuration"
@@ -137,6 +137,17 @@ history:
         previous: null
     command: task-set
     timestamp: 2026-07-17T00:16:37.705Z
+  - author: Jacob Chapel
+    changes:
+      status:
+        new: in_progress
+        previous: pending
+      started_at:
+        new: 2026-07-17T12:53:23.946Z
+        previous: null
+    command: api-task-start
+    timestamp: 2026-07-17T12:53:23.946Z
 created_at: 2026-07-17T00:08:18.393Z
+started_at: 2026-07-17T12:53:23.946Z
 todos: []
 automation: eligible
