@@ -83501,7 +83501,7 @@ runs:
     completed_at: 2026-07-17T17:22:24.341Z
   - _ulid: 01KXRN0JKMJS1GFD2XQPSYHAXG
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -83514,7 +83514,17 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-07-17T18:23:49.347Z
-        completed_at: 2026-07-17T18:23:49.347Z
+        completed_at: 2026-07-17T18:24:26.849Z
+        notes: "High-confidence friction candidates: (1) monolithic full-suite parallel load can hit an
+          ENOENT /proc race in resistant-process exit observation; (2) after that failure, npm test
+          can linger during teardown. Both were directly reproduced. Potential success: the
+          supported three-shard full-suite path covered all 10,974 tests and avoided the contention
+          failure. Duplicate review-thread creation was not caused or newly characterized in this
+          session, so it is too weak to capture."
+      - status: completed
+        step_index: 2
+        started_at: 2026-07-17T18:24:26.849Z
+        completed_at: 2026-07-17T18:24:26.849Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-07-17T18:21:55.188Z
