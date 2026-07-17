@@ -1,6 +1,6 @@
 import { execFileSync } from "node:child_process";
 import { existsSync } from "node:fs";
-import { writeFile } from "node:fs/promises";
+import { readFile, writeFile } from "node:fs/promises";
 import { dirname, join, normalize, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import { afterAll, afterEach, beforeAll, describe, expect, it, vi } from "vitest";
@@ -156,42 +156,90 @@ const EXPECTED_TASK_COMMANDS = [
 
 describe("adjacent public dispatch guidance", () => {
   it("lists the source-backed lifecycle controls in package agent guidance", async () => {
-    const guidance = await readTestOutput(
-      join(ROOT, "templates", "agents-sections", "06-agent-dispatch-mode.md"),
-      "utf8",
-    );
-    const exportedCommands = flattenCommandTree(extractCommandTree(createProgram())).map(
-      (command) => formatCommandUsage(command),
-    );
+    const projectDir = await setupTempFixtures();
+    try {
+      await initGitRepo(projectDir);
+      const generation = kspec("agents generate", projectDir);
+      expect(generation.exitCode).toBe(0);
 
-    for (const command of [...EXPECTED_GLOBAL_COMMANDS.slice(0, 6), ...EXPECTED_TASK_COMMANDS]) {
-      expect(exportedCommands.some((usage) => usage.startsWith(command))).toBe(true);
-      expect(guidance).toContain(command);
+      const guidance = await readTestOutput(join(projectDir, "kspec-agents.md"));
+      const documentedCommands = guidance
+        .split("\n")
+        .map((line) => line.trim())
+        .filter((line) => line.startsWith("kspec agent dispatch"));
+      expect(documentedCommands).toEqual(
+        expect.arrayContaining([
+          "kspec agent dispatch start",
+          "kspec agent dispatch pause",
+          "kspec agent dispatch resume",
+          "kspec agent dispatch status",
+          "kspec agent dispatch watch",
+          "kspec agent dispatch stop --force",
+          "kspec agent dispatch task pause <task-ref>",
+          "kspec agent dispatch task resume <task-ref>",
+          "kspec agent dispatch task stop <task-ref> --force",
+          "kspec agent dispatch --help",
+        ]),
+      );
+
+      const exportedCommands = flattenCommandTree(extractCommandTree(createProgram()));
+      const expectedUsages = [
+        "kspec agent dispatch start [options]",
+        "kspec agent dispatch pause [options]",
+        "kspec agent dispatch resume [options]",
+        "kspec agent dispatch status [options]",
+        "kspec agent dispatch watch [options]",
+        "kspec agent dispatch stop [options]",
+        "kspec agent dispatch task pause <task> [options]",
+        "kspec agent dispatch task resume <task> [options]",
+        "kspec agent dispatch task stop <task> [options]",
+      ];
+      for (const usage of expectedUsages) {
+        expect(exportedCommands.some((command) => formatCommandUsage(command) === usage)).toBe(
+          true,
+        );
+      }
+
+      for (const usage of [
+        "kspec agent dispatch stop [options]",
+        "kspec agent dispatch task stop <task> [options]",
+      ]) {
+        const stopCommand = exportedCommands.find(
+          (command) => formatCommandUsage(command) === usage,
+        );
+        expect(stopCommand?.options.map((option) => option.flags)).toContain("--force");
+      }
+
+      expect(guidance).toContain("Hard stop dispatch");
+      expect(guidance).not.toContain("Stop dispatch gracefully");
+    } finally {
+      await cleanupTempDir(projectDir);
     }
-    expect(guidance).toContain("Hard stop dispatch");
-    expect(guidance).toContain("kspec agent dispatch --help");
-    expect(guidance).not.toContain("Stop dispatch gracefully");
   });
 
   it("records every publication mode in the historical v0.12 release note", async () => {
-    const releaseNotes = await readTestOutput(join(ROOT, "RELEASE_NOTES.md"), "utf8");
-    const v012 = releaseNotes.match(/## v0\.12\.0(?<section>[\s\S]*?)(?=\n## v|$)/)?.groups
-      ?.section;
-
-    expect(v012).toBeDefined();
-    for (const mode of factsFixture.workspace.publication_modes) {
-      expect(v012).toContain(`\`${mode}\``);
+    const projectDir = await createTempDir("dispatch-release-notes-");
+    try {
+      const result = kspec("release-notes --from 0.12.0 --to 0.12.0", projectDir);
+      expect(result.exitCode).toBe(0);
+      expect(result.stdout).toContain("`manual_merge`, `pull_request`, and `auto`");
+      expect(result.stdout).toContain("accepted");
+      expect(result.stdout).toContain("was published");
+    } finally {
+      await cleanupTempDir(projectDir);
     }
-    expect(v012).toContain("accepted");
   });
 
+  /* eslint-disable no-source-scanning/no-source-file-reads -- The package README is the canonical documentation artifact under review and has no executable behavior; this is not AC coverage. */
   it("identifies the web UI as an internal package build input", async () => {
-    const readme = await readTestOutput(join(ROOT, "packages", "web-ui", "README.md"), "utf8");
+    const canonicalWebPackageReadme = join(ROOT, "packages", "web-ui", "README.md");
+    const readme = await readFile(canonicalWebPackageReadme, "utf8");
 
     expect(readme).toContain("Kynetic Spec web UI");
     expect(readme).toContain("private workspace package");
     expect(readme).not.toContain("npx sv create my-app");
   });
+  /* eslint-enable no-source-scanning/no-source-file-reads */
 });
 const FROZEN_LIFECYCLE_EVIDENCE = {
   reviewed_lifecycle_commit: "b28c29557d3ec15ee1cfc0b14c6d2ee5a57b86aa",
