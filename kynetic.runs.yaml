@@ -83242,7 +83242,7 @@ runs:
     started_at: 2026-07-17T14:20:40.068Z
     completed_at: 2026-07-17T14:25:16.768Z
   - _ulid: 01KXR8TCTC5KJP7P0AJF088HTY
-    status: active
+    status: completed
     current_step: 5
     initiated_by: Jacob Chapel
     step_results:
@@ -83301,6 +83301,7 @@ runs:
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-07-17T14:48:49.740Z
+    completed_at: 2026-07-17T16:13:44.744Z
   - _ulid: 01KXR9ZAERWS91CM24G6Z8G3MM
     status: completed
     current_step: 5
