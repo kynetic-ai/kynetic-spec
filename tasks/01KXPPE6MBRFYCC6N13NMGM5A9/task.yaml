@@ -74,8 +74,11 @@ description: >
 spec_ref: "@docs-concepts-section"
 plan_ref: "@plan-documentation-completeness-and-dispatch-workspaces"
 origin: derived
-status: pending_review
+status: completed
 blocked_by: []
+closed_reason: Merged to plan/plan-dispatch-lifecycle-pause-resume-and-stop-controls/01kxc2vx at
+  a3af037c2cde. Published the dispatch workspace concept, corrected the dispatch overview and
+  publication/cleanup facts, indexed the page, and added published-doc coverage.
 depends_on:
   - "@task-document-dispatch-lifecycle-controls"
 context: []
@@ -257,8 +260,24 @@ history:
         previous: "@01KXRFRKFHY3BC10YZ3VKR6BZW"
     command: review-link
     timestamp: 2026-07-17T18:30:42.135Z
+  - author: Jacob Chapel
+    changes:
+      status:
+        new: completed
+        previous: pending_review
+      closed_reason:
+        new: Merged to plan/plan-dispatch-lifecycle-pause-resume-and-stop-controls/01kxc2vx at a3af037c2cde.
+          Published the dispatch workspace concept, corrected the dispatch overview and
+          publication/cleanup facts, indexed the page, and added published-doc coverage.
+        previous: null
+      completed_at:
+        new: 2026-07-17T18:52:38.292Z
+        previous: null
+    command: task-complete
+    timestamp: 2026-07-17T18:52:38.305Z
 created_at: 2026-07-17T00:08:21.387Z
 started_at: 2026-07-17T17:26:40.622Z
 submitted_at: 2026-07-17T18:21:16.429Z
+completed_at: 2026-07-17T18:52:38.292Z
 todos: []
 automation: eligible
