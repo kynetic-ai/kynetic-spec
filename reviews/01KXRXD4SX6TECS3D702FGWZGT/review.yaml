@@ -76,6 +76,16 @@ checks:
     runner: kspec
     created_at: 2026-07-17T21:07:30.053Z
     completed_at: 2026-07-17T21:07:30.053Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Pagefind indexed 48 documentation entries.
+    name: docs search
+    required: true
+    runner: npm run build:docs-search
+    created_at: 2026-07-17T21:07:36.080Z
+    completed_at: 2026-07-17T21:07:36.080Z
 events:
   - _ulid: 01KXRXD4SMEBHW3JFW7ZQ7YG4E
     actor: Jacob Chapel
@@ -139,6 +149,13 @@ events:
       status: pass
       name: kspec validate completeness
     timestamp: 2026-07-17T21:07:30.327Z
+  - _ulid: 01KXRYFYS9XDHHQ1QX9KKRT0V5
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: docs search
+    timestamp: 2026-07-17T21:07:36.361Z
 examined_commit: 4109f86c5496c238583c213a8c10ac3bbafafe80
 external_links: []
 lifecycle_state: open
@@ -151,5 +168,5 @@ subject:
 threads: []
 verdicts: []
 created_at: 2026-07-17T20:48:35.645Z
-updated_at: 2026-07-17T21:07:30.053Z
+updated_at: 2026-07-17T21:07:36.080Z
 notes: []
