@@ -137,6 +137,7 @@ const TASK_ID = "01KG0RR6CA45ZT43W2T6HJMVA1";
 const CLEANUP_ID = "01KXH2PXT88X9MSC62MQVY2CW1";
 const NOW = "2026-07-16T12:00:00.000Z";
 const MOCK_KSPEC_CLI = join(ROOT, "tests", "mocks", "kspec-capture-mock.cjs");
+const REAL_KSPEC_CLI = join(ROOT, "dist", "cli", "index.js");
 ensureSplitBackendRegistered();
 const EXPECTED_GLOBAL_COMMANDS = [
   "kspec agent dispatch start",
@@ -1778,6 +1779,7 @@ describe("dispatch operator fact fixture", () => {
         "agent dispatch resume",
         "agent dispatch task resume",
         "task get",
+        "task unblock",
         "task set",
         "tasks ready",
         "agent list",
@@ -1816,10 +1818,72 @@ describe("dispatch operator fact fixture", () => {
       expect(pages).toContain(factsFixture.workspace.remote_sync.no_remote);
     });
 
-    it("binds the unsafe bootstrap-output warning to the observable bounded failure tail", async () => {
-      const projectDir = await createTempDir("dispatch-doc-bootstrap-output-");
+    it("binds bootstrap failure recovery to dispatcher task blocking and public unblock", async () => {
+      const projectDir = await createTempDir("dispatch-doc-bootstrap-recovery-");
+      const taskId = testUlid("TASK", 77);
+      const taskRef = `@${taskId}`;
+      const reviewTaskId = testUlid("TASK", 79);
+      const reviewTaskRef = `@${reviewTaskId}`;
+      const control = createMissingDispatchControl();
+      control.global.authority = "running";
+      const engine = new DispatchEngine({
+        projectDir,
+        specDir: projectDir,
+        kspecCliPath: REAL_KSPEC_CLI,
+        reconcileIntervalMs: 0,
+        coalesceWindowMs: 0,
+        lifecycleStore: new FactLifecycleStore(control),
+      });
       try {
         await seedFactProject(projectDir);
+        await writeFile(
+          join(projectDir, "kynetic.meta.yaml"),
+          YAML.stringify({
+            kynetic_meta: "1.0",
+            agents: [
+              {
+                ...factAgent(),
+                adapter: "mock-acp",
+                dispatch: [{ on: "task.ready" }],
+              },
+            ],
+          }),
+          "utf8",
+        );
+        seedSplitTask(projectDir, {
+          _ulid: taskId,
+          type: "task",
+          title: "Bootstrap recovery fact",
+          slugs: ["bootstrap-recovery-fact"],
+          status: "pending",
+          priority: 1,
+          automation: "eligible",
+          depends_on: [],
+          blocked_by: [],
+          tags: [],
+          notes: [],
+          context: [],
+          vcs_refs: [],
+          todos: [],
+          created_at: NOW,
+        });
+        seedSplitTask(projectDir, {
+          _ulid: reviewTaskId,
+          type: "task",
+          title: "Reviewer bootstrap recovery fact",
+          slugs: ["reviewer-bootstrap-recovery-fact"],
+          status: "pending_review",
+          priority: 1,
+          automation: "eligible",
+          depends_on: [],
+          blocked_by: [],
+          tags: [],
+          notes: [],
+          context: [],
+          vcs_refs: [],
+          todos: [],
+          created_at: NOW,
+        });
         await writeFile(
           join(projectDir, "kspec.config.yaml"),
           [
@@ -1831,13 +1895,114 @@ describe("dispatch operator fact fixture", () => {
           ].join("\n"),
           "utf8",
         );
-        const taskId = testUlid("TASK", 77);
-        const workspace = await provisionDispatchWorkspace({
-          projectDir,
-          taskRef: `@${taskId}`,
-          task: { title: "Unsafe output fact", slugs: ["unsafe-output-fact"] },
+        const runSpy = vi.spyOn(invocationModule, "runInvocation");
+        await engine.start();
+        await engine.handleStateChange({
+          taskId,
+          taskRef,
+          fromStatus: "in_progress",
+          toStatus: "pending",
+          timestamp: Date.now(),
+          task: kspecJson<LoadedTask>(`task get ${taskRef}`, projectDir),
         });
-        const failure = await ensureWorkspaceBootstrap({
+
+        expect(runSpy).not.toHaveBeenCalled();
+        const blocked = kspecJson<{ status: string; notes: Array<{ content: string }> }>(
+          `task get ${taskRef}`,
+          projectDir,
+        );
+        expect(blocked.status).toBe("blocked");
+        expect(blocked.notes.some((note) => note.content.includes("[DISPATCH-BOOTSTRAP]"))).toBe(
+          true,
+        );
+        expect(blocked.notes.some((note) => note.content.includes("UNSAFE_OUTPUT_SENTINEL"))).toBe(
+          true,
+        );
+
+        const unblock = kspec(`task unblock ${taskRef}`, projectDir);
+        expect(unblock.exitCode).toBe(0);
+        expect(kspecJson<{ status: string }>(`task get ${taskRef}`, projectDir).status).toBe(
+          "pending",
+        );
+        expect(
+          kspec(`task block ${reviewTaskRef} --reason "Reviewer bootstrap failed"`, projectDir)
+            .exitCode,
+        ).toBe(0);
+        expect(kspecJson<{ status: string }>(`task get ${reviewTaskRef}`, projectDir).status).toBe(
+          "blocked",
+        );
+        expect(kspec(`task unblock ${reviewTaskRef}`, projectDir).exitCode).toBe(0);
+        expect(kspecJson<{ status: string }>(`task get ${reviewTaskRef}`, projectDir).status).toBe(
+          "pending_review",
+        );
+
+        const page = publishedDoc(
+          publishedDocs(),
+          "troubleshooting/dispatch-bootstrap-failures",
+        ).content;
+        expect(page).toContain("last 4,000 characters");
+        expect(page).toContain("not redacted");
+        expect(page).toContain("Treat any secret printed by the step as exposed");
+        expect(page).toContain("kspec task unblock @task-ref");
+        expect(page).not.toMatch(/saniti[sz]ed|redacted output/i);
+      } finally {
+        await engine.stop().catch(() => undefined);
+        await cleanupTempDir(projectDir);
+      }
+    });
+
+    it("binds documented bootstrap cache invalidation to the three runtime signals", async () => {
+      const projectDir = await createTempDir("dispatch-doc-bootstrap-invalidation-");
+      try {
+        await seedFactProject(projectDir);
+        const configPath = join(projectDir, "kspec.config.yaml");
+        await writeFile(
+          configPath,
+          [
+            "dispatch:",
+            "  base_branch: main",
+            "  bootstrap:",
+            "    steps:",
+            "      - run: exit 7",
+          ].join("\n"),
+          "utf8",
+        );
+        const taskId = testUlid("TASK", 78);
+        const taskRef = `@${taskId}`;
+        let workspace = await provisionDispatchWorkspace({
+          projectDir,
+          taskRef,
+          task: { title: "Invalidation fact", slugs: ["invalidation-fact"] },
+        });
+        await expect(
+          ensureWorkspaceBootstrap({
+            projectDir,
+            workspaceDir: workspace.cwd,
+            metadataPath: workspace.metadataPath,
+            metadata: workspace.metadata,
+            role: "worker",
+            agent: factAgent(),
+            env: {},
+          }),
+        ).rejects.toBeInstanceOf(DispatchBootstrapError);
+
+        await writeFile(
+          configPath,
+          [
+            "dispatch:",
+            "  base_branch: main",
+            "  bootstrap:",
+            "    steps:",
+            "      - run: mkdir -p .facts && printf ready >> .facts/history",
+          ].join("\n"),
+          "utf8",
+        );
+        workspace = await provisionDispatchWorkspace({
+          projectDir,
+          taskRef,
+          task: { title: "Invalidation fact", slugs: ["invalidation-fact"] },
+        });
+        let result = await ensureWorkspaceBootstrap({
           projectDir,
           workspaceDir: workspace.cwd,
           metadataPath: workspace.metadataPath,
@@ -1845,17 +2010,44 @@ describe("dispatch operator fact fixture", () => {
           role: "worker",
           agent: factAgent(),
           env: {},
-        }).catch((error: unknown) => error);
-        expect(failure).toBeInstanceOf(DispatchBootstrapError);
-        expect((failure as Error).message).toContain("UNSAFE_OUTPUT_SENTINEL");
+        });
+        expect(result.metadata.bootstrap.invalidationReasons).toEqual(
+          expect.arrayContaining(["prior-bootstrap-failed", "bootstrap-config-changed"]),
+        );
 
-        const page = publishedDoc(
-          publishedDocs(),
-          "troubleshooting/dispatch-bootstrap-failures",
-        ).content;
-        const block = symptomBlock(page, "A Bootstrap Failure Exposes Unsafe Command Output");
-        expect(block).toContain("last 4,000 characters");
-        expect(block).toContain("Treat any secret printed by the step as exposed");
+        await writeFile(join(workspace.cwd, "head-change.txt"), "head change\n", "utf8");
+        git(workspace.cwd, "add", "head-change.txt");
+        git(workspace.cwd, "commit", "-m", "head change");
+        workspace = await provisionDispatchWorkspace({
+          projectDir,
+          taskRef,
+          task: { title: "Invalidation fact", slugs: ["invalidation-fact"] },
+        });
+        result = await ensureWorkspaceBootstrap({
+          projectDir,
+          workspaceDir: workspace.cwd,
+          metadataPath: workspace.metadataPath,
+          metadata: workspace.metadata,
+          role: "worker",
+          agent: factAgent(),
+          env: {},
+        });
+        expect(result.metadata.bootstrap.invalidationReasons).toContain(
+          "canonical-branch-head-changed",
+        );
+
+        const block = symptomBlock(
+          publishedDoc(publishedDocs(), "troubleshooting/dispatch-bootstrap-failures").content,
+          "Previously Successful Bootstrap State Is Invalidated",
+        );
+        for (const reason of [
+          "prior-bootstrap-failed",
+          "bootstrap-config-changed",
+          "canonical-branch-head-changed",
+        ]) {
+          expect(block).toContain(reason);
+        }
+        expect(block).not.toMatch(/target change|role change|tracked workspace change/i);
       } finally {
         await cleanupTempDir(projectDir);
       }

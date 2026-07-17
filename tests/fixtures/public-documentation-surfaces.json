@@ -2,7 +2,7 @@
   "schema_version": 1,
   "reviewed_lifecycle_commit": "b28c29557d3ec15ee1cfc0b14c6d2ee5a57b86aa",
   "integrated_lifecycle_commit": "3f22e6c93c68115d77e1bde062f7cd12034f91d8",
-  "tracked_markdown_count": 143,
+  "tracked_markdown_count": 146,
   "construction_pending_additions": [
     "docs/guides/configuring-dispatch-workspaces.md",
     "docs/guides/controlling-dispatch-lifecycle.md",

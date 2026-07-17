@@ -1,6 +1,6 @@
 # Dispatch Bootstrap Fails Before the Agent Starts
 
-Bootstrap can fail while dispatch is preparing a worker or reviewer workspace. Start with the message in the agent output and the recorded workspace outcome; do not treat a failed preparation as an agent failure or rerun commands blindly.
+Bootstrap can fail while dispatch is preparing a worker or reviewer workspace. The agent invocation does not start: dispatch writes a `[DISPATCH-BOOTSTRAP]` task note and blocks the task. Start with that note and the recorded workspace outcome rather than treating preparation as an agent failure or rerunning commands blindly. After correcting the reported cause, run `kspec task unblock @task-ref`; unblock restores the task's prior status so its matching dispatch event can be evaluated again.
 
 ## A Bootstrap Step Exits Nonzero
 
@@ -10,15 +10,15 @@ A configured project or agent bootstrap step returned a nonzero exit code. Dispa
 
 ### What to observe
 
-Read the failed step name, exit code, and sanitized output in the invocation result. Confirm the task and dispatch state with `kspec task get @task-ref` and `kspec agent dispatch status --json`.
+Read the failed step name, exit code, and bounded output tail in dispatcher output and the `[DISPATCH-BOOTSTRAP]` task note. The combined standard-output/error tail is limited to the last 4,000 characters and is not redacted. Confirm the blocked task and dispatch state with `kspec task get @task-ref` and `kspec agent dispatch status --json`.
 
 ### Recovery procedure
 
-Fix the command, dependency, credentials, or project input named by that step in its source configuration. Run the same supported dispatch event again after the correction; dispatch will evaluate bootstrap for the matching workspace and role. Do not replace the configured step with an ad hoc command in the managed worktree.
+Fix the command, dependency, credentials, or project input named by that step in its source configuration. Then run `kspec task unblock @task-ref`; the restored task status supplies the matching dispatch event, and dispatch evaluates bootstrap for the same workspace and role. Do not replace the configured step with an ad hoc command in the managed worktree.
 
 ### Healthy outcome
 
-The workspace reports bootstrap as ready, the step exits successfully, and the matching worker or reviewer starts without losing the task branch or recorded failure.
+The task is no longer blocked, the workspace reports bootstrap as ready, the step exits successfully, and the matching worker or reviewer starts without losing the task branch or recorded failure.
 
 ### Learn more
 
@@ -36,11 +36,11 @@ Use `git status --short` in the reported workspace to identify the tracked chang
 
 ### Recovery procedure
 
-Undo the unintended change through the owning tool or correct the bootstrap step so it is read-only. If tracked mutation is an intentional, reviewed part of preparation, configure that individual step with the supported opt-in described in the workspace guide, then let dispatch retry preparation.
+Undo the unintended change through the owning tool or correct the bootstrap step so it is read-only. If tracked mutation is an intentional, reviewed part of preparation, configure that individual step with the supported opt-in described in the workspace guide. Then run `kspec task unblock @task-ref` so dispatch can retry preparation from the restored task status.
 
 ### Healthy outcome
 
-The bootstrap step completes with a clean tracked-file status, or its intentional mutation is explicitly permitted and produces the expected prepared state.
+The task is no longer blocked, and the bootstrap step completes with a clean tracked-file status or an explicitly permitted intentional mutation.
 
 ### Learn more
 
@@ -54,15 +54,15 @@ A reviewer snapshot could not safely reuse the worker's prepared state, but one 
 
 ### What to observe
 
-Read the named step and reviewer-rerun refusal in the review invocation output. Use `kspec task get @task-ref` to confirm that the task is still pending review and that the worker submission remains intact.
+Read the named step and reviewer-rerun refusal in dispatcher output and the `[DISPATCH-BOOTSTRAP]` task note. Use `kspec task get @task-ref` to confirm that dispatch blocked the task while preserving its worker submission and prior `pending_review` status for recovery.
 
 ### Recovery procedure
 
-Make the step safely repeatable for a detached reviewer and enable reviewer rerun for that step, or restrict it to the worker role when reviewers do not need its output. Resubmit or retry the review through the normal task lifecycle after correcting configuration.
+Make the step safely repeatable for a detached reviewer and enable reviewer rerun for that step, or restrict it to the worker role when reviewers do not need its output. Then run `kspec task unblock @task-ref`; unblock restores `pending_review`, allowing the reviewer event to be evaluated again without a new submission.
 
 ### Healthy outcome
 
-The reviewer either reuses valid worker preparation or runs only the explicitly safe reviewer steps, then opens the submitted snapshot without changing the worker workspace.
+The task is restored to `pending_review`; the reviewer either reuses valid worker preparation or runs only the explicitly safe reviewer steps, then opens the submitted snapshot without changing the worker workspace.
 
 ### Learn more
 
@@ -72,19 +72,19 @@ See [Dispatch Workspaces](../concepts/dispatch-workspaces.md) for detached revie
 
 ### What this means
 
-Dispatch found that the inputs behind cached preparation no longer match. A target change, bootstrap configuration change, role change, or tracked workspace change can invalidate an earlier successful result.
+Dispatch reruns cached preparation for exactly three recorded signals: `prior-bootstrap-failed`, `bootstrap-config-changed`, or `canonical-branch-head-changed`.
 
 ### What to observe
 
-Read the invalidation reasons in the workspace outcome, then inspect the current task with `kspec task get @task-ref` and the current dispatch projection with `kspec agent status`.
+Read those invalidation reasons in the workspace outcome, then inspect the blocked task with `kspec task get @task-ref` and the current dispatch projection with `kspec agent status`.
 
 ### Recovery procedure
 
-Confirm that the new target and bootstrap configuration are intended. Correct the authoritative configuration if they are not; otherwise allow the next matching dispatch attempt to rerun the required preparation. Do not mark cached state valid manually.
+Correct a previously failed step or unintended bootstrap configuration. If the canonical branch advanced intentionally, keep that branch state and allow preparation to run against its new head. Then run `kspec task unblock @task-ref` to restore the prior task status and trigger the matching attempt. Do not mark cached state valid manually.
 
 ### Healthy outcome
 
-Bootstrap runs against the current inputs, records a new ready result, and the role starts from the intended target without reusing stale preparation.
+The task is no longer blocked; bootstrap runs against the recorded configuration and canonical branch head, records a new ready result, and the role starts without reusing stale preparation.
 
 ### Learn more
 
@@ -102,11 +102,11 @@ Use `kspec task get @task-ref` and `kspec agent dispatch status --json` to prese
 
 ### Recovery procedure
 
-Restore host access or permissions when the same managed worktree still exists. Otherwise leave the record and branch intact so normal startup reconciliation can classify and recover or reprovision the workspace. Escalate when reconciliation continues to report the record as stale or invalid.
+Restore host access or permissions when the same managed worktree still exists. Otherwise leave the record and branch intact so normal startup reconciliation can classify and recover or reprovision the workspace. When the workspace is accessible again, run `kspec task unblock @task-ref`; escalate instead when reconciliation continues to report the record as stale or invalid.
 
 ### Healthy outcome
 
-Dispatch can open the recorded workspace, or reconciliation safely provisions the canonical task workspace while preserving branch and task history.
+The task is no longer blocked, and dispatch can open the recorded workspace or safely reprovision the canonical task workspace while preserving branch and task history.
 
 ### Learn more
 
@@ -116,19 +116,19 @@ See [Dispatch Workspaces](../concepts/dispatch-workspaces.md) for registry autho
 
 ### What this means
 
-Bootstrap records a bounded tail of combined standard output and error so the end of a failure remains diagnosable. The last 4,000 characters can therefore expose anything the command prints, including a credential or private host value.
+Bootstrap records a bounded tail of combined standard output and error so the end of a failure remains diagnosable. The last 4,000 characters are not redacted and can therefore expose anything the command prints, including a credential or private host value.
 
 ### What to observe
 
-Read the failed step and bounded output without copying it into another report. Check `kspec task get @task-ref` for task state and `kspec agent dispatch watch` for the invocation boundary. Treat any secret printed by the step as exposed.
+Read the failed step and bounded output in dispatcher output and the `[DISPATCH-BOOTSTRAP]` task note without copying it into another report. Check `kspec task get @task-ref` for the blocked task. Treat any secret printed by the step as exposed.
 
 ### Recovery procedure
 
-Rotate any printed credential, remove secret-bearing output from the step, and replace it with safe diagnostics. Then retry the matching dispatch event. Restrict access to the workspace and session evidence according to the project's incident procedure.
+Rotate any printed credential, remove secret-bearing output from the step, and replace it with safe diagnostics. Then run `kspec task unblock @task-ref` to restore the prior task status and retry the matching dispatch event. Restrict access to the workspace and session evidence according to the project's incident procedure.
 
 ### Healthy outcome
 
-The corrected step exits successfully, dispatch reports ready state, and the captured failure tail contains useful diagnostics without credentials or private values.
+The task is no longer blocked, the corrected step exits successfully, dispatch reports ready state, and any later failure tail contains useful diagnostics without credentials or private values.
 
 ### Learn more
 
