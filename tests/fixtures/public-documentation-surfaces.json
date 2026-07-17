@@ -11,6 +11,53 @@
     "docs/troubleshooting/dispatch-workspace-sync-and-cleanup.md",
     "docs/troubleshooting/dispatch-lifecycle-control-failures.md"
   ],
+  "section_reading_order": {
+    "getting-started": [
+      "./overview.md",
+      "./installation.md",
+      "./initializing-a-project.md",
+      "./connecting-your-agent.md",
+      "./your-first-action.md",
+      "./where-to-go-next.md",
+      "./tutorial.md"
+    ],
+    "guides": [
+      "./starting-a-new-project.md",
+      "./directing-your-agent.md",
+      "./importing-and-approving-a-plan.md",
+      "./authoring-and-completing-a-task.md",
+      "./reviewing-an-agents-work.md",
+      "./working-with-local-resources.md",
+      "./configuring-agent-runners.md",
+      "./upgrading-kspec.md",
+      "./recovering-from-shadow-branch-issues.md"
+    ],
+    "concepts": [
+      "./what-kspec-is.md",
+      "./working-with-an-agent.md",
+      "./specs-tasks-plans-inbox.md",
+      "./the-shadow-branch.md",
+      "./traits.md",
+      "./reviews.md",
+      "./local-resources.md",
+      "./agents-and-dispatch.md",
+      "./agent-runners.md",
+      "./web-ui-and-daemon.md"
+    ],
+    "troubleshooting": [
+      "./shadow-branch-out-of-sync.md",
+      "./shadow-branch-worktree-broken.md",
+      "./daemon-port-in-use.md",
+      "./cannot-run-from-inside-kspec.md",
+      "./upgrade-pre-plan-state.md",
+      "./entity-storage-incompatible.md",
+      "./plan-or-review-index-drift.md",
+      "./dispatch-refuses-to-assign.md",
+      "./review-blocking-merge.md",
+      "./runner-validation-failures.md"
+    ],
+    "release-notes": []
+  },
   "records": [
     {
       "id": "markdown:.agents/skills/audit/SKILL.md",

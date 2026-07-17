@@ -159,7 +159,7 @@
       "uncontrolled": ["pause", "stop"],
       "paused": ["resume", "stop"],
       "stopped": ["resume"],
-      "stopped_with_cleanup": ["resume", "stop"]
+      "stopped_with_cleanup": ["stop"]
     },
     "transitions": {
       "start": "valid from cleanup-idle stopped",
