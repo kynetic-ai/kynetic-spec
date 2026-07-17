@@ -24386,6 +24386,18 @@ observations:
     resolved: false
     workflow_ref: "@session-reflect-loop"
     created_at: 2026-07-17T14:24:40.398Z
+  - _ulid: 01KXRDMM8FQH7GQ8FSMWK84FV4
+    type: friction
+    content: Configured dispatch reviewer prompts name the pr-review role entrypoint even when that
+      skill is not rendered or available in the Codex snapshot. Reviewers must reconstruct the flow
+      from kspec-review and review-gates. Validate each configured role entrypoint against
+      adapter-visible skills before prompt delivery, or align the project override with the
+      installed core review entrypoint.
+    author: pr-reviewer
+    resolution: null
+    resolved: false
+    workflow_ref: "@01KXR8TCTC5KJP7P0AJF088HTY"
+    created_at: 2026-07-17T16:13:03.631Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
