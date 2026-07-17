@@ -24401,6 +24401,19 @@ observations:
     resolved_by: pr-reviewer
     workflow_ref: "@01KXR8TCTC5KJP7P0AJF088HTY"
     created_at: 2026-07-17T16:13:03.631Z
+  - _ulid: 01KXRHDJV9GV5CV0C3KGK9R1DP
+    type: friction
+    content: The test runner cache can reuse a pass across an untracked-to-tracked file transition even
+      when tests derive their input with git ls-files. In the dispatch-workspace documentation task,
+      a pre-commit inventory test cached 142 tracked Markdown files; after committing the new
+      document, ordinary npm test reused that result even though the tracked universe was 143, while
+      npm test -- --fresh exposed the stale fixture. Cache invalidation should incorporate Git
+      index/tracked-set state for tests whose behavior depends on it.
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
+    created_at: 2026-07-17T17:19:07.113Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
