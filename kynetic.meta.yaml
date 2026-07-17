@@ -24394,8 +24394,11 @@ observations:
       adapter-visible skills before prompt delivery, or align the project override with the
       installed core review entrypoint.
     author: pr-reviewer
-    resolution: null
-    resolved: false
+    resolution: Duplicate of existing reflection inbox item @01KXQNZ5, discovered during the mandatory
+      full reflection baseline. No separate observation is needed.
+    resolved: true
+    resolved_at: 2026-07-17T16:16:55.943Z
+    resolved_by: pr-reviewer
     workflow_ref: "@01KXR8TCTC5KJP7P0AJF088HTY"
     created_at: 2026-07-17T16:13:03.631Z
 schedules:
