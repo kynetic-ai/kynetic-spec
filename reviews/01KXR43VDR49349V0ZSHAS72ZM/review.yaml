@@ -428,6 +428,15 @@ events:
       kind: blocker
       thread_ulid: 01KXR5CCSGQ8H8Q4QF2N4M7SDQ
     timestamp: 2026-07-17T13:48:45.622Z
+  - _ulid: 01KXR5CTKYVJWB7W54DWT0WH72
+    actor: pr-reviewer
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: request_changes
+    timestamp: 2026-07-17T13:48:59.390Z
 examined_commit: 225953b1c3a2087a7de70d7e53e6208563157132
 external_links: []
 lifecycle_state: closed
@@ -608,6 +617,13 @@ verdicts:
     reviewer: pr-reviewer
     role: reviewer
     created_at: 2026-07-17T13:46:56.344Z
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: request_changes
+    reviewer: pr-reviewer
+    role: reviewer
+    created_at: 2026-07-17T13:48:59.382Z
 created_at: 2026-07-17T13:26:36.728Z
-updated_at: 2026-07-17T13:48:45.232Z
+updated_at: 2026-07-17T13:48:59.382Z
 notes: []
