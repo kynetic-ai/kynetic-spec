@@ -89,3 +89,17 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-07-17T03:56:45.576Z
+  - _ulid: 01KXQ42M2X3KGFWKP4RNBF4987
+    content: "Fix cycle 3 approach: replace lossy non-file signatures with independently derived
+      complete record contracts covering stable IDs, classification, source authority, and
+      kind-specific metadata; add negative mutations for each required metadata field and UI
+      membership. Bind retained API current-status errors, event payload identity/closed-error
+      constraints, interactive confirmation, host-stop rejection, dispatch-owned targeting, and
+      cleanup-failure authority to exported schemas/helpers or executed CLI/route behavior.
+      Re-verify @docs-section-taxonomy ac-1/ac-2 and @auto-cli-docs ac-1/ac-3/ac-4/ac-5. Edge cases:
+      arbitrary unique IDs, empty classifications/sources, omitted UI surfaces, invalid event
+      payloads/raw errors, interactive refusal/confirmation, host-owned targets, and failed cleanup
+      projection."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-07-17T04:06:42.013Z
