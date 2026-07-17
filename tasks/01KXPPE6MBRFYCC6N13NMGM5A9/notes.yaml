@@ -66,3 +66,14 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-07-17T17:13:53.788Z
+  - _ulid: 01KXRHZV6KP6WCF62EMPH1Q877
+    content: "Fix-cycle 2 approach: replace the unsupported reviewer retention/debug-hold claim with the
+      actual immediate post-review cleanup evaluation and durable artifact-protection conditions;
+      replace the invented automatic publication path with manual_merge/pull_request plus auto
+      environment selection. Re-read @docs-concepts-section and the task-owned lifecycle, cleanup,
+      and default-agent authorities; no spec change is needed. Test plan: strengthen the rendered
+      concept assertions for both corrected facts, run the focused documentation/setup/inventory
+      suite, docs-search build, all project quality gates, and the full suite."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-07-17T17:29:05.491Z
