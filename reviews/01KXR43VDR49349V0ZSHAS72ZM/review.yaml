@@ -437,6 +437,30 @@ events:
         content_hash: ""
       decision: request_changes
     timestamp: 2026-07-17T13:48:59.390Z
+  - _ulid: 01KXR5F4WJ82JNHVDC2CBNM2XG
+    actor: pr-reviewer
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KXR5C1D8YCX29842SGSAAK6Q
+    timestamp: 2026-07-17T13:50:15.442Z
+  - _ulid: 01KXR5F86H6SPXYK0MB9SS1X1Y
+    actor: pr-reviewer
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KXR5C4N944ZZAKF9JTZ7ZKP8
+    timestamp: 2026-07-17T13:50:18.833Z
+  - _ulid: 01KXR5FBMY0W9N5C1YN1F45AHV
+    actor: pr-reviewer
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KXR5C8FJ1JA24CAT6GYCVJFM
+    timestamp: 2026-07-17T13:50:22.366Z
+  - _ulid: 01KXR5FEWENYYC22QER2TRM8MZ
+    actor: pr-reviewer
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KXR5CCSGQ8H8Q4QF2N4M7SDQ
+    timestamp: 2026-07-17T13:50:25.678Z
 examined_commit: 225953b1c3a2087a7de70d7e53e6208563157132
 external_links: []
 lifecycle_state: closed
@@ -550,6 +574,8 @@ threads:
           family reaches the expected Usage and Options output."
         created_at: 2026-07-17T13:48:33.576Z
     kind: blocker
+    resolved_at: 2026-07-17T13:50:15.181Z
+    resolved_by: pr-reviewer
   - _ulid: 01KXR5C4N944ZZAKF9JTZ7ZKP8
     anchor:
       type: code
@@ -568,6 +594,8 @@ threads:
           command or child; the test must fail when help silently resolves to an ancestor topic."
         created_at: 2026-07-17T13:48:36.906Z
     kind: blocker
+    resolved_at: 2026-07-17T13:50:18.562Z
+    resolved_by: pr-reviewer
   - _ulid: 01KXR5C8FJ1JA24CAT6GYCVJFM
     anchor:
       type: code
@@ -590,6 +618,8 @@ threads:
           procedure."
         created_at: 2026-07-17T13:48:40.827Z
     kind: blocker
+    resolved_at: 2026-07-17T13:50:22.094Z
+    resolved_by: pr-reviewer
   - _ulid: 01KXR5CCSGQ8H8Q4QF2N4M7SDQ
     anchor:
       type: code
@@ -609,6 +639,8 @@ threads:
           passes without prematurely claiming the pending page is audited."
         created_at: 2026-07-17T13:48:45.232Z
     kind: blocker
+    resolved_at: 2026-07-17T13:50:25.408Z
+    resolved_by: pr-reviewer
 verdicts:
   - applies_to_version:
       type: entity_version
@@ -625,5 +657,5 @@ verdicts:
     role: reviewer
     created_at: 2026-07-17T13:48:59.382Z
 created_at: 2026-07-17T13:26:36.728Z
-updated_at: 2026-07-17T13:48:59.382Z
+updated_at: 2026-07-17T13:50:25.408Z
 notes: []
