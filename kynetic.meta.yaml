@@ -24444,6 +24444,28 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-07-17T19:42:20.345Z
+  - _ulid: 01KXRX7MBTS18TPR9FHCRF5V00
+    type: friction
+    content: A stale-read retry while recording one review produced duplicate blocker threads and
+      duplicate evidence-log threads in the same review. Fix-cycle workers then had to distinguish
+      canonical findings from retry duplicates and resolve 13 threads for 5 issues; review comment
+      creation should be idempotent or deduplicate retries.
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    workflow_ref: "@session-reflect-loop"
+    created_at: 2026-07-17T20:45:34.970Z
+  - _ulid: 01KXRX7MQQDNHH11S24HQ5QHR2
+    type: success
+    content: Binding operator documentation to a real DispatchEngine failure plus public task CLI
+      recovery exposed incorrect claims about invocation output, blocked task state, and unblock
+      restoration that direct helper assertions missed. Behavior-backed documentation tests at the
+      dispatcher and public-command boundary are a repeatable drift-prevention pattern.
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    workflow_ref: "@session-reflect-loop"
+    created_at: 2026-07-17T20:45:35.351Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
