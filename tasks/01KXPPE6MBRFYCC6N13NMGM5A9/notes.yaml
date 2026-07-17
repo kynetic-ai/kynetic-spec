@@ -1,1 +1,16 @@
-notes: []
+notes:
+  - _ulid: 01KXR8YG8A1NB1G9P9KYQ72Q2M
+    content: "Approach: extend the creator-owned dispatch documentation test first, reusing the docs
+      plugin so assertions exercise the published manifest and rendered Markdown surfaces. Add the
+      workspace concept page, index it, and shorten the dispatch overview into cross-links while
+      preserving setup/default-agent facts. Edge cases: keep task readiness, lifecycle authority,
+      workspace/degraded state, and cleanup ownership distinct; avoid inventing workspace commands;
+      avoid release-sensitive flag/schema inventories; keep links valid before the later
+      recovery-page task lands. Test plan: cover @docs-concepts-section ac-1 with manifest/index
+      membership; cover ac-2 with required headings, stable anchors/links, overview cross-links, and
+      prose-shape checks. The existing setup-builtin-agents behavioral suite already covers the four
+      exact @default-project-agents-and-conventions ACs, so focused verification will run it
+      alongside the new documentation assertions."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-07-17T14:51:04.330Z
