@@ -218,6 +218,13 @@ events:
       status: pass
       name: freeze ancestry and inventory audit
     timestamp: 2026-07-17T07:13:36.625Z
+  - _ulid: 01KXQESENJM136H5NK7EXEA9AY
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KXQESEDFV7D35WN5DHCP6YH2
+    timestamp: 2026-07-17T07:13:55.890Z
 examined_commit: 234998db585d23e8f54dc6197bacf001c3df06ff
 external_links: []
 lifecycle_state: open
@@ -289,7 +296,32 @@ threads:
           fact and bind it to executed behavior (with stale-fixture rejection)."
         created_at: 2026-07-17T07:12:12.633Z
     kind: blocker
+  - _ulid: 01KXQESEDFV7D35WN5DHCP6YH2
+    entries:
+      - _ulid: 01KXQESEDF0HSGPSN8FCA5S4X0
+        author: Jacob Chapel
+        body: "Review evidence log\\n\\nFiles read: all changed files (tests/dispatch-operator-docs.test.ts,
+          tests/public-documentation-inventory.test.ts, tests/fixtures/dispatch-operator-facts.json,
+          tests/fixtures/public-documentation-surfaces.json); interacting lifecycle/remote-sync/UI
+          tests and helpers; task, plan, owned specs/ACs; all prior-cycle review
+          threads.\\n\\nCommands run: git diff/log/merge-base/ancestry and structured inventory
+          audits; focused fresh tests (88/88); true depth-1 reproduction (19/19); format,
+          repo/focused lint, typecheck; fresh full suite; two isolated agent-invocation reruns;
+          refs/alignment/completeness validations.\\n\\nClaims verified: immutable
+          reviewed/integrated/target OIDs are ancestors of the examined head; depth-1 guard works;
+          tracked Markdown and typed inventory cardinalities are deterministic; owned AC annotations
+          exercise their stated behaviors. Worker claims about universal fact binding were disproved
+          for remote-sync leaves and UI mapping, and the named readiness source fact is
+          absent.\\n\\nCategories searched: correctness/spec alignment, edge cases/stale mutations,
+          error and safety facts, test quality, integration/ancestry, public-surface completeness.
+          No security-sensitive runtime change was introduced. Shared/package guidance surfaces were
+          not touched, so neutrality directions 1/2 and generated-artifact refresh do not
+          apply.\\n\\nFull-suite triage: one existing process-observation flake produced ENOENT for
+          /proc/<pid>; two isolated fresh reruns passed. The identical failure is tracked at
+          @01KXMFGZ2D226T5YRAH5ZW5X9A and this occurrence was added there."
+        created_at: 2026-07-17T07:13:55.631Z
+    kind: nit
 verdicts: []
 created_at: 2026-07-17T06:48:58.827Z
-updated_at: 2026-07-17T07:13:36.360Z
+updated_at: 2026-07-17T07:13:55.631Z
 notes: []
