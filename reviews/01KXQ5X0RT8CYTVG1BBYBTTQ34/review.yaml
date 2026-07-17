@@ -175,6 +175,48 @@ events:
       status: pass
       name: freeze ancestry and inventory cardinality
     timestamp: 2026-07-17T04:58:44.338Z
+  - _ulid: 01KXQ738DJQKX3CBZ6E4KRH609
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KXQ7383W74KMZB9C0JZFRG03
+    timestamp: 2026-07-17T04:59:28.562Z
+  - _ulid: 01KXQ73BMKJ63WX016H3EB2NNR
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KXQ73BCMFYS8VY7W0RJTJJSC
+    timestamp: 2026-07-17T04:59:31.859Z
+  - _ulid: 01KXQ73EWJ2YXPCB76J63YYXG5
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KXQ73EMEXFKGHAKV2TN9ZX06
+    timestamp: 2026-07-17T04:59:35.186Z
+  - _ulid: 01KXQ73J17H5Q6MD2Z8DBC9B14
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KXQ73HS09QS1A43XCDBK97XW
+    timestamp: 2026-07-17T04:59:38.407Z
+  - _ulid: 01KXQ73NFV82BJNX6XYZ3XQ64P
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KXQ73N8FVQADW2DT5JWY63ZH
+    timestamp: 2026-07-17T04:59:41.947Z
+  - _ulid: 01KXQ73RN8ZJ1JZ2TQW4DX6788
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KXQ73RDXM0VET1G2NYCPQV5H
+    timestamp: 2026-07-17T04:59:45.192Z
 examined_commit: e7dedf15cfc99f987f6904f5a169ba19cbedc917
 external_links: []
 lifecycle_state: open
@@ -184,8 +226,149 @@ subject:
   content_hash: ""
   ref: "@01KXPPE2FA72S6HPFV9V95488F"
   shadow_commit: ""
-threads: []
+threads:
+  - _ulid: 01KXQ7383W74KMZB9C0JZFRG03
+    anchor:
+      type: code
+      commit: e7dedf15cfc99f987f6904f5a169ba19cbedc917
+      line_end: 550
+      line_start: 540
+      path: tests/dispatch-operator-docs.test.ts
+      side: head
+    entries:
+      - _ulid: 01KXQ7383W75P4FTMK60NC4C36
+        author: Jacob Chapel
+        body: "MUST-FIX — The frozen-target assertion depends on a moving remote branch ref. It passes only
+          while origin/plan/plan-dispatch-lifecycle-pause-resume-and-stop-controls/01kxc2vx remains
+          exactly at 8f871993. After the supported merge, the target contains this task head, so the
+          merge base between this snapshot and the advanced target becomes e7dedf15 rather than the
+          frozen pre-task commit; any later documentation merge has the same effect, and deletion or
+          incomplete fetching of that remote ref makes the test throw. Impact: the full-suite gate
+          that is explicitly meant to remain satisfiable through Tasks 2-7 becomes red after normal
+          integration even when no lifecycle fact changed. Evidence: current commands show
+          merge-base HEAD with the frozen origin target is 8f871993, while merge-base HEAD with the
+          canonical task branch is e7dedf15; the merge target will contain that canonical head.
+          Validate immutable commit ancestry/freshness without requiring a mutable remote branch to
+          stay at the freeze point."
+        created_at: 2026-07-17T04:59:28.252Z
+    kind: blocker
+  - _ulid: 01KXQ73BCMFYS8VY7W0RJTJJSC
+    anchor:
+      type: code
+      commit: e7dedf15cfc99f987f6904f5a169ba19cbedc917
+      line_end: 568
+      line_start: 551
+      path: tests/dispatch-operator-docs.test.ts
+      side: head
+    entries:
+      - _ulid: 01KXQ73BCMRK00Y4PR7JERTKYW
+        author: Jacob Chapel
+        body: "MUST-FIX — The fact-source matrix is still not deterministic or source-bound: validation
+          fixes only the six group labels and checks that each supplied path exists. Replacing
+          src/parser/config.ts or a listed lifecycle test with any unrelated existing repository
+          file leaves validateFacts green. Impact: the required review handoff can publish a false
+          authority matrix even while the behavior assertions happen to pass elsewhere, so
+          downstream documentation loses the exact traceability this fixture is meant to freeze.
+          Evidence: lines 551-568 never compare the source/test sets to an independently defined
+          contract or associate a row with the behavior it supports, and the structured
+          stale-mutation table does not mutate a matrix path. This is the same fact-source binding
+          class previously treated as MUST-FIX."
+        created_at: 2026-07-17T04:59:31.604Z
+    kind: blocker
+  - _ulid: 01KXQ73EMEXFKGHAKV2TN9ZX06
+    anchor:
+      type: code
+      commit: e7dedf15cfc99f987f6904f5a169ba19cbedc917
+      line_end: 302
+      line_start: 287
+      path: tests/public-documentation-inventory.test.ts
+      side: head
+    entries:
+      - _ulid: 01KXQ73EME8KQA0EZBMAYHRN5Z
+        author: Jacob Chapel
+        body: "MUST-FIX — Markdown records are exact only by path; their classification and audit/authority
+          metadata are not gated. The validator accepts any nonempty classification and
+          source_of_truth, never checks Markdown source authorities exist, and ignores audit_topics,
+          audit_status, and disposition. For example, README.md can be changed from active-public to
+          historical with an exclusion reason, pointed at an arbitrary source string, and have its
+          audit fields cleared while every inventory test still passes. Impact: the Task 7 audit
+          scope and ownership/disposition evidence can silently drift even though the manifest
+          claims deterministic closure. Evidence: lines 287-302 perform only nonempty/reason/pairing
+          checks, whereas complete-record comparison is applied only to non-file kinds. Enforce the
+          plan-defined path-specific classifications and complete required metadata, with negative
+          mutations proving those fields cannot drift."
+        created_at: 2026-07-17T04:59:34.926Z
+    kind: blocker
+  - _ulid: 01KXQ73HS09QS1A43XCDBK97XW
+    anchor:
+      type: code
+      commit: e7dedf15cfc99f987f6904f5a169ba19cbedc917
+      line_end: 125
+      line_start: 78
+      path: tests/fixtures/dispatch-operator-facts.json
+      side: head
+    entries:
+      - _ulid: 01KXQ73HS0K5WFJ8PMEXK3Y3ZR
+        author: Jacob Chapel
+        body: "MUST-FIX — The workspace fixture does not cover all facts this task explicitly promises to
+          freeze from the plan. It records defaults, path/target precedence, bootstrap ordering,
+          rule keys, and the remote-sync default, but omits dispatch-only bootstrap scope,
+          remote-sync limits/status behavior, worker-versus-reviewer workspace distinction,
+          registry/cleanup ownership, and event-specific automation filtering. Impact: the dependent
+          workspace/configuration prose tasks cannot consume the required structured evidence and
+          must either guess or repeat ad hoc source inspection, so this task has not met its stated
+          fact-freeze scope. Evidence: the task Required facts and the plan Binding Scope/Freshness
+          Rules name these retained facts, while the workspace object ends at line 124 and neither
+          the fixture nor validateFacts contains them."
+        created_at: 2026-07-17T04:59:38.145Z
+    kind: blocker
+  - _ulid: 01KXQ73N8FVQADW2DT5JWY63ZH
+    anchor:
+      type: code
+      commit: e7dedf15cfc99f987f6904f5a169ba19cbedc917
+      line_end: 326
+      line_start: 322
+      path: tests/fixtures/dispatch-operator-facts.json
+      side: head
+    entries:
+      - _ulid: 01KXQ73N8FEK1RSWJFYZ0K8X4T
+        author: Jacob Chapel
+        body: "MUST-FIX — The frozen supported-limitations group is incomplete. The plan requires the Task 1
+          fixture to preserve all ten lifecycle fact groups, and its limitations group includes no
+          checkpointing, no distributed scheduler, no exact durable FIFO promise, no workspace
+          deletion/reset command, arbitrary one-shot work outside lifecycle control, and recovery
+          remaining pending when ownership cannot be proven. This array preserves only
+          pause-versus-stop, workspace deletion/reset, and one-shot separation. Impact: later
+          operator guidance lacks source-bound evidence for several required safety boundaries and
+          can overstate guarantees while the stale-fact tests stay green. Evidence: the negative
+          mutation only pops one of the three present entries; it cannot detect required omissions.
+          Freeze and behaviorally bind the remaining required limitations rather than narrowing the
+          approved task scope."
+        created_at: 2026-07-17T04:59:41.711Z
+    kind: blocker
+  - _ulid: 01KXQ73RDXM0VET1G2NYCPQV5H
+    entries:
+      - _ulid: 01KXQ73RDYK78XEFWYCFRJHF9R
+        author: Jacob Chapel
+        body: "Review evidence log — informational. Files read: all four changed files, including complete
+          test-source review, the full dispatch fact fixture, structured inspection of all 414
+          inventory records, the cycle-3 delta, all prior review threads/replies, task, both owned
+          specs, plan, and interacting config/control/event/API/UI/CLI helpers and behavioral tests.
+          Commands run: git diff/log/status/diff-check/ancestry and graph audits; kspec
+          task/item/plan/review queries; jq inventory/classification/cardinality audits; format,
+          repo and focused lint, typecheck, fresh focused tests, fresh full npm test, and
+          refs/alignment/completeness validations. Claims verified: cycle-3 API/event/safety and
+          complete non-file-record fixes are present; current reviewed/integrated commits are
+          ancestors; inventory cardinalities are 140 Markdown, 253 CLI, and 21 other; focused 83/83
+          and full 10957 passed with 3 skipped. Categories searched: correctness,
+          post-merge/future-task integration, edge cases, error handling, safety/security, test
+          integrity, AC alignment, staleness, source traceability, inventory metadata, and scope
+          completeness. Shared/package guidance surfaces touched: none; shared-guidance-neutrality
+          was checked for applicability, both directions are not triggered, and no generated refresh
+          is required."
+        created_at: 2026-07-17T04:59:44.958Z
+    kind: nit
 verdicts: []
 created_at: 2026-07-17T04:38:35.546Z
-updated_at: 2026-07-17T04:58:44.069Z
+updated_at: 2026-07-17T04:59:44.958Z
 notes: []
