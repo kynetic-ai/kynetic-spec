@@ -83458,9 +83458,22 @@ runs:
     completed_at: 2026-07-17T17:19:28.012Z
   - _ulid: 01KXRHEGE7ZVXG84P580A67TTK
     status: active
-    current_step: 0
+    current_step: 1
     initiated_by: Jacob Chapel
-    step_results: []
+    step_results:
+      - status: completed
+        step_index: 0
+        started_at: 2026-07-17T17:19:37.416Z
+        completed_at: 2026-07-17T17:22:10.723Z
+        notes: Mandatory baseline completed with kspec meta observations list, kspec inbox list, and kspec
+          tasks list. Because those listings truncated at repository scale, targeted searches were
+          also run for workflow run-ref guidance, active workflow clutter, reflection baseline
+          scaling, delayed or duplicate review batches, read-after-write staleness, and semantic
+          documentation review.
+      - status: completed
+        step_index: 1
+        started_at: 2026-07-17T17:22:10.723Z
+        completed_at: 2026-07-17T17:22:10.723Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-07-17T17:19:37.416Z
