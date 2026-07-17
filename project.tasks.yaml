@@ -34190,7 +34190,7 @@
   type: task
   spec_ref: "@docs-guides-section"
   plan_ref: "@plan-documentation-completeness-and-dispatch-workspaces"
-  status: in_progress
+  status: pending_review
   blocked_by: []
   depends_on:
     - "@task-document-dispatch-workspace-configuration"
@@ -34200,10 +34200,11 @@
     - dispatch
     - lifecycle
   review_ref: "@01KXR43VDR49349V0ZSHAS72ZM"
-  notes_count: 4
+  notes_count: 5
   todos_count: 0
   created_at: 2026-07-17T00:08:18.393Z
   started_at: 2026-07-17T13:59:05.038Z
+  submitted_at: 2026-07-17T14:19:36.253Z
   automation: eligible
 - _ulid: 01KXPPE6MBRFYCC6N13NMGM5A9
   slugs:
