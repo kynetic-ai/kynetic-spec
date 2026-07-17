@@ -12,3 +12,13 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-07-17T12:56:36.770Z
+  - _ulid: 01KXR2P6EM1X1RT4R2RM7SKCEV
+    content: Published the lifecycle operator guide and linked both dispatch guides from the landing
+      page. The guide is source-bound to the frozen fact fixture and separates global/task
+      authority, draining projection, scoped cleanup, canonical identity, graceful pause, hard stop,
+      CLI/API/UI/static surfaces, restart recovery, events, safety, limitations, and verification.
+      Added behavioral documentation assertions that compare tables to public helpers and the
+      Commander tree rather than scanning implementation source.
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-07-17T13:01:40.692Z
