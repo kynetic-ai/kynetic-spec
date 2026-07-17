@@ -2,7 +2,101 @@ _ulid: 01KXQQE6WP5851QXWPSARWS7M8
 slugs: []
 title: "Review: publish source-bound dispatch workspace configuration guide"
 author: Jacob Chapel
-checks: []
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: All 1,062 files formatted correctly.
+    name: format
+    required: true
+    runner: npm run format:check
+    created_at: 2026-07-17T10:01:50.878Z
+    completed_at: 2026-07-17T10:01:50.878Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: 0 errors; 696 repository-baseline warnings. Focused oxlint on
+      tests/dispatch-operator-docs.test.ts reported 0 warnings and 0 errors.
+    name: lint
+    required: true
+    runner: npm run lint -- --quiet
+    created_at: 2026-07-17T10:01:54.326Z
+    completed_at: 2026-07-17T10:01:54.326Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Shared package build and tsc --noEmit passed.
+    name: typecheck
+    required: true
+    runner: npm run typecheck
+    created_at: 2026-07-17T10:01:57.674Z
+    completed_at: 2026-07-17T10:01:57.674Z
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Fresh full suite: 2,833 suites passed; tests/public-documentation-inventory.test.ts
+      failed deterministically with 8 failures because tracked Markdown count is 141 while fixture
+      count remains 140. Focused fresh rerun reproduced all 8 failures."
+    name: full test suite
+    required: true
+    runner: npm test -- --fresh
+    created_at: 2026-07-17T10:02:01.016Z
+    completed_at: 2026-07-17T10:02:01.016Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: References OK under --warnings-ok; exact documented baseline of 6 deprecation warnings.
+    name: kspec validate refs
+    required: true
+    runner: kspec
+    created_at: 2026-07-17T10:02:04.334Z
+    completed_at: 2026-07-17T10:02:04.334Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Validation passed under --warnings-ok with repository baseline warnings.
+    name: kspec validate alignment
+    required: true
+    runner: kspec
+    created_at: 2026-07-17T10:02:07.812Z
+    completed_at: 2026-07-17T10:02:07.812Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Validation passed under --warnings-ok with repository baseline warnings;
+      @docs-guides-section ac-1/ac-2/ac-3 annotations are present across behavioral docs tests.
+    name: kspec validate completeness
+    required: true
+    runner: kspec
+    created_at: 2026-07-17T10:02:11.283Z
+    completed_at: 2026-07-17T10:02:11.283Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: 111/111 focused dispatch operator docs and config tests passed.
+    name: focused docs tests
+    required: true
+    runner: npm test
+    created_at: 2026-07-17T10:02:14.900Z
+    completed_at: 2026-07-17T10:02:14.900Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Pagefind indexed 43 documentation entries.
+    name: docs search build
+    required: true
+    runner: npm run build:docs-search
+    created_at: 2026-07-17T10:02:18.165Z
+    completed_at: 2026-07-17T10:02:18.165Z
 events:
   - _ulid: 01KXQQE6WFCH5A3W1B808X7QGS
     actor: Jacob Chapel
@@ -17,17 +111,160 @@ events:
       from: draft
       to: open
     timestamp: 2026-07-17T09:45:19.955Z
+  - _ulid: 01KXQRCXSCRD2P4A4GQY341D11
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: format
+    timestamp: 2026-07-17T10:01:51.148Z
+  - _ulid: 01KXQRD14ZBHF16JP0ZXJ6BDVV
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: lint
+    timestamp: 2026-07-17T10:01:54.591Z
+  - _ulid: 01KXQRD4DSN8A3TTDSK8DQWE92
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: typecheck
+    timestamp: 2026-07-17T10:01:57.945Z
+  - _ulid: 01KXQRD7NHD6EAEX28KADZ6Q05
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: fail
+      name: full test suite
+    timestamp: 2026-07-17T10:02:01.265Z
+  - _ulid: 01KXQRDAXF95MX9B9A08M02RE4
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate refs
+    timestamp: 2026-07-17T10:02:04.591Z
+  - _ulid: 01KXQRDEA3BRPT9VJJGMV32EBQ
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate alignment
+    timestamp: 2026-07-17T10:02:08.067Z
+  - _ulid: 01KXQRDHQRCARP4ZYS8DK07X1Y
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate completeness
+    timestamp: 2026-07-17T10:02:11.576Z
+  - _ulid: 01KXQRDN7P8QZGB4JKXY7KYAYJ
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: focused docs tests
+    timestamp: 2026-07-17T10:02:15.158Z
+  - _ulid: 01KXQRDRDEEGVDER3NEEKAR3MB
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: docs search build
+    timestamp: 2026-07-17T10:02:18.414Z
+  - _ulid: 01KXQRDVWBC4SR6VMBEGF6DQ8N
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KXQRDVMK04AKHFE19Y51FV2E
+    timestamp: 2026-07-17T10:02:21.963Z
+  - _ulid: 01KXQRDZ3EDANEKH6M8384X5N2
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KXQRDYVEPCH6PZ6PAMJGXRXR
+    timestamp: 2026-07-17T10:02:25.262Z
+  - _ulid: 01KXQRE2N7FFEC2H2Q0XB07WQM
+    actor: pr-reviewer
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: request_changes
+    timestamp: 2026-07-17T10:02:28.903Z
+  - _ulid: 01KXQRE2N78HKX7XWYRGQJ3631
+    actor: pr-reviewer
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-07-17T10:02:28.903Z
 examined_commit: f56e3f97f9eefbf10a0f656b71237cd8904a68d5
 external_links: []
-lifecycle_state: open
+lifecycle_state: closed
 related_refs: []
 subject:
   type: task
   content_hash: ""
   ref: "@01KXPPE34G6JGRYECYDWVBKNWC"
   shadow_commit: ""
-threads: []
-verdicts: []
+threads:
+  - _ulid: 01KXQRDVMK04AKHFE19Y51FV2E
+    anchor:
+      type: code
+      commit: f56e3f97f9eefbf10a0f656b71237cd8904a68d5
+      line_end: 1
+      line_start: 1
+      path: docs/guides/configuring-dispatch-workspaces.md
+      side: head
+    entries:
+      - _ulid: 01KXQRDVMKPDBJ4QFAX9J74ESH
+        author: Jacob Chapel
+        body: "MUST-FIX: This new tracked Markdown page raises the repository total from 140 to 141, but
+          tests/fixtures/public-documentation-surfaces.json still declares tracked_markdown_count:
+          140. The fresh full suite and a second focused fresh run both fail 8 tests in
+          tests/public-documentation-inventory.test.ts with stale tracked Markdown count, masking
+          the negative-test assertions behind the count guard. The exact integration-base tree has
+          140 Markdown files and the same fixture count of 140, so this is introduced by the
+          submitted page. Restore a green full suite while preserving the plan ownership contract
+          for the staged inventory additions."
+        created_at: 2026-07-17T10:02:21.715Z
+    kind: blocker
+  - _ulid: 01KXQRDYVEPCH6PZ6PAMJGXRXR
+    entries:
+      - _ulid: 01KXQRDYVEZTY46XC3AS8E0KX7
+        author: Jacob Chapel
+        body: "Review evidence log — Files read: docs/guides/configuring-dispatch-workspaces.md; changed
+          hunks and surrounding context in docs/guides/configuring-agent-runners.md and
+          tests/dispatch-operator-docs.test.ts; public docs inventory gate/fixture; config, agent
+          bootstrap/rule, workspace, gitignore, remote-sync, and docs-plugin sources. Commands run:
+          exact base/head diff and history; kspec task/spec/plan/review lookups; source/AC searches;
+          diff check; focused tests; docs-search build; format; repo and focused lint; typecheck;
+          refs/alignment/completeness validation; fresh full suite; fresh failing-test rerun; exact
+          base/current Markdown tree counts. Claims verified: schema-valid tagged examples,
+          published-doc inclusion, valid help paths/links, source-bound
+          defaults/enums/precedence/bootstrap/remote-sync/ownership facts; full-suite claim
+          disproved. Categories searched: correctness, edge cases, error handling/recovery,
+          security/secret-output warning, test quality, integration, command discoverability,
+          lifecycle-scope separation. Shared-guidance neutrality: no package/shared guidance
+          surfaces changed, so direction-1/direction-2 migration and generated-artifact refresh are
+          not applicable. Findings: one deterministic required-gate regression; no additional issues
+          found after expanded search."
+        created_at: 2026-07-17T10:02:25.006Z
+    kind: nit
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: request_changes
+    reviewer: pr-reviewer
+    role: reviewer
+    created_at: 2026-07-17T10:02:28.903Z
 created_at: 2026-07-17T09:45:04.662Z
-updated_at: 2026-07-17T09:45:19.686Z
+updated_at: 2026-07-17T10:02:28.903Z
 notes: []
