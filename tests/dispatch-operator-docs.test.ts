@@ -1634,6 +1634,13 @@ describe("dispatch operator fact fixture", () => {
         expect(html).toContain(`id="${heading.id}"`);
         expect(html).toContain(`href="#${heading.id}"`);
       }
+      expect(concept).toContain("dispatch evaluates the snapshot for cleanup immediately");
+      expect(concept).toContain(
+        "active, in-flight, paused-held, or stopped-pending-cleanup evidence",
+      );
+      expect(concept).not.toContain("retention or debugging hold");
+      expect(concept).toContain("The `auto` setting selects between those two paths");
+      expect(concept).not.toContain("explicitly configured automatic path");
       expect(concept).not.toContain("```yaml");
       expect(concept).not.toMatch(/`--[a-z-]+`/);
     });

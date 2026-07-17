@@ -28,7 +28,7 @@ Only one active invocation owns a canonical task at a time. Continuity means reu
 
 A reviewer receives a separate snapshot of the submitted branch. That snapshot is intentionally isolated from the worker's mutable workspace and from the integration checkout. The reviewer can inspect the exact submitted state, run checks, and record a disposition without taking ownership of the worker's directory.
 
-Reviewer snapshots are short-lived. When review finishes and no retention or debugging hold applies, they become cleanup-eligible. The worker workspace follows the longer task lifecycle instead.
+Reviewer snapshots are short-lived. When review finishes, dispatch evaluates the snapshot for cleanup immediately. If it belongs to active, in-flight, paused-held, or stopped-pending-cleanup evidence, artifact protection preserves it; otherwise dispatch removes the snapshot. The worker workspace follows the longer task lifecycle instead.
 
 ## The Fix Cycle
 
@@ -44,7 +44,7 @@ Bootstrap belongs to dispatch workspaces, not to arbitrary one-shot agent runs. 
 
 ## Integration and Publication
 
-The worker commits to the task branch. After review approval, the configured publication mode determines how that branch reaches its integration target: a supported local merge path, an external review path, or an explicitly configured automatic path. Publication records are part of workspace state so cleanup can distinguish integrated work from work that is still unresolved.
+The worker commits to the task branch. After review approval, publication uses one of two durable paths: a reviewed manual merge into the integration target or a GitHub pull request when the required remote and tooling are available. The `auto` setting selects between those two paths from the environment; it is not a third publication path. Publication records are part of workspace state so cleanup can distinguish integrated work from work that is still unresolved.
 
 The task branch and integration target remain distinct even when both live in the same repository. Dispatch never treats a completed invocation by itself as proof that the work was reviewed or integrated.
 
