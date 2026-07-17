@@ -98,6 +98,101 @@ checks:
     runner: git and structured inventory audits
     created_at: 2026-07-17T02:35:23.142Z
     completed_at: 2026-07-17T02:35:23.142Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Exit 0; all 1061 matched files use the correct format.
+    name: format
+    required: true
+    runner: npm run format:check
+    created_at: 2026-07-17T02:36:06.783Z
+    completed_at: 2026-07-17T02:36:06.783Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Exit 0 with 0 errors; 696 repo baseline warnings. Focused npx oxlint on both changed
+      TypeScript files reported 0 warnings and 0 errors.
+    name: lint
+    required: true
+    runner: npm run lint -- --quiet
+    created_at: 2026-07-17T02:36:10.351Z
+    completed_at: 2026-07-17T02:36:10.351Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Shared package build and tsc --noEmit completed successfully.
+    name: typecheck
+    required: true
+    runner: npm run typecheck
+    created_at: 2026-07-17T02:36:15.251Z
+    completed_at: 2026-07-17T02:36:15.251Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Fresh run passed 2834 suites; 10949 tests passed and 3 skipped; exit 0.
+    name: full test suite
+    required: true
+    runner: npm test -- --fresh
+    created_at: 2026-07-17T02:36:20.964Z
+    completed_at: 2026-07-17T02:36:20.964Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Exit 0; schema and references OK with the documented six pre-existing deprecation warnings.
+    name: kspec validate refs
+    required: true
+    runner: kspec validate --refs --warnings-ok
+    created_at: 2026-07-17T02:36:26.785Z
+    completed_at: 2026-07-17T02:36:26.785Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Exit 0; schema/references OK under the existing 59-warning alignment baseline.
+    name: kspec validate alignment
+    required: true
+    runner: kspec validate --alignment --warnings-ok
+    created_at: 2026-07-17T02:36:33.202Z
+    completed_at: 2026-07-17T02:36:33.202Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Exit 0; schema/references OK under the existing completeness warning baseline; relevant AC
+      annotations were inspected manually.
+    name: kspec validate completeness
+    required: true
+    runner: kspec validate --completeness --warnings-ok
+    created_at: 2026-07-17T02:36:38.778Z
+    completed_at: 2026-07-17T02:36:38.778Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Fresh focused run passed 13 suites and 75 tests across inventory, dispatch facts, and plan
+      parser.
+    name: focused documentation suite
+    required: true
+    runner: npm test -- focused files --fresh
+    created_at: 2026-07-17T02:36:44.037Z
+    completed_at: 2026-07-17T02:36:44.037Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Reviewed b28c2955 and integrated 3f22e6c are ancestors of both HEAD and target; freeze
+      merge-base is 8f871993. Inventory has exact 140 Markdown records, 253 CLI records, 21 other
+      typed surfaces, and no classification mismatch against the plan taxonomy.
+    name: freeze ancestry and inventory cardinality
+    required: true
+    runner: git and structured inventory audits
+    created_at: 2026-07-17T02:36:47.379Z
+    completed_at: 2026-07-17T02:36:47.379Z
 events:
   - _ulid: 01KXPXNJ1EDGPJ4JXYF3F48W6Z
     actor: Jacob Chapel
@@ -210,6 +305,69 @@ events:
       kind: nit
       thread_ulid: 01KXPYVXPWNVAAMSPXEXV8934M
     timestamp: 2026-07-17T02:35:39.862Z
+  - _ulid: 01KXPYWRG90FV6X824PGFJ8QQZ
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: format
+    timestamp: 2026-07-17T02:36:07.049Z
+  - _ulid: 01KXPYWW022E078ZYK88GDM3ST
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: lint
+    timestamp: 2026-07-17T02:36:10.626Z
+  - _ulid: 01KXPYX0RSEXD5SHZD7RMRJ3E3
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: typecheck
+    timestamp: 2026-07-17T02:36:15.513Z
+  - _ulid: 01KXPYX6F169ANV8QQ6VQDVRFB
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: full test suite
+    timestamp: 2026-07-17T02:36:21.346Z
+  - _ulid: 01KXPYXC4ZW9J9WXK3JKFPE63W
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate refs
+    timestamp: 2026-07-17T02:36:27.167Z
+  - _ulid: 01KXPYXJK04JGD0CZSEAKJD8BJ
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate alignment
+    timestamp: 2026-07-17T02:36:33.760Z
+  - _ulid: 01KXPYXQWAVYRQY6S08J0EJ1C4
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate completeness
+    timestamp: 2026-07-17T02:36:39.178Z
+  - _ulid: 01KXPYXWWNYS3RX25JH17TAKB6
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: focused documentation suite
+    timestamp: 2026-07-17T02:36:44.309Z
+  - _ulid: 01KXPYY0CGHHEDEFVKHVG2BTDF
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: freeze ancestry and inventory cardinality
+    timestamp: 2026-07-17T02:36:47.888Z
 examined_commit: 71f5a4c87bb3e38faf1bba0954595545f08894e1
 external_links: []
 lifecycle_state: open
@@ -334,5 +492,5 @@ threads:
     kind: nit
 verdicts: []
 created_at: 2026-07-17T02:14:42.478Z
-updated_at: 2026-07-17T02:35:39.612Z
+updated_at: 2026-07-17T02:36:47.379Z
 notes: []
