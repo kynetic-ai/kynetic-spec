@@ -485,6 +485,12 @@ events:
     payload:
       thread_ulid: 01KXPYVQE81AXB0XH1VG9PPVQW
     timestamp: 2026-07-17T03:23:00.580Z
+  - _ulid: 01KXQ1JTD5QAQ8C2M4416JMH9P
+    actor: Jacob Chapel
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KXPYVTHNCAT0QJKWQANWGAAK
+    timestamp: 2026-07-17T03:23:07.045Z
 examined_commit: 71f5a4c87bb3e38faf1bba0954595545f08894e1
 external_links: []
 lifecycle_state: closed
@@ -612,6 +618,13 @@ threads:
           behavioral CLI test that registers/uses a parent with a newly added subcommand and
           verifies the observable parent help output."
         created_at: 2026-07-17T02:35:36.374Z
+      - _ulid: 01KXQ1JT570FA5MZB04BRQZZ2E
+        author: Jacob Chapel
+        body: "Fixed in ed90115506: moved AC5 coverage to a behavioral test that adds a new child command to
+          the actual exported Commander singleton, invokes parent help through parseAsync, and
+          asserts the new command and description render. The inventory omission test remains as a
+          separate negative gate without claiming AC5."
+        created_at: 2026-07-17T03:23:06.791Z
     kind: blocker
   - _ulid: 01KXPYVXPWNVAAMSPXEXV8934M
     entries:
@@ -766,5 +779,5 @@ verdicts:
     role: reviewer
     created_at: 2026-07-17T02:38:48.382Z
 created_at: 2026-07-17T02:14:42.478Z
-updated_at: 2026-07-17T03:23:00.323Z
+updated_at: 2026-07-17T03:23:06.791Z
 notes: []
