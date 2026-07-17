@@ -24334,6 +24334,16 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-07-17T06:43:22.767Z
+  - _ulid: 01KXQHH4TTWX16CBF42QSBS3K7
+    type: success
+    content: Structured documentation fact gates are reliable when every frozen value is verified
+      through public behavior with exact field-level assertions and paired with a stale-data
+      mutation proving the gate fails; this prevented presence-only and self-referential fixture
+      checks from masking mapping drift.
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    created_at: 2026-07-17T08:01:49.403Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
