@@ -24288,6 +24288,18 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-07-17T02:11:13.801Z
+  - _ulid: 01KXPZ9MNN0QYJ15DY4SYWZ1WZ
+    type: success
+    content: "Reviewing an incremental gate against explicitly planned future states is a high-value
+      complement to current-state tests. In @task-freeze-doc-facts-and-inventory, mutating the
+      inventory fixture to add one of the six construction-allowed future pages exposed that ordered
+      landing-page equality rejected the permitted transition even though the focused and full
+      suites were green. Pattern: when a task promises compatibility with a named follow-on state,
+      reproduce that transition during review rather than testing only the submitted snapshot."
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    created_at: 2026-07-17T02:43:09.109Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
