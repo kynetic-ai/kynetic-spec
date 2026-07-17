@@ -1,0 +1,26 @@
+_ulid: 01KXPSQCQTSYMHWWZNH9RQPADX
+slugs: []
+title: Review freeze final integrated dispatch facts and public-surface inventory gate
+author: Jacob Chapel
+checks: []
+events:
+  - _ulid: 01KXPSQCQSTTA5BHEP275CZE3Q
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-07-17T01:05:48.282Z
+examined_commit: 528a4ca8ef3c30d260e96d3d37b681837642f362
+external_links: []
+lifecycle_state: draft
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KXPPE2FA72S6HPFV9V95488F"
+  shadow_commit: ""
+threads: []
+verdicts: []
+created_at: 2026-07-17T01:05:48.282Z
+updated_at: null
+notes: []
