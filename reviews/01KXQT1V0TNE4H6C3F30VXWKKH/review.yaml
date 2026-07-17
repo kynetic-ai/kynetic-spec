@@ -106,6 +106,109 @@ checks:
     runner: manual source and behavior trace
     created_at: 2026-07-17T10:48:59.957Z
     completed_at: 2026-07-17T10:48:59.957Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: All 1,062 files formatted correctly.
+    name: format
+    required: true
+    runner: npm run format:check
+    created_at: 2026-07-17T10:49:44.988Z
+    completed_at: 2026-07-17T10:49:44.988Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: 0 errors; 696 repository-baseline warnings. Focused oxlint on
+      tests/dispatch-operator-docs.test.ts reported 0 warnings and 0 errors.
+    name: lint
+    required: true
+    runner: npm run lint -- --quiet
+    created_at: 2026-07-17T10:49:48.675Z
+    completed_at: 2026-07-17T10:49:48.675Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Shared package build and tsc --noEmit passed.
+    name: typecheck
+    required: true
+    runner: npm run typecheck
+    created_at: 2026-07-17T10:49:52.194Z
+    completed_at: 2026-07-17T10:49:52.194Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Fresh full suite passed: 2,835/2,835 suites; 10,967 tests passed and 3 expected skips."
+    name: full test suite
+    required: true
+    runner: npm test -- --fresh
+    created_at: 2026-07-17T10:49:55.831Z
+    completed_at: 2026-07-17T10:49:55.831Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: References OK; six documented deprecation warnings under --warnings-ok.
+    name: kspec validate refs
+    required: true
+    runner: kspec validate --refs --warnings-ok
+    created_at: 2026-07-17T10:49:59.438Z
+    completed_at: 2026-07-17T10:49:59.438Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Validation passed with repository baseline warnings under --warnings-ok.
+    name: kspec validate alignment
+    required: true
+    runner: kspec validate --alignment --warnings-ok
+    created_at: 2026-07-17T10:50:03.181Z
+    completed_at: 2026-07-17T10:50:03.181Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Validation passed with repository baseline warnings; @docs-guides-section ac-1/ac-2/ac-3
+      annotations are present.
+    name: kspec validate completeness
+    required: true
+    runner: kspec validate --completeness --warnings-ok
+    created_at: 2026-07-17T10:50:06.734Z
+    completed_at: 2026-07-17T10:50:06.734Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Focused dispatch docs, config, and public inventory run passed: 23 suites and 128 tests."
+    name: focused docs tests
+    required: true
+    runner: npm test
+    created_at: 2026-07-17T10:50:10.198Z
+    completed_at: 2026-07-17T10:50:10.198Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Pagefind indexed 43 documentation entries.
+    name: docs search build
+    required: true
+    runner: npm run build:docs-search
+    created_at: 2026-07-17T10:50:13.783Z
+    completed_at: 2026-07-17T10:50:13.783Z
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Two normative statements contradict accepted worktree-root behavior and the remote-sync
+      transient-failure contract; blocker threads record exact evidence.
+    name: source-bound prose audit
+    required: true
+    runner: manual source and behavior trace
+    created_at: 2026-07-17T10:50:17.127Z
+    completed_at: 2026-07-17T10:50:17.127Z
 events:
   - _ulid: 01KXQT1V0PFRAQ7AQ9Y8DPE5DE
     actor: pr-reviewer
@@ -227,6 +330,76 @@ events:
       from: open
       to: closed
     timestamp: 2026-07-17T10:49:14.558Z
+  - _ulid: 01KXQV4MGTGNH6NX5GP94HQ9JD
+    actor: pr-reviewer
+    event_type: check_added
+    payload:
+      status: pass
+      name: format
+    timestamp: 2026-07-17T10:49:45.242Z
+  - _ulid: 01KXQV4R3ZPKWT1RSJWZSRZN6N
+    actor: pr-reviewer
+    event_type: check_added
+    payload:
+      status: pass
+      name: lint
+    timestamp: 2026-07-17T10:49:48.927Z
+  - _ulid: 01KXQV4VJEYRBSJCWHBF7RDDSG
+    actor: pr-reviewer
+    event_type: check_added
+    payload:
+      status: pass
+      name: typecheck
+    timestamp: 2026-07-17T10:49:52.463Z
+  - _ulid: 01KXQV4Z3H6CK37VXEEWVPYJFQ
+    actor: pr-reviewer
+    event_type: check_added
+    payload:
+      status: pass
+      name: full test suite
+    timestamp: 2026-07-17T10:49:56.081Z
+  - _ulid: 01KXQV52M3DX6SA101EKQDFXFK
+    actor: pr-reviewer
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate refs
+    timestamp: 2026-07-17T10:49:59.683Z
+  - _ulid: 01KXQV56CG94K8H78ADTKK9N89
+    actor: pr-reviewer
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate alignment
+    timestamp: 2026-07-17T10:50:03.536Z
+  - _ulid: 01KXQV59RET2VFRR46ZNWGVWWC
+    actor: pr-reviewer
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate completeness
+    timestamp: 2026-07-17T10:50:06.990Z
+  - _ulid: 01KXQV5D5R1176995DJWCEYVYP
+    actor: pr-reviewer
+    event_type: check_added
+    payload:
+      status: pass
+      name: focused docs tests
+    timestamp: 2026-07-17T10:50:10.488Z
+  - _ulid: 01KXQV5GP5C6Z7HBXG5777BAWV
+    actor: pr-reviewer
+    event_type: check_added
+    payload:
+      status: pass
+      name: docs search build
+    timestamp: 2026-07-17T10:50:14.085Z
+  - _ulid: 01KXQV5KXJYTB81MAT3E114MHQ
+    actor: pr-reviewer
+    event_type: check_added
+    payload:
+      status: fail
+      name: source-bound prose audit
+    timestamp: 2026-07-17T10:50:17.394Z
 examined_commit: 7c2bc80a30fb9a4f726938960bf1dc60224195d9
 external_links: []
 lifecycle_state: closed
@@ -315,5 +488,5 @@ verdicts:
     role: reviewer
     created_at: 2026-07-17T10:49:14.558Z
 created_at: 2026-07-17T10:30:45.018Z
-updated_at: 2026-07-17T10:49:14.558Z
+updated_at: 2026-07-17T10:50:17.127Z
 notes: []
