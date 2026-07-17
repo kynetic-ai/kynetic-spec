@@ -1,0 +1,26 @@
+_ulid: 01KXRFRKFHY3BC10YZ3VKR6BZW
+slugs: []
+title: Review publish dispatch workspace concept (cycle 2)
+author: Jacob Chapel
+checks: []
+events:
+  - _ulid: 01KXRFRKF6JSJM6RSQKAJV9GKJ
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-07-17T16:50:11.046Z
+examined_commit: 7dee50416cccbdab3166159745574c430bb466fa
+external_links: []
+lifecycle_state: draft
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KXPPE6MBRFYCC6N13NMGM5A9"
+  shadow_commit: ""
+threads: []
+verdicts: []
+created_at: 2026-07-17T16:50:11.057Z
+updated_at: null
+notes: []
