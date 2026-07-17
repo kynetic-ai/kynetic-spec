@@ -369,9 +369,25 @@ events:
       kind: nit
       thread_ulid: 01KXRH3GVGH21NHASX04PPAT58
     timestamp: 2026-07-17T17:13:37.662Z
+  - _ulid: 01KXRH3YR3RS70VWXQSKYBFWCF
+    actor: pr-reviewer
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: request_changes
+    timestamp: 2026-07-17T17:13:51.619Z
+  - _ulid: 01KXRH3YR3HPY4F568C9MP61WV
+    actor: pr-reviewer
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-07-17T17:13:51.619Z
 examined_commit: 7dee50416cccbdab3166159745574c430bb466fa
 external_links: []
-lifecycle_state: open
+lifecycle_state: closed
 related_refs: []
 subject:
   type: task
@@ -541,7 +557,14 @@ threads:
           and generated package artifact regeneration are not applicable.
         created_at: 2026-07-17T17:13:37.392Z
     kind: nit
-verdicts: []
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: request_changes
+    reviewer: pr-reviewer
+    role: reviewer
+    created_at: 2026-07-17T17:13:51.613Z
 created_at: 2026-07-17T16:50:11.057Z
-updated_at: 2026-07-17T17:13:37.392Z
+updated_at: 2026-07-17T17:13:51.619Z
 notes: []
