@@ -24466,6 +24466,17 @@ observations:
     resolved: false
     workflow_ref: "@session-reflect-loop"
     created_at: 2026-07-17T20:45:35.351Z
+  - _ulid: 01KXS2HPH73N21CNRNB4PGQXHN
+    type: friction
+    content: Running kspec skill render with an already-drifted core skill skipped the Codex render but
+      rewrote the Factory copy from the older source, producing asymmetric runtime behavior; it also
+      emitted untracked project-local skill copies during a package-guidance regeneration task.
+      Render should treat drift consistently across platforms and avoid unrelated untracked outputs
+      or provide a scoped package-core regeneration mode.
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    created_at: 2026-07-17T22:18:27.752Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
