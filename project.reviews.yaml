@@ -30798,9 +30798,9 @@ reviews:
   - _ulid: 01KXS4TWT06Q84GMTX20AHQ0EQ
     slugs: []
     title: Review correct adjacent public guidance
-    disposition: pending
+    disposition: changes_requested
     author: Jacob Chapel
-    check_count: 0
+    check_count: 10
     examined_commit: 2237b74fea99703c73b3d95ec5db423fd2daddd0
     lifecycle_state: open
     related_refs: []
@@ -30809,8 +30809,8 @@ reviews:
       content_hash: ""
       ref: "@01KXPPE8H63QJCHCVSXW17G4B7"
       shadow_commit: ""
-    thread_count: 0
-    unresolved_blocker_count: 0
+    thread_count: 2
+    unresolved_blocker_count: 1
     verdict_count: 0
     created_at: 2026-07-17T22:58:26.240Z
-    updated_at: 2026-07-17T22:58:39.770Z
+    updated_at: 2026-07-17T23:22:43.677Z

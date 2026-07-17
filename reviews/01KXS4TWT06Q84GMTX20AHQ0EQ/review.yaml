@@ -2,7 +2,109 @@ _ulid: 01KXS4TWT06Q84GMTX20AHQ0EQ
 slugs: []
 title: Review correct adjacent public guidance
 author: Jacob Chapel
-checks: []
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: All 1067 formatted files matched.
+    name: format
+    required: true
+    runner: npm run format:check
+    created_at: 2026-07-17T23:22:02.243Z
+    completed_at: 2026-07-17T23:22:02.243Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: 0 errors; 696 repository-baseline warnings.
+    name: lint
+    required: true
+    runner: npm run lint -- --quiet
+    created_at: 2026-07-17T23:22:06.688Z
+    completed_at: 2026-07-17T23:22:06.688Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Changed TS/test files: 0 errors; 20 warnings all outside changed lines and pre-existing."
+    name: focused-lint
+    required: false
+    runner: npx oxlint
+    created_at: 2026-07-17T23:22:10.182Z
+    completed_at: 2026-07-17T23:22:10.182Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Shared package build and tsc --noEmit passed.
+    name: typecheck
+    required: true
+    runner: npm run typecheck
+    created_at: 2026-07-17T23:22:13.707Z
+    completed_at: 2026-07-17T23:22:13.707Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: 2839 suites passed; 10984 tests passed; 3 skipped; 0 failed.
+    name: full test suite
+    required: true
+    runner: npm test
+    created_at: 2026-07-17T23:22:17.123Z
+    completed_at: 2026-07-17T23:22:17.123Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: 37 suites and 137 tests passed.
+    name: focused tests
+    required: false
+    runner: npm test -- changed documentation and scaffold tests
+    created_at: 2026-07-17T23:22:20.553Z
+    completed_at: 2026-07-17T23:22:20.553Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: References OK; six documented deprecation warnings accepted by --warnings-ok.
+    name: kspec validate refs
+    required: true
+    runner: kspec
+    created_at: 2026-07-17T23:22:23.982Z
+    completed_at: 2026-07-17T23:22:23.982Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Passed under documented --warnings-ok baseline.
+    name: kspec validate alignment
+    required: true
+    runner: kspec
+    created_at: 2026-07-17T23:22:27.433Z
+    completed_at: 2026-07-17T23:22:27.433Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Passed under documented --warnings-ok baseline; owned AC annotations verified.
+    name: kspec validate completeness
+    required: true
+    runner: kspec
+    created_at: 2026-07-17T23:22:31.663Z
+    completed_at: 2026-07-17T23:22:31.663Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Second worktree-source agents generation reported up to date; plugin built twice.
+      Unrelated pre-existing asymmetric skill-render drift is captured by observation @01KXS2HP and
+      no skill source changed in this task.
+    name: generated guidance
+    required: false
+    runner: worktree CLI generation and build:plugin
+    created_at: 2026-07-17T23:22:36.215Z
+    completed_at: 2026-07-17T23:22:36.215Z
 events:
   - _ulid: 01KXS4TWSA86DSVY5ZK8F1APF1
     actor: Jacob Chapel
@@ -17,6 +119,90 @@ events:
       from: draft
       to: open
     timestamp: 2026-07-17T22:58:40.071Z
+  - _ulid: 01KXS663WQPWXABV11TTGNV6YX
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: format
+    timestamp: 2026-07-17T23:22:02.519Z
+  - _ulid: 01KXS6687G6SKFXSNWCJ7AMWHP
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: lint
+    timestamp: 2026-07-17T23:22:06.960Z
+  - _ulid: 01KXS66BMG2F4SVZNG0RETQPS6
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: focused-lint
+    timestamp: 2026-07-17T23:22:10.449Z
+  - _ulid: 01KXS66F2BQYK3P9AXQ3795P0S
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: typecheck
+    timestamp: 2026-07-17T23:22:13.964Z
+  - _ulid: 01KXS66JEAS8CYZ618ASH5HBD3
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: full test suite
+    timestamp: 2026-07-17T23:22:17.418Z
+  - _ulid: 01KXS66NRWENY1KKTDW19M1EYG
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: focused tests
+    timestamp: 2026-07-17T23:22:20.828Z
+  - _ulid: 01KXS66S39KNBNV40V800E558F
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate refs
+    timestamp: 2026-07-17T23:22:24.233Z
+  - _ulid: 01KXS66WG0FR8PMA1SBGFTSKF6
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate alignment
+    timestamp: 2026-07-17T23:22:27.712Z
+  - _ulid: 01KXS670V5C6JS1P94VHTXR7JN
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate completeness
+    timestamp: 2026-07-17T23:22:32.166Z
+  - _ulid: 01KXS6751M0ZCHA1SD60VV1PF1
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: generated guidance
+    timestamp: 2026-07-17T23:22:36.468Z
+  - _ulid: 01KXS678W9N0BT4K56S5NN1BY8
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KXS678J1KTD03WYDYF53VKKP
+    timestamp: 2026-07-17T23:22:40.393Z
+  - _ulid: 01KXS67CB66G7WTQ5KQM3P2R6W
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KXS67C2X7C4N9ZV06HS4ZY76
+    timestamp: 2026-07-17T23:22:43.942Z
 examined_commit: 2237b74fea99703c73b3d95ec5db423fd2daddd0
 external_links: []
 lifecycle_state: open
@@ -26,8 +212,55 @@ subject:
   content_hash: ""
   ref: "@01KXPPE8H63QJCHCVSXW17G4B7"
   shadow_commit: ""
-threads: []
+threads:
+  - _ulid: 01KXS678J1KTD03WYDYF53VKKP
+    anchor:
+      type: code
+      commit: 2237b74fea99703c73b3d95ec5db423fd2daddd0
+      line_end: 193
+      line_start: 159
+      path: tests/dispatch-operator-docs.test.ts
+      side: head
+    entries:
+      - _ulid: 01KXS678J1N2CJQ5NK11FHAJE2
+        author: Jacob Chapel
+        body: "MUST-FIX: The three new tests pass repository source paths to readTestOutput, but that helper
+          is expressly reserved for files produced by a test and is exempted from the
+          no-source-scanning lint rule. This bypass makes lint green while the package-guidance test
+          only searches template text instead of exercising generation. It also fails to prove the
+          required hard-stop syntax: startsWith/toContain still pass if the documented --force flag
+          is removed. Evidence: tests/helpers/cli.ts:615-634 defines the helper contract; lines
+          159-193 read the template, release notes, and README from ROOT. Replace the template scan
+          with behavioral generation into an isolated project and exact command/flag assertions;
+          inspect canonical documentation artifacts through an explicit, justified artifact path
+          rather than the test-output escape hatch."
+        created_at: 2026-07-17T23:22:40.065Z
+    kind: blocker
+  - _ulid: 01KXS67C2X7C4N9ZV06HS4ZY76
+    entries:
+      - _ulid: 01KXS67C2X98YYXQV0T89FBSRX
+        author: Jacob Chapel
+        body: "Review evidence log (non-finding). Files read: RELEASE_NOTES.md; packages/web-ui/README.md
+          and package.json; src/cli/commands/setup.ts and upgrade.ts;
+          templates/agents-sections/06-agent-dispatch-mode.md; generated kspec-agents.md; all three
+          changed test files; tests/helpers/cli.ts; no-source-scanning lint rule; related CLI
+          lifecycle registration and preflight code. Commands run: full and focused diffs;
+          task/spec/plan lookups; AC annotation search; two worktree-source generation passes and
+          plugin builds; focused tests; format; repo and focused lint; typecheck;
+          refs/alignment/completeness validation; full npm test. Claims verified: scaffold tests
+          emit lifecycle help; CLI source requires --force outside TTY/JSON; publication modes and
+          private web workspace facts match authorities; focused and full test counts independently
+          reproduced. Categories searched: correctness, edge cases/non-TTY stop, error handling,
+          security/data exposure, test quality, integration, generated convergence. Shared surfaces
+          touched: templates/agents-sections and generated kspec-agents.md. Neutrality direction 1
+          passes: new shared prose uses universal kspec lifecycle mechanics and configurable
+          identities, with no Kynetic branch/toolchain/external-review policy. Direction 2 is N/A:
+          no Kynetic-only instruction was removed. Local Kynetic policy remains in AGENTS.md,
+          work-gates/review-gates, and dynamic kspec-agents context. Relevant agents generation
+          converged; unrelated skill-render asymmetry is pre-existing observation @01KXS2HP."
+        created_at: 2026-07-17T23:22:43.677Z
+    kind: nit
 verdicts: []
 created_at: 2026-07-17T22:58:26.240Z
-updated_at: 2026-07-17T22:58:39.770Z
+updated_at: 2026-07-17T23:22:43.677Z
 notes: []
