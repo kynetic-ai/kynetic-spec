@@ -83243,7 +83243,7 @@ runs:
     completed_at: 2026-07-17T14:25:16.768Z
   - _ulid: 01KXR8TCTC5KJP7P0AJF088HTY
     status: active
-    current_step: 3
+    current_step: 4
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -83280,7 +83280,17 @@ runs:
       - status: completed
         step_index: 3
         started_at: 2026-07-17T14:52:45.522Z
-        completed_at: 2026-07-17T14:52:45.522Z
+        completed_at: 2026-07-17T14:53:01.695Z
+        notes: "Proposed improvement: ensure every configured dispatch role entrypoint resolves to a skill
+          rendered for the selected adapter before invocation; either render the configured
+          pr-review skill or migrate the reviewer entrypoint to the installed core review skill, and
+          add a dispatch/setup regression that fails before prompt delivery when availability is
+          missing. Benefit: enforces @dispatch-role-workflow-entry-contract ac-4 and prevents
+          half-oriented reviewer prompts. Scope: medium."
+      - status: completed
+        step_index: 4
+        started_at: 2026-07-17T14:53:01.695Z
+        completed_at: 2026-07-17T14:53:01.695Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-07-17T14:48:49.740Z
