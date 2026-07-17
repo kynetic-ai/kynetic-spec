@@ -64,3 +64,13 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-07-17T10:49:16.933Z
+  - _ulid: 01KXQVV3BPKAP7H9G3TM4V51VM
+    content: "Fix cycle 2 approach: correct both source-alignment blockers and lock the distinctions
+      into the creator-owned behavioral docs test. State that absolute worktree roots are supported
+      but receive no managed repository-relative ignore entry, recommending an outside-repository
+      location; distinguish transient fetch/connectivity warnings from degraded unsafe-mutation or
+      divergence state. Re-read all @docs-guides-section ACs, run focused and project gates, then
+      reply to and resolve every current review thread before resubmission."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-07-17T11:02:01.334Z
