@@ -417,6 +417,24 @@ events:
     payload:
       thread_ulid: 01KXS6A8H7QZE65QCQHWQ63N69
     timestamp: 2026-07-17T23:25:18.972Z
+  - _ulid: 01KXS87J5M106T545ZW4DDX4BS
+    actor: Jacob Chapel
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KXS678J1KTD03WYDYF53VKKP
+    timestamp: 2026-07-17T23:57:47.060Z
+  - _ulid: 01KXS87NG8FM04TF4FGMVXN6ZV
+    actor: Jacob Chapel
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KXS678J1KTD03WYDYF53VKKP
+    timestamp: 2026-07-17T23:57:50.472Z
+  - _ulid: 01KXS87RRV4Y9NB5ZBV0BN1TS1
+    actor: Jacob Chapel
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KXS67C2X7C4N9ZV06HS4ZY76
+    timestamp: 2026-07-17T23:57:53.819Z
 examined_commit: 2237b74fea99703c73b3d95ec5db423fd2daddd0
 external_links: []
 lifecycle_state: closed
@@ -449,7 +467,19 @@ threads:
           inspect canonical documentation artifacts through an explicit, justified artifact path
           rather than the test-output escape hatch."
         created_at: 2026-07-17T23:22:40.065Z
+      - _ulid: 01KXS87HX204D8DA6PK4874QJ0
+        author: Jacob Chapel
+        body: "Fixed in c54fee7bd1: package guidance is now generated through kspec agents generate in an
+          isolated fixture, exact command usages are matched against the exported command tree, and
+          both global/task hard-stop commands assert the real --force option. The v0.12 assertion
+          now exercises kspec release-notes; the non-executable web package README uses an explicit
+          canonical-artifact read with a narrowly justified lint exception instead of
+          readTestOutput. Focused lint is 0 warnings/errors, focused tests are 37 suites/137 tests,
+          and the full suite is 2839 suites/10,984 passing tests."
+        created_at: 2026-07-17T23:57:46.784Z
     kind: blocker
+    resolved_at: 2026-07-17T23:57:50.171Z
+    resolved_by: Jacob Chapel
   - _ulid: 01KXS67C2X7C4N9ZV06HS4ZY76
     entries:
       - _ulid: 01KXS67C2X98YYXQV0T89FBSRX
@@ -474,6 +504,8 @@ threads:
           converged; unrelated skill-render asymmetry is pre-existing observation @01KXS2HP."
         created_at: 2026-07-17T23:22:43.677Z
     kind: nit
+    resolved_at: 2026-07-17T23:57:53.577Z
+    resolved_by: Jacob Chapel
   - _ulid: 01KXS6A55GD8VHKCKRKZG8ZSZF
     anchor:
       type: code
@@ -534,5 +566,5 @@ verdicts:
     role: reviewer
     created_at: 2026-07-17T23:24:34.188Z
 created_at: 2026-07-17T22:58:26.240Z
-updated_at: 2026-07-17T23:25:18.669Z
+updated_at: 2026-07-17T23:57:53.577Z
 notes: []
