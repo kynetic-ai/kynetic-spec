@@ -1399,9 +1399,12 @@ describe("dispatch operator fact fixture", () => {
     // AC: @docs-guides-section ac-3
     it("backs named commands with help and presents no workspace command as runnable", () => {
       const guide = publishedDoc(publishedDocs(), "guides/configuring-dispatch-workspaces").content;
+      expect(guide).toContain("kspec agent list --help");
+      expect(guide).toContain("kspec agent run --help");
       for (const helpPath of [
         "setup --help",
-        "agent --help",
+        "agent list --help",
+        "agent run --help",
         "agent status --help",
         "agent runners validate --help",
         "task get --help",

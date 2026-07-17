@@ -122,7 +122,7 @@ bootstrap:
       reviewer_rerun_allowed: true
 ```
 
-The example intentionally leaves `task.pending_review` without an automation filter: filters belong to the event rule that needs them. Check current agents with `kspec agent list`; use `kspec agent --help` for the complete agent command reference.
+The example intentionally leaves `task.pending_review` without an automation filter: filters belong to the event rule that needs them. Check current agents with `kspec agent list`; use `kspec agent list --help` for the complete list options.
 
 ### 7. Account for worker and reviewer behavior
 
@@ -140,7 +140,7 @@ Bootstrap inherits the host environment except for dispatcher's own daemon runti
 
 kspec records a bounded tail of combined standard output and error for bootstrap diagnostics, including successful steps. The tail is diagnostic evidence, not a redacted secret store. Never echo credentials, tokens, or other sensitive values from a bootstrap command.
 
-One-shot `kspec agent run` invocations are not dispatch-managed workspaces and do not receive this workspace bootstrap contract. Use `kspec agent --help` for one-shot invocation help.
+One-shot `kspec agent run` invocations are not dispatch-managed workspaces and do not receive this workspace bootstrap contract. Use `kspec agent run --help` for the complete one-shot invocation options.
 
 ### 9. Configure remote synchronization deliberately
 
@@ -170,7 +170,7 @@ For the dispatch mental model, read [Agents and Dispatch](../concepts/agents-and
 Confirm the configuration without forcing a dispatch lifecycle transition:
 
 1. Run `kspec setup` if you changed the managed worktree root and need project scaffolding refreshed. Review `kspec setup --help` before selecting options.
-2. Run `kspec agent list` and confirm the intended agents and event rules are present. Review `kspec agent --help` for the full command reference.
+2. Run `kspec agent list` and confirm the intended agents and event rules are present. Review `kspec agent list --help` for the full list options.
 3. If an agent uses a named runner, run `kspec agent runners validate` and confirm the runner is valid. Review `kspec agent runners validate --help` for all options.
 4. Run `kspec agent status` and confirm there is no unexpected degraded target. Review `kspec agent status --help` for all status formats.
 5. After the next eligible task is dispatched, use `kspec task get <task-ref>` to confirm its task note and assigned workspace context show the expected target and no bootstrap failure. Review `kspec task get --help` for the complete syntax.
