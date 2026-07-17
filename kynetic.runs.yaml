@@ -82221,9 +82221,20 @@ runs:
     completed_at: 2026-07-17T03:27:58.396Z
   - _ulid: 01KXQ3K8PEEBK87CN0H34APNWJ
     status: active
-    current_step: 0
+    current_step: 1
     initiated_by: Jacob Chapel
-    step_results: []
+    step_results:
+      - status: completed
+        step_index: 0
+        started_at: 2026-07-17T03:58:18.830Z
+        completed_at: 2026-07-17T03:59:06.874Z
+        notes: "Baseline completed: listed all observations, inbox items, and tasks before identifying
+          candidates. The state is large, so candidate-specific kspec searches will be used to check
+          duplicates precisely."
+      - status: completed
+        step_index: 1
+        started_at: 2026-07-17T03:59:06.874Z
+        completed_at: 2026-07-17T03:59:06.874Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-07-17T03:58:18.830Z
