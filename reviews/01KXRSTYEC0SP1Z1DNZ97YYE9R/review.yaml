@@ -266,6 +266,16 @@ checks:
     runner: npm run build:docs-search
     created_at: 2026-07-17T20:06:29.536Z
     completed_at: 2026-07-17T20:06:29.536Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Passed; generated search index contains 48 entries.
+    name: docs search build
+    required: false
+    runner: npm run build:docs-search
+    created_at: 2026-07-17T20:06:50.227Z
+    completed_at: 2026-07-17T20:06:50.227Z
 events:
   - _ulid: 01KXRSTYE4DPPPY9VR0Y6Q6EZD
     actor: Jacob Chapel
@@ -513,6 +523,13 @@ events:
       status: pass
       name: docs search build
     timestamp: 2026-07-17T20:06:29.869Z
+  - _ulid: 01KXRV0PBKMNC3MFQTP7XGZ5MV
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: docs search build
+    timestamp: 2026-07-17T20:06:50.483Z
 examined_commit: a71126177efc68c959fa2434fea5fe013eb188f1
 external_links: []
 lifecycle_state: closed
@@ -668,5 +685,5 @@ verdicts:
     role: reviewer
     created_at: 2026-07-17T20:04:52.153Z
 created_at: 2026-07-17T19:46:13.580Z
-updated_at: 2026-07-17T20:06:29.536Z
+updated_at: 2026-07-17T20:06:50.227Z
 notes: []

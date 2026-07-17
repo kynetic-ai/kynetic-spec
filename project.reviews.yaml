@@ -30743,7 +30743,7 @@ reviews:
     title: Review task-document-dispatch-recovery
     disposition: changes_requested
     author: Jacob Chapel
-    check_count: 25
+    check_count: 26
     examined_commit: a71126177efc68c959fa2434fea5fe013eb188f1
     lifecycle_state: closed
     related_refs: []
@@ -30756,4 +30756,4 @@ reviews:
     unresolved_blocker_count: 5
     verdict_count: 1
     created_at: 2026-07-17T19:46:13.580Z
-    updated_at: 2026-07-17T20:06:29.536Z
+    updated_at: 2026-07-17T20:06:50.227Z
