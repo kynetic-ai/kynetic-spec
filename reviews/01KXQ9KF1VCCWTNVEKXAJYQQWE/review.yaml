@@ -200,6 +200,13 @@ events:
       kind: blocker
       thread_ulid: 01KXQAQW06YJQ47D6FYKNWZWE1
     timestamp: 2026-07-17T06:03:09.954Z
+  - _ulid: 01KXQAR1PFKPBYVPSRQZZ8SQV3
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KXQAR1E18CBHKAXWFHJGPQJD
+    timestamp: 2026-07-17T06:03:15.535Z
 examined_commit: c192d23e11c8934a924982e25f6cae10d3143e2d
 external_links: []
 lifecycle_state: open
@@ -230,7 +237,31 @@ threads:
           runs this assertion fetches the required history.
         created_at: 2026-07-17T06:03:09.702Z
     kind: blocker
+  - _ulid: 01KXQAR1E18CBHKAXWFHJGPQJD
+    anchor:
+      type: code
+      commit: c192d23e11c8934a924982e25f6cae10d3143e2d
+      line_end: 718
+      line_start: 672
+      path: tests/dispatch-operator-docs.test.ts
+      side: head
+    entries:
+      - _ulid: 01KXQAR1E2HF6CCRR5MN7BRAYP
+        author: Jacob Chapel
+        body: MUST-FIX — Several newly retained workspace facts are still self-validated rather than bound
+          to the production behavior they describe. Bootstrap scope/reviewer flags, registry
+          authority, dispatch-owned cleanup, target fast-forward/defer semantics, and
+          event-specific/no-global automation filtering are compared with duplicated literals or
+          merely parsed as schema-valid fixture rules. The exact source matrix and a separately
+          passing full suite do not connect those values to the fixture; product behavior and its
+          own tests can change together while these frozen facts remain stale and green. The
+          workspace source row also omits src/agent-runtime/dispatch.ts even though DispatchEngine
+          implements target sync and active-reviewer deferral there. This is the same source-binding
+          class treated as MUST-FIX in prior cycles; derive or execute the retained claims through
+          exported helpers or black-box behavior and make the authority row complete.
+        created_at: 2026-07-17T06:03:15.266Z
+    kind: blocker
 verdicts: []
 created_at: 2026-07-17T05:43:16.795Z
-updated_at: 2026-07-17T06:03:09.702Z
+updated_at: 2026-07-17T06:03:15.266Z
 notes: []
