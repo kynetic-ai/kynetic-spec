@@ -1,0 +1,339 @@
+{
+  "schema_version": 1,
+  "evidence": {
+    "reviewed_lifecycle_commit": "b28c29557d3ec15ee1cfc0b14c6d2ee5a57b86aa",
+    "integrated_lifecycle_commit": "3f22e6c93c68115d77e1bde062f7cd12034f91d8",
+    "integration_target_at_freeze": "8f871993d15baf33168818bbf6b60f9e9f29cb4b",
+    "source_matrix": [
+      {
+        "group": "workspace-configuration",
+        "sources": [
+          "src/parser/config.ts",
+          "src/schema/meta.ts",
+          "src/schema/dispatch-workspace.ts"
+        ],
+        "tests": [
+          "tests/dispatch-workspace-config.test.ts",
+          "tests/dispatch-runtime-bootstrap-contract.test.ts",
+          "tests/dispatch-target-sync.test.ts"
+        ]
+      },
+      {
+        "group": "lifecycle-authority-and-durability",
+        "sources": [
+          "src/schema/dispatch-control.ts",
+          "src/agent-runtime/dispatch-control-store.ts",
+          "src/agent-runtime/dispatch.ts"
+        ],
+        "tests": [
+          "tests/dispatch-control-store.test.ts",
+          "tests/dispatch-global-lifecycle.test.ts",
+          "tests/dispatch-task-lifecycle.test.ts",
+          "tests/dispatch-lifecycle-publication-admission.test.ts"
+        ]
+      },
+      {
+        "group": "cli-and-identity",
+        "sources": ["src/cli/index.ts", "src/cli/introspection.ts", "src/cli/commands/agent.ts"],
+        "tests": [
+          "tests/cli-agent-dispatch-lifecycle.test.ts",
+          "tests/dispatch-task-identity.test.ts"
+        ]
+      },
+      {
+        "group": "api-status-control",
+        "sources": ["packages/shared/src/api.ts", "packages/daemon/src/routes/agent-dispatch.ts"],
+        "tests": [
+          "tests/daemon-agent-dispatch-lifecycle.test.ts",
+          "tests/dispatch-lifecycle-surface-integration.test.ts"
+        ]
+      },
+      {
+        "group": "ui-projection-accessibility",
+        "sources": [
+          "packages/web-ui/src/lib/api.ts",
+          "packages/web-ui/src/lib/dispatch-lifecycle.ts",
+          "packages/web-ui/src/routes/agents/+page.svelte"
+        ],
+        "tests": [
+          "tests/web-ui/dispatch-lifecycle-controls.test.ts",
+          "tests/e2e/dispatch-lifecycle.spec.ts"
+        ]
+      },
+      {
+        "group": "events-safety-recovery",
+        "sources": [
+          "src/schema/event-registry.ts",
+          "src/schema/event-payloads.ts",
+          "src/agent-runtime/dispatch.ts"
+        ],
+        "tests": [
+          "tests/dispatch-control-events.test.ts",
+          "tests/dispatch-stop-recovery.test.ts",
+          "tests/dispatch-controlled-evidence-protection.test.ts"
+        ]
+      }
+    ]
+  },
+  "workspace": {
+    "config_keys": [
+      "base_branch",
+      "worktree_root",
+      "publication_mode",
+      "bootstrap",
+      "sync_interval",
+      "remote_sync"
+    ],
+    "defaults": {
+      "base_branch": null,
+      "worktree_root": ".kspec-worktrees",
+      "publication_mode": "auto",
+      "bootstrap_steps": [],
+      "sync_interval": 60,
+      "remote_sync": null
+    },
+    "publication_modes": ["pull_request", "manual_merge", "auto"],
+    "remote_sync_default": "enabled exactly when a remote exists",
+    "worktree_root_resolution": "relative paths resolve from the project root; absolute paths remain absolute",
+    "base_target_precedence": [
+      "plan branch",
+      "configured dispatch base branch",
+      "remote HEAD",
+      "current branch",
+      "main"
+    ],
+    "bootstrap": {
+      "order": ["project bootstrap", "role-filtered agent bootstrap", "agent prompt"],
+      "roles": ["worker", "reviewer"],
+      "step_keys": [
+        "run",
+        "name",
+        "roles",
+        "idempotent",
+        "allow_tracked_changes",
+        "reviewer_rerun_allowed"
+      ],
+      "scope": "dispatch workspaces only",
+      "tracked_mutation_default": "rejected unless the step explicitly allows tracked changes",
+      "reviewer_behavior": "reviewer steps are role-filtered and previously successful idempotent work is reused unless rerun is allowed"
+    },
+    "rule_keys": ["on", "filter"],
+    "rule_filter_keys": ["automation", "tags", "priority"],
+    "default_agent_skills": {
+      "task_work": "/kspec:task-work",
+      "reflect": "/kspec:reflect",
+      "pr_review": "/kspec:review"
+    },
+    "no_workspace_command": true,
+    "one_shot_agent_run_controlled": false
+  },
+  "command_tree": {
+    "global": [
+      "kspec agent dispatch start",
+      "kspec agent dispatch pause",
+      "kspec agent dispatch resume",
+      "kspec agent dispatch stop",
+      "kspec agent dispatch status",
+      "kspec agent dispatch watch",
+      "kspec agent status"
+    ],
+    "task": [
+      "kspec agent dispatch task pause",
+      "kspec agent dispatch task resume",
+      "kspec agent dispatch task stop"
+    ],
+    "help_modes": ["kspec --help", "kspec help --all", "kspec help --json"]
+  },
+  "lifecycle": {
+    "durable_authorities": ["stopped", "running", "paused"],
+    "task_modes": ["paused", "stopped"],
+    "projections": ["running", "paused", "draining", "stopped"],
+    "missing_state_default": "stopped",
+    "global_actions": {
+      "stopped": ["start"],
+      "running": ["pause", "stop"],
+      "paused": ["resume", "stop"],
+      "stopped_with_cleanup": ["stop"]
+    },
+    "task_actions": {
+      "uncontrolled": ["pause", "stop"],
+      "paused": ["resume", "stop"],
+      "stopped": ["resume"],
+      "stopped_with_cleanup": ["resume", "stop"]
+    },
+    "transitions": {
+      "start": "valid from cleanup-idle stopped",
+      "pause": "holds new admission while active work finishes naturally",
+      "resume": "valid from paused and reconciles held work subject to task controls",
+      "stop": "commits stopped authority before cancelling verified dispatch-owned work"
+    },
+    "identity": {
+      "accepted_input": "resolvable task reference alias",
+      "durable_key": "canonical task ULID",
+      "rejected": ["missing identity", "ambiguous identity", "not found", "ref/id disagreement"],
+      "isolation": "unrelated task controls and cleanup remain independent"
+    },
+    "durability": {
+      "path": ".kspec/dispatch-control.yaml",
+      "startup_order": [
+        "load committed control",
+        "retry matching pending cleanup",
+        "schedule bootstrap/admission"
+      ],
+      "final_admission_rechecks": ["global authority", "canonical task authority"],
+      "readiness_mutated": false,
+      "degraded_targets_mutated": false
+    },
+    "status_fields": [
+      "global_authority",
+      "projection",
+      "cleanup_state",
+      "active_count",
+      "queue_depth",
+      "held_count",
+      "held_tasks",
+      "task_controls",
+      "degraded_targets"
+    ],
+    "held_task_fields": [
+      "task_id",
+      "task_ref",
+      "title",
+      "scope",
+      "mode",
+      "reason",
+      "actor",
+      "source",
+      "controlled_at",
+      "updated_at"
+    ],
+    "task_control_fields": [
+      "task_id",
+      "task_ref",
+      "title",
+      "mode",
+      "reason",
+      "actor",
+      "source",
+      "controlled_at",
+      "updated_at",
+      "cleanup_state"
+    ],
+    "cleanup": {
+      "statuses": ["idle", "pending", "failed"],
+      "scopes": ["global", "task"],
+      "phases": ["owned", "signals_sent", "sessions_closed"],
+      "entry_fields": ["cleanup_id", "scope", "task_id", "status", "phase", "error_code"],
+      "gate_scope": "global operations inspect global cleanup; task operations inspect only matching task cleanup",
+      "aggregate_is_observability_only": true
+    }
+  },
+  "api": {
+    "control": {
+      "method": "POST",
+      "path": "/api/agent/dispatch/control"
+    },
+    "status": {
+      "method": "GET",
+      "path": "/api/agent/status"
+    },
+    "compatibility_status": {
+      "method": "GET",
+      "path": "/api/agent/dispatch/status"
+    },
+    "wire_case": "snake_case",
+    "control_error_includes_current_status": true
+  },
+  "ui": {
+    "route": "/agents",
+    "mapping": {
+      "global_authority": "globalAuthority",
+      "projection": "projection",
+      "cleanup_state": "cleanupState",
+      "active_count": "activeCount",
+      "queue_depth": "queueDepth",
+      "held_count": "heldCount",
+      "held_tasks": "heldTasks",
+      "task_controls": "taskControls",
+      "degraded_targets": "degradedTargets"
+    },
+    "writable_actions": {
+      "running": ["pause", "stop"],
+      "paused": ["resume", "stop"],
+      "stopped": ["start"]
+    },
+    "hard_stop_confirmation": true,
+    "accessibility": [
+      "labelled lifecycle controls",
+      "focus retained after actions",
+      "polite status announcements",
+      "assertive failure announcements"
+    ],
+    "visible_evidence": ["active", "queued", "held", "cleanup", "degraded targets"],
+    "static_mode": "stopped and read-only"
+  },
+  "events": {
+    "selected_for_public_docs": true,
+    "names": [
+      "dispatch_control.start_applied",
+      "dispatch_control.pause_applied",
+      "dispatch_control.resume_applied",
+      "dispatch_control.stop_applied",
+      "dispatch_control.noop",
+      "dispatch_control.failed"
+    ],
+    "task_identity": "canonical task identity",
+    "failure_contract": "closed error code; no raw error or path"
+  },
+  "safety": {
+    "interactive_stop": "confirms active cancellation and evidence preservation",
+    "noninteractive_stop": "requires --force",
+    "json_stop": "requires --force",
+    "host_stop_rejected": true,
+    "dispatch_owned_only": true,
+    "evidence_preserved": ["session", "branch", "workspace", "worktree", "snapshot", "audit"],
+    "cleanup_error_codes": [
+      "cancellation_timeout",
+      "cancellation_failed",
+      "session_closure_failed",
+      "cleanup_ownership_mismatch",
+      "cleanup_process_birth_mismatch",
+      "cleanup_leader_missing_group_alive",
+      "cleanup_identity_unverifiable",
+      "cleanup_group_unverifiable",
+      "internal_error"
+    ],
+    "control_error_codes": [
+      "validation_failed",
+      "task_not_found",
+      "task_identity_ambiguous",
+      "task_identity_mismatch",
+      "invalid_transition",
+      "control_store_unavailable",
+      "control_store_corrupt",
+      "control_commit_failed",
+      "cancellation_timeout",
+      "cancellation_failed",
+      "session_closure_failed",
+      "cleanup_ownership_mismatch",
+      "cleanup_process_birth_mismatch",
+      "cleanup_leader_missing_group_alive",
+      "cleanup_identity_unverifiable",
+      "cleanup_group_unverifiable",
+      "internal_error"
+    ],
+    "failure_authority": "hard-stop failure remains stopped with retryable pending or failed matching cleanup"
+  },
+  "limitations": [
+    "pause is a graceful admission hold; stop is hard stop",
+    "no checkpointing",
+    "no distributed scheduler",
+    "no exact durable FIFO promise",
+    "no workspace deletion or reset command",
+    "no control of arbitrary one-shot processes",
+    "one-shot kspec agent run is outside lifecycle control unless dispatch-owned",
+    "recovery may remain pending when ownership, process birth, or group identity cannot be proven",
+    "remote branch synchronization remains incomplete and must be documented as limited where not behaviorally proven",
+    "lifecycle controls do not delete workspaces"
+  ]
+}
