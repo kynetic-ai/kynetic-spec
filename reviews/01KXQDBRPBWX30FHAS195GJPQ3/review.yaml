@@ -67,6 +67,18 @@ checks:
     runner: kspec validate --alignment --warnings-ok
     created_at: 2026-07-17T07:13:12.678Z
     completed_at: 2026-07-17T07:13:12.678Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Exit 0 under the existing 325-warning completeness baseline; owned annotations for
+      docs-section-taxonomy ac-1/ac-2 and auto-cli-docs ac-1/ac-3/ac-4/ac-5 were inspected against
+      their AC text.
+    name: kspec validate completeness
+    required: true
+    runner: kspec validate --completeness --warnings-ok
+    created_at: 2026-07-17T07:13:18.634Z
+    completed_at: 2026-07-17T07:13:18.634Z
 events:
   - _ulid: 01KXQDBRP20Z3SN4ASCQXRKRRQ
     actor: Jacob Chapel
@@ -144,6 +156,13 @@ events:
       status: pass
       name: kspec validate alignment
     timestamp: 2026-07-17T07:13:12.938Z
+  - _ulid: 01KXQERAH37WF9PSZKJCWE3BNV
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate completeness
+    timestamp: 2026-07-17T07:13:18.884Z
 examined_commit: 234998db585d23e8f54dc6197bacf001c3df06ff
 external_links: []
 lifecycle_state: open
@@ -217,5 +236,5 @@ threads:
     kind: blocker
 verdicts: []
 created_at: 2026-07-17T06:48:58.827Z
-updated_at: 2026-07-17T07:13:12.678Z
+updated_at: 2026-07-17T07:13:18.634Z
 notes: []
