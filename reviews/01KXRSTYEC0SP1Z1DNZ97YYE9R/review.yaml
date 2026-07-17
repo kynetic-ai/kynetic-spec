@@ -600,6 +600,12 @@ events:
     payload:
       thread_ulid: 01KXRV0VZJ02R0A4ZTS5HVA3YJ
     timestamp: 2026-07-17T20:09:03.672Z
+  - _ulid: 01KXRV4ZSD3T552VERBX4JQ8QT
+    actor: Jacob Chapel
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KXRV12SHWV5EWFZTKNWJZMBV
+    timestamp: 2026-07-17T20:09:11.213Z
 examined_commit: a71126177efc68c959fa2434fea5fe013eb188f1
 external_links: []
 lifecycle_state: closed
@@ -790,6 +796,11 @@ threads:
           operators to mishandle sensitive output or look in the wrong evidence surface. Describe
           the bounded, non-redacted bootstrap tail and its actual recorded surface."
         created_at: 2026-07-17T20:07:03.217Z
+      - _ulid: 01KXRV4ZBTRKF4ATBW5WBHPB2T
+        author: Jacob Chapel
+        body: Duplicate record created during a stale-read retry; canonical finding is thread
+          01KXRTWEZS7CVQKM0AE90F757Q.
+        created_at: 2026-07-17T20:09:10.777Z
     kind: blocker
   - _ulid: 01KXRV1884SHVKP4ZJWSFJ5K7S
     anchor:
@@ -921,5 +932,5 @@ verdicts:
     role: reviewer
     created_at: 2026-07-17T20:08:03.278Z
 created_at: 2026-07-17T19:46:13.580Z
-updated_at: 2026-07-17T20:09:03.392Z
+updated_at: 2026-07-17T20:09:10.777Z
 notes: []
