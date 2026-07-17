@@ -30800,7 +30800,7 @@ reviews:
     title: Review correct adjacent public guidance
     disposition: changes_requested
     author: Jacob Chapel
-    check_count: 10
+    check_count: 11
     examined_commit: 2237b74fea99703c73b3d95ec5db423fd2daddd0
     lifecycle_state: open
     related_refs: []
@@ -30813,4 +30813,4 @@ reviews:
     unresolved_blocker_count: 1
     verdict_count: 0
     created_at: 2026-07-17T22:58:26.240Z
-    updated_at: 2026-07-17T23:22:43.677Z
+    updated_at: 2026-07-17T23:22:56.813Z

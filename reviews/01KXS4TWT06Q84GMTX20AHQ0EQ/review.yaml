@@ -105,6 +105,16 @@ checks:
     runner: worktree CLI generation and build:plugin
     created_at: 2026-07-17T23:22:36.215Z
     completed_at: 2026-07-17T23:22:36.215Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: All 1067 formatted files matched.
+    name: format
+    required: true
+    runner: npm run format:check
+    created_at: 2026-07-17T23:22:56.813Z
+    completed_at: 2026-07-17T23:22:56.813Z
 events:
   - _ulid: 01KXS4TWSA86DSVY5ZK8F1APF1
     actor: Jacob Chapel
@@ -203,6 +213,13 @@ events:
       kind: nit
       thread_ulid: 01KXS67C2X7C4N9ZV06HS4ZY76
     timestamp: 2026-07-17T23:22:43.942Z
+  - _ulid: 01KXS67S5XKSM39HBCKVXRB42R
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: format
+    timestamp: 2026-07-17T23:22:57.085Z
 examined_commit: 2237b74fea99703c73b3d95ec5db423fd2daddd0
 external_links: []
 lifecycle_state: open
@@ -262,5 +279,5 @@ threads:
     kind: nit
 verdicts: []
 created_at: 2026-07-17T22:58:26.240Z
-updated_at: 2026-07-17T23:22:43.677Z
+updated_at: 2026-07-17T23:22:56.813Z
 notes: []
