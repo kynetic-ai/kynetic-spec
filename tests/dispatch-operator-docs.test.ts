@@ -51,7 +51,10 @@ import {
   projectDispatchCleanupState,
   type DispatchLifecycleAuthorityStore,
 } from "../src/agent-runtime/dispatch-control-store.js";
-import { EVENT_PAYLOAD_SCHEMAS } from "../src/schema/event-payloads.js";
+import {
+  DispatchControlEventPayloadSchema,
+  EVENT_PAYLOAD_SCHEMAS,
+} from "../src/schema/event-payloads.js";
 import {
   DispatchCleanupEntryStatusSchema,
   DispatchCleanupErrorCodeSchema,
@@ -104,6 +107,7 @@ vi.mock("../packages/web-ui/src/lib/constants", () => ({
 
 import {
   controlDispatchLifecycle,
+  DispatchLifecycleApiError,
   fetchAgentStatus,
   parseAgentDispatchStatusWire,
 } from "../packages/web-ui/src/lib/api.js";
@@ -888,8 +892,44 @@ function validateFacts(facts: DispatchFacts): void {
     .toSorted();
   expect(facts.events.names.toSorted()).toEqual(eventNames);
   expect(facts.events.selected_for_public_docs).toBe(true);
-  expect(facts.events.task_identity).toBe("canonical task identity");
-  expect(facts.events.failure_contract).toBe("closed error code; no raw error or path");
+  const eventBase = {
+    scope: "task" as const,
+    action: "stop" as const,
+    authority: "stopped" as const,
+    projection: "stopped" as const,
+    outcome: "failed" as const,
+    reason: "cleanup failed",
+    actor: "operator",
+    source: "api" as const,
+    timestamp: NOW,
+    task_id: TASK_ID,
+    task_ref: "@test-task",
+    error_code: "cancellation_timeout" as const,
+  };
+  const acceptsCanonicalTaskIdentity =
+    DispatchControlEventPayloadSchema.safeParse(eventBase).success;
+  const rejectsNonCanonicalTaskIdentity = !DispatchControlEventPayloadSchema.safeParse({
+    ...eventBase,
+    task_id: "not-canonical",
+  }).success;
+  const requiresTaskIdentity = !DispatchControlEventPayloadSchema.safeParse({
+    ...eventBase,
+    task_id: undefined,
+  }).success;
+  expect(facts.events.task_identity === "canonical task identity").toBe(
+    acceptsCanonicalTaskIdentity && rejectsNonCanonicalTaskIdentity && requiresTaskIdentity,
+  );
+  const rejectsRawErrors = !DispatchControlEventPayloadSchema.safeParse({
+    ...eventBase,
+    raw_error: "/private/worktree/raw stack",
+  }).success;
+  const requiresClosedFailureCode = !DispatchControlEventPayloadSchema.safeParse({
+    ...eventBase,
+    error_code: undefined,
+  }).success;
+  expect(facts.events.failure_contract === "closed error code; no raw error or path").toBe(
+    rejectsRawErrors && requiresClosedFailureCode,
+  );
 
   const requiredCommands = [
     ...facts.command_tree.global,
@@ -914,7 +954,6 @@ function validateFacts(facts: DispatchFacts): void {
     path: "/api/agent/dispatch/status",
   });
   expect(facts.api.wire_case).toBe("snake_case");
-  expect(facts.api.control_error_includes_current_status).toBe(true);
   const lifecycleRoutes = createAgentDispatchRoutes()
     .routes.filter((route) =>
       /^\/api\/agent\/(?:status|dispatch\/(?:status|control))$/.test(route.path),
@@ -927,13 +966,8 @@ function validateFacts(facts: DispatchFacts): void {
       .toSorted(),
   );
 
-  expect(facts.safety.interactive_stop).toBe(
-    "confirms active cancellation and evidence preservation",
-  );
   expect(facts.safety.noninteractive_stop).toBe("requires --force");
   expect(facts.safety.json_stop).toBe("requires --force");
-  expect(facts.safety.host_stop_rejected).toBe(true);
-  expect(facts.safety.dispatch_owned_only).toBe(true);
   expect(facts.safety.evidence_preserved).toEqual([
     "session",
     "branch",
@@ -945,9 +979,31 @@ function validateFacts(facts: DispatchFacts): void {
   for (const evidence of facts.safety.evidence_preserved) {
     expect(HARD_STOP_CONFIRMATION.description.toLowerCase()).toContain(evidence);
   }
-  expect(facts.safety.failure_authority).toBe(
-    "hard-stop failure remains stopped with retryable pending or failed matching cleanup",
-  );
+  const failedAuthorityIsRetryable =
+    scopedCleanup.global.authority === "stopped" &&
+    projectDispatchCleanupState(scopedCleanup, { scope: "global" }).status === "failed" &&
+    getGlobalLifecycleActions({
+      ...uiStatus,
+      globalAuthority: "stopped",
+      projection: "stopped",
+      cleanupState: {
+        status: "failed",
+        entries: [
+          {
+            cleanupId: CLEANUP_ID,
+            scope: "global",
+            status: "failed",
+            phase: "owned",
+            errorCode: "cancellation_timeout",
+          },
+        ],
+      },
+    }).includes("stop");
+  expect(failedAuthorityIsRetryable).toBe(true);
+  expect(
+    facts.safety.failure_authority ===
+      "hard-stop failure remains stopped with retryable pending or failed matching cleanup",
+  ).toBe(failedAuthorityIsRetryable);
   expect(Object.values(DISPATCH_CONTROL_FAILURE_CODE_BY_PREDICATE).toSorted()).toEqual(
     [...new Set(facts.safety.control_error_codes)].toSorted(),
   );
@@ -956,7 +1012,6 @@ function validateFacts(facts: DispatchFacts): void {
     "pause is a graceful admission hold; stop is hard stop",
     "no workspace deletion or reset command",
     "one-shot kspec agent run is separate from dispatch lifecycle control",
-    "failed ownership verification remains represented as retryable cleanup",
   ]);
   expect(facts.lifecycle.global_actions.running).toEqual(["pause", "stop"]);
   expect(exportedCommands.some((command) => /workspace (?:delete|reset)/.test(command))).toBe(
@@ -1393,6 +1448,49 @@ describe("dispatch operator fact fixture", () => {
     ]);
     expect(result.status.globalAuthority).toBe("paused");
 
+    const errorWire = publicStatusWire();
+    vi.stubGlobal(
+      "fetch",
+      vi.fn(
+        async () =>
+          ({
+            ok: false,
+            status: 409,
+            json: async () => ({
+              ok: false,
+              data: {
+                global_authority: errorWire.global_authority,
+                projection: errorWire.projection,
+                cleanup_state: errorWire.cleanup_state,
+                active_count: errorWire.active_count,
+                queue_depth: errorWire.queue_depth,
+                held_count: errorWire.held_count,
+                held_tasks: errorWire.held_tasks,
+                task_controls: errorWire.task_controls,
+                degraded_targets: errorWire.degraded_targets,
+              },
+              error: {
+                code: "invalid_transition",
+                message: "Invalid dispatch lifecycle transition",
+                suggestion: "Refresh lifecycle status and choose an allowed action.",
+              },
+            }),
+          }) as Response,
+      ),
+    );
+    const rejected = await controlDispatchLifecycle({ scope: "global", action: "start" }).catch(
+      (error: unknown) => error,
+    );
+    expect(rejected).toBeInstanceOf(DispatchLifecycleApiError);
+    expect((rejected as DispatchLifecycleApiError).status).toMatchObject({
+      globalAuthority: "paused",
+      projection: "draining",
+      heldCount: 1,
+    });
+    expect(factsFixture.api.control_error_includes_current_status).toBe(
+      (rejected as DispatchLifecycleApiError).status !== undefined,
+    );
+
     modeState.staticMode = true;
     const fetchSpy = vi.fn<typeof fetch>();
     vi.stubGlobal("fetch", fetchSpy);
@@ -1417,6 +1515,61 @@ describe("dispatch operator fact fixture", () => {
     const json = kspec("agent dispatch stop --json", fixtureDir, { expectFail: true });
     expect(json.exitCode).not.toBe(0);
     expect(json.stderr).toContain("Hard stop requires --force");
+
+    const hostStop = kspec("agent dispatch stop --force", fixtureDir, {
+      expectFail: true,
+      env: { KSPEC_SESSION_ID: "dispatch-owned-doc-fact" },
+    });
+    expect(hostStop.exitCode).not.toBe(0);
+    expect(hostStop.stderr).toContain("dispatch-owned session cannot hard-stop its host");
+    expect(factsFixture.safety.host_stop_rejected).toBe(
+      hostStop.stderr.includes("dispatch-owned session cannot hard-stop its host"),
+    );
+  });
+
+  it("binds interactive hard-stop confirmation to the executed prompt", async () => {
+    const sessionId = process.env.KSPEC_SESSION_ID;
+    const ttyDescriptor = Object.getOwnPropertyDescriptor(process.stdin, "isTTY");
+    let prompt = "";
+    delete process.env.KSPEC_SESSION_ID;
+    Object.defineProperty(process.stdin, "isTTY", { configurable: true, value: true });
+    vi.doMock("node:readline", () => ({
+      createInterface: () => ({
+        question: (message: string, answer: (value: string) => void) => {
+          prompt = message;
+          answer("n");
+        },
+        close: () => undefined,
+      }),
+    }));
+    const exit = vi.spyOn(process, "exit").mockImplementation((() => {
+      throw new Error("interactive stop cancelled");
+    }) as never);
+    try {
+      await expect(
+        createProgram().parseAsync(["agent", "dispatch", "stop"], { from: "user" }),
+      ).rejects.toThrow("interactive stop cancelled");
+      expect(prompt).toContain("Active matching invocations will be cancelled");
+      for (const evidence of factsFixture.safety.evidence_preserved) {
+        expect(prompt.toLowerCase()).toContain(evidence);
+      }
+      expect(
+        factsFixture.safety.interactive_stop ===
+          "confirms active cancellation and evidence preservation",
+      ).toBe(
+        prompt.includes("Active matching invocations will be cancelled") &&
+          factsFixture.safety.evidence_preserved.every((evidence) =>
+            prompt.toLowerCase().includes(evidence),
+          ),
+      );
+    } finally {
+      exit.mockRestore();
+      vi.doUnmock("node:readline");
+      if (ttyDescriptor) Object.defineProperty(process.stdin, "isTTY", ttyDescriptor);
+      else delete (process.stdin as { isTTY?: boolean }).isTTY;
+      if (sessionId === undefined) delete process.env.KSPEC_SESSION_ID;
+      else process.env.KSPEC_SESSION_ID = sessionId;
+    }
   });
 
   it("rejects stale facts in every structured fact group", () => {

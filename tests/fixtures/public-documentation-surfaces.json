@@ -4273,7 +4273,7 @@
       "classification": "public-surface",
       "source_of_truth": [
         "docs/",
-        "packages/web-ui/src/lib/docs/",
+        "packages/web-ui/vite-plugin-docs.ts",
         "packages/web-ui/vite.config.ts"
       ],
       "audit_topics": ["factual-accuracy", "reachability"],
@@ -4282,7 +4282,7 @@
       "destination": "packages/web-ui/build/",
       "generated_from": [
         "docs/",
-        "packages/web-ui/src/lib/docs/",
+        "packages/web-ui/vite-plugin-docs.ts",
         "packages/web-ui/vite.config.ts"
       ],
       "build_command": "npm run build:web-ui"

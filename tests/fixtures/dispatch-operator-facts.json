@@ -286,7 +286,6 @@
     "noninteractive_stop": "requires --force",
     "json_stop": "requires --force",
     "host_stop_rejected": true,
-    "dispatch_owned_only": true,
     "evidence_preserved": ["session", "branch", "workspace", "worktree", "snapshot", "audit"],
     "cleanup_error_codes": [
       "cancellation_timeout",
@@ -323,7 +322,6 @@
   "limitations": [
     "pause is a graceful admission hold; stop is hard stop",
     "no workspace deletion or reset command",
-    "one-shot kspec agent run is separate from dispatch lifecycle control",
-    "failed ownership verification remains represented as retryable cleanup"
+    "one-shot kspec agent run is separate from dispatch lifecycle control"
   ]
 }

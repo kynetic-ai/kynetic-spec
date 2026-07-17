@@ -1,4 +1,5 @@
 import { execFileSync } from "node:child_process";
+import { existsSync } from "node:fs";
 import { dirname, join, relative, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import { describe, expect, it } from "vitest";
@@ -29,6 +30,9 @@ interface InventoryRecord {
   exclusion_reason?: string;
   generated_from?: string[];
   build_command?: string;
+  audit_topics?: string[];
+  audit_status?: string;
+  disposition?: string;
 }
 
 interface InventoryFixture {
@@ -54,10 +58,44 @@ function trackedMarkdown(): string[] {
     .toSorted();
 }
 
+const PUBLIC_SURFACE_METADATA = {
+  classification: "public-surface",
+  audit_topics: ["factual-accuracy", "reachability"],
+  audit_status: "source-verified",
+  disposition: "declared",
+} as const;
+
+function commandSurfaceRecords(): InventoryRecord[] {
+  const generated = flattenCommandTree(extractCommandTree(createProgram())).map((command) => ({
+    id: `cli-help:${command.fullPath.join(" ")}`,
+    kind: "cli-help",
+    command: command.fullPath.join(" "),
+    classification: "public-generated",
+    source_of_truth: ["src/cli/index.ts", "src/cli/introspection.ts"],
+    audit_topics: ["syntax", "options", "subcommands"],
+    audit_status: "source-verified",
+    disposition: "generated-from-commander",
+  }));
+  const special = [
+    ["root-help", "kspec --help"],
+    ["full-help", "kspec help --all"],
+    ["json-help", "kspec help --json"],
+  ].map(([id, command]) => ({
+    id: `cli-help:${id}`,
+    kind: "cli-help",
+    command,
+    classification: "public-generated",
+    source_of_truth: ["src/cli/index.ts", "src/cli/commands/help.ts", "src/cli/introspection.ts"],
+    audit_topics: ["syntax", "content"],
+    audit_status: "source-verified",
+    disposition: "generated-from-commander",
+  }));
+  return [...generated, ...special];
+}
+
 function commandSurfaceIds(): string[] {
-  return flattenCommandTree(extractCommandTree(createProgram()))
-    .map((command) => `cli-help:${command.fullPath.join(" ")}`)
-    .concat(["cli-help:root-help", "cli-help:full-help", "cli-help:json-help"])
+  return commandSurfaceRecords()
+    .map((record) => record.id)
     .toSorted();
 }
 
@@ -88,35 +126,139 @@ function generatedDestinations(): string[] {
   return destinations.toSorted();
 }
 
-function nonFileSignature(record: InventoryRecord): string {
-  switch (record.kind) {
-    case "cli-help":
-      return record.id;
-    case "api-surface":
-    case "ui-surface":
-      return record.surface ?? "";
-    case "scaffold":
-    case "documentation-test":
-      return record.source_of_truth[0] ?? "";
-    case "generated-artifact":
-      return record.destination ?? "";
-    default:
-      throw new Error(`unsupported non-file kind: ${record.kind}`);
-  }
+function declaredRecord(
+  id: string,
+  kind: InventoryRecord["kind"],
+  surface: string,
+  source_of_truth: string[],
+  extra: Partial<InventoryRecord> = {},
+): InventoryRecord {
+  return { id, kind, surface, source_of_truth, ...PUBLIC_SURFACE_METADATA, ...extra };
 }
 
-function derivedNonFileSignatures(): Record<(typeof NON_FILE_KINDS)[number], string[]> {
-  return {
-    "cli-help": commandSurfaceIds(),
-    "api-surface": [
-      `${factsFixture.api.control.method} ${factsFixture.api.control.path}`,
-      `${factsFixture.api.status.method} ${factsFixture.api.status.path}`,
-    ].toSorted(),
-    "ui-surface": ["agents lifecycle writable", "agents lifecycle static/read-only"].toSorted(),
-    scaffold: trackedFiles("src/cli/commands/setup.ts", "src/cli/commands/upgrade.ts"),
-    "generated-artifact": generatedDestinations(),
-    "documentation-test": documentationTestPaths(),
+function derivedNonFileRecords(): Record<(typeof NON_FILE_KINDS)[number], InventoryRecord[]> {
+  const documentationTestIds = new Map([
+    ["tests/help.test.ts", "cli-help"],
+    ["tests/docs-readme-structure.test.ts", "readme"],
+    ["tests/folder-backed-resource-docs.test.ts", "folder-resources"],
+    ["tests/resource-ui-task-markdown-docs.test.ts", "resource-markdown"],
+    ["tests/web-ui-docs-rendering.test.ts", "web-rendering"],
+    ["tests/web-ui-docs-search.test.ts", "web-search"],
+    ["tests/e2e/docs.spec.ts", "docs-e2e"],
+    ["tests/scaffold-project-config.test.ts", "scaffold"],
+    ["tests/skill-cli.test.ts", "generated-guidance"],
+    ["tests/public-documentation-inventory.test.ts", "inventory"],
+    ["tests/dispatch-operator-docs.test.ts", "dispatch-operator"],
+  ]);
+  const generatedSources: Record<string, string[]> = {
+    "plugin/plugins/kspec/skills/": ["templates/skills/", "scripts/build-plugin.cjs"],
+    "packages/web-ui/build/pagefind/": [
+      "docs/",
+      "RELEASE_NOTES.md",
+      "scripts/build-docs-search.cjs",
+    ],
+    "packages/web-ui/build/": [
+      "docs/",
+      "packages/web-ui/vite-plugin-docs.ts",
+      "packages/web-ui/vite.config.ts",
+    ],
+    "dist/web-ui/": ["packages/web-ui/build/", "package.json"],
   };
+  const generatedIds: Record<string, string> = {
+    "plugin/plugins/kspec/skills/": "plugin-skills",
+    "packages/web-ui/build/pagefind/": "docs-search",
+    "packages/web-ui/build/": "web-docs",
+    "dist/web-ui/": "packaged-web-docs",
+  };
+  const buildCommands: Record<string, string> = {
+    "plugin/plugins/kspec/skills/": "npm run build:plugin",
+    "packages/web-ui/build/pagefind/": "npm run build:docs-search",
+    "packages/web-ui/build/": "npm run build:web-ui",
+    "dist/web-ui/": "npm run build:web-ui",
+  };
+  return {
+    "cli-help": commandSurfaceRecords(),
+    "api-surface": [
+      declaredRecord(
+        "api:lifecycle-control",
+        "api-surface",
+        `${factsFixture.api.control.method} ${factsFixture.api.control.path}`,
+        [
+          "packages/daemon/src/routes/agent-dispatch.ts",
+          "packages/shared/src/api.ts",
+          "tests/daemon-agent-dispatch-lifecycle.test.ts",
+        ],
+      ),
+      declaredRecord(
+        "api:agent-status",
+        "api-surface",
+        `${factsFixture.api.status.method} ${factsFixture.api.status.path}`,
+        [
+          "packages/daemon/src/routes/agent-dispatch.ts",
+          "packages/shared/src/api.ts",
+          "tests/daemon-agent-dispatch-lifecycle.test.ts",
+        ],
+      ),
+    ],
+    "ui-surface": [
+      declaredRecord("ui:agents-lifecycle-writable", "ui-surface", "agents lifecycle writable", [
+        "packages/web-ui/src/routes/agents/+page.svelte",
+        "packages/web-ui/src/lib/dispatch-lifecycle.ts",
+        "tests/web-ui/dispatch-lifecycle-controls.test.ts",
+      ]),
+      declaredRecord(
+        "ui:agents-lifecycle-static",
+        "ui-surface",
+        "agents lifecycle static/read-only",
+        [
+          "packages/web-ui/src/routes/agents/+page.svelte",
+          "packages/web-ui/src/lib/components/agents/DispatchStatus.svelte",
+          "tests/web-ui/dispatch-lifecycle-controls.test.ts",
+        ],
+      ),
+    ],
+    scaffold: [
+      declaredRecord("scaffold:setup-project-config", "scaffold", "setup-project-config", [
+        "src/cli/commands/setup.ts",
+        "tests/scaffold-project-config.test.ts",
+      ]),
+      declaredRecord("scaffold:upgrade-project-config", "scaffold", "upgrade-project-config", [
+        "src/cli/commands/upgrade.ts",
+        "tests/upgrade-command.test.ts",
+      ]),
+    ],
+    "generated-artifact": generatedDestinations().map((destination) =>
+      declaredRecord(
+        `generated:${generatedIds[destination]}`,
+        "generated-artifact",
+        destination,
+        generatedSources[destination]!,
+        {
+          destination,
+          generated_from: generatedSources[destination],
+          build_command: buildCommands[destination],
+        },
+      ),
+    ),
+    "documentation-test": documentationTestPaths().map((path) =>
+      declaredRecord(
+        `documentation-test:${documentationTestIds.get(path) ?? `UNMAPPED:${path}`}`,
+        "documentation-test",
+        path,
+        [path],
+      ),
+    ),
+  };
+}
+
+function normalizedRecord(record: InventoryRecord): string {
+  const normalized = Object.fromEntries(
+    Object.entries(record)
+      .filter(([, value]) => value !== undefined)
+      .toSorted(([left], [right]) => left.localeCompare(right))
+      .map(([key, value]) => [key, Array.isArray(value) ? [...value] : value]),
+  );
+  return JSON.stringify(normalized);
 }
 
 function validateInventory(fixture: InventoryFixture): { pendingAdditions: string[] } {
@@ -159,30 +301,39 @@ function validateInventory(fixture: InventoryFixture): { pendingAdditions: strin
     }
   }
 
-  const derived = derivedNonFileSignatures();
-  for (const kind of NON_FILE_KINDS) {
-    const actual = fixture.records
-      .filter((record) => record.kind === kind)
-      .map(nonFileSignature)
-      .toSorted();
-    if (new Set(actual).size !== actual.length) {
-      throw new Error(`duplicate ${kind} surface`);
-    }
-    const missingSurface = derived[kind].filter((signature) => !actual.includes(signature));
-    const staleSurface = actual.filter((signature) => !derived[kind].includes(signature));
-    if (missingSurface.length > 0) {
-      throw new Error(`missing required ${kind} surface: ${missingSurface.join(", ")}`);
-    }
-    if (staleSurface.length > 0) {
-      throw new Error(`unexpected stale ${kind} surface: ${staleSurface.join(", ")}`);
-    }
-  }
-
   for (const record of fixture.records.filter(
     (candidate) => candidate.kind === "generated-artifact",
   )) {
     if (!record.generated_from?.length || !record.build_command) {
       throw new Error(`unpaired generated output: ${record.id}`);
+    }
+  }
+
+  const derived = derivedNonFileRecords();
+  for (const kind of NON_FILE_KINDS) {
+    const actualRecords = fixture.records.filter((record) => record.kind === kind);
+    const expectedRecords = derived[kind];
+    const actual = actualRecords.map(normalizedRecord).toSorted();
+    const expected = expectedRecords.map(normalizedRecord).toSorted();
+    if (new Set(actualRecords.map((record) => record.id)).size !== actualRecords.length) {
+      throw new Error(`duplicate ${kind} surface`);
+    }
+    for (const record of actualRecords) {
+      if (!record.classification) throw new Error(`unclassified surface: ${record.id}`);
+      if (record.source_of_truth.length === 0) throw new Error(`missing source: ${record.id}`);
+      for (const authority of record.source_of_truth) {
+        if (!existsSync(resolve(ROOT, authority))) {
+          throw new Error(`missing source authority: ${record.id}: ${authority}`);
+        }
+      }
+    }
+    const missingSurface = expected.filter((record) => !actual.includes(record));
+    const staleSurface = actual.filter((record) => !expected.includes(record));
+    if (missingSurface.length > 0) {
+      throw new Error(`missing required ${kind} surface: ${missingSurface.join(", ")}`);
+    }
+    if (staleSurface.length > 0) {
+      throw new Error(`unexpected stale ${kind} surface: ${staleSurface.join(", ")}`);
     }
   }
 
@@ -365,7 +516,35 @@ describe("public documentation inventory", () => {
             : { source_of_truth: [`${template.source_of_truth[0]}.stale`] }),
       });
       expect(() => validateInventory(stale), id).toThrow(
-        new RegExp(`unexpected stale ${kind} surface`),
+        new RegExp(`unexpected stale ${kind} surface|missing source authority`),
+      );
+    }
+  });
+
+  it("rejects drift in non-file identity, classification, and source authority", () => {
+    for (const id of [
+      "api:lifecycle-control",
+      "ui:agents-lifecycle-writable",
+      "scaffold:setup-project-config",
+      "generated:plugin-skills",
+      "documentation-test:cli-help",
+    ]) {
+      const wrongId = cloneFixture();
+      wrongId.records.find((record) => record.id === id)!.id = `${id}:arbitrary`;
+      expect(() => validateInventory(wrongId), `${id} identity`).toThrow(/missing required/);
+
+      const unclassified = cloneFixture();
+      unclassified.records.find((record) => record.id === id)!.classification = "";
+      expect(() => validateInventory(unclassified), `${id} classification`).toThrow(
+        /unclassified surface/,
+      );
+
+      const sourceDrift = cloneFixture();
+      sourceDrift.records.find((record) => record.id === id)!.source_of_truth = [
+        "arbitrary-authority.ts",
+      ];
+      expect(() => validateInventory(sourceDrift), `${id} source`).toThrow(
+        /missing source authority/,
       );
     }
   });
