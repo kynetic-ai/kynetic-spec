@@ -207,6 +207,20 @@ events:
       kind: blocker
       thread_ulid: 01KXQAR1E18CBHKAXWFHJGPQJD
     timestamp: 2026-07-17T06:03:15.535Z
+  - _ulid: 01KXQAR7ERGY9Q4TK9TG779Y70
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KXQAR76BBF4X017P6HM1R7X8
+    timestamp: 2026-07-17T06:03:21.432Z
+  - _ulid: 01KXQARB6HZ5GD1VM4HY723PMN
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KXQARAYJVWWCDSSBWMFF4CRZ
+    timestamp: 2026-07-17T06:03:25.265Z
 examined_commit: c192d23e11c8934a924982e25f6cae10d3143e2d
 external_links: []
 lifecycle_state: open
@@ -261,7 +275,49 @@ threads:
           exported helpers or black-box behavior and make the authority row complete.
         created_at: 2026-07-17T06:03:15.266Z
     kind: blocker
+  - _ulid: 01KXQAR76BBF4X017P6HM1R7X8
+    anchor:
+      type: code
+      commit: c192d23e11c8934a924982e25f6cae10d3143e2d
+      line_end: 169
+      line_start: 162
+      path: tests/public-documentation-inventory.test.ts
+      side: head
+    entries:
+      - _ulid: 01KXQAR76BZW8FP7CPJ3GG8284
+        author: Jacob Chapel
+        body: "MUST-FIX — Every Markdown fixture is assigned tests/plan-document-parser.test.ts as its
+          owning test, regardless of its actual consumer. The two tests/fixtures/multi-dir README
+          files are copied by setupMultiDirFixtures and consumed by daemon multi-project tests,
+          while plan-document-parser.test.ts references neither multi-dir nor those paths. The E2E
+          plan folders are likewise consumed through the E2E plan fixture rather than that unit
+          test. Impact: the supposedly exact inventory publishes false ownership evidence and its
+          complete-record comparison merely reproduces the same hard-coded error. Derive or
+          explicitly map the real owning test or test family per fixture path."
+        created_at: 2026-07-17T06:03:21.163Z
+    kind: blocker
+  - _ulid: 01KXQARAYJVWWCDSSBWMFF4CRZ
+    anchor:
+      type: code
+      commit: c192d23e11c8934a924982e25f6cae10d3143e2d
+      line_end: 43
+      line_start: 39
+      path: tests/public-documentation-inventory.test.ts
+      side: head
+    entries:
+      - _ulid: 01KXQARAYJ35A6HT23298JXPHA
+        author: Jacob Chapel
+        body: MUST-FIX — The inventory validator ignores the fixture top-level schema_version,
+          reviewed_lifecycle_commit, integrated_lifecycle_commit, and tracked_markdown_count fields.
+          InventoryFixture declares only construction paths, reading order, and records, and no
+          later assertion references those four persisted values. Changing the manifest count or
+          review evidence to arbitrary values therefore leaves all 16 inventory tests green, despite
+          this task promising a deterministic manifest and final-reviewed-tip handoff. Validate
+          these fields against the independently derived count and frozen evidence, or remove
+          metadata that is not part of the enforced contract.
+        created_at: 2026-07-17T06:03:25.010Z
+    kind: blocker
 verdicts: []
 created_at: 2026-07-17T05:43:16.795Z
-updated_at: 2026-07-17T06:03:15.266Z
+updated_at: 2026-07-17T06:03:25.010Z
 notes: []
