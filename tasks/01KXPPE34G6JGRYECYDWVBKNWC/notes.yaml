@@ -74,3 +74,16 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-07-17T11:02:01.334Z
+  - _ulid: 01KXQWR5Q20BZQ0HJFHBSFX06D
+    content: "Fix cycle 2 completed in c309516304: corrected the absolute-root guidance to explain that
+      supported absolute roots receive no managed repository-relative ignore entry and should
+      preferably live outside the repository; corrected remote-sync guidance so transient
+      fetch/connectivity failures warn without degradation while unsafe mutation/divergence
+      degrades. Added published-doc regression assertions plus behavioral managed-ignore assertions.
+      Re-verified all @docs-guides-section ACs and resolved every review thread. Gates: focused
+      docs/config/inventory 128/128; docs-search 43 entries; format, repo lint (0 errors),
+      changed-file lint (0 warnings), typecheck, refs/alignment/completeness under warnings-ok, and
+      fresh full suite (2,835 suites; 10,967 passed; 3 expected skips) all pass."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-07-17T11:17:54.018Z
