@@ -72,3 +72,15 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-07-17T02:48:34.790Z
+  - _ulid: 01KXQ1KNFMT87RTKKX7JCF40T2
+    content: "Fix cycle 2: resolved all five current review threads in ed90115506. Bound retained
+      dispatch facts to exact production schemas/helpers or executed behavior; scoped help --all
+      metadata checks per Commander command; preserved exact reviewed landing order while allowing
+      only the six planned construction additions; and moved @auto-cli-docs ac-5 coverage to an
+      executed parent-help mutation test. Re-verified all ACs. Gates: format check pass; repo lint 0
+      errors and changed-file lint 0 warnings/errors; typecheck pass; focused 81/81 pass; full suite
+      2,834 suites with 10,955 passed and 3 skipped; refs/alignment/completeness validations pass
+      with warnings-ok baselines."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-07-17T03:23:34.772Z
