@@ -37,3 +37,12 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-07-17T20:04:55.045Z
+  - _ulid: 01KXRVXCFFM4WDWZ557PP29JPK
+    content: "Fix-cycle approach: replace the direct bootstrap helper assertion with dispatcher-backed
+      task blocking and public unblock recovery, bind cache invalidation prose to the three observed
+      runtime reasons, correct non-redacted output surfaces, and refresh the construction inventory
+      count. Re-verify all three documentation ACs plus focused and full repository gates before
+      resubmission."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-07-17T20:22:30.639Z
