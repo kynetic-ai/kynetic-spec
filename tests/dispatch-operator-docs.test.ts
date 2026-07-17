@@ -875,8 +875,14 @@ function validateFacts(facts: DispatchFacts): void {
   expect(uiStatus.heldTasks[0]).toMatchObject({ taskId: TASK_ID, scope: "global" });
   const uiMappingProbes: Record<string, { wireValues: Record<string, unknown>; uiValue: unknown }> =
     {
-      global_authority: { wireValues: { global_authority: "running" }, uiValue: "running" },
-      projection: { wireValues: { projection: "paused" }, uiValue: "paused" },
+      global_authority: {
+        wireValues: { global_authority: "paused", projection: "draining" },
+        uiValue: "paused",
+      },
+      projection: {
+        wireValues: { global_authority: "paused", projection: "draining" },
+        uiValue: "draining",
+      },
       cleanup_state: {
         wireValues: {
           cleanup_state: {
@@ -2115,6 +2121,10 @@ describe("dispatch operator fact fixture", () => {
       ["cleanup", (facts) => (facts.lifecycle.cleanup.aggregate_is_observability_only = false)],
       ["API", (facts) => (facts.api.compatibility_status.path = "/api/other")],
       ["UI mapping", (facts) => (facts.ui.mapping.global_authority = facts.ui.mapping.projection)],
+      [
+        "UI projection mapping",
+        (facts) => (facts.ui.mapping.projection = facts.ui.mapping.global_authority),
+      ],
       ["UI", (facts) => (facts.ui.static_mode = "writable")],
       ["events", (facts) => (facts.events.failure_contract = "raw errors")],
       ["safety", (facts) => facts.safety.evidence_preserved.pop()],
