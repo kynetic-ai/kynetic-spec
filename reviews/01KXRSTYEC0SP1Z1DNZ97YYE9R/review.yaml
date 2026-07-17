@@ -684,6 +684,66 @@ events:
     payload:
       thread_ulid: 01KXRV2J9HPQVAY13ADTXDGQF1
     timestamp: 2026-07-17T20:10:29.437Z
+  - _ulid: 01KXRWYRE0GT2VCXFGCZ7TG69G
+    actor: Jacob Chapel
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KXRTWBNA5E6P94PTD266ES1F
+    timestamp: 2026-07-17T20:40:44.225Z
+  - _ulid: 01KXRWYW64K99S43TZBXWJXDJB
+    actor: Jacob Chapel
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KXRTWBNA5E6P94PTD266ES1F
+    timestamp: 2026-07-17T20:40:48.068Z
+  - _ulid: 01KXRWYZZYG1TW1EXPPG6D9X6A
+    actor: Jacob Chapel
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KXRTWEZS7CVQKM0AE90F757Q
+    timestamp: 2026-07-17T20:40:51.966Z
+  - _ulid: 01KXRWZ3T03PXKSS2M3EEZK2B5
+    actor: Jacob Chapel
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KXRTWEZS7CVQKM0AE90F757Q
+    timestamp: 2026-07-17T20:40:55.872Z
+  - _ulid: 01KXRWZ7C33V4Z8QS9V7PP8W6B
+    actor: Jacob Chapel
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KXRTWJNJ1N2HX514HC3JSPYE
+    timestamp: 2026-07-17T20:40:59.523Z
+  - _ulid: 01KXRWZAWXCRP67NC355TTQGZ2
+    actor: Jacob Chapel
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KXRTWJNJ1N2HX514HC3JSPYE
+    timestamp: 2026-07-17T20:41:03.133Z
+  - _ulid: 01KXRWZEQ7A0NNXAXD17VA02K5
+    actor: Jacob Chapel
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KXRTWQZM8K0T4VWS1YA8R71S
+    timestamp: 2026-07-17T20:41:07.047Z
+  - _ulid: 01KXRWZJ6EXQ39HV9KH2CQPHXT
+    actor: Jacob Chapel
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KXRTWQZM8K0T4VWS1YA8R71S
+    timestamp: 2026-07-17T20:41:10.606Z
+  - _ulid: 01KXRWZNSAQXQNBBX29K96BA2E
+    actor: Jacob Chapel
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KXRTWVDH8RFKZTR6HCM7V3X0
+    timestamp: 2026-07-17T20:41:14.282Z
+  - _ulid: 01KXRWZSMMSFRBJBAH03B4EC5G
+    actor: Jacob Chapel
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KXRTWVDH8RFKZTR6HCM7V3X0
+    timestamp: 2026-07-17T20:41:18.228Z
 examined_commit: a71126177efc68c959fa2434fea5fe013eb188f1
 external_links: []
 lifecycle_state: closed
@@ -714,7 +774,14 @@ threads:
           counts show the base matched 143. Update the construction inventory state and verify the
           fresh inventory/full suite."
         created_at: 2026-07-17T20:04:28.458Z
+      - _ulid: 01KXRWYR3K8VZT1HSPH85EM8W0
+        author: Jacob Chapel
+        body: "Fixed in 4109f86c54: updated the construction inventory tracked Markdown count from 143 to
+          146 and verified the fresh inventory and full suites."
+        created_at: 2026-07-17T20:40:43.888Z
     kind: blocker
+    resolved_at: 2026-07-17T20:40:47.774Z
+    resolved_by: Jacob Chapel
   - _ulid: 01KXRTWEZS7CVQKM0AE90F757Q
     anchor:
       type: code
@@ -735,7 +802,15 @@ threads:
           and the actual observable failure surfaces consistently, with a regression assertion that
           rejects sanitized/redacted wording."
         created_at: 2026-07-17T20:04:31.865Z
+      - _ulid: 01KXRWYZPFJZN2DTJX7SNXKWEY
+        author: Jacob Chapel
+        body: "Fixed in 4109f86c54: the page now identifies the last 4,000 characters as a non-redacted
+          combined output tail recorded in dispatcher output and the bootstrap task note, and the
+          regression test rejects sanitized or redacted-output wording."
+        created_at: 2026-07-17T20:40:51.663Z
     kind: blocker
+    resolved_at: 2026-07-17T20:40:55.572Z
+    resolved_by: Jacob Chapel
   - _ulid: 01KXRTWJNJ1N2HX514HC3JSPYE
     anchor:
       type: code
@@ -757,7 +832,16 @@ threads:
           blocked and no matching worker/reviewer event can start. Correct the observed state and
           document the supported unblock/retry lifecycle for every applicable bootstrap symptom."
         created_at: 2026-07-17T20:04:35.635Z
+      - _ulid: 01KXRWZ73BBP35PBRMETW7YH4Y
+        author: Jacob Chapel
+        body: "Fixed in 4109f86c54: all bootstrap recovery paths now state that dispatch blocks the task and
+          require public task unblock after correction; reviewer recovery explicitly restores
+          pending_review without resubmission. Behavioral coverage verifies pending and
+          pending_review restoration."
+        created_at: 2026-07-17T20:40:59.243Z
     kind: blocker
+    resolved_at: 2026-07-17T20:41:02.829Z
+    resolved_by: Jacob Chapel
   - _ulid: 01KXRTWQZM8K0T4VWS1YA8R71S
     anchor:
       type: code
@@ -778,7 +862,15 @@ threads:
           that the existing workspace does not adopt. Rewrite this block around the actual signals
           and bind them to behavioral evidence."
         created_at: 2026-07-17T20:04:41.077Z
+      - _ulid: 01KXRWZEEYM2HGG253SMVMKJRK
+        author: Jacob Chapel
+        body: "Fixed in 4109f86c54: the invalidation block now names only prior-bootstrap-failed,
+          bootstrap-config-changed, and canonical-branch-head-changed. The test induces and verifies
+          all three runtime signals and rejects the former target, role, and tracked-change claims."
+        created_at: 2026-07-17T20:41:06.782Z
     kind: blocker
+    resolved_at: 2026-07-17T20:41:10.324Z
+    resolved_by: Jacob Chapel
   - _ulid: 01KXRTWVDH8RFKZTR6HCM7V3X0
     anchor:
       type: code
@@ -799,7 +891,16 @@ threads:
           invalidation cases) so these recovery guarantees fail when the page drifts; do not replace
           this with implementation-source scanning.
         created_at: 2026-07-17T20:04:44.593Z
+      - _ulid: 01KXRWZNFTJVE0HRK9XRR13DYQ
+        author: Jacob Chapel
+        body: "Fixed in 4109f86c54: replaced the direct-only output assertion with a real DispatchEngine
+          failure using the public CLI. It proves no invocation starts, the dispatcher writes the
+          bootstrap note and blocks the task, unblock restores prior status, and separate behavior
+          induces each documented invalidation reason."
+        created_at: 2026-07-17T20:41:13.978Z
     kind: blocker
+    resolved_at: 2026-07-17T20:41:17.914Z
+    resolved_by: Jacob Chapel
   - _ulid: 01KXRTWYRV36MVXSNE72MF610N
     entries:
       - _ulid: 01KXRTWYRV0CHV0MM1JKVBGTS7
@@ -1057,5 +1158,5 @@ verdicts:
     role: reviewer
     created_at: 2026-07-17T20:08:03.278Z
 created_at: 2026-07-17T19:46:13.580Z
-updated_at: 2026-07-17T20:10:29.159Z
+updated_at: 2026-07-17T20:41:17.914Z
 notes: []
