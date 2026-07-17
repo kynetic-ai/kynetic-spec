@@ -221,6 +221,13 @@ events:
       kind: blocker
       thread_ulid: 01KXQARAYJVWWCDSSBWMFF4CRZ
     timestamp: 2026-07-17T06:03:25.265Z
+  - _ulid: 01KXQARGY6SF9EX0PRE19MD047
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KXQARGP1RNXWG1DD2CGFWQJG
+    timestamp: 2026-07-17T06:03:31.142Z
 examined_commit: c192d23e11c8934a924982e25f6cae10d3143e2d
 external_links: []
 lifecycle_state: open
@@ -317,7 +324,28 @@ threads:
           metadata that is not part of the enforced contract.
         created_at: 2026-07-17T06:03:25.010Z
     kind: blocker
+  - _ulid: 01KXQARGP1RNXWG1DD2CGFWQJG
+    anchor:
+      type: code
+      commit: c192d23e11c8934a924982e25f6cae10d3143e2d
+      line_end: 1145
+      line_start: 1120
+      path: tests/dispatch-operator-docs.test.ts
+      side: head
+    entries:
+      - _ulid: 01KXQARGP1CZCYB652DDR4GVHK
+        author: Jacob Chapel
+        body: MUST-FIX — The completed limitation array is exact only against another literal list, and the
+          new checkpointing/distributed-scheduler/FIFO assertions reduce those behavioral boundaries
+          to the absence of similarly named dispatch CLI commands. A runtime can checkpoint work,
+          coordinate scheduling, or promise FIFO without exposing commands with those substrings, so
+          the test would still bless stale limitation prose. The recovery-pending claim is also not
+          exercised here; the local snapshot is failed with cancellation_timeout. Bind each retained
+          limitation to an observable schema/helper/failure path or a precise authoritative contract
+          instead of command-name absence.
+        created_at: 2026-07-17T06:03:30.881Z
+    kind: blocker
 verdicts: []
 created_at: 2026-07-17T05:43:16.795Z
-updated_at: 2026-07-17T06:03:25.010Z
+updated_at: 2026-07-17T06:03:30.881Z
 notes: []
