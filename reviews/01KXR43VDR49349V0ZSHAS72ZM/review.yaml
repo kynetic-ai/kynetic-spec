@@ -400,6 +400,34 @@ events:
       status: pass
       name: review evidence log
     timestamp: 2026-07-17T13:48:01.644Z
+  - _ulid: 01KXR5C1MRB1W07WVM5E29GV8R
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KXR5C1D8YCX29842SGSAAK6Q
+    timestamp: 2026-07-17T13:48:33.816Z
+  - _ulid: 01KXR5C4YVHD6N4893RB5BNT0N
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KXR5C4N944ZZAKF9JTZ7ZKP8
+    timestamp: 2026-07-17T13:48:37.211Z
+  - _ulid: 01KXR5C8R892XMPNK3SRNBPPR0
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KXR5C8FJ1JA24CAT6GYCVJFM
+    timestamp: 2026-07-17T13:48:41.096Z
+  - _ulid: 01KXR5CD5PFYH2WFK519H426DN
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KXR5CCSGQ8H8Q4QF2N4M7SDQ
+    timestamp: 2026-07-17T13:48:45.622Z
 examined_commit: 225953b1c3a2087a7de70d7e53e6208563157132
 external_links: []
 lifecycle_state: closed
@@ -491,6 +519,87 @@ threads:
           passes without prematurely claiming the pending page is audited."
         created_at: 2026-07-17T13:46:52.597Z
     kind: blocker
+  - _ulid: 01KXR5C1D8YCX29842SGSAAK6Q
+    anchor:
+      type: code
+      commit: 225953b1c3a2087a7de70d7e53e6208563157132
+      line_end: 14
+      line_start: 14
+      path: docs/guides/controlling-dispatch-lifecycle.md
+      side: head
+    entries:
+      - _ulid: 01KXR5C1D8H6CQZ25QQTDSPWTR
+        author: Jacob Chapel
+        body: "MUST-FIX: The help references do not lead a copying reader to the claimed full option lists.
+          The extended-help command accepts one topic argument, so `kspec help agent dispatch` and
+          the longer unquoted forms resolve only the `agent` topic; I reproduced the top-level agent
+          help from all three documented commands. Quoting `agent dispatch` reaches that parent, but
+          parent help still lists only children and not each child option set. This violates
+          @docs-guides-section ac-3 and leaves operators without the promised flags. Point to
+          executable per-command help such as `kspec agent dispatch stop --help` and task child
+          equivalents, or use correctly quoted exact child topics, and verify every named command
+          family reaches the expected Usage and Options output."
+        created_at: 2026-07-17T13:48:33.576Z
+    kind: blocker
+  - _ulid: 01KXR5C4N944ZZAKF9JTZ7ZKP8
+    anchor:
+      type: code
+      commit: 225953b1c3a2087a7de70d7e53e6208563157132
+      line_end: 1562
+      line_start: 1554
+      path: tests/dispatch-operator-docs.test.ts
+      side: head
+    entries:
+      - _ulid: 01KXR5C4NACW2CRPPWE4S8JBVQ
+        author: Jacob Chapel
+        body: "MUST-FIX: This AC-tagged test passes even when the requested help topic is wrong because it
+          asserts only exit code 0 and nonempty stdout. `help agent dispatch` currently returns the
+          nonempty top-level agent help, so the test reports coverage while the guide promise is
+          broken. Assert the requested Usage path and relevant generated Options for each documented
+          command or child; the test must fail when help silently resolves to an ancestor topic."
+        created_at: 2026-07-17T13:48:36.906Z
+    kind: blocker
+  - _ulid: 01KXR5C8FJ1JA24CAT6GYCVJFM
+    anchor:
+      type: code
+      commit: 225953b1c3a2087a7de70d7e53e6208563157132
+      line_end: 51
+      line_start: 28
+      path: docs/guides/controlling-dispatch-lifecycle.md
+      side: head
+    entries:
+      - _ulid: 01KXR5C8FV1G7A2YQQBMFWGQRG
+        author: Jacob Chapel
+        body: "MUST-FIX: The CLI procedure asks operators to run plain `kspec agent status` and then inspect
+          held-task rows, task controls, scoped cleanup entries, and degraded-target rows under
+          snake_case names. The human renderer exposes only Authority, Projection, Active, Queued,
+          Held, and aggregate Cleanup; its JSON mode exposes the internal camelCase contract
+          (`globalAuthority`, `heldTasks`, `taskControls`, and so on), while snake_case belongs to
+          the public API. The documented procedure therefore cannot perform its own verification.
+          Separate human CLI, CLI JSON, public API, and UI field names, and direct readers to an
+          output mode that actually exposes every required row; add a behavioral assertion for that
+          procedure."
+        created_at: 2026-07-17T13:48:40.827Z
+    kind: blocker
+  - _ulid: 01KXR5CCSGQ8H8Q4QF2N4M7SDQ
+    anchor:
+      type: code
+      commit: 225953b1c3a2087a7de70d7e53e6208563157132
+      line_end: 1
+      line_start: 1
+      path: docs/guides/controlling-dispatch-lifecycle.md
+      side: head
+    entries:
+      - _ulid: 01KXR5CCSGCWZ6JPKWFQ88KW00
+        author: Jacob Chapel
+        body: "MUST-FIX: Adding this tracked Markdown file raises the head inventory to 142 files, but
+          tests/fixtures/public-documentation-surfaces.json still declares `tracked_markdown_count:
+          141`. A fresh full suite fails 8 inventory tests, and a focused rerun reproduces them.
+          This is branch-introduced: the exact integration base contains 141 Markdown files with
+          count 141. Update the construction-phase inventory evidence consistently so the full suite
+          passes without prematurely claiming the pending page is audited."
+        created_at: 2026-07-17T13:48:45.232Z
+    kind: blocker
 verdicts:
   - applies_to_version:
       type: entity_version
@@ -500,5 +609,5 @@ verdicts:
     role: reviewer
     created_at: 2026-07-17T13:46:56.344Z
 created_at: 2026-07-17T13:26:36.728Z
-updated_at: 2026-07-17T13:48:01.397Z
+updated_at: 2026-07-17T13:48:45.232Z
 notes: []
