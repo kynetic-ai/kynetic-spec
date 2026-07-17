@@ -47,3 +47,15 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-07-17T23:24:36.649Z
+  - _ulid: 01KXS6WWE0VDAKFFEAAW9CKA7F
+    content: "Fix cycle 1 approach: replace the review-blocked repository-source reads in
+      dispatch-operator-docs tests. Generate kspec-agents.md through the CLI in an isolated fixture
+      and assert exact documented lifecycle command lines, including both global and task stop
+      --force forms, against exact exported command usages/options. Verify the v0.12 text through
+      the public release-notes command. Keep the web workspace README check explicitly scoped to its
+      canonical documentation artifact because prose has no executable behavior, using a justified
+      lint exception rather than the test-output helper. Re-run focused tests, generation
+      convergence, full repository gates, reply to both duplicate blocker threads, and resubmit."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-07-17T23:34:28.544Z
