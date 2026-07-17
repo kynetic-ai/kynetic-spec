@@ -99,6 +99,7 @@ import { loadDispatchWorkspaceRegistry } from "../src/parser/dispatch-workspaces
 import { buildKspecGitignoreEntries } from "../src/parser/gitignore.js";
 import { resolveTaskDataManager } from "../src/parser/task-data-manager.js";
 import { docsPlugin } from "../packages/web-ui/vite-plugin-docs.js";
+import { renderDocsMarkdown } from "../packages/web-ui/src/lib/utils/docs-markdown.js";
 
 const modeState = vi.hoisted(() => ({ staticMode: false }));
 vi.mock("../packages/web-ui/src/lib/stores/mode.svelte", () => ({
@@ -1586,6 +1587,71 @@ describe("dispatch operator fact fixture", () => {
       expect(guide).toContain("human-readable summary");
       expect(guide).toContain("CLI JSON uses camelCase");
       expect(guide).toContain("public API uses snake_case");
+    });
+  });
+
+  describe("dispatch workspace concept", () => {
+    // AC: @docs-concepts-section ac-1
+    it("publishes and indexes the dispatch workspace mental model", () => {
+      const entries = publishedDocs();
+      const concept = publishedDoc(entries, "concepts/dispatch-workspaces");
+      const index = publishedDoc(entries, "concepts").content;
+
+      expect(relativeMarkdownLinks(index)).toContain("./dispatch-workspaces.md");
+      for (const target of relativeMarkdownLinks(concept.content)) {
+        const resolvedTarget = normalize(join(dirname(concept.path), target)).replaceAll("\\", "/");
+        expect(
+          entries.some((candidate) => candidate.path === resolvedTarget),
+          target,
+        ).toBe(true);
+      }
+    });
+
+    // AC: @docs-concepts-section ac-2
+    it("renders the durable workspace sections with stable anchors and no release inventory", () => {
+      const concept = publishedDoc(publishedDocs(), "concepts/dispatch-workspaces").content;
+      const { html, toc } = renderDocsMarkdown(concept);
+      const expectedHeadings = [
+        "What a Dispatch Workspace Is",
+        "Why Isolation Exists",
+        "Target and Task Identity",
+        "Worker Continuity",
+        "Detached Reviewer Lifecycle",
+        "The Fix Cycle",
+        "Bootstrap State",
+        "Integration and Publication",
+        "Lifecycle Authority Versus Task Readiness",
+        "Evidence and Cleanup Ownership",
+        "Operator Ownership",
+        "Current Limitations",
+        "Related Operations",
+      ];
+
+      expect(toc.filter((heading) => heading.level === 2).map((heading) => heading.text)).toEqual(
+        expectedHeadings,
+      );
+      for (const heading of toc) {
+        expect(html).toContain(`id="${heading.id}"`);
+        expect(html).toContain(`href="#${heading.id}"`);
+      }
+      expect(concept).not.toContain("```yaml");
+      expect(concept).not.toMatch(/`--[a-z-]+`/);
+    });
+
+    // AC: @docs-concepts-section ac-2
+    it("keeps the dispatch overview short, cross-linked, and accurate about setup defaults", () => {
+      const overview = publishedDoc(publishedDocs(), "concepts/agents-and-dispatch").content;
+      expect(relativeMarkdownLinks(overview)).toEqual(
+        expect.arrayContaining([
+          "./dispatch-workspaces.md",
+          "../guides/configuring-dispatch-workspaces.md",
+          "../guides/controlling-dispatch-lifecycle.md",
+          "../troubleshooting/index.md",
+        ]),
+      );
+      expect(overview).toContain("`kspec setup` scaffolds default agent definitions");
+      expect(overview).toContain("The live agent registry is authoritative");
+      expect(overview).not.toContain("kspec ships with four built-in agent definitions");
     });
   });
 
