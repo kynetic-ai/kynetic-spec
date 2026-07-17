@@ -60,3 +60,15 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-07-17T02:38:51.104Z
+  - _ulid: 01KXPZKJQ6DCM9N0SFRZT3TF1G
+    content: "Fix cycle 2 approach: make help --all validation command-scoped; add a behavioral
+      parent-help auto-discovery test; align landing reading-order checks with the exact six-page
+      construction allowance; and either bind each retained operator claim to exported
+      schema/helper/executed behavior or remove unsupported claims. Edge cases: duplicate option
+      signatures across commands, construction pages appearing before manifest closure, both final
+      admission rechecks, cleanup retry ordering, accessibility/static-mode and limitation drift.
+      Re-verified @docs-section-taxonomy ac-1/ac-2 and @auto-cli-docs ac-1/ac-3/ac-4/ac-5 before
+      edits."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-07-17T02:48:34.790Z
