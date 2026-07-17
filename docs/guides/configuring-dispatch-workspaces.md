@@ -65,7 +65,7 @@ This resolution is source-bound to the task and plan. A dispatched prompt record
 
 A relative `worktree_root` is resolved from the project root. An absolute path remains absolute. The default keeps transient worktrees under `.kspec-worktrees` beside the main checkout.
 
-Project setup and upgrade maintain a sentinel-delimited kspec block in the root `.gitignore`. A relative dispatch root is included in that managed block; an absolute root is outside the repository and therefore has no repository-relative ignore entry. Let kspec maintain this block instead of hand-editing its generated entries.
+Project setup and upgrade maintain a sentinel-delimited kspec block in the root `.gitignore`. A relative dispatch root is included in that managed block. An absolute root receives no managed repository-relative ignore entry, even when the chosen path is inside the repository, so prefer an absolute location outside the repository. Let kspec maintain this block instead of hand-editing its generated entries.
 
 The configured root is a location policy, not an ownership claim over every directory beneath it. Dispatch's workspace registry is authoritative, and cleanup is limited to artifacts whose dispatch ownership can be established.
 
@@ -148,7 +148,7 @@ When `remote_sync` is omitted, dispatch enables it exactly when the repository h
 
 With remote synchronization enabled, target updates are fast-forward only; dispatch does not create merge commits to reconcile a divergent target. Periodic synchronization is deferred for a target while that target has an active reviewer. An on-start or before-provision synchronization is still possible when `sync_interval` is `0`; that value disables only the periodic pass.
 
-Remote failures are reported as degraded target state rather than silently rewritten history. Public agent status identifies the affected branch, failure kind and reason, and when degradation began. Inspect it with `kspec agent status`; use `kspec agent status --help` for the complete status options.
+Transient fetch or connectivity failures emit warnings and leave the target out of degraded state so dispatch can retry. Failures that make target mutation unsafe, including divergence, are reported as degraded target state rather than silently rewriting history. For a degraded target, public agent status identifies the affected branch, failure kind and reason, and when degradation began. Inspect it with `kspec agent status`; use `kspec agent status --help` for the complete status options.
 
 Remote synchronization is intentionally limited. It does not promise automatic conflict resolution, merge commits, or recovery from arbitrary remote topology. Repair the branch or remote through the project's normal reviewed Git workflow, then let dispatch retry its fast-forward path.
 

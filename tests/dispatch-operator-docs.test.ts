@@ -96,6 +96,7 @@ import type { Agent } from "../src/schema/meta.js";
 import { ensureSplitBackendRegistered } from "../src/parser/split-backend.js";
 import { initContext } from "../src/parser/index.js";
 import { loadDispatchWorkspaceRegistry } from "../src/parser/dispatch-workspaces.js";
+import { buildKspecGitignoreEntries } from "../src/parser/gitignore.js";
 import { resolveTaskDataManager } from "../src/parser/task-data-manager.js";
 import { docsPlugin } from "../packages/web-ui/vite-plugin-docs.js";
 
@@ -1378,6 +1379,21 @@ describe("dispatch operator fact fixture", () => {
           target,
         ).toBe(true);
       }
+
+      const relativeRoot = "relative/worktrees";
+      const absoluteRoot = join(ROOT, "absolute-worktrees");
+      expect(buildKspecGitignoreEntries(undefined, relativeRoot)).toContain(`${relativeRoot}/`);
+      expect(buildKspecGitignoreEntries(undefined, absoluteRoot)).not.toContain(`${absoluteRoot}/`);
+      expect(guide).toContain(
+        "An absolute root receives no managed repository-relative ignore entry, even when the chosen path is inside the repository",
+      );
+      expect(guide).toContain(
+        "Transient fetch or connectivity failures emit warnings and leave the target out of degraded state",
+      );
+      expect(guide).toContain(
+        "Failures that make target mutation unsafe, including divergence, are reported as degraded target state",
+      );
+      expect(guide).not.toContain("Remote failures are reported as degraded target state");
     });
 
     // AC: @docs-guides-section ac-3
