@@ -572,6 +572,13 @@ events:
       kind: blocker
       thread_ulid: 01KXRV1XBTTGTQ7E5HJ9GNVSB4
     timestamp: 2026-07-17T20:07:30.804Z
+  - _ulid: 01KXRV2JHYHNTBMXA1AYTXV560
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KXRV2J9HPQVAY13ADTXDGQF1
+    timestamp: 2026-07-17T20:07:52.127Z
 examined_commit: a71126177efc68c959fa2434fea5fe013eb188f1
 external_links: []
 lifecycle_state: closed
@@ -835,6 +842,41 @@ threads:
           facts so AC-2 cannot pass with these incorrect procedures."
         created_at: 2026-07-17T20:07:30.426Z
     kind: blocker
+  - _ulid: 01KXRV2J9HPQVAY13ADTXDGQF1
+    entries:
+      - _ulid: 01KXRV2J9HYZ5KTFTY0N0GMWS1
+        author: Jacob Chapel
+        body: >-
+          REVIEW EVIDENCE LOG
+
+
+          Files read: all six changed files (three new troubleshooting pages,
+          dispatch-refuses-to-assign, troubleshooting index, dispatch operator docs tests);
+          surrounding public-doc inventory fixture/test; bootstrap and dispatcher runtime; dispatch
+          concepts/configuration guides; lifecycle and workspace behavioral tests.
+
+
+          Commands run: git diff/status/log/diff-check and targeted searches; npm run format:check;
+          npm run lint -- --quiet; npx oxlint tests/dispatch-operator-docs.test.ts; npm run
+          typecheck; npm test -- --fresh; fresh focused public-documentation-inventory test; focused
+          249-test docs/rendering/lifecycle suite; npm run build:docs-search; kspec validate
+          refs/alignment/completeness with warnings-ok.
+
+
+          Claims verified: links, anchors, and commands render in focused tests; the documented
+          bootstrap output is a raw bounded tail; bootstrap failures occur before invocation and
+          block the task; actual cache invalidation reasons; lifecycle rejection and cleanup
+          behaviors; inventory regression is branch-introduced and deterministic.
+
+
+          Categories searched: correctness, edge cases, error handling/recovery, security/data
+          exposure, test quality, integration, and public-doc inventory.
+
+
+          Shared/package guidance: none touched, so shared-guidance neutrality directions and
+          generated package artifact refresh are not applicable.
+        created_at: 2026-07-17T20:07:51.857Z
+    kind: nit
 verdicts:
   - applies_to_version:
       type: entity_version
@@ -844,5 +886,5 @@ verdicts:
     role: reviewer
     created_at: 2026-07-17T20:04:52.153Z
 created_at: 2026-07-17T19:46:13.580Z
-updated_at: 2026-07-17T20:07:30.426Z
+updated_at: 2026-07-17T20:07:51.857Z
 notes: []
