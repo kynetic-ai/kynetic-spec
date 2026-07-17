@@ -30738,3 +30738,21 @@ reviews:
     verdict_count: 1
     created_at: 2026-07-17T18:30:39.329Z
     updated_at: 2026-07-17T18:52:04.539Z
+  - _ulid: 01KXRSTYEC0SP1Z1DNZ97YYE9R
+    slugs: []
+    title: Review task-document-dispatch-recovery
+    disposition: pending
+    author: Jacob Chapel
+    check_count: 0
+    examined_commit: a71126177efc68c959fa2434fea5fe013eb188f1
+    lifecycle_state: draft
+    related_refs: []
+    subject:
+      type: task
+      content_hash: ""
+      ref: "@01KXPPE7MC40EXM9Q3MT0VJNWY"
+      shadow_commit: ""
+    thread_count: 0
+    unresolved_blocker_count: 0
+    verdict_count: 0
+    created_at: 2026-07-17T19:46:13.580Z
