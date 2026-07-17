@@ -107,7 +107,7 @@ description: >
 spec_ref: "@docs-section-taxonomy"
 plan_ref: "@plan-documentation-completeness-and-dispatch-workspaces"
 origin: derived
-status: needs_work
+status: in_progress
 blocked_by: []
 depends_on: []
 context: []
@@ -126,7 +126,7 @@ submission_linkage:
   remote: origin
   remote_url: git@github.com:lepahc/kynetic-spec.git
   upstream_ref: refs/heads/dispatch/task/task-freeze-doc-facts-and-inventory/01kxppe2
-session_id: null
+session_id: 01KXQB5ESVV74D37DDBCD9FAVN
 history:
   - author: Jacob Chapel
     changes:
@@ -410,8 +410,21 @@ history:
         previous: 01KXQ7J9EYR8N7J3HPM3MB7PPM
     command: review-verdict-needs-work
     timestamp: 2026-07-17T06:04:20.275Z
+  - author: Jacob Chapel
+    changes:
+      status:
+        new: in_progress
+        previous: needs_work
+      session_id:
+        new: 01KXQB5ESVV74D37DDBCD9FAVN
+        previous: null
+      started_at:
+        new: 2026-07-17T06:12:34.775Z
+        previous: 2026-07-17T05:09:37.374Z
+    command: task-start
+    timestamp: 2026-07-17T06:12:34.776Z
 created_at: 2026-07-17T00:08:17.130Z
-started_at: 2026-07-17T05:09:37.374Z
+started_at: 2026-07-17T06:12:34.775Z
 submitted_at: 2026-07-17T05:35:52.177Z
 todos: []
 automation: eligible
