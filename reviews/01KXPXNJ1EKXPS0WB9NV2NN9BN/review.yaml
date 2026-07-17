@@ -461,6 +461,12 @@ events:
     payload:
       thread_ulid: 01KXPYVGXNTZKFZE8HB28783K8
     timestamp: 2026-07-17T03:22:02.934Z
+  - _ulid: 01KXQ1H1Z4HT9YDZ9ZBGQ5Q9D8
+    actor: Jacob Chapel
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KXPYVM5GM7V3DYCNE49C16ZY
+    timestamp: 2026-07-17T03:22:09.252Z
 examined_commit: 71f5a4c87bb3e38faf1bba0954595545f08894e1
 external_links: []
 lifecycle_state: closed
@@ -526,6 +532,13 @@ threads:
           signatures; the fresh suite passes with this global containment check. Parse command
           sections or otherwise compare each command's metadata within its own rendered block."
         created_at: 2026-07-17T02:35:29.840Z
+      - _ulid: 01KXQ1H1Q0RT1XM0Y57KY2VD47
+        author: Jacob Chapel
+        body: "Fixed in ed90115506: help --all is parsed into command-scoped reference blocks keyed by each
+          unindented usage heading. Each exported Commander node's usage, description, and options
+          are now compared only within its own block, so duplicate signatures elsewhere cannot mask
+          removal."
+        created_at: 2026-07-17T03:22:08.991Z
     kind: blocker
   - _ulid: 01KXPYVQE81AXB0XH1VG9PPVQW
     anchor:
@@ -724,5 +737,5 @@ verdicts:
     role: reviewer
     created_at: 2026-07-17T02:38:48.382Z
 created_at: 2026-07-17T02:14:42.478Z
-updated_at: 2026-07-17T03:22:02.667Z
+updated_at: 2026-07-17T03:22:08.991Z
 notes: []
