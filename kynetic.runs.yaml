@@ -83826,7 +83826,7 @@ runs:
     completed_at: 2026-07-17T22:08:12.452Z
   - _ulid: 01KXS4DX8MSYX9R7MXNSBZ6H5N
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -83843,7 +83843,17 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-07-17T22:53:15.661Z
-        completed_at: 2026-07-17T22:53:15.661Z
+        completed_at: 2026-07-17T22:53:27.762Z
+        notes: "Friction: (1) kspec skill render handled an already-drifted core skill asymmetrically: it
+          skipped the Codex copy, rewrote the Factory copy backward, and emitted unrelated untracked
+          local skills, requiring careful restoration; (2) the installed kspec agents generator did
+          not incorporate the worktree's uncommitted template, so regeneration had to be rerun
+          through npm run dev; (3) non-CI full-suite runs showed all visible tests green but did not
+          terminate promptly, requiring CI=true npm test for definitive completion."
+      - status: completed
+        step_index: 2
+        started_at: 2026-07-17T22:53:27.762Z
+        completed_at: 2026-07-17T22:53:27.762Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-07-17T22:51:20.724Z
