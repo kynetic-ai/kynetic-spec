@@ -112,7 +112,7 @@ tags:
   - dispatch
   - troubleshooting
 vcs_refs: []
-review_ref: "@01KXRXD4SX6TECS3D702FGWZGT"
+review_ref: "@01KXS0J9ADHMPGNPSJHHRF2MXF"
 submission_linkage:
   review_url: null
   branch: dispatch/task/task-document-dispatch-recovery/01kxppe7
@@ -277,6 +277,13 @@ history:
         previous: 2026-07-17T20:41:49.862Z
     command: task-submit
     timestamp: 2026-07-17T21:36:46.551Z
+  - author: Jacob Chapel
+    changes:
+      review_ref:
+        new: "@01KXS0J9ADHMPGNPSJHHRF2MXF"
+        previous: "@01KXRXD4SX6TECS3D702FGWZGT"
+    command: review-link
+    timestamp: 2026-07-17T21:43:52.490Z
 created_at: 2026-07-17T00:08:22.412Z
 started_at: 2026-07-17T21:12:46.375Z
 submitted_at: 2026-07-17T21:36:46.551Z
