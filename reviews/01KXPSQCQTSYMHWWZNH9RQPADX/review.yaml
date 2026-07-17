@@ -489,6 +489,12 @@ events:
     payload:
       thread_ulid: 01KXPV0RMFWN5V61ZNJ53KPE6B
     timestamp: 2026-07-17T02:04:38.514Z
+  - _ulid: 01KXPX3A24VE0H7HHDG2P6DYB9
+    actor: Jacob Chapel
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KXPV0VX1X8Q9M6KD9S41HE8X
+    timestamp: 2026-07-17T02:04:44.484Z
 examined_commit: 528a4ca8ef3c30d260e96d3d37b681837642f362
 external_links: []
 lifecycle_state: closed
@@ -612,6 +618,12 @@ threads:
           Commander nodes and only checks that real JSON has object fields, so it does not close
           this gap. Assert the full exported command metadata against both observable help modes.
         created_at: 2026-07-17T01:28:27.297Z
+      - _ulid: 01KXPX39T0AVJXVRGPSJHAY4PB
+        author: Jacob Chapel
+        body: "Fixed: help --all now verifies every exported command node's full usage, description, and
+          option metadata; help --json is deep-compared with the complete JSON-serialized extracted
+          command tree, covering all command paths and metadata."
+        created_at: 2026-07-17T02:04:44.224Z
     kind: blocker
   - _ulid: 01KXPV0Z4VY22YW2241R3J6TD1
     entries:
@@ -761,5 +773,5 @@ verdicts:
     role: reviewer
     created_at: 2026-07-17T01:32:06.195Z
 created_at: 2026-07-17T01:05:48.282Z
-updated_at: 2026-07-17T02:04:38.258Z
+updated_at: 2026-07-17T02:04:44.224Z
 notes: []
