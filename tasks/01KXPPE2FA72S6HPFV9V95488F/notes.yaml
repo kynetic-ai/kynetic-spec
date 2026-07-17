@@ -219,3 +219,14 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-07-17T08:24:50.581Z
+  - _ulid: 01KXQKD23ZBKP0D4MN3JNWXSZC
+    content: "Fix cycle 7 approach: make the bidirectional global-authority/projection mapping probes
+      discriminating by assigning distinct valid enum values to the source and competing wire
+      fields, then retain stale mutations for both swap directions so either false mapping is
+      rejected. Re-verified @docs-section-taxonomy ac-1/ac-2 and @auto-cli-docs ac-1/ac-3/ac-4/ac-5;
+      no spec or product change is needed. Test plan: first add the reviewer-reproduced
+      projection-to-globalAuthority mutation, update the probe contract to reject it, run the
+      focused documentation suite, then all project gates and reply/resolve both cycle-7 threads."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-07-17T08:34:32.703Z
