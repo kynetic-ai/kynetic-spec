@@ -491,6 +491,12 @@ events:
     payload:
       thread_ulid: 01KXPYVTHNCAT0QJKWQANWGAAK
     timestamp: 2026-07-17T03:23:07.045Z
+  - _ulid: 01KXQ1K0DXD975T5MW0K631033
+    actor: Jacob Chapel
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KXPYVTHNCAT0QJKWQANWGAAK
+    timestamp: 2026-07-17T03:23:13.214Z
 examined_commit: 71f5a4c87bb3e38faf1bba0954595545f08894e1
 external_links: []
 lifecycle_state: closed
@@ -626,6 +632,8 @@ threads:
           separate negative gate without claiming AC5."
         created_at: 2026-07-17T03:23:06.791Z
     kind: blocker
+    resolved_at: 2026-07-17T03:23:12.971Z
+    resolved_by: Jacob Chapel
   - _ulid: 01KXPYVXPWNVAAMSPXEXV8934M
     entries:
       - _ulid: 01KXPYVXPWNXJJWPDC2AGESTAR
@@ -779,5 +787,5 @@ verdicts:
     role: reviewer
     created_at: 2026-07-17T02:38:48.382Z
 created_at: 2026-07-17T02:14:42.478Z
-updated_at: 2026-07-17T03:23:06.791Z
+updated_at: 2026-07-17T03:23:12.971Z
 notes: []
