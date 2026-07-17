@@ -233,6 +233,78 @@ events:
       from: open
       to: closed
     timestamp: 2026-07-17T05:00:03.942Z
+  - _ulid: 01KXQ92QVS2P8REN0YQ19DMRDY
+    actor: Jacob Chapel
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KXQ7383W74KMZB9C0JZFRG03
+    timestamp: 2026-07-17T05:34:08.761Z
+  - _ulid: 01KXQ92VD5EFPXP0Y81T76M5PF
+    actor: Jacob Chapel
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KXQ7383W74KMZB9C0JZFRG03
+    timestamp: 2026-07-17T05:34:12.389Z
+  - _ulid: 01KXQ92YXCMA9TZVS3EBNFPDE9
+    actor: Jacob Chapel
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KXQ73BCMFYS8VY7W0RJTJJSC
+    timestamp: 2026-07-17T05:34:15.980Z
+  - _ulid: 01KXQ9327N57CY7D6BDWHDK0RP
+    actor: Jacob Chapel
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KXQ73BCMFYS8VY7W0RJTJJSC
+    timestamp: 2026-07-17T05:34:19.381Z
+  - _ulid: 01KXQ935HMYZ91STS5XZPWKS7R
+    actor: Jacob Chapel
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KXQ73EMEXFKGHAKV2TN9ZX06
+    timestamp: 2026-07-17T05:34:22.772Z
+  - _ulid: 01KXQ938REEKV1ZCXQ7MBQRGHW
+    actor: Jacob Chapel
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KXQ73EMEXFKGHAKV2TN9ZX06
+    timestamp: 2026-07-17T05:34:26.062Z
+  - _ulid: 01KXQ93C6WWXJ7C566XDZ9XW13
+    actor: Jacob Chapel
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KXQ73HS09QS1A43XCDBK97XW
+    timestamp: 2026-07-17T05:34:29.596Z
+  - _ulid: 01KXQ93GEWFQHM8K3S7W9MC3YY
+    actor: Jacob Chapel
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KXQ73HS09QS1A43XCDBK97XW
+    timestamp: 2026-07-17T05:34:33.948Z
+  - _ulid: 01KXQ93M5WV1S8NXPBFKP3NBT8
+    actor: Jacob Chapel
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KXQ73N8FVQADW2DT5JWY63ZH
+    timestamp: 2026-07-17T05:34:37.756Z
+  - _ulid: 01KXQ93QXRCW2FRXJK36MC4AAR
+    actor: Jacob Chapel
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KXQ73N8FVQADW2DT5JWY63ZH
+    timestamp: 2026-07-17T05:34:41.592Z
+  - _ulid: 01KXQ93VZ0CK0ZA6X3JD507WWD
+    actor: Jacob Chapel
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KXQ73RDXM0VET1G2NYCPQV5H
+    timestamp: 2026-07-17T05:34:45.728Z
+  - _ulid: 01KXQ93ZTF82P4ZRFFT1B91D5D
+    actor: Jacob Chapel
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KXQ73RDXM0VET1G2NYCPQV5H
+    timestamp: 2026-07-17T05:34:49.679Z
 examined_commit: e7dedf15cfc99f987f6904f5a169ba19cbedc917
 external_links: []
 lifecycle_state: closed
@@ -267,7 +339,16 @@ threads:
           Validate immutable commit ancestry/freshness without requiring a mutable remote branch to
           stay at the freeze point."
         created_at: 2026-07-17T04:59:28.252Z
+      - _ulid: 01KXQ92QM16EQW2KDW2Q57RVB6
+        author: Jacob Chapel
+        body: "Fixed in c192d23e11: removed the moving remote-ref merge-base dependency. The gate now proves
+          the reviewed lifecycle commit, integrated lifecycle commit, and immutable pre-task
+          integration commit are ancestors of the tested checkout, so normal merge-target
+          advancement remains green."
+        created_at: 2026-07-17T05:34:08.513Z
     kind: blocker
+    resolved_at: 2026-07-17T05:34:12.105Z
+    resolved_by: Jacob Chapel
   - _ulid: 01KXQ73BCMFYS8VY7W0RJTJJSC
     anchor:
       type: code
@@ -290,7 +371,16 @@ threads:
           stale-mutation table does not mutate a matrix path. This is the same fact-source binding
           class previously treated as MUST-FIX."
         created_at: 2026-07-17T04:59:31.604Z
+      - _ulid: 01KXQ92YNJREJ935HC4F0XB940
+        author: Jacob Chapel
+        body: "Fixed in c192d23e11: the complete six-row matrix is now compared to an independently declared
+          exact authority contract, expanded for bootstrap/workspace registry ownership, and its
+          negative suite substitutes a real but unrelated existing path to prove source drift
+          fails."
+        created_at: 2026-07-17T05:34:15.730Z
     kind: blocker
+    resolved_at: 2026-07-17T05:34:19.142Z
+    resolved_by: Jacob Chapel
   - _ulid: 01KXQ73EMEXFKGHAKV2TN9ZX06
     anchor:
       type: code
@@ -314,7 +404,17 @@ threads:
           plan-defined path-specific classifications and complete required metadata, with negative
           mutations proving those fields cannot drift."
         created_at: 2026-07-17T04:59:34.926Z
+      - _ulid: 01KXQ9359SPYZHF35BRM06Y4FS
+        author: Jacob Chapel
+        body: "Fixed in c192d23e11: tracked Markdown is independently classified by path rules into complete
+          expected records, including exact source authority, audit topics/status, disposition,
+          exclusion and generated pairing metadata. Source authorities must exist, and negative
+          mutations cover classification, an existing wrong authority, audit topics/status, and
+          disposition."
+        created_at: 2026-07-17T05:34:22.521Z
     kind: blocker
+    resolved_at: 2026-07-17T05:34:25.813Z
+    resolved_by: Jacob Chapel
   - _ulid: 01KXQ73HS09QS1A43XCDBK97XW
     anchor:
       type: code
@@ -337,7 +437,17 @@ threads:
           Rules name these retained facts, while the workspace object ends at line 124 and neither
           the fixture nor validateFacts contains them."
         created_at: 2026-07-17T04:59:38.145Z
+      - _ulid: 01KXQ93BYS9VK2CMCEAFTNK3SA
+        author: Jacob Chapel
+        body: "Fixed in c192d23e11: added dispatch-managed bootstrap scope, source-bound remote-sync
+          limits/status fields, worker/reviewer worktree and registry/cleanup ownership,
+          worker-to-reviewer bootstrap reuse behavior, and per-event automation filtering. Exported
+          workspace/filter/status schemas and executed provisioning/bootstrap behavior bind the
+          additions, with group-specific stale mutations."
+        created_at: 2026-07-17T05:34:29.337Z
     kind: blocker
+    resolved_at: 2026-07-17T05:34:33.631Z
+    resolved_by: Jacob Chapel
   - _ulid: 01KXQ73N8FVQADW2DT5JWY63ZH
     anchor:
       type: code
@@ -361,7 +471,17 @@ threads:
           Freeze and behaviorally bind the remaining required limitations rather than narrowing the
           approved task scope."
         created_at: 2026-07-17T04:59:41.711Z
+      - _ulid: 01KXQ93KY9A0TNGQJWDS9NG5PV
+        author: Jacob Chapel
+        body: "Fixed in c192d23e11: the limitation fixture now contains all required boundaries: pause/stop
+          distinction, no checkpointing, distributed scheduler, exact durable FIFO promise,
+          workspace deletion/reset, arbitrary non-dispatch one-shot control, and pending recovery
+          under unverifiable ownership. The validator binds these to exported
+          actions/commands/cleanup phases/error codes and exact-array stale rejection."
+        created_at: 2026-07-17T05:34:37.513Z
     kind: blocker
+    resolved_at: 2026-07-17T05:34:41.295Z
+    resolved_by: Jacob Chapel
   - _ulid: 01KXQ73RDXM0VET1G2NYCPQV5H
     entries:
       - _ulid: 01KXQ73RDYK78XEFWYCFRJHF9R
@@ -383,7 +503,15 @@ threads:
           was checked for applicability, both directions are not triggered, and no generated refresh
           is required."
         created_at: 2026-07-17T04:59:44.958Z
+      - _ulid: 01KXQ93VNJFE9H2V7W76M42FXY
+        author: Jacob Chapel
+        body: Acknowledged the cycle-4 evidence log. Re-ran the focused and full behavioral suites plus
+          formatting, repo/focused lint, typecheck, and all required kspec validations after the
+          fixes.
+        created_at: 2026-07-17T05:34:45.426Z
     kind: nit
+    resolved_at: 2026-07-17T05:34:49.321Z
+    resolved_by: Jacob Chapel
 verdicts:
   - applies_to_version:
       type: entity_version
@@ -393,5 +521,5 @@ verdicts:
     role: reviewer
     created_at: 2026-07-17T05:00:03.941Z
 created_at: 2026-07-17T04:38:35.546Z
-updated_at: 2026-07-17T05:00:03.942Z
+updated_at: 2026-07-17T05:34:49.321Z
 notes: []
