@@ -115,6 +115,56 @@ checks:
     runner: npm run format:check
     created_at: 2026-07-17T23:22:56.813Z
     completed_at: 2026-07-17T23:22:56.813Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: 0 errors; 696 repository-baseline warnings.
+    name: lint
+    required: true
+    runner: npm run lint -- --quiet
+    created_at: 2026-07-17T23:23:13.058Z
+    completed_at: 2026-07-17T23:23:13.058Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Changed TS/test files: 0 errors; 20 warnings all outside changed lines and pre-existing."
+    name: focused-lint
+    required: true
+    runner: npx oxlint
+    created_at: 2026-07-17T23:23:16.601Z
+    completed_at: 2026-07-17T23:23:16.601Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Shared package build and tsc --noEmit passed.
+    name: typecheck
+    required: true
+    runner: npm run typecheck
+    created_at: 2026-07-17T23:23:20.159Z
+    completed_at: 2026-07-17T23:23:20.159Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: 2839 suites passed; 10984 tests passed; 3 skipped; 0 failed.
+    name: full test suite
+    required: true
+    runner: npm test
+    created_at: 2026-07-17T23:23:23.816Z
+    completed_at: 2026-07-17T23:23:23.816Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: 37 suites and 137 tests passed.
+    name: focused tests
+    required: true
+    runner: npm test -- changed documentation and scaffold tests
+    created_at: 2026-07-17T23:23:27.262Z
+    completed_at: 2026-07-17T23:23:27.262Z
 events:
   - _ulid: 01KXS4TWSA86DSVY5ZK8F1APF1
     actor: Jacob Chapel
@@ -220,6 +270,41 @@ events:
       status: pass
       name: format
     timestamp: 2026-07-17T23:22:57.085Z
+  - _ulid: 01KXS6891B5VJV4WVGSGDCT42N
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: lint
+    timestamp: 2026-07-17T23:23:13.323Z
+  - _ulid: 01KXS68CG2KG59F20Z4HF42A0W
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: focused-lint
+    timestamp: 2026-07-17T23:23:16.866Z
+  - _ulid: 01KXS68FZTWVWGQ4850JA5NBJ1
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: typecheck
+    timestamp: 2026-07-17T23:23:20.442Z
+  - _ulid: 01KXS68KHCBBM63P912RTX1KW9
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: full test suite
+    timestamp: 2026-07-17T23:23:24.076Z
+  - _ulid: 01KXS68PWQRPXE1N5FX6P5NWVP
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: focused tests
+    timestamp: 2026-07-17T23:23:27.511Z
 examined_commit: 2237b74fea99703c73b3d95ec5db423fd2daddd0
 external_links: []
 lifecycle_state: open
@@ -279,5 +364,5 @@ threads:
     kind: nit
 verdicts: []
 created_at: 2026-07-17T22:58:26.240Z
-updated_at: 2026-07-17T23:22:56.813Z
+updated_at: 2026-07-17T23:23:27.262Z
 notes: []
