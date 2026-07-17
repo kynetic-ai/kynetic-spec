@@ -228,6 +228,13 @@ events:
       kind: blocker
       thread_ulid: 01KXQARGP1RNXWG1DD2CGFWQJG
     timestamp: 2026-07-17T06:03:31.142Z
+  - _ulid: 01KXQASBV29ESFC408A4WBNX7N
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KXQASBJ6YBGBJJ4Y1FFFFNHC
+    timestamp: 2026-07-17T06:03:58.690Z
 examined_commit: c192d23e11c8934a924982e25f6cae10d3143e2d
 external_links: []
 lifecycle_state: open
@@ -345,7 +352,28 @@ threads:
           instead of command-name absence.
         created_at: 2026-07-17T06:03:30.881Z
     kind: blocker
+  - _ulid: 01KXQASBJ6YBGBJJ4Y1FFFFNHC
+    entries:
+      - _ulid: 01KXQASBJ7FC9Q737VNEJ0HSS3
+        author: Jacob Chapel
+        body: "Review evidence log — informational. Files read: all four changed files via complete
+          TypeScript review and structured audits of both JSON fixtures; cycle-4 delta; all prior
+          review threads and fix replies; task, owned specs, plan, source schemas/helpers/routes,
+          workflows, and actual fixture consumers. Commands run: git diff/log/status/diff-check and
+          ancestry checks; kspec task/item/plan/review queries; jq inventory audits; rg
+          consumer/source audits; depth-1 clone reproduction; format, repo/focused lint, typecheck,
+          fresh focused tests, fresh full npm test, and refs/alignment/completeness validations.
+          Claims verified: all five cycle-4 edits are present; full-history ancestry and
+          cardinalities 140/253/21 are correct; focused 84/84 and full 10958 passing/3 skipped
+          reproduced; shallow release compatibility fails; fixture ownership metadata is false for
+          multi-dir and E2E plan fixtures. Categories searched: correctness, shallow/post-merge
+          integration, edge cases, error handling, safety/security, test integrity, AC alignment,
+          staleness, source traceability, inventory metadata, and scope completeness. Shared/package
+          guidance surfaces touched: none, so shared-guidance-neutrality directions are not
+          triggered and no generated refresh is required."
+        created_at: 2026-07-17T06:03:58.407Z
+    kind: nit
 verdicts: []
 created_at: 2026-07-17T05:43:16.795Z
-updated_at: 2026-07-17T06:03:30.881Z
+updated_at: 2026-07-17T06:03:58.407Z
 notes: []
