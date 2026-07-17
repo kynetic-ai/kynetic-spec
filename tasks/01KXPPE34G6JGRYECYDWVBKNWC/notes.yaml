@@ -41,3 +41,11 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-07-17T10:02:31.151Z
+  - _ulid: 01KXQRW6D4XGC9Z0Z6GYHAT2WA
+    content: "Fix cycle 1 approach: preserve Task 7 ownership of the six staged inventory records while
+      updating the inventory fixture's tracked Markdown total for this newly tracked guide. Re-run
+      the previously failing inventory suite first, then all task and project quality gates; reply
+      to and resolve both review threads before resubmission."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-07-17T10:10:11.492Z
