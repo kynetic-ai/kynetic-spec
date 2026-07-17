@@ -430,6 +430,24 @@ events:
         content_hash: ""
       decision: request_changes
     timestamp: 2026-07-17T10:51:26.765Z
+  - _ulid: 01KXQVA73YDME5JGFET3WGKCAX
+    actor: pr-reviewer
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KXQV7CE7C32EWFW6JP41HGWG
+    timestamp: 2026-07-17T10:52:48.127Z
+  - _ulid: 01KXQVAAM3TX99JW3BJ7K0SXDX
+    actor: pr-reviewer
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KXQV7FNY0THWW2DS1M0EHJBZ
+    timestamp: 2026-07-17T10:52:51.715Z
+  - _ulid: 01KXQVAE287PWG0TWWXQWBV0T0
+    actor: pr-reviewer
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KXQV7M3CNAH0PK8D6EWE3KFD
+    timestamp: 2026-07-17T10:52:55.240Z
 examined_commit: 7c2bc80a30fb9a4f726938960bf1dc60224195d9
 external_links: []
 lifecycle_state: closed
@@ -532,6 +550,8 @@ threads:
           repository, without claiming they necessarily are outside."
         created_at: 2026-07-17T10:51:15.271Z
     kind: blocker
+    resolved_at: 2026-07-17T10:52:47.847Z
+    resolved_by: pr-reviewer
   - _ulid: 01KXQV7FNY0THWW2DS1M0EHJBZ
     anchor:
       type: code
@@ -554,6 +574,8 @@ threads:
           failures."
         created_at: 2026-07-17T10:51:18.590Z
     kind: blocker
+    resolved_at: 2026-07-17T10:52:51.430Z
+    resolved_by: pr-reviewer
   - _ulid: 01KXQV7M3CNAH0PK8D6EWE3KFD
     entries:
       - _ulid: 01KXQV7M3CY9TFBQ7MFXZK115S
@@ -578,6 +600,8 @@ threads:
           found after expanded search."
         created_at: 2026-07-17T10:51:23.116Z
     kind: nit
+    resolved_at: 2026-07-17T10:52:54.984Z
+    resolved_by: pr-reviewer
 verdicts:
   - applies_to_version:
       type: entity_version
@@ -594,5 +618,5 @@ verdicts:
     role: reviewer
     created_at: 2026-07-17T10:51:26.764Z
 created_at: 2026-07-17T10:30:45.018Z
-updated_at: 2026-07-17T10:51:26.764Z
+updated_at: 2026-07-17T10:52:54.984Z
 notes: []
