@@ -1,15 +1,21 @@
 import { execFileSync } from "node:child_process";
 import { existsSync } from "node:fs";
-import { dirname, resolve } from "node:path";
+import { writeFile } from "node:fs/promises";
+import { dirname, join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import { afterAll, afterEach, beforeAll, describe, expect, it, vi } from "vitest";
+import * as YAML from "yaml";
 import factsFixture from "./fixtures/dispatch-operator-facts.json" with { type: "json" };
 import {
   KspecConfigSchema,
   getDefaultConfig,
   resolveDispatchRemoteSync,
 } from "../src/parser/config.js";
-import { AgentDispatchRuleSchema } from "../src/schema/meta.js";
+import {
+  AgentBootstrapStepSchema,
+  AgentDispatchFilterSchema,
+  AgentDispatchRuleSchema,
+} from "../src/schema/meta.js";
 import {
   DispatchCleanupErrorCodeSchema as DurableCleanupErrorCodeSchema,
   DispatchCleanupEntryStatusSchema as DurableCleanupEntryStatusSchema,
@@ -17,15 +23,30 @@ import {
   DispatchCleanupPhaseSchema,
   DispatchControlAuthoritySchema,
   DispatchTaskControlModeSchema,
+  DispatchControlSchema,
   createMissingDispatchControl,
+  type DispatchControl,
 } from "../src/schema/dispatch-control.js";
 import { DISPATCH_CONTROL_FILE, readDispatchControlFile } from "../src/parser/dispatch-control.js";
 import {
+  DispatchEngine,
   assertTaskLifecycleTransition,
   DISPATCH_CONTROL_FAILURE_CODE_BY_PREDICATE,
   resolveGlobalLifecycleTransition,
 } from "../src/agent-runtime/dispatch.js";
-import { loadDispatchBootstrapAuthority } from "../src/agent-runtime/bootstrap.js";
+import * as bootstrapModule from "../src/agent-runtime/bootstrap.js";
+import * as invocationModule from "../src/agent-runtime/invocation.js";
+import * as workspaceModule from "../src/agent-runtime/workspace.js";
+import {
+  DispatchBootstrapError,
+  ensureWorkspaceBootstrap,
+  loadDispatchBootstrapAuthority,
+} from "../src/agent-runtime/bootstrap.js";
+import {
+  provisionDispatchWorkspace,
+  resolveDispatchWorkspaceConfig,
+} from "../src/agent-runtime/workspace.js";
+import { buildTaskRefResolver, normalizeTaskIdentity } from "../src/agent-runtime/task-identity.js";
 import {
   projectDispatchCleanupState,
   type DispatchLifecycleAuthorityStore,
@@ -39,7 +60,7 @@ import {
   DispatchLifecycleStatusSchema,
   DispatchTaskControlStatusSchema,
 } from "../packages/shared/src/api.js";
-import { createProgram } from "../src/cli/index.js";
+import { createProgram, program } from "../src/cli/index.js";
 import {
   extractCommandTree,
   flattenCommandTree,
@@ -49,11 +70,19 @@ import {
 import {
   cleanupTempDir,
   createTempDir,
+  initGitRepo,
   kspec,
   kspecJson,
+  readTestOutput,
   setupTempFixtures,
+  seedSplitTask,
+  testUlid,
+  testUlids,
 } from "./helpers/cli.js";
 import { createAgentDispatchRoutes } from "../dist/daemon/routes/agent-dispatch.js";
+import type { LoadedTask } from "../src/parser/yaml.js";
+import type { Agent } from "../src/schema/meta.js";
+import { ensureSplitBackendRegistered } from "../src/parser/split-backend.js";
 
 const modeState = vi.hoisted(() => ({ staticMode: false }));
 vi.mock("../packages/web-ui/src/lib/stores/mode.svelte", () => ({
@@ -80,6 +109,7 @@ import {
 } from "../packages/web-ui/src/lib/api.js";
 import {
   HARD_STOP_CONFIRMATION,
+  getGlobalActionLabel,
   getGlobalLifecycleActions,
   getTaskLifecycleActions,
 } from "../packages/web-ui/src/lib/dispatch-lifecycle.js";
@@ -88,6 +118,8 @@ const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 const TASK_ID = "01KG0RR6CA45ZT43W2T6HJMVA1";
 const CLEANUP_ID = "01KXH2PXT88X9MSC62MQVY2CW1";
 const NOW = "2026-07-16T12:00:00.000Z";
+const MOCK_KSPEC_CLI = join(ROOT, "tests", "mocks", "kspec-capture-mock.cjs");
+ensureSplitBackendRegistered();
 const EXPECTED_GLOBAL_COMMANDS = [
   "kspec agent dispatch start",
   "kspec agent dispatch pause",
@@ -102,6 +134,275 @@ const EXPECTED_TASK_COMMANDS = [
   "kspec agent dispatch task resume",
   "kspec agent dispatch task stop",
 ] as const;
+
+function git(cwd: string, ...args: string[]): string {
+  return execFileSync("git", args, { cwd, encoding: "utf8" }).trim();
+}
+
+async function seedFactProject(projectDir: string): Promise<void> {
+  initGitRepo(projectDir);
+  await writeFile(join(projectDir, "README.md"), "seed\n", "utf8");
+  git(projectDir, "add", "README.md");
+  git(projectDir, "commit", "-m", "seed");
+  git(projectDir, "branch", "dev");
+  await writeFile(
+    join(projectDir, "kynetic.yaml"),
+    'kynetic: "1.1"\ntitle: Documentation facts\ntask_storage:\n  format: split\n',
+    "utf8",
+  );
+  await writeFile(join(projectDir, "project.tasks.yaml"), "tasks: []\n", "utf8");
+  await writeFile(
+    join(projectDir, "project.plans.yaml"),
+    YAML.stringify({
+      kynetic_plans: "1.0",
+      plans: [
+        {
+          _ulid: testUlids("PLAN", 1)[0],
+          slugs: ["docs-plan"],
+          title: "Docs plan",
+          content: "",
+          status: "active",
+          derived_tasks: [],
+          derived_specs: [],
+          source_path: null,
+          module_ref: null,
+          branch: "dev",
+          created_at: NOW,
+          approved_at: null,
+          completed_at: null,
+          notes: [],
+        },
+      ],
+    }),
+    "utf8",
+  );
+}
+
+function factAgent(bootstrapRun?: string): Agent {
+  return {
+    _ulid: testUlids("AGNT", 1)[0]!,
+    id: "docs-fact-agent",
+    name: "Docs fact agent",
+    capabilities: [],
+    tools: [],
+    conventions: [],
+    dispatch: [],
+    skills: [],
+    concurrency: { max_concurrent: 1 },
+    auto_approve: false,
+    tags: [],
+    ...(bootstrapRun ? { bootstrap: { steps: [{ run: bootstrapRun, roles: ["worker"] }] } } : {}),
+  };
+}
+
+function deferredBarrier() {
+  let enter!: () => void;
+  let release!: () => void;
+  const entered = new Promise<void>((settle) => (enter = settle));
+  const blocked = new Promise<void>((settle) => (release = settle));
+  return { entered, release, arrive: async () => (enter(), blocked) };
+}
+
+class FactLifecycleStore implements DispatchLifecycleAuthorityStore {
+  private publication: {
+    snapshot: DispatchControl;
+    token: { revision: number; commit_oid: string };
+  };
+  private listener: ((publication: this["publication"]) => void) | undefined;
+  readonly operations: string[] = [];
+
+  constructor(snapshot: DispatchControl) {
+    this.publication = {
+      snapshot: DispatchControlSchema.parse(snapshot),
+      token: { revision: snapshot.revision, commit_oid: `fact-${snapshot.revision}` },
+    };
+  }
+
+  setPublicationListener(_key: string, listener: (publication: this["publication"]) => void): void {
+    this.listener = listener;
+  }
+
+  async loadCommitted() {
+    this.operations.push("load committed control");
+    this.listener?.(this.publication);
+    return this.publication;
+  }
+
+  getPublication() {
+    return this.publication;
+  }
+
+  getDegradedReason(): string | null {
+    return null;
+  }
+
+  async mutate(
+    operation: string,
+    mutation: (
+      snapshot: DispatchControl,
+    ) => DispatchControl | null | Promise<DispatchControl | null>,
+  ) {
+    this.operations.push(operation);
+    const next = await mutation(structuredClone(this.publication.snapshot));
+    if (next) this.commit(next);
+    return this.publication;
+  }
+
+  commit(snapshot: DispatchControl): void {
+    const validated = DispatchControlSchema.parse(snapshot);
+    this.publication = {
+      snapshot: validated,
+      token: { revision: validated.revision, commit_oid: `fact-${validated.revision}` },
+    };
+    this.listener?.(this.publication);
+  }
+}
+
+async function createAdmissionHarness(snapshot: DispatchControl) {
+  const projectDir = await createTempDir("dispatch-doc-admission-facts-");
+  initGitRepo(projectDir);
+  await writeFile(join(projectDir, "README.md"), "seed\n", "utf8");
+  git(projectDir, "add", "README.md");
+  git(projectDir, "commit", "-m", "seed");
+  await writeFile(
+    join(projectDir, "kynetic.yaml"),
+    'kynetic: "1.1"\ntitle: Admission facts\ntask_storage:\n  format: split\n',
+    "utf8",
+  );
+  const taskId = testUlid("FACT", 1);
+  await writeFile(
+    join(projectDir, "kynetic.meta.yaml"),
+    YAML.stringify({
+      kynetic_meta: "1.0",
+      agents: [
+        {
+          _ulid: testUlid("AGNT", 2),
+          id: "fact-worker",
+          name: "Fact worker",
+          adapter: "mock-acp",
+          capabilities: [],
+          tools: [],
+          conventions: [],
+          skills: [],
+          auto_approve: false,
+          concurrency: { max_concurrent: 1 },
+          dispatch: [{ on: "task.ready" }],
+        },
+      ],
+    }),
+    "utf8",
+  );
+  seedSplitTask(projectDir, {
+    _ulid: taskId,
+    type: "task",
+    title: "Admission fact task",
+    slugs: ["admission-fact-task"],
+    status: "pending",
+    priority: 1,
+    automation: "eligible",
+    depends_on: [],
+    blocked_by: [],
+    tags: [],
+    notes: [],
+    created_at: NOW,
+  });
+
+  const store = new FactLifecycleStore(snapshot);
+  const metadata = {
+    workspaceId: "fact-workspace",
+    taskId,
+    taskRef: `@${taskId}`,
+    taskSlug: "admission-fact-task",
+    baseBranch: "main",
+    baseBranchPoint: git(projectDir, "rev-parse", "HEAD"),
+    mergeTargetBranch: "main",
+    integrationTargetBranch: "main",
+    canonicalBranch: "dispatch/task/admission-fact-task/fact",
+    canonicalBranchHead: git(projectDir, "rev-parse", "HEAD"),
+    publicationMode: "manual_merge",
+    lifecycleState: "ready",
+    activeRole: null,
+    workerWorktreeDir: projectDir,
+    reviewerWorktreeDir: null,
+    worktreeRoot: join(projectDir, ".worktrees"),
+    bootstrap: {
+      status: "ready",
+      lastRole: "worker",
+      roleStates: {
+        worker: { status: "ready", steps: [], invalidationReasons: [] },
+        reviewer: { status: "not_run", steps: [], invalidationReasons: [] },
+      },
+    },
+  };
+  const provisioned = {
+    cwd: projectDir,
+    metadataPath: join(projectDir, ".kspec-dispatch-workspace.json"),
+    metadata: metadata as never,
+  };
+  vi.spyOn(workspaceModule, "reconcileDispatchWorkspaceRegistry").mockResolvedValue();
+  vi.spyOn(workspaceModule, "reconcileDispatchWorkspaceArtifacts").mockResolvedValue();
+  vi.spyOn(workspaceModule, "reconcileDispatchWorkspaceLifecycle").mockResolvedValue();
+  vi.spyOn(workspaceModule, "provisionDispatchWorkspace").mockResolvedValue(provisioned);
+  vi.spyOn(workspaceModule, "markDispatchWorkspaceActive").mockResolvedValue(provisioned);
+  vi.spyOn(workspaceModule, "markDispatchWorkspaceIdle").mockResolvedValue(provisioned);
+  vi.spyOn(bootstrapModule, "ensureWorkspaceBootstrap").mockResolvedValue({
+    metadata: metadata as never,
+    reused: true,
+    ranSteps: false,
+  });
+
+  const gate = deferredBarrier();
+  let gated = false;
+  const events: string[] = [];
+  const artifacts: string[] = [];
+  vi.spyOn(invocationModule, "runInvocation").mockImplementation(async (options) => {
+    events.push("invocation candidate");
+    if (gated) await gate.arrive();
+    const handoff = await options.beforeCreate?.();
+    if (!handoff) throw new Error("admission fact omitted handoff");
+    artifacts.push(handoff.taskId ?? "");
+    await options.onOwnershipPersisted?.({
+      invocation_id: handoff.invocationId,
+      session_id: handoff.sessionId,
+      task_id: handoff.taskId,
+      agent_id: handoff.agentId,
+      adapter: handoff.adapter,
+      owner_instance_id: handoff.ownerInstanceId,
+      pid: process.pid,
+      pgid: process.pid,
+      process_start_ticks: "1",
+      process_identity_platform: "linux_proc_stat_v1",
+      captured_at: NOW,
+      group_members: [{ pid: process.pid, process_start_ticks: "1" }],
+    });
+    return { session: {} as never, outcome: "success", durationMs: 1, turnCount: 1 };
+  });
+  const engine = new DispatchEngine({
+    projectDir,
+    specDir: projectDir,
+    kspecCliPath: MOCK_KSPEC_CLI,
+    reconcileIntervalMs: 0,
+    coalesceWindowMs: 0,
+    lifecycleStore: store,
+    stopRecoveryRuntime: {
+      readProcess: async () => null,
+      listProcessGroup: async () => [],
+      signalProcessGroup: async () => undefined,
+      waitForProcessGroupExit: async () => true,
+      closeSession: async () => undefined,
+    },
+  });
+  return {
+    projectDir,
+    taskId,
+    store,
+    engine,
+    gate,
+    events,
+    artifacts,
+    enableGate: () => (gated = true),
+  };
+}
 
 interface DispatchFacts {
   evidence: {
@@ -172,13 +473,29 @@ function normalizedHelp(value: string): string {
   return value.replace(/\s+/g, " ").trim();
 }
 
+function fullReferenceBlocks(stdout: string): Map<string, string> {
+  const lines = stdout.split(/\r?\n/);
+  const blocks = new Map<string, string>();
+  for (let index = 0; index < lines.length; index++) {
+    const heading = lines[index]!;
+    if (!heading.startsWith("kspec ")) continue;
+    let end = index + 1;
+    while (end < lines.length && !lines[end]!.startsWith("kspec ")) end++;
+    blocks.set(normalizedHelp(heading), normalizedHelp(lines.slice(index, end).join("\n")));
+  }
+  return blocks;
+}
+
 function expectFullReferenceMetadata(stdout: string, commands: CommandMeta[]): void {
-  const normalized = normalizedHelp(stdout);
+  const blocks = fullReferenceBlocks(stdout);
   for (const command of commands.filter((candidate) => candidate.name !== "kspec")) {
-    expect(normalized).toContain(normalizedHelp(formatCommandUsage(command)));
-    if (command.description) expect(normalized).toContain(normalizedHelp(command.description));
+    const usage = normalizedHelp(formatCommandUsage(command));
+    const block = blocks.get(usage);
+    expect(block, `missing command-scoped help block for ${usage}`).toBeDefined();
+    if (!block) continue;
+    if (command.description) expect(block).toContain(normalizedHelp(command.description));
     for (const option of command.options) {
-      expect(normalized).toContain(normalizedHelp(`${option.flags} ${option.description}`));
+      expect(block).toContain(normalizedHelp(`${option.flags} ${option.description}`));
     }
     for (const argument of command.arguments) {
       const marker = argument.required ? `<${argument.name}` : `[${argument.name}`;
@@ -257,14 +574,8 @@ function validateFacts(facts: DispatchFacts): void {
   );
 
   const defaults = getDefaultConfig();
-  expect(facts.workspace.config_keys).toEqual([
-    "base_branch",
-    "worktree_root",
-    "publication_mode",
-    "bootstrap",
-    "sync_interval",
-    "remote_sync",
-  ]);
+  const dispatchConfigSchema = KspecConfigSchema.shape.dispatch.unwrap();
+  expect(facts.workspace.config_keys).toEqual(Object.keys(dispatchConfigSchema.shape));
   expect({
     base_branch: defaults.dispatch.base_branch,
     worktree_root: defaults.dispatch.worktree_root,
@@ -279,51 +590,22 @@ function validateFacts(facts: DispatchFacts): void {
   expect(facts.workspace.worktree_root_resolution).toBe(
     "relative paths resolve from the project root; absolute paths remain absolute",
   );
-  expect(facts.workspace.base_target_precedence).toEqual([
-    "plan branch",
-    "configured dispatch base branch",
-    "remote HEAD",
-    "current branch",
-    "main",
-  ]);
-  expect(facts.workspace.bootstrap.order).toEqual([
-    "project bootstrap",
-    "role-filtered agent bootstrap",
-    "agent prompt",
-  ]);
-  expect(facts.workspace.bootstrap.roles).toEqual(["worker", "reviewer"]);
-  expect(facts.workspace.bootstrap.step_keys).toEqual([
-    "run",
-    "name",
-    "roles",
-    "idempotent",
-    "allow_tracked_changes",
-    "reviewer_rerun_allowed",
-  ]);
-  expect(facts.workspace.bootstrap.scope).toBe("dispatch workspaces only");
-  expect(facts.workspace.bootstrap.tracked_mutation_default).toContain("rejected");
-  expect(facts.workspace.bootstrap.reviewer_behavior).toContain("role-filtered");
-  for (const publication_mode of facts.workspace.publication_modes) {
-    expect(
-      KspecConfigSchema.safeParse({
-        dispatch: {
-          publication_mode,
-          bootstrap: {
-            steps: [
-              {
-                run: "npm ci",
-                roles: ["worker", "reviewer"],
-                idempotent: true,
-                allow_tracked_changes: false,
-                reviewer_rerun_allowed: false,
-              },
-            ],
-          },
-        },
-      }).success,
-    ).toBe(true);
-  }
-  expect(facts.workspace.publication_modes).toEqual(["pull_request", "manual_merge", "auto"]);
+  expect(facts.workspace.base_target_precedence).toEqual({
+    plan_over_configured: true,
+    configured_over_fallback: true,
+  });
+  expect(facts.workspace.publication_modes).toEqual(
+    dispatchConfigSchema.shape.publication_mode.unwrap().options,
+  );
+  expect(facts.workspace.bootstrap.roles).toEqual(
+    AgentBootstrapStepSchema.shape.roles.unwrap().element.options,
+  );
+  expect(facts.workspace.bootstrap.step_keys).toEqual(Object.keys(AgentBootstrapStepSchema.shape));
+  expect(facts.workspace.bootstrap).toMatchObject({
+    project_steps_before_agent_steps: true,
+    tracked_mutation_requires_opt_in: true,
+    reviewer_reruns_only_safe_steps: true,
+  });
   expect(
     AgentDispatchRuleSchema.parse({
       on: "task.ready",
@@ -333,8 +615,8 @@ function validateFacts(facts: DispatchFacts): void {
     on: "task.ready",
     filter: { automation: "eligible", tags: ["docs"], priority: 1 },
   });
-  expect(facts.workspace.rule_keys).toEqual(["on", "filter"]);
-  expect(facts.workspace.rule_filter_keys).toEqual(["automation", "tags", "priority"]);
+  expect(facts.workspace.rule_keys).toEqual(Object.keys(AgentDispatchRuleSchema.shape));
+  expect(facts.workspace.rule_filter_keys).toEqual(Object.keys(AgentDispatchFilterSchema.shape));
   expect(facts.workspace.default_agent_skills).toEqual(defaults.agent.skills);
 
   const exportedCommands = flattenCommandTree(extractCommandTree(createProgram())).map((command) =>
@@ -354,30 +636,46 @@ function validateFacts(facts: DispatchFacts): void {
   expect(resolveGlobalLifecycleTransition(transitionSnapshot, "pause")).toBe("paused");
   expect(resolveGlobalLifecycleTransition(transitionSnapshot, "resume")).toBe("running");
   expect(() => resolveGlobalLifecycleTransition(transitionSnapshot, "start")).toThrow();
-  expect(facts.lifecycle.transitions).toEqual({
-    start: "valid from cleanup-idle stopped",
-    pause: "holds new admission while active work finishes naturally",
-    resume: "valid from paused and reconciles held work subject to task controls",
-    stop: "commits stopped authority before cancelling verified dispatch-owned work",
-  });
-  expect(facts.lifecycle.identity).toEqual({
-    accepted_input: "resolvable task reference alias",
-    durable_key: "canonical task ULID",
-    rejected: ["missing identity", "ambiguous identity", "not found", "ref/id disagreement"],
-    isolation: "unrelated task controls and cleanup remain independent",
-  });
+  const [identityA, identityB] = testUlids("DOCS", 2);
+  const identityResolver = buildTaskRefResolver([
+    { _ulid: identityA, slugs: ["docs-alpha"] } as LoadedTask,
+    { _ulid: identityB, slugs: ["docs-beta"] } as LoadedTask,
+  ]);
+  const acceptedAliases = [
+    ["slug", "@docs-alpha"],
+    ["full ULID", `@${identityA}`],
+    ["unique ULID prefix", `@${identityA.slice(0, 25)}`],
+  ] as const;
+  expect(facts.lifecycle.identity.accepted_aliases).toEqual(
+    acceptedAliases.map(([label]) => label),
+  );
+  for (const [, taskRef] of acceptedAliases) {
+    const result = normalizeTaskIdentity({ taskRef, source: "docs-fact" }, identityResolver);
+    expect(result).toMatchObject({ ok: true, canonicalTaskId: identityA });
+  }
+  const rejectedIdentities = [
+    normalizeTaskIdentity({ source: "docs-fact" }, identityResolver),
+    normalizeTaskIdentity(
+      { taskRef: `@${identityA.slice(0, 10)}`, source: "docs-fact" },
+      identityResolver,
+    ),
+    normalizeTaskIdentity({ taskRef: "@missing", source: "docs-fact" }, identityResolver),
+    normalizeTaskIdentity(
+      { taskId: identityA, taskRef: "@docs-beta", source: "docs-fact" },
+      identityResolver,
+    ),
+  ];
+  expect(rejectedIdentities.every((result) => !result.ok)).toBe(true);
+  expect(rejectedIdentities.map((result) => (result.ok ? "" : result.code))).toEqual(
+    facts.lifecycle.identity.rejection_codes,
+  );
+  expect(facts.lifecycle.identity.durable_key).toBe("canonical task ULID");
   expect(facts.lifecycle.durability.path).toBe(`.kspec/${DISPATCH_CONTROL_FILE}`);
-  expect(facts.lifecycle.durability.startup_order).toEqual([
-    "load committed control",
-    "retry matching pending cleanup",
-    "schedule bootstrap/admission",
-  ]);
-  expect(facts.lifecycle.durability.final_admission_rechecks).toEqual([
-    "global authority",
-    "canonical task authority",
-  ]);
-  expect(facts.lifecycle.durability.readiness_mutated).toBe(false);
-  expect(facts.lifecycle.durability.degraded_targets_mutated).toBe(false);
+  expect(facts.lifecycle.durability).toMatchObject({
+    startup_loads_committed_authority: true,
+    pending_cleanup_is_durable: true,
+    final_admission_checks_global_and_task_authority: true,
+  });
 
   expect(facts.lifecycle.global_actions).toEqual({
     stopped: ["start"],
@@ -541,20 +839,48 @@ function validateFacts(facts: DispatchFacts): void {
   });
   expect(HARD_STOP_CONFIRMATION.description).toContain("evidence will be preserved");
   expect(facts.ui.hard_stop_confirmation).toBe(true);
-  if (facts.ui.visible_evidence.length === 0) throw new Error("missing UI fact");
-  expect(facts.ui.accessibility).toEqual([
-    "labelled lifecycle controls",
-    "focus retained after actions",
-    "polite status announcements",
-    "assertive failure announcements",
+  expect(facts.ui.status_evidence_fields).toEqual([
+    "activeCount",
+    "queueDepth",
+    "heldCount",
+    "cleanupState",
+    "degradedTargets",
   ]);
-  expect(facts.ui.visible_evidence).toEqual([
-    "active",
-    "queued",
-    "held",
-    "cleanup",
-    "degraded targets",
-  ]);
+  for (const field of facts.ui.status_evidence_fields) {
+    expect(uiStatus).toHaveProperty(field);
+  }
+  const runningUiStatus = {
+    ...uiStatus,
+    globalAuthority: "running" as const,
+    projection: "running" as const,
+  };
+  const stoppedUiStatus = {
+    ...uiStatus,
+    globalAuthority: "stopped" as const,
+    projection: "stopped" as const,
+    cleanupState: { status: "idle" as const, entries: [] },
+  };
+  const cleanupUiStatus = {
+    ...stoppedUiStatus,
+    cleanupState: {
+      status: "pending" as const,
+      entries: [
+        {
+          cleanupId: CLEANUP_ID,
+          scope: "global" as const,
+          status: "pending" as const,
+          phase: "owned" as const,
+        },
+      ],
+    },
+  };
+  expect(facts.ui.accessibility).toEqual({
+    running_pause_label: getGlobalActionLabel(runningUiStatus, "pause"),
+    running_stop_label: getGlobalActionLabel(runningUiStatus, "stop"),
+    paused_resume_label: getGlobalActionLabel(uiStatus, "resume"),
+    stopped_start_label: getGlobalActionLabel(stoppedUiStatus, "start"),
+    cleanup_retry_label: getGlobalActionLabel(cleanupUiStatus, "stop"),
+  });
   expect(facts.ui.static_mode).toBe("stopped and read-only");
 
   const eventNames = Object.keys(EVENT_PAYLOAD_SCHEMAS)
@@ -628,19 +954,20 @@ function validateFacts(facts: DispatchFacts): void {
 
   expect(facts.limitations).toEqual([
     "pause is a graceful admission hold; stop is hard stop",
-    "no checkpointing",
-    "no distributed scheduler",
-    "no exact durable FIFO promise",
     "no workspace deletion or reset command",
-    "no control of arbitrary one-shot processes",
-    "one-shot kspec agent run is outside lifecycle control unless dispatch-owned",
-    "recovery may remain pending when ownership, process birth, or group identity cannot be proven",
-    "remote branch synchronization remains incomplete and must be documented as limited where not behaviorally proven",
-    "lifecycle controls do not delete workspaces",
+    "one-shot kspec agent run is separate from dispatch lifecycle control",
+    "failed ownership verification remains represented as retryable cleanup",
   ]);
+  expect(facts.lifecycle.global_actions.running).toEqual(["pause", "stop"]);
   expect(exportedCommands.some((command) => /workspace (?:delete|reset)/.test(command))).toBe(
     false,
   );
+  expect(exportedCommands).toContain("kspec agent run");
+  expect(exportedCommands).not.toContain("kspec agent dispatch run");
+  expect(scopedCleanup.pending_cleanup.global).toMatchObject({
+    status: "failed",
+    error_code: "cancellation_timeout",
+  });
 }
 
 function cloneFacts(): DispatchFacts {
@@ -661,6 +988,7 @@ describe("dispatch operator fact fixture", () => {
   afterEach(() => {
     modeState.staticMode = false;
     vi.unstubAllGlobals();
+    vi.restoreAllMocks();
   });
 
   // AC: @auto-cli-docs ac-3
@@ -682,6 +1010,255 @@ describe("dispatch operator fact fixture", () => {
   it("captures structured JSON help from an explicit fixture cwd", () => {
     const output = kspecJson<{ commands: CommandMeta }>("help --json", fixtureDir);
     expect(output.commands).toEqual(jsonRoundTrip(extractCommandTree(createProgram())));
+  });
+
+  it("binds workspace path and plan/config target precedence to provisioning behavior", async () => {
+    const projectDir = await createTempDir("dispatch-doc-workspace-facts-");
+    try {
+      await seedFactProject(projectDir);
+      await writeFile(
+        join(projectDir, "kspec.config.yaml"),
+        "dispatch:\n  base_branch: main\n  worktree_root: relative/worktrees\n",
+        "utf8",
+      );
+      const configured = await resolveDispatchWorkspaceConfig(projectDir);
+      const planScoped = await resolveDispatchWorkspaceConfig(projectDir, {
+        taskRef: "@docs-task",
+        task: { title: "Docs task", slugs: ["docs-task"], plan_ref: "@docs-plan" },
+      });
+      expect(configured).toMatchObject({
+        baseBranch: "main",
+        baseBranchSource: "configured",
+        worktreeRoot: join(projectDir, "relative", "worktrees"),
+      });
+      expect(planScoped).toMatchObject({ baseBranch: "dev", baseBranchSource: "plan" });
+      expect(factsFixture.workspace.base_target_precedence).toEqual({
+        plan_over_configured: true,
+        configured_over_fallback: true,
+      });
+
+      const absoluteRoot = join(projectDir, "absolute-worktrees");
+      await writeFile(
+        join(projectDir, "kspec.config.yaml"),
+        `dispatch:\n  base_branch: main\n  worktree_root: ${JSON.stringify(absoluteRoot)}\n`,
+        "utf8",
+      );
+      expect((await resolveDispatchWorkspaceConfig(projectDir)).worktreeRoot).toBe(absoluteRoot);
+      expect(factsFixture.workspace.worktree_root_resolution).toBe(
+        "relative paths resolve from the project root; absolute paths remain absolute",
+      );
+    } finally {
+      await cleanupTempDir(projectDir);
+    }
+  });
+
+  it("binds bootstrap ordering, role filtering, and mutation safety to executed steps", async () => {
+    const projectDir = await createTempDir("dispatch-doc-bootstrap-facts-");
+    try {
+      await seedFactProject(projectDir);
+      await writeFile(
+        join(projectDir, "kspec.config.yaml"),
+        [
+          "dispatch:",
+          "  base_branch: main",
+          "  worktree_root: .worktrees",
+          "  bootstrap:",
+          "    steps:",
+          "      - run: mkdir -p .facts && printf 'project\\n' >> .facts/order",
+          "        roles: [worker]",
+        ].join("\n"),
+        "utf8",
+      );
+      const taskId = testUlids("TASK", 1)[0]!;
+      const workspace = await provisionDispatchWorkspace({
+        projectDir,
+        taskRef: `@${taskId}`,
+        task: { title: "Bootstrap facts", slugs: ["bootstrap-facts"] },
+      });
+      const result = await ensureWorkspaceBootstrap({
+        projectDir,
+        workspaceDir: workspace.cwd,
+        metadataPath: workspace.metadataPath,
+        metadata: workspace.metadata,
+        role: "worker",
+        agent: factAgent("mkdir -p .facts && printf 'agent\\n' >> .facts/order"),
+        env: {},
+      });
+      expect(await readTestOutput(join(workspace.cwd, ".facts", "order"))).toBe("project\nagent\n");
+      expect(result.ranSteps).toBe(true);
+      expect(factsFixture.workspace.bootstrap.project_steps_before_agent_steps).toBe(true);
+
+      await writeFile(
+        join(projectDir, "kspec.config.yaml"),
+        [
+          "dispatch:",
+          "  base_branch: main",
+          "  worktree_root: .worktrees",
+          "  bootstrap:",
+          "    steps:",
+          "      - run: printf changed >> README.md",
+        ].join("\n"),
+        "utf8",
+      );
+      const unsafeTaskId = testUlids("TASK", 2)[1]!;
+      const unsafeWorkspace = await provisionDispatchWorkspace({
+        projectDir,
+        taskRef: `@${unsafeTaskId}`,
+        task: { title: "Unsafe bootstrap", slugs: ["unsafe-bootstrap"] },
+      });
+      await expect(
+        ensureWorkspaceBootstrap({
+          projectDir,
+          workspaceDir: unsafeWorkspace.cwd,
+          metadataPath: unsafeWorkspace.metadataPath,
+          metadata: unsafeWorkspace.metadata,
+          role: "worker",
+          agent: factAgent(),
+          env: {},
+        }),
+      ).rejects.toBeInstanceOf(DispatchBootstrapError);
+      expect(factsFixture.workspace.bootstrap.tracked_mutation_requires_opt_in).toBe(true);
+
+      const reviewerTaskId = testUlids("TASK", 3)[2]!;
+      const reviewerWorkspace = await provisionDispatchWorkspace({
+        projectDir,
+        taskRef: `@${reviewerTaskId}`,
+        role: "reviewer",
+        task: { title: "Reviewer bootstrap", slugs: ["reviewer-bootstrap"] },
+      });
+      await expect(
+        ensureWorkspaceBootstrap({
+          projectDir,
+          workspaceDir: reviewerWorkspace.cwd,
+          metadataPath: reviewerWorkspace.metadataPath,
+          metadata: reviewerWorkspace.metadata,
+          role: "reviewer",
+          agent: factAgent(),
+          env: {},
+        }),
+      ).rejects.toBeInstanceOf(DispatchBootstrapError);
+      expect(factsFixture.workspace.bootstrap.reviewer_reruns_only_safe_steps).toBe(true);
+    } finally {
+      await cleanupTempDir(projectDir);
+    }
+  });
+
+  it("retries durable startup cleanup before admitting queued work", async () => {
+    const snapshot = createMissingDispatchControl();
+    snapshot.global.authority = "running";
+    snapshot.pending_cleanup.global = {
+      cleanup_id: CLEANUP_ID,
+      status: "pending",
+      phase: "signals_sent",
+      targets: [
+        {
+          invocation_id: "startup-cleanup-invocation",
+          session_id: "startup-cleanup-session",
+          task_id: null,
+          agent_id: "fact-worker",
+          adapter: "mock-acp",
+          owner_instance_id: "startup-owner",
+          pid: null,
+          pgid: null,
+          process_start_ticks: null,
+          process_identity_platform: "unverifiable",
+          captured_at: NOW,
+          group_members: [],
+          session_metadata_path: ".kspec-sessions/startup-cleanup-session/session.yaml",
+        },
+      ],
+    };
+    const harness = await createAdmissionHarness(snapshot);
+    try {
+      await harness.engine.start();
+      expect(harness.store.getPublication().snapshot.pending_cleanup.global).toBeUndefined();
+      await harness.engine.handleStateChange({
+        taskId: harness.taskId,
+        taskRef: `@${harness.taskId}`,
+        fromStatus: "in_progress",
+        toStatus: "pending",
+        timestamp: Date.now(),
+        task: {
+          _ulid: harness.taskId,
+          type: "task",
+          title: "Admission fact task",
+          slugs: ["admission-fact-task"],
+          status: "pending",
+          priority: 1,
+          automation: "eligible",
+          depends_on: [],
+          blocked_by: [],
+          tags: [],
+          notes: [],
+          context: [],
+          vcs_refs: [],
+          todos: [],
+          created_at: NOW,
+        } as never,
+      });
+      await vi.waitFor(() => expect(harness.artifacts.length).toBeGreaterThan(0));
+      expect(new Set(harness.artifacts)).toEqual(new Set([harness.taskId]));
+      expect(harness.store.operations[0]).toBe("load committed control");
+      expect(harness.store.operations.some((operation) => operation.includes("cleanup"))).toBe(
+        true,
+      );
+      expect(factsFixture.lifecycle.durability).toMatchObject({
+        startup_loads_committed_authority: true,
+        pending_cleanup_is_durable: true,
+      });
+    } finally {
+      harness.gate.release();
+      await harness.engine.stop().catch(() => undefined);
+      await cleanupTempDir(harness.projectDir);
+    }
+  });
+
+  it.each(["global", "task"] as const)(
+    "rechecks %s authority at the final process/session admission boundary",
+    async (scope) => {
+      const snapshot = createMissingDispatchControl();
+      snapshot.global.authority = "running";
+      const harness = await createAdmissionHarness(snapshot);
+      harness.enableGate();
+      try {
+        const starting = harness.engine.start();
+        await harness.gate.entered;
+        if (scope === "global") {
+          await harness.engine.applyGlobalLifecycleAction("pause");
+        } else {
+          await harness.engine.applyTaskLifecycleAction("pause", { taskId: harness.taskId });
+        }
+        expect(harness.artifacts).toEqual([]);
+        expect(
+          factsFixture.lifecycle.durability.final_admission_checks_global_and_task_authority,
+        ).toBe(true);
+        harness.gate.release();
+        await starting;
+        await vi.waitFor(() => expect(harness.engine.getLifecycleStatus().activeCount).toBe(0));
+        expect(harness.artifacts).toEqual([]);
+      } finally {
+        harness.gate.release();
+        await harness.engine.stop().catch(() => undefined);
+        await cleanupTempDir(harness.projectDir);
+      }
+    },
+  );
+
+  // AC: @auto-cli-docs ac-5
+  it("discovers a newly registered subcommand in observable parent help", async () => {
+    const parent = program.command("documentation-fixture").description("Documentation fixture");
+    parent.command("new-child").description("Newly registered child");
+    const log = vi.spyOn(console, "log").mockImplementation(() => undefined);
+    try {
+      await program.parseAsync(["help", "documentation-fixture"], { from: "user" });
+      const stdout = log.mock.calls.map(([line]) => String(line)).join("\n");
+      expect(stdout).toContain("Commands:");
+      expect(stdout).toContain("new-child");
+      expect(stdout).toContain("Newly registered child");
+    } finally {
+      program.commands.splice(program.commands.indexOf(parent), 1);
+      log.mockRestore();
+    }
   });
 
   it("matches configuration, lifecycle, API, UI, event, safety, and limitation facts", () => {
@@ -709,8 +1286,8 @@ describe("dispatch operator fact fixture", () => {
     expect(() => validateFacts(missingApi)).toThrow(/missing API fact/);
 
     const missingUi = cloneFacts();
-    missingUi.ui.visible_evidence = [];
-    expect(() => validateFacts(missingUi)).toThrow(/missing UI fact/);
+    missingUi.ui.status_evidence_fields = [];
+    expect(() => validateFacts(missingUi)).toThrow();
 
     const wire = publicStatusWire();
     const cleanup = DispatchLifecycleStatusSchema.parse({
@@ -751,11 +1328,11 @@ describe("dispatch operator fact fixture", () => {
     }
 
     const calls: string[] = [];
-    const snapshot = createMissingDispatchControl();
+    const snapshot = cleanupSnapshot();
     const store: DispatchLifecycleAuthorityStore = {
       setPublicationListener: () => undefined,
       loadCommitted: async () => {
-        calls.push("load committed control");
+        calls.push("load");
         return { snapshot, token: { revision: 0, commit_oid: "test" } };
       },
       getPublication: () => ({ snapshot, token: { revision: 0, commit_oid: "test" } }),
@@ -765,7 +1342,12 @@ describe("dispatch operator fact fixture", () => {
     expect((await loadDispatchBootstrapAuthority(store)).snapshot.global.authority).toBe(
       factsFixture.lifecycle.missing_state_default,
     );
-    expect(calls).toEqual([factsFixture.lifecycle.durability.startup_order[0]]);
+    expect(calls).toEqual(["load"]);
+    expect(factsFixture.lifecycle.durability.startup_loads_committed_authority).toBe(true);
+    expect(projectDispatchCleanupState((await store.loadCommitted()).snapshot).status).toBe(
+      "failed",
+    );
+    expect(factsFixture.lifecycle.durability.pending_cleanup_is_durable).toBe(true);
   });
 
   it("binds canonical API and static UI facts to observable public helpers", async () => {
@@ -840,9 +1422,12 @@ describe("dispatch operator fact fixture", () => {
   it("rejects stale facts in every structured fact group", () => {
     const mutations: Array<[string, (facts: DispatchFacts) => void]> = [
       ["evidence", (facts) => (facts.evidence.integration_target_at_freeze = "0".repeat(40))],
-      ["workspace", (facts) => (facts.workspace.bootstrap.scope = "all workspaces")],
+      [
+        "workspace",
+        (facts) => (facts.workspace.bootstrap.project_steps_before_agent_steps = false),
+      ],
       ["command tree", (facts) => facts.command_tree.help_modes.pop()],
-      ["transitions", (facts) => (facts.lifecycle.transitions.pause = "checkpoint active work")],
+      ["identity", (facts) => facts.lifecycle.identity.accepted_aliases.pop()],
       ["durability", (facts) => (facts.lifecycle.durability.path = ".kspec/other.yaml")],
       ["status fields", (facts) => facts.lifecycle.held_task_fields.pop()],
       ["cleanup", (facts) => (facts.lifecycle.cleanup.aggregate_is_observability_only = false)],

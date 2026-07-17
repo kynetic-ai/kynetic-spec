@@ -95,15 +95,11 @@
     "publication_modes": ["pull_request", "manual_merge", "auto"],
     "remote_sync_default": "enabled exactly when a remote exists",
     "worktree_root_resolution": "relative paths resolve from the project root; absolute paths remain absolute",
-    "base_target_precedence": [
-      "plan branch",
-      "configured dispatch base branch",
-      "remote HEAD",
-      "current branch",
-      "main"
-    ],
+    "base_target_precedence": {
+      "plan_over_configured": true,
+      "configured_over_fallback": true
+    },
     "bootstrap": {
-      "order": ["project bootstrap", "role-filtered agent bootstrap", "agent prompt"],
       "roles": ["worker", "reviewer"],
       "step_keys": [
         "run",
@@ -113,9 +109,9 @@
         "allow_tracked_changes",
         "reviewer_rerun_allowed"
       ],
-      "scope": "dispatch workspaces only",
-      "tracked_mutation_default": "rejected unless the step explicitly allows tracked changes",
-      "reviewer_behavior": "reviewer steps are role-filtered and previously successful idempotent work is reused unless rerun is allowed"
+      "project_steps_before_agent_steps": true,
+      "tracked_mutation_requires_opt_in": true,
+      "reviewer_reruns_only_safe_steps": true
     },
     "rule_keys": ["on", "filter"],
     "rule_filter_keys": ["automation", "tags", "priority"],
@@ -161,28 +157,21 @@
       "stopped": ["resume"],
       "stopped_with_cleanup": ["stop"]
     },
-    "transitions": {
-      "start": "valid from cleanup-idle stopped",
-      "pause": "holds new admission while active work finishes naturally",
-      "resume": "valid from paused and reconciles held work subject to task controls",
-      "stop": "commits stopped authority before cancelling verified dispatch-owned work"
-    },
     "identity": {
-      "accepted_input": "resolvable task reference alias",
+      "accepted_aliases": ["slug", "full ULID", "unique ULID prefix"],
       "durable_key": "canonical task ULID",
-      "rejected": ["missing identity", "ambiguous identity", "not found", "ref/id disagreement"],
-      "isolation": "unrelated task controls and cleanup remain independent"
+      "rejection_codes": [
+        "missing-task-identity",
+        "ambiguous-task-ref",
+        "unresolved-task-ref",
+        "task-id-ref-mismatch"
+      ]
     },
     "durability": {
       "path": ".kspec/dispatch-control.yaml",
-      "startup_order": [
-        "load committed control",
-        "retry matching pending cleanup",
-        "schedule bootstrap/admission"
-      ],
-      "final_admission_rechecks": ["global authority", "canonical task authority"],
-      "readiness_mutated": false,
-      "degraded_targets_mutated": false
+      "startup_loads_committed_authority": true,
+      "pending_cleanup_is_durable": true,
+      "final_admission_checks_global_and_task_authority": true
     },
     "status_fields": [
       "global_authority",
@@ -263,13 +252,20 @@
       "stopped": ["start"]
     },
     "hard_stop_confirmation": true,
-    "accessibility": [
-      "labelled lifecycle controls",
-      "focus retained after actions",
-      "polite status announcements",
-      "assertive failure announcements"
+    "accessibility": {
+      "running_pause_label": "Pause",
+      "running_stop_label": "Hard stop",
+      "paused_resume_label": "Resume",
+      "stopped_start_label": "Start",
+      "cleanup_retry_label": "Retry hard stop"
+    },
+    "status_evidence_fields": [
+      "activeCount",
+      "queueDepth",
+      "heldCount",
+      "cleanupState",
+      "degradedTargets"
     ],
-    "visible_evidence": ["active", "queued", "held", "cleanup", "degraded targets"],
     "static_mode": "stopped and read-only"
   },
   "events": {
@@ -326,14 +322,8 @@
   },
   "limitations": [
     "pause is a graceful admission hold; stop is hard stop",
-    "no checkpointing",
-    "no distributed scheduler",
-    "no exact durable FIFO promise",
     "no workspace deletion or reset command",
-    "no control of arbitrary one-shot processes",
-    "one-shot kspec agent run is outside lifecycle control unless dispatch-owned",
-    "recovery may remain pending when ownership, process birth, or group identity cannot be proven",
-    "remote branch synchronization remains incomplete and must be documented as limited where not behaviorally proven",
-    "lifecycle controls do not delete workspaces"
+    "one-shot kspec agent run is separate from dispatch lifecycle control",
+    "failed ownership verification remains represented as retryable cleanup"
   ]
 }

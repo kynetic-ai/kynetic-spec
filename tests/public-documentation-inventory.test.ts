@@ -243,10 +243,17 @@ describe("public documentation inventory", () => {
       const firstParagraph = markdown.split(/\n\s*\n/)[1]?.trim();
       const links = landingLinks(markdown);
       const declaredOrder = manifestFixture.section_reading_order[section];
+      const pendingLinks = new Set(
+        manifestFixture.construction_pending_additions
+          .filter((path) => path.startsWith(`docs/${section}/`))
+          .map((path) => `./${path.slice(`docs/${section}/`.length)}`),
+      );
       expect(firstParagraph).toBeTruthy();
       expect(new Set(links).size).toBe(links.length);
-      expect(links).toEqual(declaredOrder);
-      expect(new Set(declaredOrder)).toEqual(sectionChildPaths(section, entries));
+      expect(links.filter((link) => !pendingLinks.has(link))).toEqual(declaredOrder);
+      expect(new Set(declaredOrder)).toEqual(
+        new Set([...sectionChildPaths(section, entries)].filter((path) => !pendingLinks.has(path))),
+      );
     },
   );
 
@@ -256,7 +263,6 @@ describe("public documentation inventory", () => {
     expect(commandSurfaceIds().filter((id) => !ids.has(id))).toEqual([]);
   });
 
-  // AC: @auto-cli-docs ac-5
   it("rejects a missing command node without a hand-maintained command allowlist", () => {
     const fixture = cloneFixture();
     fixture.records = fixture.records.filter(
