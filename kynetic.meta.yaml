@@ -24312,6 +24312,28 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-07-17T06:08:40.345Z
+  - _ulid: 01KXQD1G6MVRNA36HWAY4K2PPX
+    type: friction
+    content: "Autonomous session reflection baseline does not scale: session-reflect-loop mandates
+      unfiltered observation, inbox, and task lists before candidate identification. In this session
+      observations alone returned 2,113 entries and roughly 267k tokens, truncating the combined
+      output and preventing reliable inspection. The workflow needs a bounded summary, pagination,
+      or candidate-first search strategy that still proves all three stores were checked."
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    created_at: 2026-07-17T06:43:22.452Z
+  - _ulid: 01KXQD1GGEGJJ5YNNZR25SD0A5
+    type: success
+    content: Public fact-freeze gates are reliable when each fixture claim is bound to an independently
+      executed or schema-derived authority and paired with a negative mutation. A real depth-1 clone
+      test additionally exposed and then verified the correct handling of unavailable historical
+      commit objects while preserving exact immutable OIDs. This pattern prevents fixtures and
+      documentation inventories from self-validating.
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    created_at: 2026-07-17T06:43:22.767Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
