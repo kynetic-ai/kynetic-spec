@@ -17,3 +17,28 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-07-17T22:11:15.624Z
+  - _ulid: 01KXS4C62C0KFYCD7S85JXTKNJ
+    content: "Implementation complete. Changed surfaces: RELEASE_NOTES.md now records all three v0.12
+      publication modes in historical tense; setup.ts and upgrade.ts scaffold comments point to
+      lifecycle help (upgrade also lists the accepted modes);
+      templates/agents-sections/06-agent-dispatch-mode.md now documents pause, resume, hard stop,
+      canonical-task controls, --force semantics, and help discovery; regenerated kspec-agents.md
+      reflects that source and current project meta; packages/web-ui/README.md now identifies the
+      private internal build package instead of retaining the generic sv scaffold. Tests added to
+      parse the release snippet, compare package guidance to the exported command tree/frozen facts,
+      inspect setup/upgrade scaffold output, and reject the stale web README. Audited with no edit:
+      README.md already provides concise one-click Getting Started/Concepts/Guides links;
+      INSTALL.md, CONTRIBUTING.md, SECURITY.md, and the issue template remain accurate for their
+      audiences. Generated convergence: worktree CLI agents generation reported up-to-date on pass
+      two; skill render/plugin build were run twice, with unrelated asymmetric renderer side effects
+      restored and captured as observation @01KXS2HP. Package-neutrality: direction 1 passes because
+      shared template prose uses only universal lifecycle mechanics, configured project identities,
+      and discovery help—no Kynetic branches, fixed agents, repo toolchain, or external-review
+      policy was added. Direction 2 is N/A: no Kynetic-only instruction was removed; the incorrect
+      universal graceful-stop claim was replaced by source-backed pause/hard-stop semantics.
+      Verification: required focused suite 37 files/137 tests passed; format, repo lint (0 errors),
+      typecheck, plugin build, refs/alignment/completeness validations passed; CI full suite 464
+      files/10,956 tests passed with 31 documented skips."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-07-17T22:50:24.204Z
