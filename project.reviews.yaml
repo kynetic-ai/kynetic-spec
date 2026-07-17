@@ -30510,3 +30510,21 @@ reviews:
     verdict_count: 1
     created_at: 2026-07-17T05:43:16.795Z
     updated_at: 2026-07-17T06:39:42.421Z
+  - _ulid: 01KXQDBRPBWX30FHAS195GJPQ3
+    slugs: []
+    title: Review freeze final integrated dispatch facts and public-surface inventory gate (cycle 6)
+    disposition: pending
+    author: Jacob Chapel
+    check_count: 0
+    examined_commit: 234998db585d23e8f54dc6197bacf001c3df06ff
+    lifecycle_state: draft
+    related_refs: []
+    subject:
+      type: task
+      content_hash: ""
+      ref: "@01KXPPE2FA72S6HPFV9V95488F"
+      shadow_commit: ""
+    thread_count: 0
+    unresolved_blocker_count: 0
+    verdict_count: 0
+    created_at: 2026-07-17T06:48:58.827Z
