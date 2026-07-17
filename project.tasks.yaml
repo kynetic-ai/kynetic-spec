@@ -34238,7 +34238,7 @@
   type: task
   spec_ref: "@docs-troubleshooting-section"
   plan_ref: "@plan-documentation-completeness-and-dispatch-workspaces"
-  status: in_progress
+  status: pending_review
   blocked_by: []
   depends_on:
     - "@task-document-dispatch-workspace-concept"
@@ -34247,10 +34247,11 @@
     - docs
     - dispatch
     - troubleshooting
-  notes_count: 2
+  notes_count: 3
   todos_count: 0
   created_at: 2026-07-17T00:08:22.412Z
   started_at: 2026-07-17T18:55:20.062Z
+  submitted_at: 2026-07-17T19:39:04.000Z
   automation: eligible
 - _ulid: 01KXPPE8H63QJCHCVSXW17G4B7
   slugs:
