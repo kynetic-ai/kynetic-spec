@@ -648,6 +648,12 @@ events:
     payload:
       thread_ulid: 01KXRV1MWW8DXEJYAT13PFTDV4
     timestamp: 2026-07-17T20:09:52.886Z
+  - _ulid: 01KXRV6CMWWABTDMYZV80Q8ZS7
+    actor: Jacob Chapel
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KXRV1EW5PB78Q6H4DDGFM318
+    timestamp: 2026-07-17T20:09:57.148Z
 examined_commit: a71126177efc68c959fa2434fea5fe013eb188f1
 external_links: []
 lifecycle_state: closed
@@ -901,6 +907,11 @@ threads:
         body: Duplicate record created during a stale-read retry; canonical finding is thread
           01KXRTWQZM8K0T4VWS1YA8R71S.
         created_at: 2026-07-17T20:09:35.676Z
+      - _ulid: 01KXRV6CBC2KSNAASAZSPXBGRS
+        author: Jacob Chapel
+        body: Duplicate record created during a stale-read retry; canonical finding is thread
+          01KXRTWQZM8K0T4VWS1YA8R71S.
+        created_at: 2026-07-17T20:09:56.843Z
     kind: blocker
     resolved_at: 2026-07-17T20:09:44.575Z
     resolved_by: Jacob Chapel
@@ -1000,5 +1011,5 @@ verdicts:
     role: reviewer
     created_at: 2026-07-17T20:08:03.278Z
 created_at: 2026-07-17T19:46:13.580Z
-updated_at: 2026-07-17T20:09:52.499Z
+updated_at: 2026-07-17T20:09:56.843Z
 notes: []
