@@ -83542,7 +83542,7 @@ runs:
     completed_at: 2026-07-17T18:25:19.010Z
   - _ulid: 01KXRPV7ZGJ9W9VCQB70P1WRDN
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -83557,7 +83557,16 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-07-17T18:55:25.332Z
-        completed_at: 2026-07-17T18:55:25.332Z
+        completed_at: 2026-07-17T18:55:29.790Z
+        notes: "Friction: the supported fresh three-shard full gate took roughly 51 minutes serially; kspec
+          batch recorded review checks successfully but emitted no confirmation, requiring review
+          get; reflect guidance examples omit the required workflow run ref and workflow list does
+          not exist; the dispatch prompt configured -review but no matching local skill was
+          installed, requiring fallback to kspec-review plus supplied role guidance."
+      - status: completed
+        step_index: 2
+        started_at: 2026-07-17T18:55:29.790Z
+        completed_at: 2026-07-17T18:55:29.790Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-07-17T18:53:57.617Z
