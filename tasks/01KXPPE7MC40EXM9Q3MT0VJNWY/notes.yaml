@@ -46,3 +46,15 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-07-17T20:22:30.639Z
+  - _ulid: 01KXRX0QH5S2E7DHM4XPQQNVNQ
+    content: "Fix cycle 1 complete at 4109f86c54: resolved all review threads. Corrected the inventory
+      count; documented non-redacted bootstrap failure tails on dispatcher/task-note surfaces;
+      documented task block/unblock recovery including pending_review restoration; limited cache
+      invalidation to the three runtime signals; and replaced weak coverage with
+      dispatcher/public-CLI and induced-invalidation behavior. Verification: focused docs/lifecycle
+      267/267, fresh full suite 10,979 passed with 3 expected skips, docs search 48 entries,
+      format/lint/focused lint/typecheck and refs/alignment/completeness passed under the documented
+      warnings policy."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-07-17T20:41:48.837Z
