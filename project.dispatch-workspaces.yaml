@@ -15143,7 +15143,7 @@ workspaces:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-07-17T23:28:50.404Z
+      updated_at: 2026-07-17T23:29:12.239Z
     integration:
       status: pending
       detail: null
@@ -15152,7 +15152,7 @@ workspaces:
       target_branch: plan/plan-dispatch-lifecycle-pause-resume-and-stop-controls/01kxc2vx
       target_commit: 6c0aab657a9f2725909c2f11ab92d881b6e6e0ec
       updated_at: 2026-07-17T23:28:50.404Z
-    lifecycle_state: integrating
+    lifecycle_state: ready
     resolved_base_branch: plan/plan-dispatch-lifecycle-pause-resume-and-stop-controls/01kxc2vx
     task_id: 01KXPPE8H63QJCHCVSXW17G4B7
     task_ref: "@01KXPPE8H63QJCHCVSXW17G4B7"
@@ -15160,18 +15160,13 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-07-17T22:56:27.082Z
-      last_reconciled_at: 2026-07-17T23:28:50.404Z
+      last_reconciled_at: 2026-07-17T23:29:12.239Z
       created_at: 2026-07-17T22:07:20.781Z
-      updated_at: 2026-07-17T23:28:50.404Z
+      updated_at: 2026-07-17T23:29:12.239Z
     workspace_id: dispatch-workspace-01KXPPE8H63QJCHCVSXW17G4B7
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
-      reviewer:
-        branch_mode: detached
-        branch_ref: null
-        head: 2237b74fea99703c73b3d95ec5db423fd2daddd0
-        last_seen_at: 2026-07-17T22:55:29.010Z
-        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-correct-adjacent-public-guidance-01kxppe8-review
+      reviewer: null
       worker:
         branch_mode: branch
         branch_ref: dispatch/task/task-correct-adjacent-public-guidance/01kxppe8
