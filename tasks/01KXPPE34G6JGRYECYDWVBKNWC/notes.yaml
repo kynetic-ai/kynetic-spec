@@ -101,3 +101,15 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-07-17T11:53:29.272Z
+  - _ulid: 01KXR0DCC7CDT5J8JAH6SD66YJ
+    content: "Fix cycle 3 completed in 71a9a19570: replaced parent agent help references with exact
+      agent list/run subcommand help and extended behavioral AC-3 coverage to execute and assert
+      both paths. Re-verified all @docs-guides-section ACs and resolved both cycle-3 threads. Gates:
+      focused docs/config/inventory 128/128; docs-search 43 entries; format, repo lint (0 errors),
+      changed-file lint (0 warnings), typecheck, refs/alignment/completeness under warnings-ok, and
+      full suite (2,835 suites; 10,967 passed; 3 expected skips) all pass. One initial full run hit
+      the known resistant-process /proc timing race; the isolated rerun and complete rerun both
+      passed."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-07-17T12:21:54.695Z
