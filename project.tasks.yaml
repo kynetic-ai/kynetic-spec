@@ -34194,6 +34194,7 @@
   notes_count: 0
   todos_count: 0
   created_at: 2026-07-17T00:08:18.393Z
+  automation: eligible
 - _ulid: 01KXPPE6MBRFYCC6N13NMGM5A9
   slugs:
     - task-document-dispatch-workspace-concept
