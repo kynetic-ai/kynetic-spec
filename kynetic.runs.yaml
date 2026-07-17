@@ -83417,7 +83417,7 @@ runs:
     completed_at: 2026-07-17T16:18:00.275Z
   - _ulid: 01KXRFCFNR9N54DJQMKT6K5TWS
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -83431,7 +83431,19 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-07-17T16:45:37.884Z
-        completed_at: 2026-07-17T16:45:37.884Z
+        completed_at: 2026-07-17T16:45:56.509Z
+        notes: "One high-confidence systemic friction identified: the test-runner cache treated an untracked
+          file and the same file after git tracking as equivalent content, but tests using git
+          ls-files observe different behavior. The pre-commit inventory run saw 142 tracked Markdown
+          files and cached a pass; after commit the tracked universe became 143 while ordinary npm
+          test reused that pass, masking the stale fixture until npm test -- --fresh. Cause/effect
+          is concrete and reproduced by the review/fix cycle. No additional success capture proposed
+          because targeted-then-full verification is already broadly represented in existing
+          observations."
+      - status: completed
+        step_index: 2
+        started_at: 2026-07-17T16:45:56.509Z
+        completed_at: 2026-07-17T16:45:56.509Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-07-17T16:43:33.944Z
