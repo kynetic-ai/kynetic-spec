@@ -12568,12 +12568,12 @@ workspaces:
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-07-17T05:39:45.164Z
+      updated_at: 2026-07-17T05:40:02.791Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-07-17T05:39:45.164Z
+      updated_at: 2026-07-17T05:40:02.791Z
     integration:
       status: pending
       detail: null
@@ -12581,8 +12581,8 @@ workspaces:
       publication_mode: manual_merge
       target_branch: plan/plan-dispatch-lifecycle-pause-resume-and-stop-controls/01kxc2vx
       target_commit: 8f871993d15baf33168818bbf6b60f9e9f29cb4b
-      updated_at: 2026-07-17T05:39:45.164Z
-    lifecycle_state: ready
+      updated_at: 2026-07-17T05:40:02.791Z
+    lifecycle_state: integrating
     resolved_base_branch: plan/plan-dispatch-lifecycle-pause-resume-and-stop-controls/01kxc2vx
     task_id: 01KXPPE2FA72S6HPFV9V95488F
     task_ref: "@01KXPPE2FA72S6HPFV9V95488F"
@@ -12590,16 +12590,21 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-07-17T05:07:48.067Z
-      last_reconciled_at: 2026-07-17T05:39:45.164Z
+      last_reconciled_at: 2026-07-17T05:40:02.791Z
       created_at: 2026-07-17T00:21:12.790Z
-      updated_at: 2026-07-17T05:39:45.164Z
+      updated_at: 2026-07-17T05:40:02.791Z
     workspace_id: dispatch-workspace-01KXPPE2FA72S6HPFV9V95488F
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
-      reviewer: null
+      reviewer:
+        branch_mode: detached
+        branch_ref: null
+        head: c192d23e11c8934a924982e25f6cae10d3143e2d
+        last_seen_at: 2026-07-17T05:40:02.791Z
+        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-freeze-doc-facts-and-inventory-01kxppe2-review
       worker:
         branch_mode: branch
         branch_ref: dispatch/task/task-freeze-doc-facts-and-inventory/01kxppe2
-        head: e7dedf15cfc99f987f6904f5a169ba19cbedc917
-        last_seen_at: 2026-07-17T05:07:01.073Z
+        head: c192d23e11c8934a924982e25f6cae10d3143e2d
+        last_seen_at: 2026-07-17T05:40:02.791Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-freeze-doc-facts-and-inventory-01kxppe2
