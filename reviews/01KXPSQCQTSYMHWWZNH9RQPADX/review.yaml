@@ -366,6 +366,41 @@ events:
       status: pass
       name: freeze ancestry and inventory cardinality
     timestamp: 2026-07-17T01:29:13.582Z
+  - _ulid: 01KXPV3V9YPV7DQCPGB3EJQ5V2
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KXPV3V1Y5PKS4GSBJDDJAPQA
+    timestamp: 2026-07-17T01:30:04.990Z
+  - _ulid: 01KXPV3YG7WFED6N0R50QEFH23
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KXPV3Y8BTQFW0GKGC9K63D59
+    timestamp: 2026-07-17T01:30:08.263Z
+  - _ulid: 01KXPV41RHE0TJJ29DNFG59X0W
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KXPV41GP6D7Q05RA3FG92EFZ
+    timestamp: 2026-07-17T01:30:11.601Z
+  - _ulid: 01KXPV44Z7MH5T6BNMCP724KQN
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KXPV44QC41HZA26TZVS3ZST1
+    timestamp: 2026-07-17T01:30:14.888Z
+  - _ulid: 01KXPV48FYKNNB07CXFGEVHTNE
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KXPV487TMHFX67KNEV5XR7QB
+    timestamp: 2026-07-17T01:30:18.494Z
 examined_commit: 528a4ca8ef3c30d260e96d3d37b681837642f362
 external_links: []
 lifecycle_state: open
@@ -484,7 +519,115 @@ threads:
           generated refresh was required."
         created_at: 2026-07-17T01:28:30.620Z
     kind: nit
+  - _ulid: 01KXPV3V1Y5PKS4GSBJDDJAPQA
+    anchor:
+      type: code
+      commit: 528a4ca8ef3c30d260e96d3d37b681837642f362
+      line_end: 258
+      line_start: 139
+      path: tests/dispatch-operator-docs.test.ts
+      side: head
+    entries:
+      - _ulid: 01KXPV3V1Y8T0N5D7DCGSHJZFA
+        author: Jacob Chapel
+        body: "MUST-FIX — The operator-facts drift gate validates only a fraction of the fixture. The source
+          matrix check proves that files exist, not that their behavior supports the frozen claims,
+          and many required fields are never compared to an exported schema/helper or exercised
+          behavior: integration_target_at_freeze, base-target/bootstrap semantics, transitions and
+          durability/admission, held/task-control/cleanup field sets, compatibility API and wire
+          mapping, static/accessibility behavior, stop safety, evidence preservation, and the actual
+          limitation set. Impact: downstream prose can consume a stale or arbitrarily corrupted fact
+          while this suite remains green. Evidence: validateFacts ends with
+          existence/non-empty/boolean checks for those groups; the full and focused suites pass
+          despite no assertion binding these fixture leaves. Add source-bound behavioral/schema
+          checks and negative mutations for the required fact groups."
+        created_at: 2026-07-17T01:30:04.734Z
+    kind: blocker
+  - _ulid: 01KXPV3Y8BTQFW0GKGC9K63D59
+    anchor:
+      type: code
+      commit: 528a4ca8ef3c30d260e96d3d37b681837642f362
+      line_end: 125
+      line_start: 35
+      path: tests/public-documentation-inventory.test.ts
+      side: head
+    entries:
+      - _ulid: 01KXPV3Y8BM1FF84CDK16C92JG
+        author: Jacob Chapel
+        body: "MUST-FIX — The non-Markdown inventory is neither independently derived nor enforced as an
+          exact universe. API/UI/scaffold/generated/documentation-test surfaces come from the
+          hand-maintained REQUIRED_SURFACE_IDS list, and validateInventory only checks that required
+          IDs are included. It never rejects an extra or stale non-Markdown record, and it cannot
+          discover a newly added non-file public surface that was not also added to this list.
+          Impact: the public-surface gate can silently omit new API/UI/scaffold/test surfaces or
+          preserve removed CLI/API records, contrary to the task requirement that all extras fail
+          and the universe be independently derived. Evidence: current independent review confirms
+          today’s 253 Commander IDs happen to match exactly, but lines 114-117 perform only subset
+          membership and the only extras comparison is limited to Markdown paths. Derive each
+          required non-file class from its authority where possible and compare exact typed record
+          sets, including stale-extra mutations."
+        created_at: 2026-07-17T01:30:08.011Z
+    kind: blocker
+  - _ulid: 01KXPV41GP6D7Q05RA3FG92EFZ
+    anchor:
+      type: code
+      commit: 528a4ca8ef3c30d260e96d3d37b681837642f362
+      line_end: 183
+      line_start: 171
+      path: tests/public-documentation-inventory.test.ts
+      side: head
+    entries:
+      - _ulid: 01KXPV41GPDNBFZKNZZMYFY5ZG
+        author: Jacob Chapel
+        body: "MUST-FIX — The AC-2 assertion discards link order by sorting the landing-page links before
+          comparison, while sectionChildPaths independently sorts filenames. Reordering a landing
+          page into the wrong reading sequence therefore still passes. Impact:
+          @docs-section-taxonomy ac-2 is not behaviorally proved for each section. Existing web
+          rendering coverage also does not disprove this: its reading-order test only checks that
+          getting-started contains tutorial.md. Compare the observed link sequence against an
+          independently defined navigation/reading order without sorting it."
+        created_at: 2026-07-17T01:30:11.350Z
+    kind: blocker
+  - _ulid: 01KXPV44QC41HZA26TZVS3ZST1
+    anchor:
+      type: code
+      commit: 528a4ca8ef3c30d260e96d3d37b681837642f362
+      line_end: 299
+      line_start: 275
+      path: tests/dispatch-operator-docs.test.ts
+      side: head
+    entries:
+      - _ulid: 01KXPV44QC8007QX2SDDT6027M
+        author: Jacob Chapel
+        body: MUST-FIX — The tests annotated for @auto-cli-docs ac-3 and ac-4 do not prove a complete help
+          reference/tree. The --all test checks only ten lifecycle command substrings, and the JSON
+          test reduces output to command paths; neither verifies every exported command nor options,
+          arguments, and descriptions. A regression that drops a non-lifecycle command from --all or
+          strips metadata from --json still passes. Existing help.test coverage uses synthetic
+          Commander nodes and only checks that real JSON has object fields, so it does not close
+          this gap. Assert the full exported command metadata against both observable help modes.
+        created_at: 2026-07-17T01:30:14.636Z
+    kind: blocker
+  - _ulid: 01KXPV487TMHFX67KNEV5XR7QB
+    entries:
+      - _ulid: 01KXPV487T3FVWZRKSP99DDWF2
+        author: Jacob Chapel
+        body: "Review evidence log — informational; no action requested. Files read: all four changed files
+          plus task/spec/plan context and interacting config, dispatch-control/status schemas, CLI
+          introspection/help coverage, UI lifecycle helpers/tests, and docs rendering coverage.
+          Commands run: git diff/log/status and ancestry checks; kspec task/item/plan/review
+          queries; jq inventory audits; exported Commander exact-set audit; format, repo/focused
+          lint, typecheck, focused tests, full npm test, and refs/alignment/completeness validation.
+          Claims verified: both lifecycle tips are ancestors of the frozen base; 140 tracked
+          Markdown records match 140 manifest records; actual and declared Commander sets are exact
+          at 253; 21 other records exist; focused and full suites pass. Categories searched:
+          correctness, staleness/edge cases, error handling, safety/security, test quality,
+          integration, AC alignment, and generated/shared guidance. No package-shipped guidance
+          prose was changed, so semantic-neutrality directions were checked for applicability but no
+          generated refresh was required."
+        created_at: 2026-07-17T01:30:18.234Z
+    kind: nit
 verdicts: []
 created_at: 2026-07-17T01:05:48.282Z
-updated_at: 2026-07-17T01:29:13.246Z
+updated_at: 2026-07-17T01:30:18.234Z
 notes: []
