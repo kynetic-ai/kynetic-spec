@@ -241,6 +241,54 @@ events:
       from: open
       to: closed
     timestamp: 2026-07-17T07:14:19.741Z
+  - _ulid: 01KXQHB3DMSP7P582718ZRXMRA
+    actor: Jacob Chapel
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KXQENYNWZR4ACAJNXG06JJQX
+    timestamp: 2026-07-17T07:58:31.348Z
+  - _ulid: 01KXQHB6T6QWVAAXQ2RJARNFGY
+    actor: Jacob Chapel
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KXQENYNWZR4ACAJNXG06JJQX
+    timestamp: 2026-07-17T07:58:34.822Z
+  - _ulid: 01KXQHBA1PZC0P2K324B351N5G
+    actor: Jacob Chapel
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KXQEP4A3Y729XPP5852H149X
+    timestamp: 2026-07-17T07:58:38.134Z
+  - _ulid: 01KXQHBDY5R7J7FQQ1TBQJYDAS
+    actor: Jacob Chapel
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KXQEP4A3Y729XPP5852H149X
+    timestamp: 2026-07-17T07:58:42.119Z
+  - _ulid: 01KXQHBJB5E17ZQ26AA64KRPCA
+    actor: Jacob Chapel
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KXQEP9TRXJKAZ7M3ZBWK7B40
+    timestamp: 2026-07-17T07:58:46.629Z
+  - _ulid: 01KXQHBRXEA3J5JNGB6AX6T1Y5
+    actor: Jacob Chapel
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KXQEP9TRXJKAZ7M3ZBWK7B40
+    timestamp: 2026-07-17T07:58:53.358Z
+  - _ulid: 01KXQHBWFD7Q1986EZCYFP6GQT
+    actor: Jacob Chapel
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KXQESEDFV7D35WN5DHCP6YH2
+    timestamp: 2026-07-17T07:58:57.005Z
+  - _ulid: 01KXQHC1HARSEYN8B5CS1CD6BC
+    actor: Jacob Chapel
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KXQESEDFV7D35WN5DHCP6YH2
+    timestamp: 2026-07-17T07:59:02.186Z
 examined_commit: 234998db585d23e8f54dc6197bacf001c3df06ff
 external_links: []
 lifecycle_state: closed
@@ -271,7 +319,15 @@ threads:
           executed behavior and add a negative mutation, or remove any claim that is not part of the
           verified public contract."
         created_at: 2026-07-17T07:12:01.212Z
+      - _ulid: 01KXQHB35QH47195BP0TKEJP0X
+        author: Jacob Chapel
+        body: "Fixed in 4672cdf4f4: removed the unprovable completion-status leaf and bound no_remote to
+          public engine start/status behavior in a temp repository, including disabled sync, no
+          degraded target, and silent logs/warnings/errors. Added a dedicated stale mutation."
+        created_at: 2026-07-17T07:58:31.094Z
     kind: blocker
+    resolved_at: 2026-07-17T07:58:34.555Z
+    resolved_by: Jacob Chapel
   - _ulid: 01KXQEP4A3Y729XPP5852H149X
     anchor:
       type: code
@@ -291,7 +347,15 @@ threads:
           map. Assert the actual conversion relationship for every pair (and include a
           mapping-specific stale mutation), rather than independent definedness."
         created_at: 2026-07-17T07:12:06.979Z
+      - _ulid: 01KXQHB9T9WVF6GCNX0K1TQATA
+        author: Jacob Chapel
+        body: "Fixed in 4672cdf4f4: every declared wire/UI pair now uses a valid field-specific probe
+          through parseAgentDispatchStatusWire, exact mapping-key coverage is required, and a
+          permuted mapping is rejected by the stale-fixture suite."
+        created_at: 2026-07-17T07:58:37.897Z
     kind: blocker
+    resolved_at: 2026-07-17T07:58:41.470Z
+    resolved_by: Jacob Chapel
   - _ulid: 01KXQEP9TRXJKAZ7M3ZBWK7B40
     anchor:
       type: code
@@ -311,7 +375,15 @@ threads:
           structured gate for one of this task's named source facts. Add the readiness-preservation
           fact and bind it to executed behavior (with stale-fixture rejection)."
         created_at: 2026-07-17T07:12:12.633Z
+      - _ulid: 01KXQHBJ1E862385QEZQ4AYES5
+        author: Jacob Chapel
+        body: "Fixed in 4672cdf4f4: added controls_preserve_task_readiness to the structured lifecycle
+          fixture and bound it to an executed global lifecycle action with the complete task record
+          compared before and after. A false readiness fact is rejected."
+        created_at: 2026-07-17T07:58:46.318Z
     kind: blocker
+    resolved_at: 2026-07-17T07:58:52.742Z
+    resolved_by: Jacob Chapel
   - _ulid: 01KXQESEDFV7D35WN5DHCP6YH2
     entries:
       - _ulid: 01KXQESEDF0HSGPSN8FCA5S4X0
@@ -336,7 +408,15 @@ threads:
           /proc/<pid>; two isolated fresh reruns passed. The identical failure is tracked at
           @01KXMFGZ2D226T5YRAH5ZW5X9A and this occurrence was added there."
         created_at: 2026-07-17T07:13:55.631Z
+      - _ulid: 01KXQHBW1EYG6CT4XMTQ031HSA
+        author: Jacob Chapel
+        body: "Acknowledged. Final verification after the fixes: focused 90/90, full suite 2,834/2,834 with
+          10,964 passed and 3 skipped, format/lint/typecheck green, and refs/alignment/completeness
+          validations pass under the documented warning baselines."
+        created_at: 2026-07-17T07:58:56.558Z
     kind: nit
+    resolved_at: 2026-07-17T07:59:01.836Z
+    resolved_by: Jacob Chapel
 verdicts:
   - applies_to_version:
       type: entity_version
@@ -346,5 +426,5 @@ verdicts:
     role: reviewer
     created_at: 2026-07-17T07:14:19.741Z
 created_at: 2026-07-17T06:48:58.827Z
-updated_at: 2026-07-17T07:14:19.741Z
+updated_at: 2026-07-17T07:59:01.836Z
 notes: []
