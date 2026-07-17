@@ -120,6 +120,17 @@ checks:
     runner: npm run format:check
     created_at: 2026-07-17T20:05:16.487Z
     completed_at: 2026-07-17T20:05:16.487Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Passed with 0 errors; 696 repo-baseline warnings. Focused changed-file oxlint also passed
+      with 0 warnings/errors.
+    name: lint
+    required: true
+    runner: npm run lint -- --quiet
+    created_at: 2026-07-17T20:05:23.223Z
+    completed_at: 2026-07-17T20:05:23.223Z
 events:
   - _ulid: 01KXRSTYE4DPPPY9VR0Y6Q6EZD
     actor: Jacob Chapel
@@ -269,6 +280,13 @@ events:
       status: pass
       name: format
     timestamp: 2026-07-17T20:05:16.750Z
+  - _ulid: 01KXRTY1FCZD6AE4YJE4712PPJ
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: lint
+    timestamp: 2026-07-17T20:05:23.564Z
 examined_commit: a71126177efc68c959fa2434fea5fe013eb188f1
 external_links: []
 lifecycle_state: closed
@@ -424,5 +442,5 @@ verdicts:
     role: reviewer
     created_at: 2026-07-17T20:04:52.153Z
 created_at: 2026-07-17T19:46:13.580Z
-updated_at: 2026-07-17T20:05:16.487Z
+updated_at: 2026-07-17T20:05:23.223Z
 notes: []
