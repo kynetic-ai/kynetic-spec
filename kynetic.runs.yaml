@@ -83098,3 +83098,68 @@ runs:
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-07-17T12:50:05.711Z
     completed_at: 2026-07-17T12:53:29.973Z
+  - _ulid: 01KXR3P4V9SPZSK8PBMHCEB83E
+    status: completed
+    current_step: 5
+    initiated_by: Jacob Chapel
+    step_results:
+      - status: completed
+        step_index: 0
+        started_at: 2026-07-17T13:19:07.626Z
+        completed_at: 2026-07-17T13:20:00.561Z
+        notes: "What worked: the frozen dispatch fact fixture plus public behavioral helpers made the
+          operator guide source-bound without changing runtime behavior. Writing landing-page,
+          table, link, and help assertions first clarified the documentation contract. Focused
+          lifecycle verification before full gates caught formatting and one changed-file lint
+          warning early."
+      - status: completed
+        step_index: 1
+        started_at: 2026-07-17T13:20:00.561Z
+        completed_at: 2026-07-17T13:20:19.413Z
+        notes: "Friction: the prepared worker worktree has no local .kspec directory, and foreground
+          task-state plus some validation commands were interrupted before returning even with the
+          active session identity and KSPEC_SPEC_DIR. Detached daemon requests and isolated retries
+          were required. Also, hierarchical commands such as kspec help agent dispatch and kspec
+          help agent dispatch task returned only the top-level agent help, making the required
+          generated-help delegation less precise than intended."
+      - status: completed
+        step_index: 2
+        started_at: 2026-07-17T13:20:19.413Z
+        completed_at: 2026-07-17T13:22:42.069Z
+        notes: "Coverage search: the dispatch worktree interruption is already captured as unresolved
+          friction observation @01KXR3HR, so no duplicate is needed. Searches for help agent
+          dispatch nested subcommand, hierarchical help command, command help, and nested help found
+          no matching active spec, task, or inbox item. Completed task @01KG6ZDE addressed a
+          different help-content key collision; inbox @01KSGPXW concerns missing review-resource
+          flags and does not cover nested command resolution."
+      - status: completed
+        step_index: 3
+        started_at: 2026-07-17T13:22:42.069Z
+        completed_at: 2026-07-17T13:22:56.934Z
+        notes: "Proposed improvement: make hierarchical generated help resolve and render the deepest
+          requested command for paths such as kspec help agent dispatch, kspec help agent dispatch
+          task, and kspec help agent status; alternatively emit explicit guidance to the
+          corresponding --help form. This would make documentation delegation land on the promised
+          lifecycle flags instead of top-level agent help. Rough scope: small-to-medium CLI help
+          resolution and behavioral tests. No new proposal for the worktree interruption because
+          @01KXR3HR already tracks it."
+      - status: skipped
+        step_index: 4
+        started_at: 2026-07-17T13:22:56.934Z
+        completed_at: 2026-07-17T13:23:17.652Z
+        notes: "Skipped interactive discussion because this is an autonomous dispatched reflection. Applying
+          the loop-mode high-confidence bar: retain the already captured worktree friction and
+          capture only the directly reproduced, searched, untracked hierarchical-help mismatch as an
+          observation for later triage."
+      - status: completed
+        step_index: 5
+        started_at: 2026-07-17T13:23:17.652Z
+        completed_at: 2026-07-17T13:23:54.057Z
+        notes: Captured high-confidence untracked hierarchical-help friction as observation @01KXR3YC.
+          Reused existing observation @01KXR3HR for dispatch worktree command interruption and
+          created no duplicate. No task or inbox item was created, and no unrelated triage action
+          was taken.
+    total_steps: 6
+    workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
+    started_at: 2026-07-17T13:19:07.626Z
+    completed_at: 2026-07-17T13:23:54.061Z
