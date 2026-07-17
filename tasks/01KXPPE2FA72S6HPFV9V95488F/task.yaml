@@ -107,7 +107,7 @@ description: >
 spec_ref: "@docs-section-taxonomy"
 plan_ref: "@plan-documentation-completeness-and-dispatch-workspaces"
 origin: derived
-status: in_progress
+status: pending_review
 blocked_by: []
 depends_on: []
 context: []
@@ -121,8 +121,8 @@ review_ref: "@01KXPXNJ1EKXPS0WB9NV2NN9BN"
 submission_linkage:
   review_url: null
   branch: dispatch/task/task-freeze-doc-facts-and-inventory/01kxppe2
-  captured_at: 2026-07-17T02:05:58.807Z
-  commit: 71f5a4c87bb3e38faf1bba0954595545f08894e1
+  captured_at: 2026-07-17T03:23:42.119Z
+  commit: ed901155061c87d9ef17684aacea4e959afff8ee
   remote: origin
   remote_url: git@github.com:lepahc/kynetic-spec.git
   upstream_ref: refs/heads/dispatch/task/task-freeze-doc-facts-and-inventory/01kxppe2
@@ -252,8 +252,35 @@ history:
         previous: 2026-07-17T01:37:27.656Z
     command: task-start
     timestamp: 2026-07-17T02:48:16.481Z
+  - author: Jacob Chapel
+    changes:
+      status:
+        new: pending_review
+        previous: in_progress
+      submission_linkage:
+        new:
+          review_url: null
+          branch: dispatch/task/task-freeze-doc-facts-and-inventory/01kxppe2
+          captured_at: 2026-07-17T03:23:42.119Z
+          commit: ed901155061c87d9ef17684aacea4e959afff8ee
+          remote: origin
+          remote_url: git@github.com:lepahc/kynetic-spec.git
+          upstream_ref: refs/heads/dispatch/task/task-freeze-doc-facts-and-inventory/01kxppe2
+        previous:
+          review_url: null
+          branch: dispatch/task/task-freeze-doc-facts-and-inventory/01kxppe2
+          captured_at: 2026-07-17T02:05:58.807Z
+          commit: 71f5a4c87bb3e38faf1bba0954595545f08894e1
+          remote: origin
+          remote_url: git@github.com:lepahc/kynetic-spec.git
+          upstream_ref: refs/heads/dispatch/task/task-freeze-doc-facts-and-inventory/01kxppe2
+      submitted_at:
+        new: 2026-07-17T03:23:42.126Z
+        previous: 2026-07-17T02:05:58.813Z
+    command: task-submit
+    timestamp: 2026-07-17T03:23:42.127Z
 created_at: 2026-07-17T00:08:17.130Z
 started_at: 2026-07-17T02:48:16.473Z
-submitted_at: 2026-07-17T02:05:58.813Z
+submitted_at: 2026-07-17T03:23:42.126Z
 todos: []
 automation: eligible
