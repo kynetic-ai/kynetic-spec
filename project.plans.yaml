@@ -2166,7 +2166,7 @@ plans:
       - "@task-verify-api-cli-projection"
       - "@task-verify-ui-lifecycle-browser"
     module_ref: "@agent-integration"
-    notes_count: 17
+    notes_count: 18
     resource_summary:
       count: 0
       total_bytes: 0
