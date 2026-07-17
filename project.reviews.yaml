@@ -30667,7 +30667,7 @@ reviews:
     title: Review dispatch lifecycle controls operator guide (cycle 2)
     disposition: pending
     author: Jacob Chapel
-    check_count: 0
+    check_count: 9
     examined_commit: 743b76651e3cb2c36fee899f420db21c3613a5bc
     lifecycle_state: open
     related_refs: []
@@ -30680,4 +30680,4 @@ reviews:
     unresolved_blocker_count: 0
     verdict_count: 0
     created_at: 2026-07-17T14:29:31.137Z
-    updated_at: 2026-07-17T14:29:45.182Z
+    updated_at: 2026-07-17T14:46:35.405Z

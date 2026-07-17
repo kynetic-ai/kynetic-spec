@@ -2,7 +2,115 @@ _ulid: 01KXR7Q1C1HEMKNTSSZ4MZ99XG
 slugs: []
 title: Review dispatch lifecycle controls operator guide (cycle 2)
 author: Jacob Chapel
-checks: []
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: All 1063 files matched formatting.
+    name: format
+    required: true
+    runner: npm run format:check
+    created_at: 2026-07-17T14:46:04.695Z
+    completed_at: 2026-07-17T14:46:04.695Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Repo lint completed with 0 errors and the existing 696-warning baseline; focused npx
+      oxlint tests/dispatch-operator-docs.test.ts completed with 0 warnings and 0 errors.
+    name: lint
+    required: true
+    runner: npm run lint -- --quiet
+    created_at: 2026-07-17T14:46:08.275Z
+    completed_at: 2026-07-17T14:46:08.275Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Shared package build and tsc --noEmit passed.
+    name: typecheck
+    required: true
+    runner: npm run typecheck
+    created_at: 2026-07-17T14:46:11.631Z
+    completed_at: 2026-07-17T14:46:11.631Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Fresh run passed 2836 suites: 10971 tests passed, 3 skipped, 0 failed. The prior
+      inventory failures and all lifecycle docs, CLI, daemon, UI, event, recovery, and rendering
+      suites passed."
+    name: full test suite
+    required: true
+    runner: npm test -- --fresh
+    created_at: 2026-07-17T14:46:15.137Z
+    completed_at: 2026-07-17T14:46:15.137Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Validation passed with References OK and the documented six deprecation warnings.
+    name: kspec validate refs
+    required: true
+    runner: kspec validate --refs --warnings-ok
+    created_at: 2026-07-17T14:46:18.441Z
+    completed_at: 2026-07-17T14:46:18.441Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Validation passed under --warnings-ok with the existing 58-warning alignment baseline.
+    name: kspec validate alignment
+    required: true
+    runner: kspec validate --alignment --warnings-ok
+    created_at: 2026-07-17T14:46:22.240Z
+    completed_at: 2026-07-17T14:46:22.240Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Validation passed under --warnings-ok with the existing project completeness baseline;
+      @docs-guides-section ac-1, ac-2, and ac-3 have behavioral annotations in
+      tests/dispatch-operator-docs.test.ts.
+    name: kspec validate completeness
+    required: true
+    runner: kspec validate --completeness --warnings-ok
+    created_at: 2026-07-17T14:46:27.881Z
+    completed_at: 2026-07-17T14:46:27.881Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Pagefind indexed 44 documentation entries.
+    name: docs search
+    required: true
+    runner: npm run build:docs-search
+    created_at: 2026-07-17T14:46:31.249Z
+    completed_at: 2026-07-17T14:46:31.249Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Files read: docs/guides/controlling-dispatch-lifecycle.md, docs/guides/index.md,
+      tests/dispatch-operator-docs.test.ts, tests/fixtures/public-documentation-surfaces.json,
+      tests/fixtures/dispatch-operator-facts.json, tests/public-documentation-inventory.test.ts,
+      src/agent-runtime/dispatch.ts, src/cli/commands/agent.ts,
+      packages/web-ui/src/lib/dispatch-lifecycle.ts, prior review threads, task spec, and plan.
+      Commands run: exact base/head and fix-cycle diffs, task/spec/plan/review lookups, source and
+      fixture probes, Markdown inventory count, AC annotation search, format, repo and focused lint,
+      typecheck, fresh full tests, docs-search, refs/alignment/completeness validation, and diff
+      cleanliness checks. Claims verified: all four prior blockers, global/task action matrices, CLI
+      help paths and JSON status casing, scoped cleanup, canonical identity, hard-stop safety,
+      API/UI/static/event facts, link resolution, and inventory count. Categories searched:
+      correctness, edge cases, error handling, safety/security, test quality, integration, and AC
+      coverage. Shared/package guidance surfaces touched: none; shared-guidance-neutrality direction
+      checks and generated-artifact regeneration are not applicable."
+    name: review evidence log
+    required: true
+    runner: manual review
+    created_at: 2026-07-17T14:46:35.405Z
+    completed_at: 2026-07-17T14:46:35.405Z
 events:
   - _ulid: 01KXR7Q1B6TDVKTPXEHY4558FQ
     actor: Jacob Chapel
@@ -17,6 +125,69 @@ events:
       from: draft
       to: open
     timestamp: 2026-07-17T14:29:45.465Z
+  - _ulid: 01KXR8NBWXZRV3BBDYNGR89V32
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: format
+    timestamp: 2026-07-17T14:46:04.957Z
+  - _ulid: 01KXR8NFCXNXBXYQ8CSDZ3W3F8
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: lint
+    timestamp: 2026-07-17T14:46:08.542Z
+  - _ulid: 01KXR8NJND2DJ61Z9G00RH123B
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: typecheck
+    timestamp: 2026-07-17T14:46:11.885Z
+  - _ulid: 01KXR8NP32SDMW975HE64PKVYR
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: full test suite
+    timestamp: 2026-07-17T14:46:15.394Z
+  - _ulid: 01KXR8NSAE3466SY9AWFE5TDZ0
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate refs
+    timestamp: 2026-07-17T14:46:18.702Z
+  - _ulid: 01KXR8NX1ME7N281DZKE9GZ2D8
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate alignment
+    timestamp: 2026-07-17T14:46:22.516Z
+  - _ulid: 01KXR8P2H6N0Y80NG9T9GXP2V7
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate completeness
+    timestamp: 2026-07-17T14:46:28.134Z
+  - _ulid: 01KXR8P5TQR7215KDPG76DZGKK
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: docs search
+    timestamp: 2026-07-17T14:46:31.511Z
+  - _ulid: 01KXR8P9WKEPDG1QRMTZ6662T8
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: review evidence log
+    timestamp: 2026-07-17T14:46:35.667Z
 examined_commit: 743b76651e3cb2c36fee899f420db21c3613a5bc
 external_links: []
 lifecycle_state: open
@@ -29,5 +200,5 @@ subject:
 threads: []
 verdicts: []
 created_at: 2026-07-17T14:29:31.137Z
-updated_at: 2026-07-17T14:29:45.182Z
+updated_at: 2026-07-17T14:46:35.405Z
 notes: []
