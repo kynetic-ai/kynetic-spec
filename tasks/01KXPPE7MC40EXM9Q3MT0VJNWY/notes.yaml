@@ -13,3 +13,13 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-07-17T18:57:08.933Z
+  - _ulid: 01KXRRHMF76KNCV3H6MPWPQJ7H
+    content: "Implementation complete: published 27 symptom blocks across bootstrap, workspace
+      sync/cleanup, and lifecycle recovery; indexed all pages; corrected assignment admission to
+      distinguish per-event automation filters from lifecycle holds. During evidence review,
+      corrected the bootstrap-output page to reflect the observable bounded 4,000-character failure
+      tail (including its exposure risk) rather than claiming redaction, and added a behavioral
+      fixture that executes a failing step to prove that contract."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-07-17T19:23:39.879Z
