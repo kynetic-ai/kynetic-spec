@@ -537,6 +537,13 @@ events:
       kind: blocker
       thread_ulid: 01KXRV0VZJ02R0A4ZTS5HVA3YJ
     timestamp: 2026-07-17T20:06:56.532Z
+  - _ulid: 01KXRV134YNNJA620A0W9ECA9X
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KXRV12SHWV5EWFZTKNWJZMBV
+    timestamp: 2026-07-17T20:07:03.582Z
 examined_commit: a71126177efc68c959fa2434fea5fe013eb188f1
 external_links: []
 lifecycle_state: closed
@@ -702,6 +709,25 @@ threads:
           passes."
         created_at: 2026-07-17T20:06:56.242Z
     kind: blocker
+  - _ulid: 01KXRV12SHWV5EWFZTKNWJZMBV
+    anchor:
+      type: code
+      commit: a71126177efc68c959fa2434fea5fe013eb188f1
+      line_end: 13
+      line_start: 13
+      path: docs/troubleshooting/dispatch-bootstrap-failures.md
+      side: head
+    entries:
+      - _ulid: 01KXRV12SHM2KN3F2TK60EF3M1
+        author: Jacob Chapel
+        body: "MUST-FIX: This says the failure output is sanitized and appears in an invocation result. The
+          runtime instead concatenates stdout/stderr, retains the last 4,000 characters without
+          redaction, and throws before agent invocation; DispatchEngine then records the failure on
+          the task. This contradicts the page's later secret-exposure warning and can cause
+          operators to mishandle sensitive output or look in the wrong evidence surface. Describe
+          the bounded, non-redacted bootstrap tail and its actual recorded surface."
+        created_at: 2026-07-17T20:07:03.217Z
+    kind: blocker
 verdicts:
   - applies_to_version:
       type: entity_version
@@ -711,5 +737,5 @@ verdicts:
     role: reviewer
     created_at: 2026-07-17T20:04:52.153Z
 created_at: 2026-07-17T19:46:13.580Z
-updated_at: 2026-07-17T20:06:56.242Z
+updated_at: 2026-07-17T20:07:03.217Z
 notes: []
