@@ -118,8 +118,12 @@ description: >
 spec_ref: "@docs-guides-section"
 plan_ref: "@plan-documentation-completeness-and-dispatch-workspaces"
 origin: derived
-status: pending_review
+status: completed
 blocked_by: []
+closed_reason: Merged to plan/plan-dispatch-lifecycle-pause-resume-and-stop-controls/01kxc2vx at
+  11211346550412754cd15ee932a33aa9becee311. Published the dispatch lifecycle controls operator
+  guide, linked both dispatch guides, added behavior-bound documentation coverage, and corrected the
+  construction inventory count.
 depends_on:
   - "@task-document-dispatch-workspace-configuration"
 context: []
@@ -221,8 +225,25 @@ history:
         previous: "@01KXR43VDR49349V0ZSHAS72ZM"
     command: review-link
     timestamp: 2026-07-17T14:29:33.677Z
+  - author: Jacob Chapel
+    changes:
+      status:
+        new: completed
+        previous: pending_review
+      closed_reason:
+        new: Merged to plan/plan-dispatch-lifecycle-pause-resume-and-stop-controls/01kxc2vx at
+          11211346550412754cd15ee932a33aa9becee311. Published the dispatch lifecycle controls
+          operator guide, linked both dispatch guides, added behavior-bound documentation coverage,
+          and corrected the construction inventory count.
+        previous: null
+      completed_at:
+        new: 2026-07-17T14:47:34.050Z
+        previous: null
+    command: task-complete
+    timestamp: 2026-07-17T14:47:34.057Z
 created_at: 2026-07-17T00:08:18.393Z
 started_at: 2026-07-17T13:59:05.038Z
 submitted_at: 2026-07-17T14:19:36.253Z
+completed_at: 2026-07-17T14:47:34.050Z
 todos: []
 automation: eligible
