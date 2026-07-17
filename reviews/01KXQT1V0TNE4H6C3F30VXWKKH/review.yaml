@@ -2,7 +2,110 @@ _ulid: 01KXQT1V0TNE4H6C3F30VXWKKH
 slugs: []
 title: "Review: publish source-bound dispatch workspace configuration guide (cycle 2)"
 author: pr-reviewer
-checks: []
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: All 1,062 files formatted correctly.
+    name: format
+    required: true
+    runner: npm run format:check
+    created_at: 2026-07-17T10:48:29.747Z
+    completed_at: 2026-07-17T10:48:29.747Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: 0 errors; 696 repository-baseline warnings. Focused oxlint on
+      tests/dispatch-operator-docs.test.ts reported 0 warnings and 0 errors.
+    name: lint
+    required: true
+    runner: npm run lint -- --quiet
+    created_at: 2026-07-17T10:48:33.232Z
+    completed_at: 2026-07-17T10:48:33.232Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Shared package build and tsc --noEmit passed.
+    name: typecheck
+    required: true
+    runner: npm run typecheck
+    created_at: 2026-07-17T10:48:36.473Z
+    completed_at: 2026-07-17T10:48:36.473Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Fresh full suite passed: 2,835/2,835 suites; 10,967 tests passed and 3 expected skips."
+    name: full test suite
+    required: true
+    runner: npm test -- --fresh
+    created_at: 2026-07-17T10:48:39.694Z
+    completed_at: 2026-07-17T10:48:39.694Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: References OK; six documented deprecation warnings under --warnings-ok.
+    name: kspec validate refs
+    required: true
+    runner: kspec validate --refs --warnings-ok
+    created_at: 2026-07-17T10:48:43.109Z
+    completed_at: 2026-07-17T10:48:43.109Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Validation passed with repository baseline warnings under --warnings-ok.
+    name: kspec validate alignment
+    required: true
+    runner: kspec validate --alignment --warnings-ok
+    created_at: 2026-07-17T10:48:46.459Z
+    completed_at: 2026-07-17T10:48:46.459Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Validation passed with repository baseline warnings; @docs-guides-section ac-1/ac-2/ac-3
+      annotations are present.
+    name: kspec validate completeness
+    required: true
+    runner: kspec validate --completeness --warnings-ok
+    created_at: 2026-07-17T10:48:49.757Z
+    completed_at: 2026-07-17T10:48:49.757Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Focused dispatch docs, config, and public inventory run passed: 23 suites and 128 tests."
+    name: focused docs tests
+    required: true
+    runner: npm test
+    created_at: 2026-07-17T10:48:53.148Z
+    completed_at: 2026-07-17T10:48:53.148Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Pagefind indexed 43 documentation entries.
+    name: docs search build
+    required: true
+    runner: npm run build:docs-search
+    created_at: 2026-07-17T10:48:56.627Z
+    completed_at: 2026-07-17T10:48:56.627Z
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Two normative statements contradict accepted worktree-root behavior and the remote-sync
+      transient-failure contract; blocker threads record exact evidence.
+    name: source-bound prose audit
+    required: true
+    runner: manual source and behavior trace
+    created_at: 2026-07-17T10:48:59.957Z
+    completed_at: 2026-07-17T10:48:59.957Z
 events:
   - _ulid: 01KXQT1V0PFRAQ7AQ9Y8DPE5DE
     actor: pr-reviewer
@@ -17,17 +120,200 @@ events:
       from: draft
       to: open
     timestamp: 2026-07-17T10:30:57.983Z
+  - _ulid: 01KXQV2B255246ZBQ3BRYA3748
+    actor: pr-reviewer
+    event_type: check_added
+    payload:
+      status: pass
+      name: format
+    timestamp: 2026-07-17T10:48:30.021Z
+  - _ulid: 01KXQV2EEWMXHXYRY0360GYB6F
+    actor: pr-reviewer
+    event_type: check_added
+    payload:
+      status: pass
+      name: lint
+    timestamp: 2026-07-17T10:48:33.500Z
+  - _ulid: 01KXQV2HKVEZR594V7KVVZTXM2
+    actor: pr-reviewer
+    event_type: check_added
+    payload:
+      status: pass
+      name: typecheck
+    timestamp: 2026-07-17T10:48:36.731Z
+  - _ulid: 01KXQV2MS27V4F1CWXFWHX5H05
+    actor: pr-reviewer
+    event_type: check_added
+    payload:
+      status: pass
+      name: full test suite
+    timestamp: 2026-07-17T10:48:39.970Z
+  - _ulid: 01KXQV2R42V0RY3BW6YTA3TBKV
+    actor: pr-reviewer
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate refs
+    timestamp: 2026-07-17T10:48:43.394Z
+  - _ulid: 01KXQV2VBGR5YP62W0RN3KSXM4
+    actor: pr-reviewer
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate alignment
+    timestamp: 2026-07-17T10:48:46.704Z
+  - _ulid: 01KXQV2YKAWWEVZ2GK54MCX28X
+    actor: pr-reviewer
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate completeness
+    timestamp: 2026-07-17T10:48:50.026Z
+  - _ulid: 01KXQV31WYSKVRHP0V1RRDFV61
+    actor: pr-reviewer
+    event_type: check_added
+    payload:
+      status: pass
+      name: focused docs tests
+    timestamp: 2026-07-17T10:48:53.406Z
+  - _ulid: 01KXQV359HXKXCPH050C0WAKE8
+    actor: pr-reviewer
+    event_type: check_added
+    payload:
+      status: pass
+      name: docs search build
+    timestamp: 2026-07-17T10:48:56.881Z
+  - _ulid: 01KXQV38HNZPN2FM22A9RQFTAX
+    actor: pr-reviewer
+    event_type: check_added
+    payload:
+      status: fail
+      name: source-bound prose audit
+    timestamp: 2026-07-17T10:49:00.213Z
+  - _ulid: 01KXQV3BWPTGEGK7FJ4HAXYB5M
+    actor: pr-reviewer
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KXQV3BMNESQ24X38653GW0RS
+    timestamp: 2026-07-17T10:49:03.639Z
+  - _ulid: 01KXQV3FRPD2BEPXZHB5JTTESZ
+    actor: pr-reviewer
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KXQV3F0PZM46DCWQK48A789R
+    timestamp: 2026-07-17T10:49:07.606Z
+  - _ulid: 01KXQV3K3PG3BDGDCYN4P9R2YX
+    actor: pr-reviewer
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KXQV3JV8B0QG36PJAHNCFQGM
+    timestamp: 2026-07-17T10:49:11.030Z
+  - _ulid: 01KXQV3PHY4YFPDHM98ZGYM2WJ
+    actor: pr-reviewer
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: request_changes
+    timestamp: 2026-07-17T10:49:14.558Z
+  - _ulid: 01KXQV3PHYMF40AZXWAV8VJB4H
+    actor: pr-reviewer
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-07-17T10:49:14.558Z
 examined_commit: 7c2bc80a30fb9a4f726938960bf1dc60224195d9
 external_links: []
-lifecycle_state: open
+lifecycle_state: closed
 related_refs: []
 subject:
   type: task
   content_hash: ""
   ref: "@01KXPPE34G6JGRYECYDWVBKNWC"
   shadow_commit: ""
-threads: []
-verdicts: []
+threads:
+  - _ulid: 01KXQV3BMNESQ24X38653GW0RS
+    anchor:
+      type: code
+      commit: 7c2bc80a30fb9a4f726938960bf1dc60224195d9
+      line_end: 68
+      line_start: 68
+      path: docs/guides/configuring-dispatch-workspaces.md
+      side: head
+    entries:
+      - _ulid: 01KXQV3BMNPS0AXS1YP7YM84J2
+        author: pr-reviewer
+        body: "MUST-FIX: This sentence says an absolute worktree root is outside the repository, but that is
+          not an enforced invariant. resolveDispatchWorkspaceConfig preserves any absolute path and
+          ensureUsableWorktreeRoot rejects only paths under .kspec; the submitted behavioral test at
+          tests/dispatch-operator-docs.test.ts:1464-1470 deliberately accepts an absolute root
+          inside projectDir. buildKspecGitignoreEntries nevertheless omits every absolute root from
+          the managed block. Impact: an operator can choose a supported absolute in-repository root
+          and, based on this guide, miss that it receives no managed ignore entry, leaving dispatch
+          worktrees visible as unignored repository content. State that absolute roots receive no
+          managed repository-relative ignore entry and recommend placing them outside the
+          repository, without claiming they necessarily are outside."
+        created_at: 2026-07-17T10:49:03.381Z
+    kind: blocker
+  - _ulid: 01KXQV3F0PZM46DCWQK48A789R
+    anchor:
+      type: code
+      commit: 7c2bc80a30fb9a4f726938960bf1dc60224195d9
+      line_end: 151
+      line_start: 151
+      path: docs/guides/configuring-dispatch-workspaces.md
+      side: head
+    entries:
+      - _ulid: 01KXQV3F0PRRPJH48T7DRASDFD
+        author: pr-reviewer
+        body: "MUST-FIX: The universal statement that remote failures are reported as degraded target state
+          contradicts the remote-sync contract. DispatchEngine._syncTarget classifies
+          fetch/connectivity failures as transient_failure, logs a warning, and explicitly does not
+          enter degraded state; tests/dispatch-target-sync.test.ts covers this under
+          @dispatch-remote-branch-sync ac-transient-no-degrade. Degradation applies to unsafe target
+          mutation or divergence, not every remote failure. Impact: operators will look for degraded
+          status fields that legitimately never appear during transient fetch failures. Qualify
+          which failures degrade and distinguish transient warnings from degraded topology/state
+          failures."
+        created_at: 2026-07-17T10:49:06.839Z
+    kind: blocker
+  - _ulid: 01KXQV3JV8B0QG36PJAHNCFQGM
+    entries:
+      - _ulid: 01KXQV3JV8X032KGM4YXG8DV7H
+        author: pr-reviewer
+        body: "Review evidence log — Files read: all four changed-file diffs; full new workspace guide;
+          surrounding runner-guide examples; changed docs-test helpers/cases; inventory
+          fixture/gate; docs Vite plugin; config/default resolution; workspace target/root/ownership
+          code; bootstrap schema/runtime; gitignore setup/upgrade paths; publication resolution;
+          target-sync runtime/tests; prior-cycle review and task/spec/plan context. Commands run:
+          exact base/head diff and commits; task/spec/plan/prior-review lookups; AC searches;
+          tracked Markdown count; source fact searches; git diff --check; format; repo/focused lint;
+          typecheck; refs/alignment/completeness validation; focused docs/config/inventory tests;
+          docs-search build; fresh full suite. Claims verified: prior blocker is fixed (141 tracked
+          Markdown files and inventory 17/17); worker full-suite claim independently reproduced
+          (2,835 suites, 10,967 passing, 3 expected skips); examples parse and docs publish.
+          Categories searched: correctness, edge cases, recovery/error handling,
+          security/output-tail warning, test quality, integration, discoverability, lifecycle
+          separation, and additional issues after the first finding. Shared-guidance neutrality: no
+          listed package/shared guidance surface changed; public prose was still checked for
+          universal Kynetic-only policy, with no new leak. Direction 2 and generated-artifact
+          refresh are not applicable. Findings: two source-alignment blockers; no additional issue
+          found after expanded search."
+        created_at: 2026-07-17T10:49:10.760Z
+    kind: nit
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: request_changes
+    reviewer: pr-reviewer
+    role: reviewer
+    created_at: 2026-07-17T10:49:14.558Z
 created_at: 2026-07-17T10:30:45.018Z
-updated_at: 2026-07-17T10:30:57.703Z
+updated_at: 2026-07-17T10:49:14.558Z
 notes: []
