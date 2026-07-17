@@ -86,6 +86,17 @@ checks:
     runner: npm test -- focused files --fresh
     created_at: 2026-07-17T06:02:19.793Z
     completed_at: 2026-07-17T06:02:19.793Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Reviewed b28c2955, integrated 3f22e6c, and frozen target 8f871993 are ancestors of the
+      full-history snapshot; inventory has 140 Markdown, 253 CLI, and 21 other typed surfaces.
+    name: freeze ancestry and inventory cardinality
+    required: true
+    runner: git and structured inventory audits
+    created_at: 2026-07-17T06:02:25.731Z
+    completed_at: 2026-07-17T06:02:25.731Z
 events:
   - _ulid: 01KXQ9KF1NYMAD8E178VTH0VP7
     actor: Jacob Chapel
@@ -156,6 +167,13 @@ events:
       status: pass
       name: focused documentation suite
     timestamp: 2026-07-17T06:02:20.037Z
+  - _ulid: 01KXQAPHA892RXQWX19W6JTSJ5
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: freeze ancestry and inventory cardinality
+    timestamp: 2026-07-17T06:02:25.992Z
 examined_commit: c192d23e11c8934a924982e25f6cae10d3143e2d
 external_links: []
 lifecycle_state: open
@@ -168,5 +186,5 @@ subject:
 threads: []
 verdicts: []
 created_at: 2026-07-17T05:43:16.795Z
-updated_at: 2026-07-17T06:02:19.793Z
+updated_at: 2026-07-17T06:02:25.731Z
 notes: []
