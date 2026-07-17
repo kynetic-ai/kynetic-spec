@@ -82081,7 +82081,7 @@ runs:
     completed_at: 2026-07-17T01:01:12.947Z
   - _ulid: 01KXPX76K4S5DYVSBGW8JFHPE8
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -82097,7 +82097,20 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-07-17T02:08:48.772Z
-        completed_at: 2026-07-17T02:08:48.772Z
+        completed_at: 2026-07-17T02:10:34.999Z
+        notes: "High-confidence success candidate: public-surface/fact freeze gates are materially stronger
+          when the expected fixture is compared with an independently derived complete universe and
+          each fact group is bound to exported or black-box production behavior; paired omission and
+          stale-extra mutations prove the validator is bidirectional. This pattern caught a real
+          stale stopped-with-cleanup action. High-confidence friction: the required full suite took
+          2899.9s for a test/fixture-only fix and had long quiet tails, but search found extensive
+          existing coverage including observations @01KTW36C, @01KTY8BD, @01KVXG7Z, @01KXMGDN and
+          heartbeat observations @01KT6105/@01KTV65Y, so do not duplicate it. Reflection baseline
+          output noise is already inbox @01KSDZFN."
+      - status: completed
+        step_index: 2
+        started_at: 2026-07-17T02:10:34.999Z
+        completed_at: 2026-07-17T02:10:34.999Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-07-17T02:06:52.004Z
