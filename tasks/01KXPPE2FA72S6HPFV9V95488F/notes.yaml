@@ -159,3 +159,16 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-07-17T06:04:20.274Z
+  - _ulid: 01KXQBDQ4DGEW0N2TWK1QGKVWZ
+    content: "Fix cycle 5 approach: make immutable ancestry verification shallow-checkout safe while
+      preserving exact frozen OIDs; validate inventory schema/review/integration/count metadata
+      against independent facts and git-derived count; map each Markdown fixture to its actual
+      behavioral consumer; add src/agent-runtime/dispatch.ts to workspace authority and bind
+      bootstrap, registry/cleanup, target-sync/defer, and event-filter facts to
+      executed/schema-derived results rather than booleans; bind every required limitation to the
+      complete public dispatch contract or an exercised recovery path. Add negative mutations for
+      manifest headers, fixture ownership, source authority, workspace facts, and limitations; then
+      re-run focused/full gates and resolve all cycle-5 threads."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-07-17T06:15:05.613Z
