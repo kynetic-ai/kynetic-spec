@@ -305,6 +305,12 @@ events:
     payload:
       thread_ulid: 01KXQ73RDXM0VET1G2NYCPQV5H
     timestamp: 2026-07-17T05:34:49.679Z
+  - _ulid: 01KXQ943X41B4EZ8B8BXKA0T31
+    actor: Jacob Chapel
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KXQ7383W74KMZB9C0JZFRG03
+    timestamp: 2026-07-17T05:34:53.860Z
 examined_commit: e7dedf15cfc99f987f6904f5a169ba19cbedc917
 external_links: []
 lifecycle_state: closed
@@ -346,6 +352,13 @@ threads:
           integration commit are ancestors of the tested checkout, so normal merge-target
           advancement remains green."
         created_at: 2026-07-17T05:34:08.513Z
+      - _ulid: 01KXQ943M34R42HWSKPRZR95QS
+        author: Jacob Chapel
+        body: "Fixed in c192d23e11: removed the moving remote-ref merge-base dependency. The gate now proves
+          the reviewed lifecycle commit, integrated lifecycle commit, and immutable pre-task
+          integration commit are ancestors of the tested checkout, so normal merge-target
+          advancement remains green."
+        created_at: 2026-07-17T05:34:53.571Z
     kind: blocker
     resolved_at: 2026-07-17T05:34:12.105Z
     resolved_by: Jacob Chapel
@@ -521,5 +534,5 @@ verdicts:
     role: reviewer
     created_at: 2026-07-17T05:00:03.941Z
 created_at: 2026-07-17T04:38:35.546Z
-updated_at: 2026-07-17T05:34:49.321Z
+updated_at: 2026-07-17T05:34:53.571Z
 notes: []
