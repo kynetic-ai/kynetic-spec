@@ -63,3 +63,12 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-07-17T21:09:00.910Z
+  - _ulid: 01KXRZ4QBE7KK1HJRP4Q1QZ2ET
+    content: "Fix-cycle 2 approach: make cache invalidation recovery conditional on whether the
+      automatic rerun actually fails and blocks the task; add dispatcher-backed provisioning-failure
+      block/unblock coverage; then document public unblock after a workspace path collision is
+      corrected. Re-verify all three troubleshooting ACs and the complete repository gate set before
+      resubmission."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-07-17T21:18:56.878Z
