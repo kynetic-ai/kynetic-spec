@@ -190,3 +190,14 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-07-17T07:14:21.996Z
+  - _ulid: 01KXQFFA512BZBY8YBG0PB4CYX
+    content: "Fix cycle 6 approach: remove the unprovable remote-sync completion-status prose leaf; bind
+      no-remote local-only behavior to executed engine initialization/sync status and a stale
+      mutation; prove every wire-to-UI pair with valid field-specific conversion probes plus a
+      mapping mutation; add a structured lifecycle readiness-preservation fact bound to an executed
+      control action and unchanged task data, with stale rejection. Re-verified
+      @docs-section-taxonomy ac-1/ac-2, @auto-cli-docs ac-1/ac-3/ac-4/ac-5, and all named factual
+      source ACs before edits."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-07-17T07:25:52.162Z
