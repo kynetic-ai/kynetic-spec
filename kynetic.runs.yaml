@@ -83541,7 +83541,7 @@ runs:
     started_at: 2026-07-17T18:21:55.188Z
     completed_at: 2026-07-17T18:25:19.010Z
   - _ulid: 01KXRPV7ZGJ9W9VCQB70P1WRDN
-    status: active
+    status: completed
     current_step: 5
     initiated_by: Jacob Chapel
     step_results:
@@ -83589,10 +83589,14 @@ runs:
         completed_at: 2026-07-17T19:00:20.334Z
         notes: "Discussion disposition: done with reflection because every high-confidence improvement is
           already tracked and creating another item would duplicate existing work."
-      - status: completed
+      - status: skipped
         step_index: 5
         started_at: 2026-07-17T19:00:20.334Z
-        completed_at: 2026-07-17T19:00:20.334Z
+        completed_at: 2026-07-17T19:00:24.503Z
+        notes: "No capture: search-first gate found all systemic friction already tracked; success patterns
+          around durable review evidence and detached merge helpers are also represented by existing
+          observations such as @01KSS63E."
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-07-17T18:53:57.617Z
+    completed_at: 2026-07-17T19:00:24.503Z
