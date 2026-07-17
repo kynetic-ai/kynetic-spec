@@ -137,6 +137,7 @@ const TASK_ID = "01KG0RR6CA45ZT43W2T6HJMVA1";
 const CLEANUP_ID = "01KXH2PXT88X9MSC62MQVY2CW1";
 const NOW = "2026-07-16T12:00:00.000Z";
 const MOCK_KSPEC_CLI = join(ROOT, "tests", "mocks", "kspec-capture-mock.cjs");
+const REAL_KSPEC_CLI = join(ROOT, "dist", "cli", "index.js");
 ensureSplitBackendRegistered();
 const EXPECTED_GLOBAL_COMMANDS = [
   "kspec agent dispatch start",
@@ -1328,6 +1329,21 @@ function publishedDoc(entries: PublishedDoc[], slug: string): PublishedDoc {
   return entry;
 }
 
+function symptomHeadings(markdown: string): string[] {
+  return markdown
+    .split(/\r?\n/)
+    .filter((line) => line.startsWith("## "))
+    .map((line) => line.slice(3));
+}
+
+function symptomBlock(markdown: string, heading: string): string {
+  const marker = `## ${heading}`;
+  const start = markdown.indexOf(marker);
+  if (start === -1) throw new Error(`symptom heading not found: ${heading}`);
+  const next = markdown.indexOf("\n## ", start + marker.length);
+  return markdown.slice(start, next === -1 ? undefined : next);
+}
+
 describe("dispatch operator fact fixture", () => {
   let fixtureDir: string;
 
@@ -1662,6 +1678,419 @@ describe("dispatch operator fact fixture", () => {
     });
   });
 
+  describe("dispatch recovery pages", () => {
+    const recoveryPages = [
+      {
+        slug: "troubleshooting/dispatch-bootstrap-failures",
+        indexTarget: "./dispatch-bootstrap-failures.md",
+        conceptTarget: "../concepts/dispatch-workspaces.md",
+        openings: ["bootstrap", "workspace"],
+        symptoms: [
+          "A Bootstrap Step Exits Nonzero",
+          "Bootstrap Reports Tracked-File Changes",
+          "A Reviewer Bootstrap Rerun Is Refused",
+          "Previously Successful Bootstrap State Is Invalidated",
+          "The Prepared Workspace Cannot Be Accessed",
+          "A Bootstrap Failure Exposes Unsafe Command Output",
+        ],
+      },
+      {
+        slug: "troubleshooting/dispatch-workspace-sync-and-cleanup",
+        indexTarget: "./dispatch-workspace-sync-and-cleanup.md",
+        conceptTarget: "../concepts/dispatch-workspaces.md",
+        openings: ["workspace", "sync"],
+        symptoms: [
+          "The Workspace Target Does Not Match Configuration",
+          "A Plan Target Changed After the Workspace Was Created",
+          "The Workspace Path Collides With Existing Content",
+          "The Workspace Registry Is Stale or Cannot Be Recovered",
+          "Dispatch Is Running in Local-Only Mode",
+          "Remote Synchronization Fails Transiently",
+          "An Integration Target Is Degraded by Divergence",
+          "The Integration Target Is Checked Out Elsewhere",
+          "Reviewer Target Synchronization Is Deferred",
+          "Cleanup Says an Artifact Is Protected",
+          "The Worktree Root Contains an Unknown Entry",
+          "A Closed Workspace Is Still Retained",
+        ],
+      },
+      {
+        slug: "troubleshooting/dispatch-lifecycle-control-failures",
+        indexTarget: "./dispatch-lifecycle-control-failures.md",
+        conceptTarget: "../concepts/dispatch-workspaces.md",
+        openings: ["lifecycle", "status"],
+        symptoms: [
+          "Start, Resume, or Pause Reports an Invalid Transition",
+          "A Held Task Does Not Start",
+          "A Task Alias Is Missing, Ambiguous, or Mismatched",
+          "Dispatch Is Stopped With Pending or Failed Cleanup",
+          "The Control Store Is Unavailable, Corrupt, or Cannot Commit",
+          "Cleanup Cannot Verify Ownership or Process Identity",
+          "Hard Stop Is Rejected From a Dispatch-Owned Session",
+          "Hard Stop Requires Confirmation or --force",
+          "Lifecycle Controls Are Read-Only in the Static UI",
+        ],
+      },
+    ] as const;
+
+    // AC: @docs-troubleshooting-section ac-1
+    // AC: @docs-troubleshooting-section ac-2
+    it("publishes indexed symptom-first blocks with observable recovery outcomes", () => {
+      const entries = publishedDocs();
+      const index = publishedDoc(entries, "troubleshooting").content;
+
+      for (const page of recoveryPages) {
+        const entry = publishedDoc(entries, page.slug);
+        expect(relativeMarkdownLinks(index), page.slug).toContain(page.indexTarget);
+        const opening = entry.content.split("\n\n").slice(0, 2).join(" ").toLowerCase();
+        for (const term of page.openings) expect(opening).toContain(term);
+        expect(symptomHeadings(entry.content)).toEqual(page.symptoms);
+
+        const rendered = renderDocsMarkdown(entry.content);
+        for (const symptom of page.symptoms) {
+          const block = symptomBlock(entry.content, symptom);
+          expect(block).toContain("### What this means");
+          expect(block).toContain("### What to observe");
+          expect(block).toContain("### Recovery procedure");
+          expect(block).toContain("### Healthy outcome");
+          expect(block).toContain("### Learn more");
+          expect(block).toContain(page.conceptTarget);
+        }
+        for (const heading of rendered.toc) {
+          expect(rendered.html).toContain(`id="${heading.id}"`);
+        }
+      }
+    });
+
+    // AC: @docs-troubleshooting-section ac-2
+    it("backs recovery commands and examples with the public help and status contracts", () => {
+      const entries = publishedDocs();
+      const pages = [
+        ...recoveryPages.map((page) => publishedDoc(entries, page.slug).content),
+        publishedDoc(entries, "troubleshooting/dispatch-refuses-to-assign").content,
+      ].join("\n");
+      const documentedCommands = [
+        "agent status",
+        "agent dispatch status",
+        "agent dispatch watch",
+        "agent dispatch stop",
+        "agent dispatch task stop",
+        "agent dispatch start",
+        "agent dispatch resume",
+        "agent dispatch task resume",
+        "task get",
+        "task unblock",
+        "task set",
+        "tasks ready",
+        "agent list",
+        "plan get",
+        "search",
+        "shadow status",
+        "setup",
+      ];
+      for (const command of documentedCommands) {
+        expect(pages, command).toContain(`kspec ${command}`);
+        const help = kspec(`${command} --help`, fixtureDir);
+        expect(help.exitCode, command).toBe(0);
+        expect(help.stdout, command).toContain(`Usage: kspec ${command}`);
+      }
+
+      const status = kspecJson<Record<string, unknown>>("agent dispatch status --json", fixtureDir);
+      expect(status).toMatchObject({
+        globalAuthority: factsFixture.lifecycle.missing_state_default,
+        projection: "stopped",
+        cleanupState: { status: "idle", entries: [] },
+      });
+      for (const code of [
+        "invalid_transition",
+        "task_not_found",
+        "task_identity_ambiguous",
+        "task_identity_mismatch",
+        "control_store_unavailable",
+        "control_store_corrupt",
+        "control_commit_failed",
+        "cleanup_identity_unverifiable",
+      ]) {
+        expect(factsFixture.safety.control_error_codes).toContain(code);
+        expect(pages).toContain(code);
+      }
+      expect(pages).toContain(factsFixture.safety.failure_authority);
+      expect(pages).toContain(factsFixture.workspace.remote_sync.no_remote);
+    });
+
+    it("binds bootstrap failure recovery to dispatcher task blocking and public unblock", async () => {
+      const projectDir = await createTempDir("dispatch-doc-bootstrap-recovery-");
+      const taskId = testUlid("TASK", 77);
+      const taskRef = `@${taskId}`;
+      const reviewTaskId = testUlid("TASK", 79);
+      const reviewTaskRef = `@${reviewTaskId}`;
+      const control = createMissingDispatchControl();
+      control.global.authority = "running";
+      const engine = new DispatchEngine({
+        projectDir,
+        specDir: projectDir,
+        kspecCliPath: REAL_KSPEC_CLI,
+        reconcileIntervalMs: 0,
+        coalesceWindowMs: 0,
+        lifecycleStore: new FactLifecycleStore(control),
+      });
+      try {
+        await seedFactProject(projectDir);
+        await writeFile(
+          join(projectDir, "kynetic.meta.yaml"),
+          YAML.stringify({
+            kynetic_meta: "1.0",
+            agents: [
+              {
+                ...factAgent(),
+                adapter: "mock-acp",
+                dispatch: [{ on: "task.ready" }],
+              },
+            ],
+          }),
+          "utf8",
+        );
+        seedSplitTask(projectDir, {
+          _ulid: taskId,
+          type: "task",
+          title: "Bootstrap recovery fact",
+          slugs: ["bootstrap-recovery-fact"],
+          status: "pending",
+          priority: 1,
+          automation: "eligible",
+          depends_on: [],
+          blocked_by: [],
+          tags: [],
+          notes: [],
+          context: [],
+          vcs_refs: [],
+          todos: [],
+          created_at: NOW,
+        });
+        seedSplitTask(projectDir, {
+          _ulid: reviewTaskId,
+          type: "task",
+          title: "Reviewer bootstrap recovery fact",
+          slugs: ["reviewer-bootstrap-recovery-fact"],
+          status: "pending_review",
+          priority: 1,
+          automation: "eligible",
+          depends_on: [],
+          blocked_by: [],
+          tags: [],
+          notes: [],
+          context: [],
+          vcs_refs: [],
+          todos: [],
+          created_at: NOW,
+        });
+        await writeFile(
+          join(projectDir, "kspec.config.yaml"),
+          [
+            "dispatch:",
+            "  base_branch: main",
+            "  bootstrap:",
+            "    steps:",
+            "      - run: printf 'UNSAFE_OUTPUT_SENTINEL'; exit 9",
+          ].join("\n"),
+          "utf8",
+        );
+        const runSpy = vi.spyOn(invocationModule, "runInvocation");
+        await engine.start();
+        await engine.handleStateChange({
+          taskId,
+          taskRef,
+          fromStatus: "in_progress",
+          toStatus: "pending",
+          timestamp: Date.now(),
+          task: kspecJson<LoadedTask>(`task get ${taskRef}`, projectDir),
+        });
+
+        expect(runSpy).not.toHaveBeenCalled();
+        const blocked = kspecJson<{ status: string; notes: Array<{ content: string }> }>(
+          `task get ${taskRef}`,
+          projectDir,
+        );
+        expect(blocked.status).toBe("blocked");
+        expect(blocked.notes.some((note) => note.content.includes("[DISPATCH-BOOTSTRAP]"))).toBe(
+          true,
+        );
+        expect(blocked.notes.some((note) => note.content.includes("UNSAFE_OUTPUT_SENTINEL"))).toBe(
+          true,
+        );
+
+        const unblock = kspec(`task unblock ${taskRef}`, projectDir);
+        expect(unblock.exitCode).toBe(0);
+        expect(kspecJson<{ status: string }>(`task get ${taskRef}`, projectDir).status).toBe(
+          "pending",
+        );
+        expect(
+          kspec(`task block ${reviewTaskRef} --reason "Reviewer bootstrap failed"`, projectDir)
+            .exitCode,
+        ).toBe(0);
+        expect(kspecJson<{ status: string }>(`task get ${reviewTaskRef}`, projectDir).status).toBe(
+          "blocked",
+        );
+        expect(kspec(`task unblock ${reviewTaskRef}`, projectDir).exitCode).toBe(0);
+        expect(kspecJson<{ status: string }>(`task get ${reviewTaskRef}`, projectDir).status).toBe(
+          "pending_review",
+        );
+
+        const page = publishedDoc(
+          publishedDocs(),
+          "troubleshooting/dispatch-bootstrap-failures",
+        ).content;
+        expect(page).toContain("last 4,000 characters");
+        expect(page).toContain("not redacted");
+        expect(page).toContain("Treat any secret printed by the step as exposed");
+        expect(page).toContain("kspec task unblock @task-ref");
+        expect(page).not.toMatch(/saniti[sz]ed|redacted output/i);
+      } finally {
+        await engine.stop().catch(() => undefined);
+        await cleanupTempDir(projectDir);
+      }
+    });
+
+    it("binds documented bootstrap cache invalidation to the three runtime signals", async () => {
+      const projectDir = await createTempDir("dispatch-doc-bootstrap-invalidation-");
+      try {
+        await seedFactProject(projectDir);
+        const configPath = join(projectDir, "kspec.config.yaml");
+        await writeFile(
+          configPath,
+          [
+            "dispatch:",
+            "  base_branch: main",
+            "  bootstrap:",
+            "    steps:",
+            "      - run: exit 7",
+          ].join("\n"),
+          "utf8",
+        );
+        const taskId = testUlid("TASK", 78);
+        const taskRef = `@${taskId}`;
+        let workspace = await provisionDispatchWorkspace({
+          projectDir,
+          taskRef,
+          task: { title: "Invalidation fact", slugs: ["invalidation-fact"] },
+        });
+        await expect(
+          ensureWorkspaceBootstrap({
+            projectDir,
+            workspaceDir: workspace.cwd,
+            metadataPath: workspace.metadataPath,
+            metadata: workspace.metadata,
+            role: "worker",
+            agent: factAgent(),
+            env: {},
+          }),
+        ).rejects.toBeInstanceOf(DispatchBootstrapError);
+
+        await writeFile(
+          configPath,
+          [
+            "dispatch:",
+            "  base_branch: main",
+            "  bootstrap:",
+            "    steps:",
+            "      - run: mkdir -p .facts && printf ready >> .facts/history",
+          ].join("\n"),
+          "utf8",
+        );
+        workspace = await provisionDispatchWorkspace({
+          projectDir,
+          taskRef,
+          task: { title: "Invalidation fact", slugs: ["invalidation-fact"] },
+        });
+        let result = await ensureWorkspaceBootstrap({
+          projectDir,
+          workspaceDir: workspace.cwd,
+          metadataPath: workspace.metadataPath,
+          metadata: workspace.metadata,
+          role: "worker",
+          agent: factAgent(),
+          env: {},
+        });
+        expect(result.metadata.bootstrap.invalidationReasons).toEqual(
+          expect.arrayContaining(["prior-bootstrap-failed", "bootstrap-config-changed"]),
+        );
+
+        await writeFile(join(workspace.cwd, "head-change.txt"), "head change\n", "utf8");
+        git(workspace.cwd, "add", "head-change.txt");
+        git(workspace.cwd, "commit", "-m", "head change");
+        workspace = await provisionDispatchWorkspace({
+          projectDir,
+          taskRef,
+          task: { title: "Invalidation fact", slugs: ["invalidation-fact"] },
+        });
+        result = await ensureWorkspaceBootstrap({
+          projectDir,
+          workspaceDir: workspace.cwd,
+          metadataPath: workspace.metadataPath,
+          metadata: workspace.metadata,
+          role: "worker",
+          agent: factAgent(),
+          env: {},
+        });
+        expect(result.metadata.bootstrap.invalidationReasons).toContain(
+          "canonical-branch-head-changed",
+        );
+        expect(result.metadata.bootstrap.status).toBe("succeeded");
+
+        const block = symptomBlock(
+          publishedDoc(publishedDocs(), "troubleshooting/dispatch-bootstrap-failures").content,
+          "Previously Successful Bootstrap State Is Invalidated",
+        );
+        for (const reason of [
+          "prior-bootstrap-failed",
+          "bootstrap-config-changed",
+          "canonical-branch-head-changed",
+        ]) {
+          expect(block).toContain(reason);
+        }
+        expect(block).toContain("If the automatic rerun succeeds");
+        expect(block).toContain("Only when the rerun itself fails");
+        expect(block).not.toContain("Then run `kspec task unblock @task-ref`");
+        expect(block).not.toMatch(/target change|role change|tracked workspace change/i);
+      } finally {
+        await cleanupTempDir(projectDir);
+      }
+    });
+
+    // AC: @docs-troubleshooting-section ac-3
+    it("links primitives to concepts and rejects unsupported recovery shortcuts", () => {
+      const entries = publishedDocs();
+      const pages = recoveryPages.map((page) => publishedDoc(entries, page.slug));
+      for (const page of pages) {
+        for (const target of relativeMarkdownLinks(page.content)) {
+          const resolvedTarget = normalize(join(dirname(page.path), target)).replaceAll("\\", "/");
+          expect(
+            entries.some((candidate) => candidate.path === resolvedTarget),
+            target,
+          ).toBe(true);
+        }
+      }
+
+      const recovery = pages.map((page) => page.content).join("\n");
+      expect(recovery).toContain("Do not edit `.kspec/dispatch-control.yaml`");
+      expect(recovery).toContain("Do not edit the dispatch workspace registry");
+      expect(recovery).toContain("Do not delete or move a managed worktree");
+      expect(recovery).not.toContain("kspec dispatch workspace");
+      expect(recovery).not.toContain("kspec agent dispatch workspace");
+      expect(recovery).not.toContain("git worktree remove --force");
+      expect(recovery).not.toContain("aggregate cleanup blocks");
+
+      const assignment = publishedDoc(
+        entries,
+        "troubleshooting/dispatch-refuses-to-assign",
+      ).content;
+      expect(assignment).toContain("Lifecycle authority and held status");
+      expect(assignment).toContain("automation filtering is evaluated per matching rule and event");
+      expect(assignment).toContain("default worker rules");
+      expect(assignment).not.toContain("Dispatch only picks up tasks where automation");
+    });
+  });
+
   // AC: @auto-cli-docs ac-3
   it("captures the complete observable help reference from an explicit fixture cwd", () => {
     const rootHelp = kspec("--help", fixtureDir);
@@ -1719,6 +2148,110 @@ describe("dispatch operator fact fixture", () => {
         "relative paths resolve from the project root; absolute paths remain absolute",
       );
     } finally {
+      await cleanupTempDir(projectDir);
+    }
+  });
+
+  it("binds workspace provisioning failure recovery to task block and public unblock", async () => {
+    const projectDir = await createTempDir("dispatch-doc-workspace-recovery-");
+    const taskId = testUlid("TASK", 80);
+    const taskRef = `@${taskId}`;
+    const taskSlug = "workspace-collision-recovery-fact";
+    const agent = {
+      ...factAgent(),
+      adapter: "mock-acp",
+      dispatch: [{ on: "task.ready" as const }],
+    };
+    const control = createMissingDispatchControl();
+    control.global.authority = "running";
+    const engine = new DispatchEngine({
+      projectDir,
+      specDir: projectDir,
+      kspecCliPath: REAL_KSPEC_CLI,
+      reconcileIntervalMs: 0,
+      coalesceWindowMs: 0,
+      lifecycleStore: new FactLifecycleStore(control),
+    });
+    try {
+      await seedFactProject(projectDir);
+      await writeFile(
+        join(projectDir, "kynetic.meta.yaml"),
+        YAML.stringify({
+          kynetic_meta: "1.0",
+          agents: [agent],
+        }),
+        "utf8",
+      );
+      seedSplitTask(projectDir, {
+        _ulid: taskId,
+        type: "task",
+        title: "Workspace collision recovery fact",
+        slugs: [taskSlug],
+        status: "pending",
+        priority: 1,
+        automation: "eligible",
+        depends_on: [],
+        blocked_by: [],
+        tags: [],
+        notes: [],
+        context: [],
+        vcs_refs: [],
+        todos: [],
+        created_at: NOW,
+      });
+      await writeFile(
+        join(projectDir, "kspec.config.yaml"),
+        "dispatch:\n  base_branch: main\n  worktree_root: .kspec/worktrees\n",
+        "utf8",
+      );
+      (engine as unknown as { running: boolean }).running = true;
+      const change = {
+        taskId,
+        taskRef,
+        fromStatus: "in_progress",
+        toStatus: "pending",
+        timestamp: Date.now(),
+        task: kspecJson<LoadedTask>(`task get ${taskRef}`, projectDir),
+      };
+      type EngineInternal = {
+        _spawnInvocation: (
+          candidate: Agent,
+          entry: { agent: Agent; change: typeof change; retryCount: number; nextRetryAt: number },
+        ) => Promise<boolean>;
+      };
+      const spawned = await (engine as unknown as EngineInternal)._spawnInvocation(agent, {
+        agent,
+        change,
+        retryCount: 0,
+        nextRetryAt: 0,
+      });
+
+      expect(spawned).toBe(false);
+      const blocked = kspecJson<{ status: string; notes: Array<{ content: string }> }>(
+        `task get ${taskRef}`,
+        projectDir,
+      );
+      expect(blocked.status).toBe("blocked");
+      expect(blocked.notes.some((note) => note.content.includes("[DISPATCH-WORKSPACE]"))).toBe(
+        true,
+      );
+      expect(
+        blocked.notes.some((note) => note.content.includes("inside the shadow worktree")),
+      ).toBe(true);
+
+      expect(kspec(`task unblock ${taskRef}`, projectDir).exitCode).toBe(0);
+      expect(kspecJson<{ status: string }>(`task get ${taskRef}`, projectDir).status).toBe(
+        "pending",
+      );
+
+      const block = symptomBlock(
+        publishedDoc(publishedDocs(), "troubleshooting/dispatch-workspace-sync-and-cleanup")
+          .content,
+        "The Workspace Path Collides With Existing Content",
+      );
+      expect(block).toContain("kspec task unblock @task-ref");
+    } finally {
+      await engine.stop().catch(() => undefined);
       await cleanupTempDir(projectDir);
     }
   });
