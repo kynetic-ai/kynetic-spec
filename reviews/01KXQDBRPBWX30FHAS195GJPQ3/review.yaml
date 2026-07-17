@@ -90,6 +90,17 @@ checks:
     runner: npm test -- --fresh focused documentation files
     created_at: 2026-07-17T07:13:24.383Z
     completed_at: 2026-07-17T07:13:24.383Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "A true depth-1 clone of the canonical branch had rev-list count 1, built successfully,
+      and passed dispatch-operator-docs: 2 suites and 19/19 tests."
+    name: shallow checkout compatibility
+    required: true
+    runner: git depth-1 reproduction plus focused test
+    created_at: 2026-07-17T07:13:30.380Z
+    completed_at: 2026-07-17T07:13:30.380Z
 events:
   - _ulid: 01KXQDBRP20Z3SN4ASCQXRKRRQ
     actor: Jacob Chapel
@@ -181,6 +192,13 @@ events:
       status: pass
       name: focused documentation suite
     timestamp: 2026-07-17T07:13:24.645Z
+  - _ulid: 01KXQERP05RFPXPKFR7MG6TFR4
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: shallow checkout compatibility
+    timestamp: 2026-07-17T07:13:30.630Z
 examined_commit: 234998db585d23e8f54dc6197bacf001c3df06ff
 external_links: []
 lifecycle_state: open
@@ -254,5 +272,5 @@ threads:
     kind: blocker
 verdicts: []
 created_at: 2026-07-17T06:48:58.827Z
-updated_at: 2026-07-17T07:13:24.383Z
+updated_at: 2026-07-17T07:13:30.380Z
 notes: []
