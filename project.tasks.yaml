@@ -34214,6 +34214,7 @@
   notes_count: 0
   todos_count: 0
   created_at: 2026-07-17T00:08:21.387Z
+  automation: eligible
 - _ulid: 01KXPPE7MC40EXM9Q3MT0VJNWY
   slugs:
     - task-document-dispatch-recovery
