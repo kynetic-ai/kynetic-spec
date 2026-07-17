@@ -448,6 +448,42 @@ events:
     payload:
       thread_ulid: 01KXQV7M3CNAH0PK8D6EWE3KFD
     timestamp: 2026-07-17T10:52:55.240Z
+  - _ulid: 01KXQWPTCRE3Q5C4HEV36GKYR5
+    actor: Jacob Chapel
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KXQV3BMNESQ24X38653GW0RS
+    timestamp: 2026-07-17T11:17:09.656Z
+  - _ulid: 01KXQWPYJXJV638PTEA70RYF81
+    actor: Jacob Chapel
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KXQV3BMNESQ24X38653GW0RS
+    timestamp: 2026-07-17T11:17:13.949Z
+  - _ulid: 01KXQWQ1SFYPH73Z8X0VKXZKX9
+    actor: Jacob Chapel
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KXQV3F0PZM46DCWQK48A789R
+    timestamp: 2026-07-17T11:17:17.231Z
+  - _ulid: 01KXQWQ4YE52R2NQ63TJ8J572S
+    actor: Jacob Chapel
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KXQV3F0PZM46DCWQK48A789R
+    timestamp: 2026-07-17T11:17:20.462Z
+  - _ulid: 01KXQWQ83M08D0AC2M7WS481KP
+    actor: Jacob Chapel
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KXQV3JV8B0QG36PJAHNCFQGM
+    timestamp: 2026-07-17T11:17:23.700Z
+  - _ulid: 01KXQWQB7KS94DE5B0RZV0P53N
+    actor: Jacob Chapel
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KXQV3JV8B0QG36PJAHNCFQGM
+    timestamp: 2026-07-17T11:17:26.899Z
 examined_commit: 7c2bc80a30fb9a4f726938960bf1dc60224195d9
 external_links: []
 lifecycle_state: closed
@@ -480,7 +516,16 @@ threads:
           managed repository-relative ignore entry and recommend placing them outside the
           repository, without claiming they necessarily are outside."
         created_at: 2026-07-17T10:49:03.381Z
+      - _ulid: 01KXQWPT4P9FC2YWNM4K9JJSPK
+        author: Jacob Chapel
+        body: "Fixed in c309516304: the guide now says absolute roots are supported but receive no managed
+          repository-relative ignore entry, even inside the repository, and recommends placing them
+          outside. The docs test proves relative roots are included while absolute roots are
+          omitted."
+        created_at: 2026-07-17T11:17:09.398Z
     kind: blocker
+    resolved_at: 2026-07-17T11:17:13.692Z
+    resolved_by: Jacob Chapel
   - _ulid: 01KXQV3F0PZM46DCWQK48A789R
     anchor:
       type: code
@@ -502,7 +547,15 @@ threads:
           which failures degrade and distinguish transient warnings from degraded topology/state
           failures."
         created_at: 2026-07-17T10:49:06.839Z
+      - _ulid: 01KXQWQ1HTJAKPPKBSWG9KTWR2
+        author: Jacob Chapel
+        body: "Fixed in c309516304: the guide now distinguishes transient fetch/connectivity warnings that
+          do not degrade from unsafe target mutation or divergence that does. Published-doc
+          regression assertions preserve both statements."
+        created_at: 2026-07-17T11:17:16.986Z
     kind: blocker
+    resolved_at: 2026-07-17T11:17:20.213Z
+    resolved_by: Jacob Chapel
   - _ulid: 01KXQV3JV8B0QG36PJAHNCFQGM
     entries:
       - _ulid: 01KXQV3JV8X032KGM4YXG8DV7H
@@ -526,7 +579,14 @@ threads:
           refresh are not applicable. Findings: two source-alignment blockers; no additional issue
           found after expanded search."
         created_at: 2026-07-17T10:49:10.760Z
+      - _ulid: 01KXQWQ7VN6WR0JA0WP1BKYH1K
+        author: Jacob Chapel
+        body: Acknowledged the evidence log. Re-ran the focused suite and every project gate after the two
+          source-bound corrections; all pass.
+        created_at: 2026-07-17T11:17:23.445Z
     kind: nit
+    resolved_at: 2026-07-17T11:17:26.658Z
+    resolved_by: Jacob Chapel
   - _ulid: 01KXQV7CE7C32EWFW6JP41HGWG
     anchor:
       type: code
@@ -618,5 +678,5 @@ verdicts:
     role: reviewer
     created_at: 2026-07-17T10:51:26.764Z
 created_at: 2026-07-17T10:30:45.018Z
-updated_at: 2026-07-17T10:52:54.984Z
+updated_at: 2026-07-17T11:17:26.658Z
 notes: []
