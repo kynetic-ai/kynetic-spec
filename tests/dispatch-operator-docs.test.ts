@@ -1551,16 +1551,41 @@ describe("dispatch operator fact fixture", () => {
         ).toBe(true);
       }
 
-      for (const helpPath of [
-        "help agent dispatch",
-        "help agent dispatch task",
-        "help agent status",
-      ]) {
-        expect(guide).toContain(`kspec ${helpPath}`);
+      for (const documentedCommand of documentedCommands) {
+        const command = documentedCommand.replace(/^kspec /, "").replace(/ <task-ref>$/, "");
+        const helpPath = `${command} --help`;
         const result = kspec(helpPath, fixtureDir);
         expect(result.exitCode, helpPath).toBe(0);
-        expect(result.stdout.length, helpPath).toBeGreaterThan(0);
+        expect(result.stdout, helpPath).toContain(`Usage: kspec ${command}`);
+        expect(result.stdout, helpPath).toContain("Options:");
       }
+      expect(guide).toContain("append `--help` to that exact command");
+      expect(guide).toContain("kspec agent dispatch stop --help");
+      expect(guide).toContain("kspec agent dispatch task stop --help");
+    });
+
+    // AC: @docs-guides-section ac-2
+    it("directs detailed CLI verification to the observable JSON status contract", () => {
+      const guide = publishedDoc(publishedDocs(), "guides/controlling-dispatch-lifecycle").content;
+      const status = kspecJson<Record<string, unknown>>("agent dispatch status --json", fixtureDir);
+
+      expect(status).toEqual(
+        expect.objectContaining({
+          globalAuthority: "stopped",
+          projection: "stopped",
+          activeCount: 0,
+          queuedInvocations: 0,
+          heldCount: 0,
+          heldTasks: [],
+          taskControls: [],
+          cleanupState: { status: "idle", entries: [] },
+        }),
+      );
+      expect(status).not.toHaveProperty("global_authority");
+      expect(guide).toContain("kspec agent dispatch status --json");
+      expect(guide).toContain("human-readable summary");
+      expect(guide).toContain("CLI JSON uses camelCase");
+      expect(guide).toContain("public API uses snake_case");
     });
   });
 

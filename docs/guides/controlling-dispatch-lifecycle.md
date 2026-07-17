@@ -11,7 +11,7 @@ Pause new dispatch work, resume held work, or hard-stop dispatch-owned work at e
 - The canonical task reference or an unambiguous alias when controlling one task
 - A recovery plan for work that a hard stop will cancel
 
-Read [Configuring Dispatch Workspaces](./configuring-dispatch-workspaces.md) first if the integration target, managed worktree root, publication mode, or bootstrap policy is not yet configured. For the complete generated option lists, use `kspec help agent dispatch`, `kspec help agent dispatch task`, and `kspec help agent status`.
+Read [Configuring Dispatch Workspaces](./configuring-dispatch-workspaces.md) first if the integration target, managed worktree root, publication mode, or bootstrap policy is not yet configured. Every lifecycle command has its own generated option list: append `--help` to that exact command. For example, use `kspec agent dispatch stop --help`, `kspec agent dispatch task stop --help`, or `kspec agent status --help`.
 
 ## Steps
 
@@ -29,10 +29,12 @@ Inspect status before every action:
 
 ```bash
 kspec agent status
-kspec agent dispatch status
+kspec agent dispatch status --json
 ```
 
-`kspec agent status` is the public status surface. `kspec agent dispatch status` is the dispatch-focused compatibility view. In status output, distinguish these fields:
+Plain `kspec agent status` provides a human-readable summary with Authority, Projection, Active, Queued, Held, and aggregate Cleanup lines. Use `kspec agent dispatch status --json` when you need the detailed CLI status contract: CLI JSON uses camelCase names such as `globalAuthority`, `activeCount`, `queuedInvocations`, `heldCount`, `heldTasks`, `taskControls`, `cleanupState`, and `degradedTargets`. A missing optional `degradedTargets` array means no target degradation was reported.
+
+Public API consumers instead read `GET /api/agent/status`. The public API uses snake_case wire fields:
 
 | Field              | What it tells you                                                                   |
 | ------------------ | ----------------------------------------------------------------------------------- |
@@ -101,13 +103,13 @@ A dispatch-owned agent session cannot hard-stop its own host. Global and task ha
 
 Use this sequence:
 
-1. Run `kspec agent status` and record authority, projection, active and queued counts, held work, task controls, matching cleanup, and degraded targets.
+1. Run `kspec agent status` for the human-readable summary, then run `kspec agent dispatch status --json` and record `globalAuthority`, `projection`, `activeCount`, `queuedInvocations`, `heldCount`, `heldTasks`, `taskControls`, matching `cleanupState`, and any `degradedTargets`.
 2. Choose global or task scope from the tables above.
 3. For pause or resume, run the selected command and read its reported authority and projection.
 4. For hard stop, review the cancellation and evidence-preservation warning. Confirm interactively, or add `--force` in noninteractive and JSON use.
-5. Run `kspec agent status` again and verify the expected authority, projection, counts, held rows, task control, and cleanup scope.
+5. Run both status commands again. Use the summary for a quick state check and the JSON result for held rows, task controls, scoped cleanup entries, and degraded targets.
 
-Consult `kspec help agent dispatch` and the child help shown by `kspec help agent dispatch task` for full lifecycle flags. Consult `kspec help agent status` for status output modes. The guide names the workflow commands but does not duplicate generated flag reference.
+For any command in the table, append `--help` to that exact command (and omit the `<task-ref>` placeholder) to read its generated Usage and Options output. The guide names the workflow commands but does not duplicate generated flag reference.
 
 ### 6. Use the API or agents view when appropriate
 
@@ -127,7 +129,7 @@ Hard-stop failure never restores admission or reports false success. Authority r
 
 To retry:
 
-1. Read `cleanup_state` and identify whether the entry is global or belongs to one canonical task.
+1. Read `cleanupState` in CLI JSON (or `cleanup_state` in the public API) and identify whether the entry is global or belongs to one canonical task.
 2. Resolve any operator-correctable host condition without deleting dispatch evidence or manually editing lifecycle state.
 3. Run the matching `stop` command again. Global stop retries global cleanup; task stop retries only that task's cleanup.
 4. Verify that matching cleanup becomes `idle`. Unrelated cleanup does not block this transition.
@@ -173,14 +175,15 @@ For the dispatch mental model, read [Agents and Dispatch](../concepts/agents-and
 
 ## Verification
 
-Verify the selected scope from the public status surface:
+Verify the selected scope from the CLI status surfaces:
 
-1. Run `kspec agent status`.
-2. Confirm `global_authority` and `projection` match the intended state.
-3. Confirm `active_count`, `queue_depth`, and `held_count` explain current work.
-4. For task scope, confirm `held_tasks` and `task_controls` name the canonical task and unrelated task rows are unchanged.
-5. Confirm matching `cleanup_state` is `idle`, or that any remaining `pending` or `failed` entry has the expected scope, phase, and closed error code.
-6. Confirm task readiness and `degraded_targets` were not changed by the lifecycle action.
-7. If using the agents view, confirm the next valid actions are labelled, focus remains usable, and the status update is announced.
+1. Run `kspec agent status` and confirm the human-readable authority, projection, active, queued, held, and aggregate cleanup summary.
+2. Run `kspec agent dispatch status --json` for detailed verification.
+3. Confirm `globalAuthority` and `projection` match the intended state.
+4. Confirm `activeCount`, `queuedInvocations`, and `heldCount` explain current work.
+5. For task scope, confirm `heldTasks` and `taskControls` name the canonical task and unrelated task rows are unchanged.
+6. Confirm matching `cleanupState` is `idle`, or that any remaining `pending` or `failed` entry has the expected scope, phase, and closed error code.
+7. Confirm task readiness and any `degradedTargets` were not changed by the lifecycle action.
+8. If using the agents view, confirm the next valid actions are labelled, focus remains usable, and the status update is announced.
 
 The goal is met when the intended global or canonical-task authority is visible, new work is admitted or held as intended, active work was drained or cancelled according to the selected action, and matching cleanup and evidence are accounted for.
