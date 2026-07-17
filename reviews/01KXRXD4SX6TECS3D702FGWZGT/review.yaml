@@ -180,6 +180,13 @@ events:
       kind: blocker
       thread_ulid: 01KXRYGTX4WP17KZ89ES7Z4FG0
     timestamp: 2026-07-17T21:08:05.432Z
+  - _ulid: 01KXRYH1GX6Z08K7V2ZFX1ZK09
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KXRYH18C1JAPQQ8Z4QZM3463
+    timestamp: 2026-07-17T21:08:11.933Z
 examined_commit: 4109f86c5496c238583c213a8c10ac3bbafafe80
 external_links: []
 lifecycle_state: open
@@ -215,7 +222,31 @@ threads:
           distinction cannot regress."
         created_at: 2026-07-17T21:08:05.156Z
     kind: blocker
+  - _ulid: 01KXRYH18C1JAPQQ8Z4QZM3463
+    anchor:
+      type: code
+      commit: 4109f86c5496c238583c213a8c10ac3bbafafe80
+      line_end: 65
+      line_start: 59
+      path: docs/troubleshooting/dispatch-workspace-sync-and-cleanup.md
+      side: head
+    entries:
+      - _ulid: 01KXRYH18DNQ2JK7KRT9264HMW
+        author: Jacob Chapel
+        body: "MUST-FIX — The path-collision recovery fixes the filesystem/configuration cause but omits
+          restoring the task that dispatch blocks on workspace provisioning failure. Evidence: every
+          provisionDispatchWorkspace exception is followed by a DISPATCH-WORKSPACE note and task
+          block at src/agent-runtime/dispatch.ts:4098-4119;
+          tests/agent-dispatch-engine.test.ts:1606-1654 behaviorally proves that recovery state.
+          Impact: after moving unrelated content or correcting dispatch.worktree_root, the task
+          remains blocked and cannot be selected, so the published procedure never reaches its
+          stated healthy outcome. After the collision is corrected, instruct the operator to run
+          kspec task unblock @task-ref, and add behavior-backed documentation coverage for
+          provisioning-failure block/unblock rather than checking only command help and section
+          shape."
+        created_at: 2026-07-17T21:08:11.661Z
+    kind: blocker
 verdicts: []
 created_at: 2026-07-17T20:48:35.645Z
-updated_at: 2026-07-17T21:08:05.156Z
+updated_at: 2026-07-17T21:08:11.661Z
 notes: []
