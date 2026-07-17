@@ -30420,7 +30420,7 @@ reviews:
     title: Review freeze final integrated dispatch facts and public-surface inventory gate
     disposition: changes_requested
     author: Jacob Chapel
-    check_count: 9
+    check_count: 18
     examined_commit: 528a4ca8ef3c30d260e96d3d37b681837642f362
     lifecycle_state: open
     related_refs: []
@@ -30433,4 +30433,4 @@ reviews:
     unresolved_blocker_count: 4
     verdict_count: 0
     created_at: 2026-07-17T01:05:48.282Z
-    updated_at: 2026-07-17T01:28:30.620Z
+    updated_at: 2026-07-17T01:29:13.246Z
