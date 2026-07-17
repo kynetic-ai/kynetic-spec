@@ -401,6 +401,42 @@ events:
       kind: nit
       thread_ulid: 01KXPV487TMHFX67KNEV5XR7QB
     timestamp: 2026-07-17T01:30:18.494Z
+  - _ulid: 01KXPV5ZRJBHGS3HSM4H826HGE
+    actor: Jacob Chapel
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KXPV3V1Y5PKS4GSBJDDJAPQA
+    timestamp: 2026-07-17T01:31:15.090Z
+  - _ulid: 01KXPV63FWVFPWZQQKYK07GAQ5
+    actor: Jacob Chapel
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KXPV3Y8BTQFW0GKGC9K63D59
+    timestamp: 2026-07-17T01:31:18.908Z
+  - _ulid: 01KXPV66TG68YTWTMJGTHN2FBS
+    actor: Jacob Chapel
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KXPV41GP6D7Q05RA3FG92EFZ
+    timestamp: 2026-07-17T01:31:22.321Z
+  - _ulid: 01KXPV6BBEMAXXY2WGB5H59D97
+    actor: Jacob Chapel
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KXPV44QC41HZA26TZVS3ZST1
+    timestamp: 2026-07-17T01:31:26.958Z
+  - _ulid: 01KXPV6F6H0YRGDZ2NKWT2B93J
+    actor: Jacob Chapel
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KXPV0Z4VY22YW2241R3J6TD1
+    timestamp: 2026-07-17T01:31:30.897Z
+  - _ulid: 01KXPV6JK2JY4VT6ENXZ5A10VT
+    actor: Jacob Chapel
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KXPV487TMHFX67KNEV5XR7QB
+    timestamp: 2026-07-17T01:31:34.370Z
 examined_commit: 528a4ca8ef3c30d260e96d3d37b681837642f362
 external_links: []
 lifecycle_state: open
@@ -519,6 +555,8 @@ threads:
           generated refresh was required."
         created_at: 2026-07-17T01:28:30.620Z
     kind: nit
+    resolved_at: 2026-07-17T01:31:30.649Z
+    resolved_by: Jacob Chapel
   - _ulid: 01KXPV3V1Y5PKS4GSBJDDJAPQA
     anchor:
       type: code
@@ -543,6 +581,8 @@ threads:
           checks and negative mutations for the required fact groups."
         created_at: 2026-07-17T01:30:04.734Z
     kind: blocker
+    resolved_at: 2026-07-17T01:31:14.837Z
+    resolved_by: Jacob Chapel
   - _ulid: 01KXPV3Y8BTQFW0GKGC9K63D59
     anchor:
       type: code
@@ -568,6 +608,8 @@ threads:
           sets, including stale-extra mutations."
         created_at: 2026-07-17T01:30:08.011Z
     kind: blocker
+    resolved_at: 2026-07-17T01:31:18.660Z
+    resolved_by: Jacob Chapel
   - _ulid: 01KXPV41GP6D7Q05RA3FG92EFZ
     anchor:
       type: code
@@ -588,6 +630,8 @@ threads:
           independently defined navigation/reading order without sorting it."
         created_at: 2026-07-17T01:30:11.350Z
     kind: blocker
+    resolved_at: 2026-07-17T01:31:21.990Z
+    resolved_by: Jacob Chapel
   - _ulid: 01KXPV44QC41HZA26TZVS3ZST1
     anchor:
       type: code
@@ -608,6 +652,8 @@ threads:
           this gap. Assert the full exported command metadata against both observable help modes.
         created_at: 2026-07-17T01:30:14.636Z
     kind: blocker
+    resolved_at: 2026-07-17T01:31:26.707Z
+    resolved_by: Jacob Chapel
   - _ulid: 01KXPV487TMHFX67KNEV5XR7QB
     entries:
       - _ulid: 01KXPV487T3FVWZRKSP99DDWF2
@@ -627,7 +673,9 @@ threads:
           generated refresh was required."
         created_at: 2026-07-17T01:30:18.234Z
     kind: nit
+    resolved_at: 2026-07-17T01:31:34.127Z
+    resolved_by: Jacob Chapel
 verdicts: []
 created_at: 2026-07-17T01:05:48.282Z
-updated_at: 2026-07-17T01:30:18.234Z
+updated_at: 2026-07-17T01:31:34.127Z
 notes: []
