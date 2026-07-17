@@ -2,7 +2,103 @@ _ulid: 01KXQHQ0PKS61GV0Z8DV8R7YE5
 slugs: []
 title: Review freeze final integrated dispatch facts and public-surface inventory gate (cycle 7)
 author: Jacob Chapel
-checks: []
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Exit 0; all 1061 matched files use the correct format.
+    name: format
+    required: true
+    runner: npm run format:check
+    created_at: 2026-07-17T08:24:11.014Z
+    completed_at: 2026-07-17T08:24:11.014Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Exit 0 with 0 errors and the 696-warning repository baseline; focused oxlint on both
+      changed TypeScript tests reported 0 warnings and 0 errors.
+    name: lint
+    required: true
+    runner: npm run lint -- --quiet
+    created_at: 2026-07-17T08:24:14.478Z
+    completed_at: 2026-07-17T08:24:14.478Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Shared package build and tsc --noEmit completed successfully.
+    name: typecheck
+    required: true
+    runner: npm run typecheck
+    created_at: 2026-07-17T08:24:17.843Z
+    completed_at: 2026-07-17T08:24:17.843Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Fresh full run passed all 2834 suites: 10964 passed and 3 skipped of 10967 tests."
+    name: full test suite
+    required: true
+    runner: npm test -- --fresh
+    created_at: 2026-07-17T08:24:21.019Z
+    completed_at: 2026-07-17T08:24:21.019Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Exit 0; references/schema valid with the documented six deprecation warnings.
+    name: kspec validate refs
+    required: true
+    runner: kspec validate --refs --warnings-ok
+    created_at: 2026-07-17T08:24:24.094Z
+    completed_at: 2026-07-17T08:24:24.094Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Exit 0 under the existing 59-warning alignment baseline.
+    name: kspec validate alignment
+    required: true
+    runner: kspec validate --alignment --warnings-ok
+    created_at: 2026-07-17T08:24:27.365Z
+    completed_at: 2026-07-17T08:24:27.365Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Exit 0 under the existing 325-warning completeness baseline; owned annotations for
+      docs-section-taxonomy ac-1/ac-2 and auto-cli-docs ac-1/ac-3/ac-4/ac-5 were inspected against
+      their AC text.
+    name: kspec validate completeness
+    required: true
+    runner: kspec validate --completeness --warnings-ok
+    created_at: 2026-07-17T08:24:30.765Z
+    completed_at: 2026-07-17T08:24:30.765Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Fresh focused run passed 13 suites and 90 tests across inventory, dispatch operator facts,
+      plan parser, and imported suites.
+    name: focused documentation suite
+    required: true
+    runner: npm test -- --fresh focused documentation files
+    created_at: 2026-07-17T08:24:34.156Z
+    completed_at: 2026-07-17T08:24:34.156Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Reviewed b28c2955, integrated 3f22e6c, and frozen target 8f871993 are ancestors of
+      4672cdf4; all four changed files and all 414 inventory records were inspected; git diff
+      --check passed and the snapshot remained clean.
+    name: freeze ancestry and inventory audit
+    required: true
+    runner: git and structured inventory audit
+    created_at: 2026-07-17T08:24:37.671Z
+    completed_at: 2026-07-17T08:24:37.671Z
 events:
   - _ulid: 01KXQHQ0P0G8THJGETFC9VBSZ9
     actor: Jacob Chapel
@@ -17,17 +113,174 @@ events:
       from: draft
       to: open
     timestamp: 2026-07-17T08:05:47.329Z
+  - _ulid: 01KXQJT39EFNMD1B0EX6V5V923
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: format
+    timestamp: 2026-07-17T08:24:11.310Z
+  - _ulid: 01KXQJT6KZTW5PVAZ6V0XW4EMX
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: lint
+    timestamp: 2026-07-17T08:24:14.720Z
+  - _ulid: 01KXQJT9X4J54SJ8852WYJY7DA
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: typecheck
+    timestamp: 2026-07-17T08:24:18.084Z
+  - _ulid: 01KXQJTD1BD82RAMF8BR69P0ZQ
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: full test suite
+    timestamp: 2026-07-17T08:24:21.292Z
+  - _ulid: 01KXQJTG0N90C09NKRSQZG7PFS
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate refs
+    timestamp: 2026-07-17T08:24:24.341Z
+  - _ulid: 01KXQJTK72Y720YBFY41EBVYFQ
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate alignment
+    timestamp: 2026-07-17T08:24:27.619Z
+  - _ulid: 01KXQJTPGX3XPTS3WPP548PEK0
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate completeness
+    timestamp: 2026-07-17T08:24:31.006Z
+  - _ulid: 01KXQJTSX0VBFN0A941FGX0BPM
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: focused documentation suite
+    timestamp: 2026-07-17T08:24:34.464Z
+  - _ulid: 01KXQJTX8QB6T2B44403MS861V
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: freeze ancestry and inventory audit
+    timestamp: 2026-07-17T08:24:37.911Z
+  - _ulid: 01KXQJV1BC47EQDA50956RTYRC
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KXQJV13E6TTYJ3N78AD6WT7Q
+    timestamp: 2026-07-17T08:24:42.092Z
+  - _ulid: 01KXQJV4MPYAB7M930M78A01C7
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KXQJV4CS72SPM5H6BG2YD8BE
+    timestamp: 2026-07-17T08:24:45.462Z
+  - _ulid: 01KXQJV7P88Z2BQG0QCDC89GQG
+    actor: pr-reviewer
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: request_changes
+    timestamp: 2026-07-17T08:24:48.584Z
+  - _ulid: 01KXQJV7P86S6PZMA94EDT1TR1
+    actor: pr-reviewer
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-07-17T08:24:48.584Z
 examined_commit: 4672cdf4f41c3d0425930e6d55368317482f9dc1
 external_links: []
-lifecycle_state: open
+lifecycle_state: closed
 related_refs: []
 subject:
   type: task
   content_hash: ""
   ref: "@01KXPPE2FA72S6HPFV9V95488F"
   shadow_commit: ""
-threads: []
-verdicts: []
+threads:
+  - _ulid: 01KXQJV13E6TTYJ3N78AD6WT7Q
+    anchor:
+      type: code
+      commit: 4672cdf4f41c3d0425930e6d55368317482f9dc1
+      line_end: 879
+      line_start: 879
+      path: tests/dispatch-operator-docs.test.ts
+      side: head
+    entries:
+      - _ulid: 01KXQJV13E27QR5X9J0QWPFG2J
+        author: Jacob Chapel
+        body: "MUST-FIX: The projection probe is not discriminating, so the validator still accepts a false
+          projection to globalAuthority mapping. The base wire already has global_authority paused,
+          and this probe changes projection to the same paused value; therefore reading
+          globalAuthority produces the expected value even though the declared relationship is
+          wrong. I confirmed this by temporarily adding a stale mutation that set
+          facts.ui.mapping.projection to facts.ui.mapping.global_authority and rerunning the fresh
+          focused test: the stale-fixture case failed with expected function to throw, proving
+          validateFacts accepted the false mapping. This leaves downstream documentation vulnerable
+          to a wrong compatibility map. Use distinct probe values for the source field and every
+          competing UI field, or otherwise enforce the exact one-to-one conversion relationship, and
+          retain a regression mutation for this direction."
+        created_at: 2026-07-17T08:24:41.838Z
+    kind: blocker
+  - _ulid: 01KXQJV4CS72SPM5H6BG2YD8BE
+    entries:
+      - _ulid: 01KXQJV4CSGWS453VP7VVEG896
+        author: Jacob Chapel
+        body: >-
+          Review evidence log
+
+
+          Files read: all changed files (tests/dispatch-operator-docs.test.ts,
+          tests/public-documentation-inventory.test.ts, tests/fixtures/dispatch-operator-facts.json,
+          tests/fixtures/public-documentation-surfaces.json); interacting dispatch lifecycle,
+          remote-sync, UI conversion, task persistence, docs plugin, CLI introspection, and
+          inventory authority code; task, plan, owned ACs, and cycle-6 review threads.
+
+
+          Commands run: exact base-to-head and cycle-6 diffs, git log/status/diff-check/ancestry,
+          structured jq inventory audits, format, repo/focused lint, typecheck, fresh focused tests,
+          fresh full suite, all three kspec validations, and an isolated false-mapping mutation
+          probe followed by clean restoration.
+
+
+          Claims verified: no-remote local-only behavior is bound to engine start/status; lifecycle
+          start preserves the complete task record; reviewed/integrated/frozen OIDs are ancestors;
+          inventory contains 140 Markdown plus 274 typed non-file records. The worker claim that
+          every wire-to-UI pair is exact was disproved by the projection collision mutation.
+
+
+          Categories searched: correctness/spec alignment, edge cases and stale mutations,
+          error/safety facts, test quality, integration/ancestry, inventory completeness, and
+          security exposure. Shared/package guidance surfaces were not changed, so neutrality
+          directions 1/2 and generated-artifact refresh are not applicable.
+        created_at: 2026-07-17T08:24:45.209Z
+    kind: nit
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: request_changes
+    reviewer: pr-reviewer
+    role: reviewer
+    created_at: 2026-07-17T08:24:48.584Z
 created_at: 2026-07-17T08:05:01.779Z
-updated_at: 2026-07-17T08:05:47.066Z
+updated_at: 2026-07-17T08:24:48.584Z
 notes: []
