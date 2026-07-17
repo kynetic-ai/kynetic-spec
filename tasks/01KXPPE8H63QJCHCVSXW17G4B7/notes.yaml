@@ -59,3 +59,20 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-07-17T23:34:28.544Z
+  - _ulid: 01KXS88ZE720BF9WCWC4QK9RFA
+    content: "Fix cycle 1 complete at c54fee7bd1. Addressed both duplicate blocker records: package
+      dispatch guidance is generated behaviorally in an isolated fixture; documented command lines
+      and exported usages are exact; global and task hard stops prove the real --force option; v0.12
+      publication history is verified through the public release-notes command; the non-executable
+      private web package README uses an explicit canonical-artifact read with a narrow, documented
+      lint exception rather than readTestOutput. Review threads are resolved. Re-verified all
+      owned/factual ACs and original changed surfaces. Package-neutrality remains direction-1 pass
+      (universal lifecycle mechanics/configurable identities only) and direction-2 N/A (no
+      Kynetic-only policy removed). Evidence: focused suite 37/37 suites and 137/137 tests; format
+      pass; repo lint 0 errors; focused lint 0 warnings/errors; typecheck pass; full suite 2839/2839
+      suites and 10,984 passing tests with 3 skips; refs/alignment/completeness pass under
+      documented warnings; two generation/plugin passes converged and tracked generated surfaces are
+      clean."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-07-17T23:58:33.416Z
