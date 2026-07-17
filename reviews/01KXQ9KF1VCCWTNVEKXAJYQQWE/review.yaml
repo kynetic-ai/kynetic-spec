@@ -251,6 +251,78 @@ events:
       from: open
       to: closed
     timestamp: 2026-07-17T06:04:17.988Z
+  - _ulid: 01KXQCSK80S7XK6CGB62TA9YWJ
+    actor: Jacob Chapel
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KXQAQW06YJQ47D6FYKNWZWE1
+    timestamp: 2026-07-17T06:39:03.424Z
+  - _ulid: 01KXQCSPK95Q8T90X481JNJ55A
+    actor: Jacob Chapel
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KXQAQW06YJQ47D6FYKNWZWE1
+    timestamp: 2026-07-17T06:39:06.857Z
+  - _ulid: 01KXQCSSSTMQDTQQ6TXR5EWHV6
+    actor: Jacob Chapel
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KXQAR1E18CBHKAXWFHJGPQJD
+    timestamp: 2026-07-17T06:39:10.138Z
+  - _ulid: 01KXQCSWZER9WZKJB5ZAPPFRMD
+    actor: Jacob Chapel
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KXQAR1E18CBHKAXWFHJGPQJD
+    timestamp: 2026-07-17T06:39:13.390Z
+  - _ulid: 01KXQCT19EZDE55KGK9W2TQAQH
+    actor: Jacob Chapel
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KXQAR76BBF4X017P6HM1R7X8
+    timestamp: 2026-07-17T06:39:17.806Z
+  - _ulid: 01KXQCT5J7SZJ1G2DGPXJ70JQX
+    actor: Jacob Chapel
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KXQAR76BBF4X017P6HM1R7X8
+    timestamp: 2026-07-17T06:39:22.183Z
+  - _ulid: 01KXQCT8TSNEB6XN7M6E0FR2HV
+    actor: Jacob Chapel
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KXQARAYJVWWCDSSBWMFF4CRZ
+    timestamp: 2026-07-17T06:39:25.529Z
+  - _ulid: 01KXQCTCK71QZDB32MVJK9N2VR
+    actor: Jacob Chapel
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KXQARAYJVWWCDSSBWMFF4CRZ
+    timestamp: 2026-07-17T06:39:29.383Z
+  - _ulid: 01KXQCTFS3GXK810MDMK6BE281
+    actor: Jacob Chapel
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KXQARGP1RNXWG1DD2CGFWQJG
+    timestamp: 2026-07-17T06:39:32.643Z
+  - _ulid: 01KXQCTJZMHA76GYW200MWZS0M
+    actor: Jacob Chapel
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KXQARGP1RNXWG1DD2CGFWQJG
+    timestamp: 2026-07-17T06:39:35.924Z
+  - _ulid: 01KXQCTPCBEZ5ZZKTJ3HQF0D32
+    actor: Jacob Chapel
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KXQASBJ6YBGBJJ4Y1FFFFNHC
+    timestamp: 2026-07-17T06:39:39.403Z
+  - _ulid: 01KXQCTSJEHC6DW8B96NJKWJEC
+    actor: Jacob Chapel
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KXQASBJ6YBGBJJ4Y1FFFFNHC
+    timestamp: 2026-07-17T06:39:42.671Z
 examined_commit: c192d23e11c8934a924982e25f6cae10d3143e2d
 external_links: []
 lifecycle_state: closed
@@ -280,7 +352,16 @@ threads:
           evidence without requiring unavailable history, or ensure every test-bearing checkout that
           runs this assertion fetches the required history.
         created_at: 2026-07-17T06:03:09.702Z
+      - _ulid: 01KXQCSK0FKR3H13PGHYRBK5Z6
+        author: Jacob Chapel
+        body: "Fixed in 234998db58: frozen OIDs are validated exactly, ancestry is checked whenever each
+          commit object is locally available, and unavailable historical objects no longer fail a
+          shallow checkout. Reproduced from a true depth-1 clone (rev-list count 1, reviewed commit
+          absent): 19/19 focused fact tests passed."
+        created_at: 2026-07-17T06:39:03.183Z
     kind: blocker
+    resolved_at: 2026-07-17T06:39:06.590Z
+    resolved_by: Jacob Chapel
   - _ulid: 01KXQAR1E18CBHKAXWFHJGPQJD
     anchor:
       type: code
@@ -304,7 +385,18 @@ threads:
           class treated as MUST-FIX in prior cycles; derive or execute the retained claims through
           exported helpers or black-box behavior and make the authority row complete.
         created_at: 2026-07-17T06:03:15.266Z
+      - _ulid: 01KXQCSSJD9R85BSPTSW715D3H
+        author: Jacob Chapel
+        body: "Fixed in 234998db58: added src/agent-runtime/dispatch.ts to the workspace authority row and
+          bound retained claims to execution. Bootstrap ordering/scope/reuse/rerun/mutation flags
+          now come from provision/bootstrap results; registry and cleanup ownership come from
+          persisted registry plus the public artifact-protection helper; a real temporary remote
+          proves reviewer deferral followed by ff-only sync; event filtering executes DispatchEngine
+          matching for eligible and unfiltered review events."
+        created_at: 2026-07-17T06:39:09.901Z
     kind: blocker
+    resolved_at: 2026-07-17T06:39:13.111Z
+    resolved_by: Jacob Chapel
   - _ulid: 01KXQAR76BBF4X017P6HM1R7X8
     anchor:
       type: code
@@ -325,7 +417,16 @@ threads:
           complete-record comparison merely reproduces the same hard-coded error. Derive or
           explicitly map the real owning test or test family per fixture path."
         created_at: 2026-07-17T06:03:21.163Z
+      - _ulid: 01KXQCT0MQWSK8K57ZCFCD99EV
+        author: Jacob Chapel
+        body: "Fixed in 234998db58: fixture ownership is now path-specific. E2E plan fixtures map to
+          tests/e2e/plans.spec.ts; the multi-dir root README maps to daemon-context-manager; and the
+          invalid-project README maps to daemon-path-validation-middleware. A negative ownership
+          mutation now fails the complete Markdown contract."
+        created_at: 2026-07-17T06:39:17.143Z
     kind: blocker
+    resolved_at: 2026-07-17T06:39:21.933Z
+    resolved_by: Jacob Chapel
   - _ulid: 01KXQARAYJVWWCDSSBWMFF4CRZ
     anchor:
       type: code
@@ -346,7 +447,16 @@ threads:
           these fields against the independently derived count and frozen evidence, or remove
           metadata that is not part of the enforced contract.
         created_at: 2026-07-17T06:03:25.010Z
+      - _ulid: 01KXQCT8JZAD86BBH7NMFZ4NB3
+        author: Jacob Chapel
+        body: "Fixed in 234998db58: InventoryFixture now includes and validates schema_version, both
+          lifecycle evidence commits, and tracked_markdown_count. Evidence is cross-bound to the
+          independently validated fact fixture, count is derived from git ls-files, and negative
+          mutations cover every header field."
+        created_at: 2026-07-17T06:39:25.279Z
     kind: blocker
+    resolved_at: 2026-07-17T06:39:29.116Z
+    resolved_by: Jacob Chapel
   - _ulid: 01KXQARGP1RNXWG1DD2CGFWQJG
     anchor:
       type: code
@@ -367,7 +477,17 @@ threads:
           limitation to an observable schema/helper/failure path or a precise authoritative contract
           instead of command-name absence.
         created_at: 2026-07-17T06:03:30.881Z
+      - _ulid: 01KXQCTFHKBJTPZFHJ6R9MEW59
+        author: Jacob Chapel
+        body: "Fixed in 234998db58: limitations are derived from the complete public dispatch
+          config/control/status/workspace/rule/help contract rather than similarly named CLI
+          commands. Pause/stop and one-shot boundaries use exported actions/commands;
+          ownership-unverifiable recovery exercises durable failed and retry-pending cleanup
+          projections. The exact fixture must equal the independently derived list."
+        created_at: 2026-07-17T06:39:32.403Z
     kind: blocker
+    resolved_at: 2026-07-17T06:39:35.673Z
+    resolved_by: Jacob Chapel
   - _ulid: 01KXQASBJ6YBGBJJ4Y1FFFFNHC
     entries:
       - _ulid: 01KXQASBJ7FC9Q737VNEJ0HSS3
@@ -388,7 +508,14 @@ threads:
           guidance surfaces touched: none, so shared-guidance-neutrality directions are not
           triggered and no generated refresh is required."
         created_at: 2026-07-17T06:03:58.407Z
+      - _ulid: 01KXQCTP4APDCC6C2TAD9X04KR
+        author: Jacob Chapel
+        body: Acknowledged the informational evidence log. No separate code change was required; cycle-5
+          verification independently reproduced the reported failure modes and all fixes.
+        created_at: 2026-07-17T06:39:39.146Z
     kind: nit
+    resolved_at: 2026-07-17T06:39:42.421Z
+    resolved_by: Jacob Chapel
 verdicts:
   - applies_to_version:
       type: entity_version
@@ -398,5 +525,5 @@ verdicts:
     role: reviewer
     created_at: 2026-07-17T06:04:17.988Z
 created_at: 2026-07-17T05:43:16.795Z
-updated_at: 2026-07-17T06:04:17.988Z
+updated_at: 2026-07-17T06:39:42.421Z
 notes: []

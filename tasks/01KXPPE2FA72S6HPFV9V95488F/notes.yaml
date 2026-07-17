@@ -172,3 +172,16 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-07-17T06:15:05.613Z
+  - _ulid: 01KXQCTTNWMYD8HWSWG9QVH26N
+    content: "Fix cycle 5: resolved all five blockers and the informational thread in 234998db58. Made
+      frozen ancestry depth-1 compatible while preserving exact immutable OIDs; enforced manifest
+      header evidence and real fixture ownership; completed the workspace source matrix; and bound
+      bootstrap, registry/cleanup, target sync/reviewer deferral, automation filtering, and
+      limitations to executed/schema-derived contracts. Re-verified @docs-section-taxonomy ac-1/ac-2
+      and @auto-cli-docs ac-1/ac-3/ac-4/ac-5. Gates: focused 88/88; true depth-1 focused 19/19;
+      format pass; repo lint 0 errors and focused lint 0 warnings/errors; typecheck pass;
+      refs/alignment/completeness pass under documented warnings-ok baselines; fresh full suite
+      2,834/2,834 with 10,962 passed and 3 skipped."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-07-17T06:39:43.804Z
