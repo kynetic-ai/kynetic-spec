@@ -123,6 +123,27 @@ checks:
     runner: semantic reviewer checklist
     created_at: 2026-07-17T12:46:06.427Z
     completed_at: 2026-07-17T12:46:06.427Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: All 1,062 files use the expected format.
+    name: format
+    required: true
+    runner: npm run format:check
+    created_at: 2026-07-17T12:46:21.231Z
+    completed_at: 2026-07-17T12:46:21.231Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Repo lint reported 0 errors with 696 baseline warnings; focused oxlint on
+      tests/dispatch-operator-docs.test.ts reported 0 warnings and 0 errors.
+    name: lint
+    required: true
+    runner: npm run lint -- --quiet
+    created_at: 2026-07-17T12:46:24.386Z
+    completed_at: 2026-07-17T12:46:24.386Z
 events:
   - _ulid: 01KXR0V2K7QEW08VFGDHRBGP7E
     actor: Jacob Chapel
@@ -221,6 +242,20 @@ events:
       kind: nit
       thread_ulid: 01KXR1SRYMN2H8GS3MRWQY5RMG
     timestamp: 2026-07-17T12:46:09.590Z
+  - _ulid: 01KXR1T4RRQ3CXPED9XGHP35AT
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: format
+    timestamp: 2026-07-17T12:46:21.464Z
+  - _ulid: 01KXR1T7VYFMQBNZ8JEC57GT9W
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: lint
+    timestamp: 2026-07-17T12:46:24.638Z
 examined_commit: 71a9a195700adfea06d9c6b6728752ecae58633c
 external_links: []
 lifecycle_state: open
@@ -258,5 +293,5 @@ threads:
     kind: nit
 verdicts: []
 created_at: 2026-07-17T12:29:23.437Z
-updated_at: 2026-07-17T12:46:09.364Z
+updated_at: 2026-07-17T12:46:24.386Z
 notes: []
