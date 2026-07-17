@@ -92,3 +92,12 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-07-17T11:44:06.826Z
+  - _ulid: 01KXQYSAXRY2XHY337MSBZCVQA
+    content: "Fix cycle 3 approach: update every agent-list and one-shot-run reference to point to its
+      exact subcommand help output, then extend the @docs-guides-section ac-3 behavioral test to
+      execute both exact help paths. Re-read all guide ACs and re-run focused docs/config/inventory
+      gates plus project quality gates before replying to and resolving both cycle-3 threads and
+      resubmitting."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-07-17T11:53:29.272Z
