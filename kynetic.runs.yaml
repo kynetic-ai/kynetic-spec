@@ -83826,9 +83826,24 @@ runs:
     completed_at: 2026-07-17T22:08:12.452Z
   - _ulid: 01KXS4DX8MSYX9R7MXNSBZ6H5N
     status: active
-    current_step: 0
+    current_step: 1
     initiated_by: Jacob Chapel
-    step_results: []
+    step_results:
+      - status: completed
+        step_index: 0
+        started_at: 2026-07-17T22:51:20.724Z
+        completed_at: 2026-07-17T22:53:15.661Z
+        notes: "Worked well: (1) inventorying every adjacent public surface before editing kept unaffected
+          README, install, contribution, security, and issue-template guidance unchanged with an
+          explicit no-drift disposition; (2) deriving documentation assertions from public schemas
+          and CLI behavior made publication-mode and lifecycle guidance executable rather than
+          string-only; (3) regenerating kspec-agents.md through the worktree CLI ensured the
+          uncommitted template change, not the installed package, drove the output; (4) focused
+          tests before the fresh full suite localized failures and gave strong submission evidence."
+      - status: completed
+        step_index: 1
+        started_at: 2026-07-17T22:53:15.661Z
+        completed_at: 2026-07-17T22:53:15.661Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-07-17T22:51:20.724Z
