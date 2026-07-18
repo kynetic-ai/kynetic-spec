@@ -415,9 +415,25 @@ events:
       kind: nit
       thread_ulid: 01KXSA2Z6MB5EZG929T7D46DKY
     timestamp: 2026-07-18T00:30:13.989Z
+  - _ulid: 01KXSA3M7889FMZ6RKAH1FR8HX
+    actor: pr-reviewer
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: approve
+    timestamp: 2026-07-18T00:30:35.240Z
+  - _ulid: 01KXSA3M78DA5CAE4D65BQA8N8
+    actor: pr-reviewer
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-07-18T00:30:35.240Z
 examined_commit: c54fee7bd1823d858065c19b33aa65df6f5bfadb
 external_links: []
-lifecycle_state: open
+lifecycle_state: closed
 related_refs: []
 subject:
   type: task
@@ -487,7 +503,14 @@ threads:
           skill-render asymmetry remains captured by @01KXS2HP."
         created_at: 2026-07-18T00:30:13.716Z
     kind: nit
-verdicts: []
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: approve
+    reviewer: pr-reviewer
+    role: reviewer
+    created_at: 2026-07-18T00:30:35.239Z
 created_at: 2026-07-18T00:05:12.384Z
-updated_at: 2026-07-18T00:30:13.716Z
+updated_at: 2026-07-18T00:30:35.240Z
 notes: []
