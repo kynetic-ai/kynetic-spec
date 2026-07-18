@@ -63,6 +63,18 @@ checks:
     runner: manual plan/source inspection
     created_at: 2026-07-18T23:10:38.346Z
     completed_at: 2026-07-18T23:10:38.346Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Parent plan is active with branch null; task has no dependencies or branch override;
+      current dev and origin/dev are both 7a3d8db2. Normal target remains dev, with no special
+      branch required.
+    name: dependency and branch targeting
+    required: true
+    runner: kspec task/plan and git inspection
+    created_at: 2026-07-18T23:10:44.583Z
+    completed_at: 2026-07-18T23:10:44.583Z
 events:
   - _ulid: 01KXVQSNNPWF5KHHJPV4VD0MA9
     actor: codex
@@ -133,6 +145,13 @@ events:
       status: pass
       name: scope and proportionality
     timestamp: 2026-07-18T23:10:38.649Z
+  - _ulid: 01KXVQY539YH4ZYN80M3XPMDQW
+    actor: codex
+    event_type: check_added
+    payload:
+      status: pass
+      name: dependency and branch targeting
+    timestamp: 2026-07-18T23:10:44.841Z
 examined_commit: null
 external_links: []
 lifecycle_state: open
@@ -209,5 +228,5 @@ threads:
     kind: blocker
 verdicts: []
 created_at: 2026-07-18T23:08:17.978Z
-updated_at: 2026-07-18T23:10:38.346Z
+updated_at: 2026-07-18T23:10:44.583Z
 notes: []
