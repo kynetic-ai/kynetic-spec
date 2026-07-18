@@ -202,6 +202,13 @@ events:
       kind: blocker
       thread_ulid: 01KXSGX535NXCJPWQZ61XFW3HC
     timestamp: 2026-07-18T02:29:23.434Z
+  - _ulid: 01KXSGXB8NCS42CH6W9YAF940R
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KXSGXB0PWJ5576YDTY7C32AA
+    timestamp: 2026-07-18T02:29:29.493Z
 examined_commit: 6a6a1f66957df8d97877d57a143efaf4ee3c6555
 external_links: []
 lifecycle_state: open
@@ -231,7 +238,25 @@ threads:
           `templates/skills/task-work/SKILL.md:42` both require completion after merge."
         created_at: 2026-07-18T02:29:23.173Z
     kind: blocker
+  - _ulid: 01KXSGXB0PWJ5576YDTY7C32AA
+    anchor:
+      type: code
+      commit: 6a6a1f66957df8d97877d57a143efaf4ee3c6555
+      line_end: 34
+      line_start: 34
+      path: docs/concepts/what-kspec-is.md
+      side: head
+    entries:
+      - _ulid: 01KXSGXB0PGNYHHJJHM5TMQG0G
+        author: Jacob Chapel
+        body: "MUST-FIX — This source-verified concept says approval is followed directly by task
+          completion, but the required lifecycle is approval, successful merge, then completion.
+          Impact: the public conceptual model contradicts the corrected tutorial and review guide
+          and can leave task metadata claiming completion before integration. Evidence: the package
+          task-work and merge workflows define `kspec task complete` as the final post-merge step."
+        created_at: 2026-07-18T02:29:29.238Z
+    kind: blocker
 verdicts: []
 created_at: 2026-07-18T02:03:54.248Z
-updated_at: 2026-07-18T02:29:23.173Z
+updated_at: 2026-07-18T02:29:29.238Z
 notes: []
