@@ -24483,8 +24483,11 @@ observations:
       {skill:help} are correctly transformed to platform syntax; skill verify passes after a
       source-backed render, so status and verify disagree on generated/source pairing
     author: Jacob Chapel
-    resolution: null
-    resolved: false
+    resolution: Duplicate of @01KT5EJA, which already captures platform-aware generated-skill comparison
+      and portable-reference rewrite false positives.
+    resolved: true
+    resolved_at: 2026-07-18T01:59:52.557Z
+    resolved_by: Jacob Chapel
     created_at: 2026-07-18T01:40:34.666Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
