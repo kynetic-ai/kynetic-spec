@@ -25,17 +25,17 @@ Run `kspec agent runners validate` from the project root to see which file paths
 
 You do not need to change anything to keep using the legacy `adapter` path. An agent definition that points directly at an adapter continues to work:
 
-```yaml
+```yaml kspec-agent
 # kynetic.meta.yaml — legacy agent, no runner field
 agents:
   - id: task-worker
     adapter: claude-agent-acp
     dispatch:
-      - trigger: task.ready
-        filters:
+      - on: task.ready
+        filter:
           automation: eligible
-      - trigger: task.in_progress
-      - trigger: task.needs_work
+      - on: task.in_progress
+      - on: task.needs_work
 ```
 
 When kspec invokes this agent it takes the implicit path: resolve `claude-agent-acp` from the adapter registry and spawn it with the adapter's defaults. No runner config is loaded, no merge happens, and `kspec agent list` shows the agent with the resolved adapter id but no `runner:` line — the runner row is only rendered for agents that declare one.
@@ -195,7 +195,7 @@ Validating this runner shows the per-field source attribution and confirms no se
 
 With the runner registered, point an agent definition at it. The `runner` field is an optional string that names a runner from the effective registry:
 
-```yaml
+```yaml kspec-agent
 # kynetic.meta.yaml — agent that uses a named runner
 agents:
   - id: task-worker
@@ -203,11 +203,11 @@ agents:
     # Adapter is retained only as legacy metadata. Invocation uses the runner.
     adapter: claude-agent-acp
     dispatch:
-      - trigger: task.ready
-        filters:
+      - on: task.ready
+        filter:
           automation: eligible
-      - trigger: task.in_progress
-      - trigger: task.needs_work
+      - on: task.in_progress
+      - on: task.needs_work
 ```
 
 You can set or clear the field with `kspec meta set`:

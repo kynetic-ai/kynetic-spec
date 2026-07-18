@@ -24,13 +24,13 @@ Run the version command to confirm kspec is installed:
 kspec --version
 ```
 
-You should see a version number like `0.13.0`. If you see a "command not found" error, make sure your npm global bin directory is on your PATH. You can find it with:
+You should see a semantic version number. If you see a "command not found" error, make sure npm's global executable directory is on your PATH. Start by checking the configured global prefix:
 
 ```bash
 npm config get prefix
 ```
 
-The `kspec` binary is in the `bin/` subdirectory of that prefix.
+On Unix-like systems, global executables are normally in the `bin/` subdirectory of that prefix. npm's global executable location is platform-dependent, so use npm's installation guidance if your platform lays it out differently.
 
 ## Verify the help output
 

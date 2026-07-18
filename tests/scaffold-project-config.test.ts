@@ -107,6 +107,15 @@ describe("Scaffold Project Config", () => {
       expect(content).toMatch(/pull_request.*manual_merge.*auto/);
     });
 
+    it("points dispatch operators to lifecycle command help", async () => {
+      await setupKspecProject(testDir);
+      kspec("setup", testDir);
+
+      const content = await fs.readFile(path.join(testDir, CONFIG_FILENAME), "utf-8");
+
+      expect(content).toContain("Lifecycle controls: kspec agent dispatch --help");
+    });
+
     // AC: @scaffolded-project-config ac-placeholder-base-branch
     it("contains dispatch base_branch as commented-out placeholder with resolved value", async () => {
       await setupKspecProject(testDir);

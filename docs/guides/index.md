@@ -9,5 +9,7 @@ The Guides section covers common kspec workflows as step-by-step procedures fram
 - [Reviewing an Agent's Work](./reviewing-an-agents-work.md) — evaluate submitted work against acceptance criteria
 - [Working With Local Resources](./working-with-local-resources.md) — attach files to plans and reviews, reference them from markdown and tasks, and serve them through the daemon API and static export
 - [Configuring Agent Runners](./configuring-agent-runners.md) — define named runners, split project and system config, bind credentials, validate the effective contract, and migrate existing agents
+- [Configuring Dispatch Workspaces](./configuring-dispatch-workspaces.md) — configure integration targets, managed worktree location, publication, bootstrap, and remote synchronization
+- [Controlling the Dispatch Lifecycle](./controlling-dispatch-lifecycle.md) — pause, resume, hard-stop, recover, and verify dispatch globally or for one canonical task
 - [Upgrading kspec to a New Version](./upgrading-kspec.md) — install a new release and update your project
 - [Recovering From Shadow Branch Issues](./recovering-from-shadow-branch-issues.md) — diagnose and fix shadow branch problems

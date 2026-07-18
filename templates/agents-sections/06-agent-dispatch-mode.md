@@ -8,15 +8,31 @@ When running as an automated agent via the dispatch engine:
 # Start background dispatch (daemon must be running)
 kspec agent dispatch start
 
+# Pause new dispatch admissions; active invocations finish naturally
+kspec agent dispatch pause
+
+# Resume paused dispatch
+kspec agent dispatch resume
+
 # Inspect active/queued work and loaded agents
 kspec agent dispatch status
 
 # Stream live text output from running invocations
 kspec agent dispatch watch
 
-# Stop dispatch gracefully
-kspec agent dispatch stop
+# Hard stop dispatch, cancelling matching active work and preserving evidence
+kspec agent dispatch stop --force
+
+# Apply the same controls to one canonical task
+kspec agent dispatch task pause <task-ref>
+kspec agent dispatch task resume <task-ref>
+kspec agent dispatch task stop <task-ref> --force
+
+# Discover current lifecycle flags and subcommands
+kspec agent dispatch --help
 ```
+
+Pause is the graceful admission hold. Stop is a hard stop and requires confirmation in an interactive terminal; use `--force` for non-interactive or JSON operation. Task controls accept any resolvable task reference and report the canonical task identity.
 
 ### Configured Agents
 
