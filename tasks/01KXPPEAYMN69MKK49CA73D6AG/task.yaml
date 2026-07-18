@@ -141,7 +141,7 @@ description: >
 spec_ref: "@docs-navigation-shape"
 plan_ref: "@plan-documentation-completeness-and-dispatch-workspaces"
 origin: derived
-status: in_progress
+status: pending_review
 blocked_by: []
 depends_on:
   - "@task-audit-remaining-public-docs"
@@ -156,11 +156,11 @@ review_ref: "@01KXSR29VH25B09QX7GGFFV8DA"
 submission_linkage:
   review_url: null
   branch: dispatch/task/task-close-documentation-drift-gates/01kxppea
-  captured_at: 2026-07-18T04:27:56.000Z
-  commit: 11f98ee5fa3a30d01f527d964744fa0bca98c3e5
-  remote: null
-  remote_url: null
-  upstream_ref: plan/plan-dispatch-lifecycle-pause-resume-and-stop-controls/01kxc2vx
+  captured_at: 2026-07-18T05:49:57.789Z
+  commit: 25cfd2ac400b8d5d58a06e0a33b661418f708d1f
+  remote: origin
+  remote_url: git@github.com:lepahc/kynetic-spec.git
+  upstream_ref: refs/heads/dispatch/task/task-close-documentation-drift-gates/01kxppea
 session_id: 01KXST6DCBJA06BS4XNBKX89Q3
 history:
   - author: Jacob Chapel
@@ -233,8 +233,35 @@ history:
         previous: 2026-07-18T03:54:50.419Z
     command: task-start
     timestamp: 2026-07-18T05:13:37.272Z
+  - author: Jacob Chapel
+    changes:
+      status:
+        new: pending_review
+        previous: in_progress
+      submission_linkage:
+        new:
+          review_url: null
+          branch: dispatch/task/task-close-documentation-drift-gates/01kxppea
+          captured_at: 2026-07-18T05:49:57.789Z
+          commit: 25cfd2ac400b8d5d58a06e0a33b661418f708d1f
+          remote: origin
+          remote_url: git@github.com:lepahc/kynetic-spec.git
+          upstream_ref: refs/heads/dispatch/task/task-close-documentation-drift-gates/01kxppea
+        previous:
+          review_url: null
+          branch: dispatch/task/task-close-documentation-drift-gates/01kxppea
+          captured_at: 2026-07-18T04:27:56.000Z
+          commit: 11f98ee5fa3a30d01f527d964744fa0bca98c3e5
+          remote: null
+          remote_url: null
+          upstream_ref: plan/plan-dispatch-lifecycle-pause-resume-and-stop-controls/01kxc2vx
+      submitted_at:
+        new: 2026-07-18T05:49:57.803Z
+        previous: 2026-07-18T04:27:56.005Z
+    command: task-submit
+    timestamp: 2026-07-18T05:49:57.803Z
 created_at: 2026-07-17T00:08:25.812Z
 started_at: 2026-07-18T05:13:37.271Z
-submitted_at: 2026-07-18T04:27:56.005Z
+submitted_at: 2026-07-18T05:49:57.803Z
 todos: []
 automation: eligible
