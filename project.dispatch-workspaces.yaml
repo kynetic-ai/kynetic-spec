@@ -16166,12 +16166,12 @@ workspaces:
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-07-18T06:31:11.107Z
+      updated_at: 2026-07-18T06:33:22.806Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-07-18T06:32:53.969Z
+      updated_at: 2026-07-18T06:33:22.806Z
     integration:
       status: pending
       detail: null
@@ -16179,7 +16179,7 @@ workspaces:
       publication_mode: manual_merge
       target_branch: plan/plan-dispatch-lifecycle-pause-resume-and-stop-controls/01kxc2vx
       target_commit: 8d8daeaccf703c23c3441327aa069e535a171e3a
-      updated_at: 2026-07-18T06:31:11.107Z
+      updated_at: 2026-07-18T06:33:22.806Z
     lifecycle_state: ready
     resolved_base_branch: plan/plan-dispatch-lifecycle-pause-resume-and-stop-controls/01kxc2vx
     task_id: 01KXPPEAYMN69MKK49CA73D6AG
@@ -16188,9 +16188,9 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-07-18T05:56:08.922Z
-      last_reconciled_at: 2026-07-18T06:32:53.969Z
+      last_reconciled_at: 2026-07-18T06:33:22.806Z
       created_at: 2026-07-18T03:52:22.467Z
-      updated_at: 2026-07-18T06:32:53.969Z
+      updated_at: 2026-07-18T06:33:22.806Z
     workspace_id: dispatch-workspace-01KXPPEAYMN69MKK49CA73D6AG
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
@@ -16199,5 +16199,5 @@ workspaces:
         branch_mode: branch
         branch_ref: dispatch/task/task-close-documentation-drift-gates/01kxppea
         head: 25cfd2ac400b8d5d58a06e0a33b661418f708d1f
-        last_seen_at: 2026-07-18T05:55:20.365Z
+        last_seen_at: 2026-07-18T06:33:22.806Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-close-documentation-drift-gates-01kxppea
