@@ -1235,6 +1235,7 @@ describe("section landing page structure", () => {
   it("every child-page link on a landing page resolves to a real manifest entry", () => {
     const docsDir = join(__dirname, "..", "docs");
     const plugin = docsPlugin(docsDir, {
+      releaseNotesPath: join(__dirname, "..", "RELEASE_NOTES.md"),
       exclude: ["history", "agents-eval-scenarios.md", "prime-mock.md"],
     });
     const load = plugin.load as (id: string) => string | undefined;

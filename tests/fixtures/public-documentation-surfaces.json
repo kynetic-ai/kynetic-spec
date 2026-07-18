@@ -54,7 +54,7 @@
       "./review-blocking-merge.md",
       "./runner-validation-failures.md"
     ],
-    "release-notes": []
+    "release-notes": ["./changelog.md"]
   },
   "records": [
     {

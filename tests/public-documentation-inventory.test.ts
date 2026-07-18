@@ -15,6 +15,7 @@ import { docsPlugin } from "../packages/web-ui/vite-plugin-docs.js";
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 
 interface DocsManifestEntry {
+  slug: string;
   path: string;
   content: string;
 }
@@ -515,7 +516,11 @@ function cloneFixture(): InventoryFixture {
 }
 
 function docsEntries(): DocsManifestEntry[] {
-  const plugin = docsPlugin(join(ROOT, "docs"));
+  const plugin = docsPlugin(join(ROOT, "docs"), {
+    repoUrl: "https://github.com/lepahc/kynetic-spec/blob/main",
+    releaseNotesPath: join(ROOT, "RELEASE_NOTES.md"),
+    exclude: ["history", "agents-eval-scenarios.md", "prime-mock.md"],
+  });
   const load = plugin.load as (id: string) => string | undefined;
   const moduleSource = load("\0virtual:docs");
   if (!moduleSource) throw new Error("docs plugin did not produce a manifest");
@@ -532,7 +537,7 @@ function sectionChildPaths(section: string, entries: DocsManifestEntry[]): Set<s
       .filter(
         (entry) => entry.path.startsWith(`${section}/`) && entry.path !== `${section}/index.md`,
       )
-      .map((entry) => `./${entry.path.slice(section.length + 1)}`),
+      .map((entry) => `./${entry.slug.slice(section.length + 1)}.md`),
   );
 }
 
