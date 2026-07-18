@@ -24489,6 +24489,17 @@ observations:
     resolved_at: 2026-07-18T01:59:52.557Z
     resolved_by: Jacob Chapel
     created_at: 2026-07-18T01:40:34.666Z
+  - _ulid: 01KXSV4223JX5KKETXJVMY4RA2
+    type: friction
+    content: Dispatch documentation gates name 'kspec agents generate', but a worktree with newer
+      generator behavior can receive stale lifecycle guidance and unrelated skill outputs from the
+      installed CLI. Fix-cycle verification had to switch to the snapshot-local 'npm run dev --
+      agents generate' path; dispatch/bootstrap guidance should make generator provenance explicit
+      or ensure the installed CLI matches the canonical branch.
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    created_at: 2026-07-18T05:27:55.203Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
