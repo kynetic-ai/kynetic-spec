@@ -1,0 +1,26 @@
+_ulid: 01KXT0PJTQPRN8W79YX79Z4QTP
+slugs: []
+title: Review documentation drift gates and browser validation (cycle 3)
+author: Jacob Chapel
+checks: []
+events:
+  - _ulid: 01KXT0PJTP9T1S1QJW4MAJEKKC
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-07-18T07:05:25.078Z
+examined_commit: bbecb7d0848cfbab42e1f3488f259794751587bb
+external_links: []
+lifecycle_state: draft
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KXPPEAYMN69MKK49CA73D6AG"
+  shadow_commit: ""
+threads: []
+verdicts: []
+created_at: 2026-07-18T07:05:25.079Z
+updated_at: null
+notes: []
