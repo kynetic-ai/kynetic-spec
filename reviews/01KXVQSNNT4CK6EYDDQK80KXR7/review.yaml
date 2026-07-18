@@ -2,7 +2,19 @@ _ulid: 01KXVQSNNT4CK6EYDDQK80KXR7
 slugs: []
 title: "Readiness review: Node Pagefind delivery supplemental task"
 author: codex
-checks: []
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Complete task, docs-search ACs, parent plan, inbox provenance, AGENTS.md, kspec-agents.md,
+      dev source/tests, and package scripts resolve. Likely files and all listed commands are
+      executable on dev.
+    name: standalone context and buildability
+    required: true
+    runner: manual source/task inspection
+    created_at: 2026-07-18T23:10:13.925Z
+    completed_at: 2026-07-18T23:10:13.925Z
 events:
   - _ulid: 01KXVQSNNPWF5KHHJPV4VD0MA9
     actor: codex
@@ -38,6 +50,13 @@ events:
       kind: blocker
       thread_ulid: 01KXVQVQY4X164FAHBMY0NFPYW
     timestamp: 2026-07-18T23:09:26.133Z
+  - _ulid: 01KXVQX75104DMZD02QFVKNZP0
+    actor: codex
+    event_type: check_added
+    payload:
+      status: pass
+      name: standalone context and buildability
+    timestamp: 2026-07-18T23:10:14.177Z
 examined_commit: null
 external_links: []
 lifecycle_state: open
@@ -114,5 +133,5 @@ threads:
     kind: blocker
 verdicts: []
 created_at: 2026-07-18T23:08:17.978Z
-updated_at: 2026-07-18T23:09:25.828Z
+updated_at: 2026-07-18T23:10:13.925Z
 notes: []
