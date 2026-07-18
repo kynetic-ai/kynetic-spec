@@ -89,6 +89,17 @@ checks:
     runner: npm test -- focused docs files
     created_at: 2026-07-18T02:27:54.181Z
     completed_at: 2026-07-18T02:27:54.181Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Production static build completed and wrote the site; emitted only established Svelte
+      warnings outside this diff.
+    name: web docs production build
+    required: true
+    runner: npm --prefix packages/web-ui run build
+    created_at: 2026-07-18T02:27:59.959Z
+    completed_at: 2026-07-18T02:27:59.959Z
 events:
   - _ulid: 01KXSFEFZS8KWKJ2RR87K28FAJ
     actor: pr-reviewer
@@ -159,6 +170,13 @@ events:
       status: pass
       name: focused documentation suite
     timestamp: 2026-07-18T02:27:54.468Z
+  - _ulid: 01KXSGTM3VCF68406R4GPGW8CP
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: web docs production build
+    timestamp: 2026-07-18T02:28:00.251Z
 examined_commit: 6a6a1f66957df8d97877d57a143efaf4ee3c6555
 external_links: []
 lifecycle_state: open
@@ -171,5 +189,5 @@ subject:
 threads: []
 verdicts: []
 created_at: 2026-07-18T02:03:54.248Z
-updated_at: 2026-07-18T02:27:54.181Z
+updated_at: 2026-07-18T02:27:59.959Z
 notes: []
