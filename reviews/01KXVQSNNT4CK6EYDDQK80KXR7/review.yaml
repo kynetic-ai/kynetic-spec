@@ -86,6 +86,17 @@ checks:
     runner: work-gates and review-gates comparison
     created_at: 2026-07-18T23:10:50.880Z
     completed_at: 2026-07-18T23:10:50.880Z
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: manual_only is appropriate pending approval, but the three unresolved blocker threads
+      leave the task insufficiently deterministic for automation eligibility.
+    name: automation readiness
+    required: true
+    runner: readiness synthesis
+    created_at: 2026-07-18T23:10:57.223Z
+    completed_at: 2026-07-18T23:10:57.223Z
 events:
   - _ulid: 01KXVQSNNPWF5KHHJPV4VD0MA9
     actor: codex
@@ -170,6 +181,13 @@ events:
       status: fail
       name: project quality gate specification
     timestamp: 2026-07-18T23:10:51.143Z
+  - _ulid: 01KXVQYHEA1YNJKNPMJZTCEV36
+    actor: codex
+    event_type: check_added
+    payload:
+      status: fail
+      name: automation readiness
+    timestamp: 2026-07-18T23:10:57.482Z
 examined_commit: null
 external_links: []
 lifecycle_state: open
@@ -246,5 +264,5 @@ threads:
     kind: blocker
 verdicts: []
 created_at: 2026-07-18T23:08:17.978Z
-updated_at: 2026-07-18T23:10:50.880Z
+updated_at: 2026-07-18T23:10:57.223Z
 notes: []
