@@ -1,1 +1,16 @@
-notes: []
+notes:
+  - _ulid: 01KXSNWCZ8JV0DS1ZXT3VFM41W
+    content: "Approach: harden the existing behavioral documentation gates in their declared owner
+      files, reusing Commander introspection, docsPlugin/renderDocsMarkdown fixtures, Pagefind build
+      artifacts, and Playwright docs fixtures. Preserve the closed public-surface manifest and
+      production documentation prose. Edge cases: all six plan pages indexed and navigable; global
+      versus task lifecycle command/action drift; alias/canonical identity and status projection
+      omissions; aggregate cleanup misuse; API/UI/event mismatch; broken anchors/raw Markdown links;
+      generated/source pairing; wide and narrow viewports; static/offline readability and accessible
+      lifecycle links. Test plan: retain/extend annotated coverage for @docs-navigation-shape
+      ac-1/ac-2, @docs-search ac-1/ac-2/ac-3, @docs-reachability ac-1/ac-2/ac-3, and @auto-cli-docs
+      ac-1/ac-3/ac-4/ac-5; run focused unit docs gates first, then generation convergence,
+      search/web builds, docs E2E, and all repository quality/validation gates."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-07-18T03:56:21.352Z
