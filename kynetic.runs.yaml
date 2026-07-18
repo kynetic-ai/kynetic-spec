@@ -84103,7 +84103,7 @@ runs:
     completed_at: 2026-07-18T01:30:08.390Z
   - _ulid: 01KXSF3HMV2X9GKMJ9Q0DZ9203
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -84118,7 +84118,16 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-07-18T01:58:48.671Z
-        completed_at: 2026-07-18T01:58:48.671Z
+        completed_at: 2026-07-18T01:59:07.062Z
+        notes: "Friction: kspec skill render reported unchanged and did not refresh stale render
+          hashes/supporting-file state, while skill status compared portable supporting docs without
+          platform transforms and contradicted skill verify. This forced a same-version core sync
+          plus a temporary render refresh. The long full-suite duration was expected project cost
+          and is already tracked separately where it becomes a teardown hang."
+      - status: completed
+        step_index: 2
+        started_at: 2026-07-18T01:59:07.062Z
+        completed_at: 2026-07-18T01:59:07.062Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-07-18T01:57:55.483Z
