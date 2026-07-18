@@ -1,0 +1,26 @@
+_ulid: 01KXVS16D2KTJCGPYHBCHKPSQQ
+slugs: []
+title: "Fresh constrained readiness review: Node Pagefind delivery"
+author: Jacob Chapel
+checks: []
+events:
+  - _ulid: 01KXVS16CS1C8S12Z9TNBPDBYG
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-07-18T23:29:53.049Z
+examined_commit: null
+external_links: []
+lifecycle_state: draft
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KXVPGACWKT77Y967EWP3Y7DQ"
+  shadow_commit: ""
+threads: []
+verdicts: []
+created_at: 2026-07-18T23:29:53.058Z
+updated_at: null
+notes: []

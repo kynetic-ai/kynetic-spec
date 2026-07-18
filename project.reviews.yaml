@@ -30965,3 +30965,20 @@ reviews:
     verdict_count: 1
     created_at: 2026-07-18T23:08:17.978Z
     updated_at: 2026-07-18T23:20:08.245Z
+  - _ulid: 01KXVS16D2KTJCGPYHBCHKPSQQ
+    slugs: []
+    title: "Fresh constrained readiness review: Node Pagefind delivery"
+    disposition: pending
+    author: Jacob Chapel
+    check_count: 0
+    lifecycle_state: draft
+    related_refs: []
+    subject:
+      type: task
+      content_hash: ""
+      ref: "@01KXVPGACWKT77Y967EWP3Y7DQ"
+      shadow_commit: ""
+    thread_count: 0
+    unresolved_blocker_count: 0
+    verdict_count: 0
+    created_at: 2026-07-18T23:29:53.058Z
