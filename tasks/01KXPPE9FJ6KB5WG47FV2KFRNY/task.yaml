@@ -101,7 +101,7 @@ description: >
 spec_ref: "@docs-getting-started-section"
 plan_ref: "@plan-documentation-completeness-and-dispatch-workspaces"
 origin: derived
-status: needs_work
+status: in_progress
 blocked_by: []
 depends_on:
   - "@task-correct-adjacent-public-guidance"
@@ -121,7 +121,7 @@ submission_linkage:
   remote: origin
   remote_url: git@github.com:lepahc/kynetic-spec.git
   upstream_ref: refs/heads/dispatch/task/task-audit-remaining-public-docs/01kxppe9
-session_id: null
+session_id: 01KXSHF6M9V2K1SR4ECNKFG387
 history:
   - author: Jacob Chapel
     changes:
@@ -237,8 +237,21 @@ history:
         previous: 01KXSDNWRFED4MY4S3M4GRZG0K
     command: review-verdict-needs-work
     timestamp: 2026-07-18T02:30:54.889Z
+  - author: Jacob Chapel
+    changes:
+      status:
+        new: in_progress
+        previous: needs_work
+      session_id:
+        new: 01KXSHF6M9V2K1SR4ECNKFG387
+        previous: null
+      started_at:
+        new: 2026-07-18T02:41:08.075Z
+        previous: 2026-07-18T01:34:59.702Z
+    command: task-start
+    timestamp: 2026-07-18T02:41:08.075Z
 created_at: 2026-07-17T00:08:24.306Z
-started_at: 2026-07-18T01:34:59.702Z
+started_at: 2026-07-18T02:41:08.075Z
 submitted_at: 2026-07-18T01:57:25.788Z
 todos: []
 automation: eligible
