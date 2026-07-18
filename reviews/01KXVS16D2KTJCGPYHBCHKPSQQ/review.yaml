@@ -188,6 +188,29 @@ checks:
     runner: readiness-review
     created_at: 2026-07-18T23:33:22.311Z
     completed_at: 2026-07-18T23:33:22.311Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Task is pending and manual_only, spec-linked to @docs-search and plan-linked to
+      @plan-documentation-completeness-and-dispatch-workspaces.
+    name: task identity and lifecycle
+    required: true
+    runner: readiness-review
+    created_at: 2026-07-18T23:33:25.409Z
+    completed_at: 2026-07-18T23:33:25.409Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "@docs-search ac-1/ac-2/ac-3 directly own navigable results, local no-nonlocal-host
+      search, and same-content local/public parity; the task maps each to behavioral proof with AC
+      annotations."
+    name: AC ownership and coverage mapping
+    required: true
+    runner: readiness-review
+    created_at: 2026-07-18T23:33:29.098Z
+    completed_at: 2026-07-18T23:33:29.098Z
 events:
   - _ulid: 01KXVS16CS1C8S12Z9TNBPDBYG
     actor: Jacob Chapel
@@ -307,6 +330,20 @@ events:
       status: pass
       name: review evidence log
     timestamp: 2026-07-18T23:33:22.600Z
+  - _ulid: 01KXVS7P19E6Z5CAKT2FP2ZG8K
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: task identity and lifecycle
+    timestamp: 2026-07-18T23:33:25.674Z
+  - _ulid: 01KXVS7SPZ34CAN7TNJ146R1ZX
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: AC ownership and coverage mapping
+    timestamp: 2026-07-18T23:33:29.439Z
 examined_commit: null
 external_links: []
 lifecycle_state: open
@@ -319,5 +356,5 @@ subject:
 threads: []
 verdicts: []
 created_at: 2026-07-18T23:29:53.058Z
-updated_at: 2026-07-18T23:33:22.311Z
+updated_at: 2026-07-18T23:33:29.098Z
 notes: []
