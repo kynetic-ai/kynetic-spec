@@ -296,6 +296,75 @@ checks:
     runner: readiness-review
     created_at: 2026-07-18T23:34:23.461Z
     completed_at: 2026-07-18T23:34:23.461Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Exit 0; References OK with the documented six pre-existing deprecation warnings.
+    name: kspec validate refs
+    required: true
+    runner: kspec validate --refs --warnings-ok
+    created_at: 2026-07-18T23:34:43.959Z
+    completed_at: 2026-07-18T23:34:43.959Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Exit 0 under repository warning baseline; task spec_ref and plan_ref resolve.
+    name: kspec validate alignment
+    required: true
+    runner: kspec validate --alignment --warnings-ok
+    created_at: 2026-07-18T23:34:47.456Z
+    completed_at: 2026-07-18T23:34:47.456Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Exit 0 under repository warning baseline; no task-specific completeness error blocks readiness.
+    name: kspec validate completeness
+    required: true
+    runner: kspec validate --completeness --warnings-ok
+    created_at: 2026-07-18T23:34:51.132Z
+    completed_at: 2026-07-18T23:34:51.132Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Exit 0; 5 tests passed. Adjacent suite is runnable before adding the required Pagefind
+      RED/GREEN cases.
+    name: current focused route baseline
+    required: true
+    runner: npm test -- tests/daemon-web-ui-startup-asset-coherence.test.ts
+    created_at: 2026-07-18T23:34:54.763Z
+    completed_at: 2026-07-18T23:34:54.763Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Exit 0; build:e2e completed and 17 Playwright tests passed. Executability evidence only:
+      current wide/narrow search still uses serveStaticPagefind interception, exactly the
+      false-proof condition the task removes."
+    name: current docs E2E baseline
+    required: true
+    runner: npm run test:e2e -- tests/e2e/docs.spec.ts
+    created_at: 2026-07-18T23:34:58.386Z
+    completed_at: 2026-07-18T23:34:58.386Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Read AGENTS.md, kspec-agents.md, complete task, @docs-search ACs, complete parent plan,
+      prior review, web-ui-static.ts, server.ts, daemon route test, docs.spec.ts, test-base.ts,
+      build-docs-search.cjs, DocsSearch.svelte, web-ui docs-search test, package.json. Ran
+      task/spec/plan/review lookups, source searches, git checks, three kspec validations, focused
+      route test, minimal defect repro, and full docs E2E. Checked correctness, filesystem boundary,
+      test non-vacuity, error capture, AC ownership, parity, dependencies, branch, proportionality,
+      and normal-dev execution.
+    name: review evidence log
+    required: true
+    runner: readiness-review
+    created_at: 2026-07-18T23:35:02.202Z
+    completed_at: 2026-07-18T23:35:02.202Z
 events:
   - _ulid: 01KXVS16CS1C8S12Z9TNBPDBYG
     actor: Jacob Chapel
@@ -478,6 +547,48 @@ events:
       status: pass
       name: project work-gate inheritance
     timestamp: 2026-07-18T23:34:23.718Z
+  - _ulid: 01KXVSA2RCJ4F1TCAMTSVWNE5Z
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate refs
+    timestamp: 2026-07-18T23:34:44.236Z
+  - _ulid: 01KXVSA66PH9AGARC8VETYG1HD
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate alignment
+    timestamp: 2026-07-18T23:34:47.766Z
+  - _ulid: 01KXVSA9Q9PN6N443433NYV44A
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate completeness
+    timestamp: 2026-07-18T23:34:51.369Z
+  - _ulid: 01KXVSADAT4EARFGXAS3J347XG
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: current focused route baseline
+    timestamp: 2026-07-18T23:34:55.066Z
+  - _ulid: 01KXVSAGTCA5YH8TPDWE5J4HGV
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: current docs E2E baseline
+    timestamp: 2026-07-18T23:34:58.636Z
+  - _ulid: 01KXVSAMJ55J7FP4PGTV3P4QAM
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: review evidence log
+    timestamp: 2026-07-18T23:35:02.469Z
 examined_commit: null
 external_links: []
 lifecycle_state: open
@@ -490,5 +601,5 @@ subject:
 threads: []
 verdicts: []
 created_at: 2026-07-18T23:29:53.058Z
-updated_at: 2026-07-18T23:34:23.461Z
+updated_at: 2026-07-18T23:35:02.202Z
 notes: []
