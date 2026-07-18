@@ -409,6 +409,12 @@ events:
     payload:
       thread_ulid: 01KXSGXB0PWJ5576YDTY7C32AA
     timestamp: 2026-07-18T03:09:31.913Z
+  - _ulid: 01KXSK6YSXK84HFE44QS7XXEMN
+    actor: Jacob Chapel
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KXSGXGTYCBZTCNF3P0M1FJZM
+    timestamp: 2026-07-18T03:09:41.565Z
 examined_commit: 6a6a1f66957df8d97877d57a143efaf4ee3c6555
 external_links: []
 lifecycle_state: closed
@@ -500,6 +506,10 @@ threads:
         body: "Fixed in fbee7a5082: replaced the hard-coded main-branch claim with project-neutral
           source-code branch history wording."
         created_at: 2026-07-18T03:08:38.904Z
+      - _ulid: 01KXSK6YH685XG3SSPEVCFYYMY
+        author: Jacob Chapel
+        body: "Fixed in fbee7a5082: project-neutral source branch wording."
+        created_at: 2026-07-18T03:09:41.286Z
     kind: blocker
     resolved_at: 2026-07-18T03:08:42.555Z
     resolved_by: Jacob Chapel
@@ -638,5 +648,5 @@ verdicts:
     role: reviewer
     created_at: 2026-07-18T02:30:52.454Z
 created_at: 2026-07-18T02:03:54.248Z
-updated_at: 2026-07-18T03:09:31.626Z
+updated_at: 2026-07-18T03:09:41.286Z
 notes: []
