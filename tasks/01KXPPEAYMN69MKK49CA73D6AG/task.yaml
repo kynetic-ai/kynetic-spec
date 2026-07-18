@@ -141,7 +141,7 @@ description: >
 spec_ref: "@docs-navigation-shape"
 plan_ref: "@plan-documentation-completeness-and-dispatch-workspaces"
 origin: derived
-status: needs_work
+status: in_progress
 blocked_by: []
 depends_on:
   - "@task-audit-remaining-public-docs"
@@ -161,7 +161,7 @@ submission_linkage:
   remote: origin
   remote_url: git@github.com:lepahc/kynetic-spec.git
   upstream_ref: refs/heads/dispatch/task/task-close-documentation-drift-gates/01kxppea
-session_id: null
+session_id: 01KXSYWWTF6SJQEH68KCEZ6BCK
 history:
   - author: Jacob Chapel
     changes:
@@ -277,8 +277,21 @@ history:
         previous: 01KXST6DCBJA06BS4XNBKX89Q3
     command: review-verdict-needs-work
     timestamp: 2026-07-18T06:25:38.369Z
+  - author: Jacob Chapel
+    changes:
+      status:
+        new: in_progress
+        previous: needs_work
+      session_id:
+        new: 01KXSYWWTF6SJQEH68KCEZ6BCK
+        previous: null
+      started_at:
+        new: 2026-07-18T06:35:36.583Z
+        previous: 2026-07-18T05:13:37.271Z
+    command: task-start
+    timestamp: 2026-07-18T06:35:36.583Z
 created_at: 2026-07-17T00:08:25.812Z
-started_at: 2026-07-18T05:13:37.271Z
+started_at: 2026-07-18T06:35:36.583Z
 submitted_at: 2026-07-18T05:49:57.803Z
 todos: []
 automation: eligible
