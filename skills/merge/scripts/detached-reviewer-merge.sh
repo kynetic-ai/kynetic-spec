@@ -133,6 +133,38 @@ is_path_inside() {
   return 1
 }
 
+# --- Helper: resolve a git-operation marker path for a worktree -------------
+# `git -C "$wt" rev-parse --git-path <marker>` reports the path relative to the
+# worktree it was queried in (its -C directory). For a PRIMARY repository
+# worktree git returns a worktree-relative path such as ".git/MERGE_HEAD";
+# for a LINKED worktree it returns an absolute path under the common git dir
+# (e.g. "/repo/.git/worktrees/<name>/MERGE_HEAD"). The helper process cwd is the
+# detached reviewer snapshot, not "$wt", so testing the raw relative result with
+# `[ -e ... ]` would probe the wrong filesystem location and silently miss an
+# in-progress operation (or a lingering MERGE_HEAD) in a primary target
+# checkout. Anchor relative results under "$wt"; preserve absolute results.
+resolve_worktree_git_path() {
+  local wt="$1"
+  local raw="$2"
+  [ -n "$raw" ] || return 1
+  case "$raw" in
+    /*) printf '%s\n' "$raw" ;;
+    *) printf '%s/%s\n' "$wt" "$raw" ;;
+  esac
+}
+
+# Resolve the filesystem path of a git operation marker inside "$wt", or print
+# nothing when rev-parse fails or yields no path. The result is safe to test
+# with `[ -e ... ]` from any cwd.
+worktree_marker_path() {
+  local wt="$1"
+  local marker="$2"
+  local raw
+  raw=$(git -C "$wt" rev-parse --git-path "$marker" 2>/dev/null) || return 0
+  [ -n "$raw" ] || return 0
+  resolve_worktree_git_path "$wt" "$raw"
+}
+
 NORMALIZED_WORKTREE_ROOT=""
 if [ -n "$WORKTREE_ROOT" ]; then
   NORMALIZED_WORKTREE_ROOT=$(normalize_path "$WORKTREE_ROOT")
@@ -216,21 +248,20 @@ classify_worktree() {
   local marker
   for marker in MERGE_HEAD REBASE_HEAD rebase-apply rebase-merge CHERRY_PICK_HEAD REVERT_HEAD BISECT_LOG; do
     local marker_path
-    if marker_path=$(git -C "$wt" rev-parse --git-path "$marker" 2>/dev/null); then
-      if [ -n "$marker_path" ] && [ -e "$marker_path" ]; then
-        local label
-        case "$marker" in
-          MERGE_HEAD) label="merge" ;;
-          REBASE_HEAD|rebase-apply|rebase-merge) label="rebase" ;;
-          CHERRY_PICK_HEAD) label="cherry-pick" ;;
-          REVERT_HEAD) label="revert" ;;
-          BISECT_LOG) label="bisect" ;;
-          *) label="$marker" ;;
-        esac
-        IN_PROGRESS_WORKTREES+=("$wt")
-        IN_PROGRESS_LABELS+=("$label")
-        return
-      fi
+    marker_path=$(worktree_marker_path "$wt" "$marker")
+    if [ -n "$marker_path" ] && [ -e "$marker_path" ]; then
+      local label
+      case "$marker" in
+        MERGE_HEAD) label="merge" ;;
+        REBASE_HEAD|rebase-apply|rebase-merge) label="rebase" ;;
+        CHERRY_PICK_HEAD) label="cherry-pick" ;;
+        REVERT_HEAD) label="revert" ;;
+        BISECT_LOG) label="bisect" ;;
+        *) label="$marker" ;;
+      esac
+      IN_PROGRESS_WORKTREES+=("$wt")
+      IN_PROGRESS_LABELS+=("$label")
+      return
     fi
   done
 
@@ -318,6 +349,54 @@ if [ "${#ELIGIBLE_WORKTREES[@]}" -gt 1 ]; then
   exit 1
 fi
 
+# --- Helper: verify an aborted merge restored a pre-existing checkout -------
+# After aborting a failed merge in an existing (pre-existing, non-helper-owned)
+# target checkout, confirm the abort fully restored the pre-merge state. If any
+# check fails, emit a severe cleanup-failed error naming the checkout so the
+# operator knows dispatch may need manual repair. Returns nonzero when cleanup
+# could not be verified.
+verify_existing_checkout_cleanup() {
+  local surface="$1"
+  local pre_head="$2"
+  local problems=()
+
+  if [ -n "$pre_head" ]; then
+    local now_head
+    now_head=$(git -C "$surface" rev-parse HEAD 2>/dev/null || echo "")
+    if [ "$now_head" != "$pre_head" ]; then
+      problems+=("HEAD is now '$now_head' but the pre-merge target tip was '$pre_head'")
+    fi
+  fi
+
+  local tracked_status
+  tracked_status=$(git -C "$surface" status --porcelain --untracked-files=no 2>/dev/null || echo "")
+  if [ -n "$tracked_status" ]; then
+    problems+=("tracked working tree is not clean after abort")
+  fi
+
+  local mh
+  mh=$(worktree_marker_path "$surface" MERGE_HEAD)
+  if [ -n "$mh" ] && [ -e "$mh" ]; then
+    problems+=("MERGE_HEAD is still present — the merge was not fully aborted")
+  fi
+
+  if [ "${#problems[@]}" -gt 0 ]; then
+    echo "" >&2
+    echo "SEVERE: failed to restore the pre-existing integration target checkout after aborting the merge." >&2
+    echo "  target checkout: $surface" >&2
+    local p
+    for p in "${problems[@]}"; do
+      echo "    - $p" >&2
+    done
+    echo "" >&2
+    echo "This checkout may be left in a partially-merged state. The integration target ref" >&2
+    echo "was NOT advanced, but dispatch may need MANUAL repair of this checkout before further" >&2
+    echo "merge attempts. Inspect '$surface' and restore it to '$pre_head' before retrying." >&2
+    return 1
+  fi
+  return 0
+}
+
 cleanup_scratch_dir_only() {
   if [ -n "${SCRATCH_DIR:-}" ] && [ -d "$SCRATCH_DIR" ]; then
     rm -rf "$SCRATCH_DIR" 2>/dev/null || true
@@ -369,31 +448,52 @@ fi
 if ! MERGE_OUTPUT=$(git -C "$MERGE_SURFACE" merge --no-ff "$CANONICAL_HEAD" -m "$MERGE_MSG" 2>&1); then
   # Untracked/ignored overwrite hazard: git refuses to start the merge and
   # leaves the working tree, index, and HEAD untouched. Distinguish this from
-  # a started-then-conflicted merge by inspecting MERGE_HEAD.
-  MERGE_HEAD_PATH=$(git -C "$MERGE_SURFACE" rev-parse --git-path MERGE_HEAD 2>/dev/null || echo "")
+  # a started-then-conflicted merge by inspecting MERGE_HEAD. Resolve the marker
+  # path through the worktree-aware helper so a primary target checkout (which
+  # reports ".git/MERGE_HEAD" relative to the checkout, not the helper cwd) is
+  # detected correctly.
+  MERGE_HEAD_PATH=$(worktree_marker_path "$MERGE_SURFACE" MERGE_HEAD)
+  MERGE_STARTED=0
+  HAS_CONFLICTS=0
   if [ -n "$MERGE_HEAD_PATH" ] && [ -e "$MERGE_HEAD_PATH" ]; then
-    # A merge is in progress — check for conflicts.
+    MERGE_STARTED=1
+    # Capture conflict state before aborting — the abort clears the unmerged
+    # index entries we are inspecting here.
     if git -C "$MERGE_SURFACE" diff --name-only --diff-filter=U 2>/dev/null | head -1 | grep -q .; then
-      git -C "$MERGE_SURFACE" merge --abort 2>/dev/null || true
-      echo "error: merge conflict detected." >&2
-      echo "" >&2
-      echo "Conflicting output:" >&2
-      echo "$MERGE_OUTPUT" >&2
-      echo "" >&2
-      echo "The integration target ref has NOT been advanced." >&2
-      if [ "$MERGE_SURFACE_KIND" = "temporary" ]; then
-        echo "The helper-owned temporary target worktree has been aborted and will be removed." >&2
-      else
-        echo "The merge has been aborted in '$MERGE_SURFACE' and that worktree is restored to its pre-merge target tip." >&2
-      fi
-      echo "" >&2
-      echo "Next step:" >&2
-      echo "  Move the task to needs_work with a note describing the conflicting files" >&2
-      echo "  and what both sides changed. Do not attempt to resolve merge conflicts" >&2
-      echo "  inside the detached snapshot." >&2
-      exit 1
+      HAS_CONFLICTS=1
     fi
+    # On any nonzero merge attempt after a merge has started, abort before
+    # returning failure — unconditionally, regardless of how the failure is
+    # later classified — so no surface is left mid-merge.
     git -C "$MERGE_SURFACE" merge --abort 2>/dev/null || true
+  fi
+
+  if [ "$MERGE_STARTED" -eq 1 ] && [ "$HAS_CONFLICTS" -eq 1 ]; then
+    # After aborting in a pre-existing checkout, verify the abort restored the
+    # pre-merge state. A failed restoration is a severe condition that must be
+    # surfaced loudly rather than masked by the generic conflict guidance.
+    if [ "$MERGE_SURFACE_KIND" = "existing" ]; then
+      if ! verify_existing_checkout_cleanup "$MERGE_SURFACE" "$PRE_MERGE_TARGET_HEAD"; then
+        exit 1
+      fi
+    fi
+    echo "error: merge conflict detected." >&2
+    echo "" >&2
+    echo "Conflicting output:" >&2
+    echo "$MERGE_OUTPUT" >&2
+    echo "" >&2
+    echo "The integration target ref has NOT been advanced." >&2
+    if [ "$MERGE_SURFACE_KIND" = "temporary" ]; then
+      echo "The helper-owned temporary target worktree has been aborted and will be removed." >&2
+    else
+      echo "The merge has been aborted in '$MERGE_SURFACE' and that worktree is restored to its pre-merge target tip." >&2
+    fi
+    echo "" >&2
+    echo "Next step:" >&2
+    echo "  Move the task to needs_work with a note describing the conflicting files" >&2
+    echo "  and what both sides changed. Do not attempt to resolve merge conflicts" >&2
+    echo "  inside the detached snapshot." >&2
+    exit 1
   fi
 
   # Recognize the untracked-overwrite case and report it as such. Git emits
