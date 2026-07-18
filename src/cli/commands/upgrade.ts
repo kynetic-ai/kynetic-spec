@@ -1998,8 +1998,10 @@ async function runScaffoldMissingStep(
       const content = `# kspec project configuration
 # This file was scaffolded by kspec upgrade. Review and customize for your project.
 # Documentation: https://github.com/lepahc/kynetic-spec
+# Lifecycle controls: kspec agent dispatch --help
 
 dispatch:
+  # Accepted values: pull_request, manual_merge, auto
   publication_mode: auto
 
   # ${baseBranchSourceComment}
