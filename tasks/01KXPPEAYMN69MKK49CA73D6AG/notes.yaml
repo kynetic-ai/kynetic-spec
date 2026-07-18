@@ -14,3 +14,12 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-07-18T03:56:21.352Z
+  - _ulid: 01KXSPEY50P679R9A6VZY9KPWH
+    content: "Browser QA discovery: the generated Pagefind index is complete, but the Node daemon
+      fixture does not serve nested /pagefind/* assets. Kept runtime changes out of this
+      documentation-only slice; browser search validation routes the real packaged static Pagefind
+      files to model the public/static deployment. Captured the daemon delivery gap separately for
+      triage. Wide/narrow search and static rendering now pass (16/16 docs E2E tests)."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-07-18T04:06:28.768Z
