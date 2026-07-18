@@ -75,6 +75,17 @@ checks:
     runner: kspec task/plan and git inspection
     created_at: 2026-07-18T23:10:44.583Z
     completed_at: 2026-07-18T23:10:44.583Z
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Verification uses npm run lint instead of required npm run lint -- --quiet and omits
+      focused oxlint for changed TypeScript/test files.
+    name: project quality gate specification
+    required: true
+    runner: work-gates and review-gates comparison
+    created_at: 2026-07-18T23:10:50.880Z
+    completed_at: 2026-07-18T23:10:50.880Z
 events:
   - _ulid: 01KXVQSNNPWF5KHHJPV4VD0MA9
     actor: codex
@@ -152,6 +163,13 @@ events:
       status: pass
       name: dependency and branch targeting
     timestamp: 2026-07-18T23:10:44.841Z
+  - _ulid: 01KXVQYB87E03MR77RQK2XE6AY
+    actor: codex
+    event_type: check_added
+    payload:
+      status: fail
+      name: project quality gate specification
+    timestamp: 2026-07-18T23:10:51.143Z
 examined_commit: null
 external_links: []
 lifecycle_state: open
@@ -228,5 +246,5 @@ threads:
     kind: blocker
 verdicts: []
 created_at: 2026-07-18T23:08:17.978Z
-updated_at: 2026-07-18T23:10:44.583Z
+updated_at: 2026-07-18T23:10:50.880Z
 notes: []
