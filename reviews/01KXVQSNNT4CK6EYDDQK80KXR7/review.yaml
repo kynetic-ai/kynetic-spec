@@ -349,6 +349,12 @@ events:
     payload:
       thread_ulid: 01KXVQVQY4X164FAHBMY0NFPYW
     timestamp: 2026-07-18T23:20:01.775Z
+  - _ulid: 01KXVRFBJPRXPSBFG1WX46KGS1
+    actor: Hermes
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KXVQVQY4X164FAHBMY0NFPYW
+    timestamp: 2026-07-18T23:20:08.534Z
 examined_commit: null
 external_links: []
 lifecycle_state: closed
@@ -460,6 +466,8 @@ threads:
           validations, and `git diff --check` gates remain.
         created_at: 2026-07-18T23:20:01.481Z
     kind: blocker
+    resolved_at: 2026-07-18T23:20:08.245Z
+    resolved_by: Hermes
 verdicts:
   - applies_to_version:
       type: entity_version
@@ -469,5 +477,5 @@ verdicts:
     role: reviewer
     created_at: 2026-07-18T23:12:10.210Z
 created_at: 2026-07-18T23:08:17.978Z
-updated_at: 2026-07-18T23:20:01.481Z
+updated_at: 2026-07-18T23:20:08.245Z
 notes: []
