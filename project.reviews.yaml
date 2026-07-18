@@ -30893,9 +30893,9 @@ reviews:
   - _ulid: 01KXSR29VH25B09QX7GGFFV8DA
     slugs: []
     title: Review documentation drift gates and browser validation
-    disposition: pending
+    disposition: changes_requested
     author: Jacob Chapel
-    check_count: 0
+    check_count: 12
     examined_commit: 11f98ee5fa3a30d01f527d964744fa0bca98c3e5
     lifecycle_state: open
     related_refs: []
@@ -30908,4 +30908,4 @@ reviews:
     unresolved_blocker_count: 0
     verdict_count: 0
     created_at: 2026-07-18T04:34:31.921Z
-    updated_at: 2026-07-18T04:34:44.812Z
+    updated_at: 2026-07-18T05:00:28.544Z
