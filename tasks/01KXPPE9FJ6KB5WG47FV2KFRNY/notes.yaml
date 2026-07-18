@@ -53,3 +53,14 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-07-18T02:30:54.889Z
+  - _ulid: 01KXSHKDYWTR816HG9J9614DPN
+    content: "Fix cycle 2 approach: correct all eight source-verified factual blockers and audit
+      neighboring owned prose for the same lifecycle, branch-name, manifest-discovery, UI
+      mutability, and review-state assumptions. Reuse current task/review CLI contracts, shadow
+      initialization tests, and web UI API behavior as authorities. Preserve existing inventory/test
+      architecture and avoid prior-task pages. Test plan: run focused public-documentation coverage
+      first, then docs search/build, formatting, lint, typecheck, full suite, skill verification,
+      and all kspec validations."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-07-18T02:41:33.148Z
