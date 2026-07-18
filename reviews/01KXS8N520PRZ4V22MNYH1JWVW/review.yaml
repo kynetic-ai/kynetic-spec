@@ -408,6 +408,13 @@ events:
       status: skipped
       name: skill render baseline
     timestamp: 2026-07-18T00:29:54.300Z
+  - _ulid: 01KXSA2ZF5SMFMZEXKJVG839KX
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KXSA2Z6MB5EZG929T7D46DKY
+    timestamp: 2026-07-18T00:30:13.989Z
 examined_commit: c54fee7bd1823d858065c19b33aa65df6f5bfadb
 external_links: []
 lifecycle_state: open
@@ -449,7 +456,38 @@ threads:
           skill-render asymmetry remains captured by @01KXS2HP."
         created_at: 2026-07-18T00:28:41.927Z
     kind: nit
+  - _ulid: 01KXSA2Z6MB5EZG929T7D46DKY
+    entries:
+      - _ulid: 01KXSA2Z6MNZJNCF8NRTKJCMVA
+        author: Jacob Chapel
+        body: "Review evidence log (non-finding). Files read: all nine changed-file diffs; RELEASE_NOTES.md;
+          packages/web-ui/README.md and package.json; setup and upgrade scaffold functions; shared
+          dispatch template; generated kspec-agents.md dispatch and changed dynamic sections; all
+          changed tests; README.md, INSTALL.md, CONTRIBUTING.md, SECURITY.md, issue template;
+          related CLI lifecycle registration, hard-stop preflight, test helpers, task/spec/plan
+          context, and prior review threads. Commands run: base/head diff and history;
+          task/spec/plan/review lookups; AC annotation search; source and built CLI help; format;
+          repo and focused lint; typecheck; focused and full tests; refs/alignment/completeness
+          validation; two worktree-source agents generations, skill renders, and plugin builds;
+          generated-section comparison; diff check. Claims verified: setup and upgrade comments do
+          not change resolved config behavior; all three publication modes render through the public
+          release-notes command in historical tense; generated guidance exposes pause/resume/global
+          and canonical-task hard stops with exact force options; web-ui package is private and
+          bundled into the root package; README already reaches Getting Started, Concepts, and
+          Guides in one click; prior source-scanning blocker is behaviorally fixed. Categories
+          searched: correctness, edge cases and non-TTY force behavior, error handling,
+          security/data exposure, test quality, integration, generated convergence, and additional
+          issues after the prior blocker. Shared/package surfaces touched:
+          templates/agents-sections/06-agent-dispatch-mode.md and its generated kspec-agents.md
+          section. Neutrality direction 1 passes: edited shared prose contains universal kspec
+          lifecycle mechanics and configurable identities only, with no Kynetic branch, toolchain,
+          fixed-agent, repo-path, or external-review policy. Direction 2 is N/A because no
+          Kynetic-only instruction was removed; local Kynetic policy remains in AGENTS.md, project
+          meta, work-gates, and review-gates. Relevant generated agent guidance converges; unrelated
+          skill-render asymmetry remains captured by @01KXS2HP."
+        created_at: 2026-07-18T00:30:13.716Z
+    kind: nit
 verdicts: []
 created_at: 2026-07-18T00:05:12.384Z
-updated_at: 2026-07-18T00:29:54.043Z
+updated_at: 2026-07-18T00:30:13.716Z
 notes: []
