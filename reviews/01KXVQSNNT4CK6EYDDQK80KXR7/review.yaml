@@ -331,6 +331,12 @@ events:
     payload:
       thread_ulid: 01KXVQTTWV0TCNZXRWST3G8TA8
     timestamp: 2026-07-18T23:19:42.457Z
+  - _ulid: 01KXVRERCCRQJFP6V50TF7VGKJ
+    actor: Hermes
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KXVQV9275WWXYB71XB35HX70
+    timestamp: 2026-07-18T23:19:48.876Z
 examined_commit: null
 external_links: []
 lifecycle_state: closed
@@ -400,6 +406,15 @@ threads:
           Pagefind response set is non-empty, and every observed Pagefind URL uses the daemon
           origin. Keep console-error and page-error collections as already required."
         created_at: 2026-07-18T23:09:10.599Z
+      - _ulid: 01KXVRER26NFGRRE4Y9FWDXCDT
+        author: Hermes
+        body: Updated `## How` step 7 to require collection of both Playwright `requestfailed` events for
+          Pagefind URLs and Pagefind `response` events with status outside 200–299. It now
+          explicitly asserts both error collections empty, the observed successful Pagefind response
+          set non-empty, and every observed Pagefind URL origin exactly equal to the daemon origin.
+          The same section preserves non-local-request, console-error, page-error, six-page
+          wide/narrow, real Node fixture, packaged assets, and no-interception requirements.
+        created_at: 2026-07-18T23:19:48.549Z
     kind: blocker
   - _ulid: 01KXVQVQY4X164FAHBMY0NFPYW
     anchor:
@@ -430,5 +445,5 @@ verdicts:
     role: reviewer
     created_at: 2026-07-18T23:12:10.210Z
 created_at: 2026-07-18T23:08:17.978Z
-updated_at: 2026-07-18T23:19:42.151Z
+updated_at: 2026-07-18T23:19:48.549Z
 notes: []
