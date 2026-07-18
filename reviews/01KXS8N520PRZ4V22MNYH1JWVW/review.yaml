@@ -179,6 +179,60 @@ checks:
     runner: npm test -- changed documentation and scaffold tests
     created_at: 2026-07-18T00:29:23.109Z
     completed_at: 2026-07-18T00:29:23.109Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: References OK; six documented deprecation warnings accepted by --warnings-ok.
+    name: kspec validate refs
+    required: true
+    runner: kspec validate --refs --warnings-ok
+    created_at: 2026-07-18T00:29:40.218Z
+    completed_at: 2026-07-18T00:29:40.218Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Passed under the documented warnings baseline.
+    name: kspec validate alignment
+    required: true
+    runner: kspec validate --alignment --warnings-ok
+    created_at: 2026-07-18T00:29:43.586Z
+    completed_at: 2026-07-18T00:29:43.586Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Passed under the documented warnings baseline; owned README, release-note, and
+      generated-default AC annotations verified.
+    name: kspec validate completeness
+    required: true
+    runner: kspec validate --completeness --warnings-ok
+    created_at: 2026-07-18T00:29:46.958Z
+    completed_at: 2026-07-18T00:29:46.958Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Two agents-generation passes reported kspec-agents.md up to date; template and generated
+      dispatch section match; plugin built successfully twice.
+    name: generated agent guidance
+    required: true
+    runner: worktree CLI agents generate and npm run build:plugin
+    created_at: 2026-07-18T00:29:50.623Z
+    completed_at: 2026-07-18T00:29:50.623Z
+  - status: skipped
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Broad skill render reproduces unrelated pre-existing asymmetric drift captured at
+      observation @01KXS2HP; this branch changes no skill source or generated skill file. Diagnostic
+      side effects were removed.
+    name: skill render baseline
+    required: false
+    runner: node dist/cli/index.js skill render
+    created_at: 2026-07-18T00:29:54.043Z
+    completed_at: 2026-07-18T00:29:54.043Z
 events:
   - _ulid: 01KXS8N51V597XTXNGC6J8HAF0
     actor: Jacob Chapel
@@ -319,6 +373,41 @@ events:
       status: pass
       name: focused tests
     timestamp: 2026-07-18T00:29:23.372Z
+  - _ulid: 01KXSA1YQNG5QKH3KNW042C6YG
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate refs
+    timestamp: 2026-07-18T00:29:40.469Z
+  - _ulid: 01KXSA221WFPK0FSM9SY5STPV9
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate alignment
+    timestamp: 2026-07-18T00:29:43.868Z
+  - _ulid: 01KXSA25ADABAR5YA5J020CMBS
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate completeness
+    timestamp: 2026-07-18T00:29:47.213Z
+  - _ulid: 01KXSA28WHETJ026G7R40Z0BWB
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: generated agent guidance
+    timestamp: 2026-07-18T00:29:50.865Z
+  - _ulid: 01KXSA2C7WVV1CAFSR843F3QCP
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: skipped
+      name: skill render baseline
+    timestamp: 2026-07-18T00:29:54.300Z
 examined_commit: c54fee7bd1823d858065c19b33aa65df6f5bfadb
 external_links: []
 lifecycle_state: open
@@ -362,5 +451,5 @@ threads:
     kind: nit
 verdicts: []
 created_at: 2026-07-18T00:05:12.384Z
-updated_at: 2026-07-18T00:29:23.109Z
+updated_at: 2026-07-18T00:29:54.043Z
 notes: []
