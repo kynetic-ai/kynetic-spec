@@ -30914,7 +30914,7 @@ reviews:
     title: Review documentation drift gates and browser validation (cycle 2)
     disposition: changes_requested
     author: Jacob Chapel
-    check_count: 13
+    check_count: 26
     examined_commit: 25cfd2ac400b8d5d58a06e0a33b661418f708d1f
     lifecycle_state: open
     related_refs: []
@@ -30923,8 +30923,8 @@ reviews:
       content_hash: ""
       ref: "@01KXPPEAYMN69MKK49CA73D6AG"
       shadow_commit: ""
-    thread_count: 2
-    unresolved_blocker_count: 1
+    thread_count: 4
+    unresolved_blocker_count: 2
     verdict_count: 0
     created_at: 2026-07-18T05:58:12.571Z
-    updated_at: 2026-07-18T06:23:49.417Z
+    updated_at: 2026-07-18T06:25:10.992Z
