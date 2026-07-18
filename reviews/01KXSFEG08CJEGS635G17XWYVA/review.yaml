@@ -209,6 +209,13 @@ events:
       kind: blocker
       thread_ulid: 01KXSGXB0PWJ5576YDTY7C32AA
     timestamp: 2026-07-18T02:29:29.493Z
+  - _ulid: 01KXSGXH2RRVVM4FFQZJ8MQCC7
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KXSGXGTYCBZTCNF3P0M1FJZM
+    timestamp: 2026-07-18T02:29:35.448Z
 examined_commit: 6a6a1f66957df8d97877d57a143efaf4ee3c6555
 external_links: []
 lifecycle_state: open
@@ -256,7 +263,25 @@ threads:
           task-work and merge workflows define `kspec task complete` as the final post-merge step."
         created_at: 2026-07-18T02:29:29.238Z
     kind: blocker
+  - _ulid: 01KXSGXGTYCBZTCNF3P0M1FJZM
+    anchor:
+      type: code
+      commit: 6a6a1f66957df8d97877d57a143efaf4ee3c6555
+      line_end: 39
+      line_start: 39
+      path: docs/getting-started/overview.md
+      side: head
+    entries:
+      - _ulid: 01KXSGXGTYXDN44SP6SHBQGWW8
+        author: Jacob Chapel
+        body: "MUST-FIX — The Getting Started overview hard-codes `main` as the protected code branch. Kspec
+          projects can use any source or integration branch, and `.kspec/` is excluded from
+          code-branch history regardless of that branch name. Impact: package documentation presents
+          one project policy as a universal mechanic; this task already corrected the same
+          assumption in `initializing-a-project.md`."
+        created_at: 2026-07-18T02:29:35.198Z
+    kind: blocker
 verdicts: []
 created_at: 2026-07-18T02:03:54.248Z
-updated_at: 2026-07-18T02:29:29.238Z
+updated_at: 2026-07-18T02:29:35.198Z
 notes: []
