@@ -421,6 +421,12 @@ events:
     payload:
       thread_ulid: 01KXSGXPT50EBZN69DGJJYPYBR
     timestamp: 2026-07-18T03:09:50.969Z
+  - _ulid: 01KXSK7GRR7TBJQ9T4065ZR7C1
+    actor: Jacob Chapel
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KXSGXWM2XW73DHJM5EYYW6TD
+    timestamp: 2026-07-18T03:09:59.960Z
 examined_commit: 6a6a1f66957df8d97877d57a143efaf4ee3c6555
 external_links: []
 lifecycle_state: closed
@@ -568,6 +574,10 @@ threads:
         author: Jacob Chapel
         body: "Fixed in fbee7a5082: the shadow tree now identifies the manifest as <project-slug>.yaml."
         created_at: 2026-07-18T03:08:53.787Z
+      - _ulid: 01KXSK7GG8Y023E6QTPHM46K61
+        author: Jacob Chapel
+        body: "Fixed in fbee7a5082: manifest is documented as project-slug.yaml."
+        created_at: 2026-07-18T03:09:59.688Z
     kind: blocker
     resolved_at: 2026-07-18T03:08:57.362Z
     resolved_by: Jacob Chapel
@@ -658,5 +668,5 @@ verdicts:
     role: reviewer
     created_at: 2026-07-18T02:30:52.454Z
 created_at: 2026-07-18T02:03:54.248Z
-updated_at: 2026-07-18T03:09:50.693Z
+updated_at: 2026-07-18T03:09:59.688Z
 notes: []
