@@ -67,6 +67,17 @@ checks:
     runner: kspec validate --alignment --warnings-ok
     created_at: 2026-07-18T02:27:42.790Z
     completed_at: 2026-07-18T02:27:42.790Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Passed; 325 accepted repository-baseline completeness warnings. Changed AC annotations
+      were inspected against the three linked documentation specs.
+    name: kspec validate completeness
+    required: true
+    runner: kspec validate --completeness --warnings-ok
+    created_at: 2026-07-18T02:27:48.529Z
+    completed_at: 2026-07-18T02:27:48.529Z
 events:
   - _ulid: 01KXSFEFZS8KWKJ2RR87K28FAJ
     actor: pr-reviewer
@@ -123,6 +134,13 @@ events:
       status: pass
       name: kspec validate alignment
     timestamp: 2026-07-18T02:27:43.051Z
+  - _ulid: 01KXSGT8YJMHG1608QF4ZSW8YR
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate completeness
+    timestamp: 2026-07-18T02:27:48.818Z
 examined_commit: 6a6a1f66957df8d97877d57a143efaf4ee3c6555
 external_links: []
 lifecycle_state: open
@@ -135,5 +153,5 @@ subject:
 threads: []
 verdicts: []
 created_at: 2026-07-18T02:03:54.248Z
-updated_at: 2026-07-18T02:27:42.790Z
+updated_at: 2026-07-18T02:27:48.529Z
 notes: []
