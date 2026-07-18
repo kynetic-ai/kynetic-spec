@@ -15652,11 +15652,11 @@ workspaces:
     canonical_branch: dispatch/task/task-audit-remaining-public-docs/01kxppe9
     canonical_branch_head: fbee7a50823eec0c6ed2f7efee61858cc29d4cdc
     cleanup:
-      status: scheduled
+      status: completed
       detail: integrated-into-base-branch
       eligible: true
       reason: integrated-into-base-branch
-      updated_at: 2026-07-18T03:54:35.510Z
+      updated_at: 2026-07-18T03:58:41.129Z
     health:
       status: healthy
       issues: []
@@ -15670,17 +15670,17 @@ workspaces:
       target_branch: plan/plan-dispatch-lifecycle-pause-resume-and-stop-controls/01kxc2vx
       target_commit: 2c9c4c8e0fb68ebd4d9b509747c33c9329f02ad7
       updated_at: 2026-07-18T03:54:35.510Z
-    lifecycle_state: closing
+    lifecycle_state: closed
     resolved_base_branch: plan/plan-dispatch-lifecycle-pause-resume-and-stop-controls/01kxc2vx
     task_id: 01KXPPE9FJ6KB5WG47FV2KFRNY
     task_ref: "@01KXPPE9FJ6KB5WG47FV2KFRNY"
     task_slug: task-audit-remaining-public-docs
     timestamps:
-      closed_at: null
+      closed_at: 2026-07-18T03:58:41.129Z
       last_active_at: 2026-07-18T03:15:08.679Z
       last_reconciled_at: 2026-07-18T03:55:51.363Z
       created_at: 2026-07-18T00:33:28.484Z
-      updated_at: 2026-07-18T03:55:51.363Z
+      updated_at: 2026-07-18T03:58:41.129Z
     workspace_id: dispatch-workspace-01KXPPE9FJ6KB5WG47FV2KFRNY
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
