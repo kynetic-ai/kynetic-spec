@@ -2,7 +2,145 @@ _ulid: 01KXSWVGTVV2QAVDW43B0XE9W8
 slugs: []
 title: Review documentation drift gates and browser validation (cycle 2)
 author: Jacob Chapel
-checks: []
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: All 1067 matched files formatted.
+    name: format
+    required: true
+    runner: npm run format:check
+    created_at: 2026-07-18T06:22:57.123Z
+    completed_at: 2026-07-18T06:22:57.123Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: 0 errors. Focused oxlint on all seven changed TypeScript/test files found only three
+      pre-existing warnings on unchanged lines in tests/web-ui-docs-rendering.test.ts.
+    name: lint
+    required: true
+    runner: npm run lint -- --quiet
+    created_at: 2026-07-18T06:23:00.984Z
+    completed_at: 2026-07-18T06:23:00.984Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Shared build and tsc --noEmit passed.
+    name: typecheck
+    required: true
+    runner: npm run typecheck
+    created_at: 2026-07-18T06:23:04.559Z
+    completed_at: 2026-07-18T06:23:04.559Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: 2840 suites passed; 10,992 tests passed; 3 skipped.
+    name: full test suite
+    required: true
+    runner: npm test -- --fresh
+    created_at: 2026-07-18T06:23:08.070Z
+    completed_at: 2026-07-18T06:23:08.070Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: References OK with exactly the documented six pre-existing deprecation warnings.
+    name: kspec validate refs
+    required: true
+    runner: kspec validate --refs --warnings-ok
+    created_at: 2026-07-18T06:23:11.643Z
+    completed_at: 2026-07-18T06:23:11.643Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Passed under --warnings-ok with the existing 54-warning baseline.
+    name: kspec validate alignment
+    required: true
+    runner: kspec validate --alignment --warnings-ok
+    created_at: 2026-07-18T06:23:15.394Z
+    completed_at: 2026-07-18T06:23:15.394Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Passed under --warnings-ok; target own AC annotations were inspected and present.
+    name: kspec validate completeness
+    required: true
+    runner: kspec validate --completeness --warnings-ok
+    created_at: 2026-07-18T06:23:21.133Z
+    completed_at: 2026-07-18T06:23:21.133Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: 57 suites and 299 tests passed.
+    name: focused docs tests
+    required: true
+    runner: npm test -- --fresh <five docs files>
+    created_at: 2026-07-18T06:23:26.171Z
+    completed_at: 2026-07-18T06:23:26.171Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: 17 Playwright tests passed, including wide/narrow search, local/public parity,
+      daemon-stopped static rendering, anchors, and article-owned agents navigation.
+    name: docs e2e
+    required: true
+    runner: npm run test:e2e -- tests/e2e/docs.spec.ts
+    created_at: 2026-07-18T06:23:31.858Z
+    completed_at: 2026-07-18T06:23:31.858Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Pagefind indexed 48 entries and the static web UI build completed. Reported Svelte
+      warnings are pre-existing outside the diff.
+    name: docs builds
+    required: true
+    runner: npm run build:docs-search && npm run build:web-ui
+    created_at: 2026-07-18T06:23:35.499Z
+    completed_at: 2026-07-18T06:23:35.499Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Snapshot-local agents generation was already up to date twice; skill render second run
+      reported no changes; plugin built twice; tracked kspec-agents.md/.agents/.factory diff was
+      clean. Live shadow meta additionally rendered three new untracked project-local skills absent
+      from the detached snapshot; those probe outputs were removed.
+    name: generated convergence
+    required: true
+    runner: agents generate / skill render / build:plugin twice
+    created_at: 2026-07-18T06:23:39.064Z
+    completed_at: 2026-07-18T06:23:39.064Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: 59 skills OK and 14 plugin-provided skills verified; one unrelated unregistered
+      droid-status platform warning.
+    name: skill render verification
+    required: false
+    runner: kspec skill verify
+    created_at: 2026-07-18T06:23:42.489Z
+    completed_at: 2026-07-18T06:23:42.489Z
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: New buildPagefindVariant uses mkdtempSync(PROJECT_ROOT/.docs-e2e-search-) and only enters
+      cleanup after both builds return, so build failure can leak generated trees into the checkout.
+    name: test isolation
+    required: true
+    runner: manual code and browser-fixture review
+    created_at: 2026-07-18T06:23:45.934Z
+    completed_at: 2026-07-18T06:23:45.934Z
 events:
   - _ulid: 01KXSWVGTJS3N9KD9ZP81CDMZW
     actor: Jacob Chapel
@@ -17,6 +155,111 @@ events:
       from: draft
       to: open
     timestamp: 2026-07-18T05:58:56.931Z
+  - _ulid: 01KXSY8QDDCXREXPDWDJ66Q7AD
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KXSY8Q59R9VPW93KRGVM0DAN
+    timestamp: 2026-07-18T06:22:53.869Z
+  - _ulid: 01KXSY8TVDVPV24DT7TJJTQM8M
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: format
+    timestamp: 2026-07-18T06:22:57.389Z
+  - _ulid: 01KXSY8YKPWA1QVDYE2TAR0MQY
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: lint
+    timestamp: 2026-07-18T06:23:01.238Z
+  - _ulid: 01KXSY924N00EG988BYT9WTGWE
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: typecheck
+    timestamp: 2026-07-18T06:23:04.853Z
+  - _ulid: 01KXSY95JBBF2WE43EF91PFMWN
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: full test suite
+    timestamp: 2026-07-18T06:23:08.363Z
+  - _ulid: 01KXSY990YBDVC4SG5MZ0DXHDB
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate refs
+    timestamp: 2026-07-18T06:23:11.902Z
+  - _ulid: 01KXSY9CVZ02VVG2EE6N0MG3P5
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate alignment
+    timestamp: 2026-07-18T06:23:15.839Z
+  - _ulid: 01KXSY9JD6TVSFV5BP7Y8C95WD
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate completeness
+    timestamp: 2026-07-18T06:23:21.511Z
+  - _ulid: 01KXSY9QC652P9CRH1DVT7MWKY
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: focused docs tests
+    timestamp: 2026-07-18T06:23:26.598Z
+  - _ulid: 01KXSY9WTGNV4YVD4EK2JG8VSG
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: docs e2e
+    timestamp: 2026-07-18T06:23:32.176Z
+  - _ulid: 01KXSYA0CV2T74B1CNSHCW7TX3
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: docs builds
+    timestamp: 2026-07-18T06:23:35.835Z
+  - _ulid: 01KXSYA3TBMQJWDVMKFDT3STH4
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: generated convergence
+    timestamp: 2026-07-18T06:23:39.339Z
+  - _ulid: 01KXSYA750YBW10MAA7HCQPZ2Q
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: skill render verification
+    timestamp: 2026-07-18T06:23:42.752Z
+  - _ulid: 01KXSYAAGP6BAD2XKHRZSM5SB4
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: fail
+      name: test isolation
+    timestamp: 2026-07-18T06:23:46.198Z
+  - _ulid: 01KXSYADXE5DSY60WVMTBAXEXE
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KXSYADN9NNHAPCKC5J2XYAP0
+    timestamp: 2026-07-18T06:23:49.678Z
 examined_commit: 25cfd2ac400b8d5d58a06e0a33b661418f708d1f
 external_links: []
 lifecycle_state: open
@@ -26,8 +269,51 @@ subject:
   content_hash: ""
   ref: "@01KXPPEAYMN69MKK49CA73D6AG"
   shadow_commit: ""
-threads: []
+threads:
+  - _ulid: 01KXSY8Q59R9VPW93KRGVM0DAN
+    anchor:
+      type: code
+      commit: 25cfd2ac400b8d5d58a06e0a33b661418f708d1f
+      line_end: 50
+      line_start: 37
+      path: tests/e2e/docs.spec.ts
+      side: head
+    entries:
+      - _ulid: 01KXSY8Q59NWTXJ26GPYYVRAXG
+        author: Jacob Chapel
+        body: MUST-FIX —  creates both generated search fixtures under  () instead of an isolated system
+          temp directory, and the cleanup  begins only after both builds return. If the first or
+          second Pagefind build throws, the checkout is left with an untracked docs/build tree;
+          while the test runs, those repository-local trees can also interfere with concurrent
+          git-sensitive tests and content-hash checks. This violates the project test-isolation rule
+          that tests run in temp directories outside the kspec repository. The fresh
+          focused/full/E2E runs passed only because both builds and final cleanup succeeded. Move
+          the fixture roots outside the checkout and arrange cleanup so a failure during either
+          build cannot leak the first root.
+        created_at: 2026-07-18T06:22:53.609Z
+    kind: blocker
+  - _ulid: 01KXSYADN9NNHAPCKC5J2XYAP0
+    entries:
+      - _ulid: 01KXSYADN9EV5W6HMNTKQKDWDJ
+        author: Jacob Chapel
+        body: "Review evidence log — Files read: all nine changed files and full changed hunks; prior review
+          threads; linked specs/ACs; docs renderer/link resolver; docs-search builder; Playwright
+          daemon fixture; lifecycle guide and generated agent output. Commands run: format,
+          repo/focused lint, typecheck, fresh focused tests, fresh full suite, docs-search/web
+          builds, 17-test docs E2E plus focused parity rerun, refs/alignment/completeness
+          validation, double agents/skill/plugin generation, skill status/verify, git
+          diff/status/check/history. Claims verified: all five prior substantive blockers are fixed;
+          focused 57/299, E2E 17/17, full 2840/10,992+3 skipped, exact six-warning refs baseline,
+          and tracked generated convergence reproduced. Categories searched: correctness, edge/error
+          cleanup, security/path containment, AC/test quality, offline/static behavior, search
+          parity, accessibility, integration, test isolation, generated convergence. Shared-guidance
+          review: only generated kspec-agents.md timestamp/EOF changed; direction 1 found no
+          semantic Kynetic-policy addition, direction 2 had no removed instruction needing
+          relocation, and tracked generation is convergent. One new blocker was recorded for
+          repository-local temporary Pagefind fixtures and failure-path leakage."
+        created_at: 2026-07-18T06:23:49.417Z
+    kind: nit
 verdicts: []
 created_at: 2026-07-18T05:58:12.571Z
-updated_at: 2026-07-18T05:58:56.656Z
+updated_at: 2026-07-18T06:23:49.417Z
 notes: []
