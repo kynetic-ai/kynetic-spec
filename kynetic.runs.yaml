@@ -84103,7 +84103,7 @@ runs:
     completed_at: 2026-07-18T01:30:08.390Z
   - _ulid: 01KXSF3HMV2X9GKMJ9Q0DZ9203
     status: active
-    current_step: 3
+    current_step: 4
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -84134,10 +84134,16 @@ runs:
           @task-investigate-npm-test-teardown-hang-after-green-suite-run already covers the separate
           teardown issue. The session-created @01KXSE3S duplicates @01KT5EJA and should be resolved
           as duplicate; no new improvement item is warranted."
-      - status: completed
+      - status: skipped
         step_index: 3
         started_at: 2026-07-18T01:59:19.429Z
-        completed_at: 2026-07-18T01:59:19.429Z
+        completed_at: 2026-07-18T01:59:32.338Z
+        notes: No untracked friction remained after the required searches, so no new improvement proposal
+          was created.
+      - status: completed
+        step_index: 4
+        started_at: 2026-07-18T01:59:32.338Z
+        completed_at: 2026-07-18T01:59:32.338Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-07-18T01:57:55.483Z
