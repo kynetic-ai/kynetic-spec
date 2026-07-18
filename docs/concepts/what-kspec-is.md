@@ -31,7 +31,8 @@ You interact with kspec mainly through its CLI and, optionally, through a local 
 3. Work the task — writing code, adding notes, annotating tests against acceptance criteria.
 4. Submit the task for review.
 5. A reviewer (human or agent) checks the work against the spec's acceptance criteria.
-6. After approval, the task is marked complete.
+6. After approval, the work is merged through the project's integration process.
+7. After the merge succeeds, the task is marked complete.
 
 At every step, the spec is the reference point. When you run `kspec session start`, you see what's active, what's ready, and what's blocked — all grounded in spec-defined outcomes rather than vague ticket titles.
 

@@ -61,7 +61,7 @@ For all upgrade options, run `kspec upgrade --help`.
 
 #### What `kynetic: "1.2"` Changes
 
-Version 1.2 moves plans and reviews from monolithic project-wide files into folder-backed entities and introduces entity-scoped local resources. After a successful upgrade, your project's `kynetic.yaml` (or `project.kynetic.yaml`) declares:
+Version 1.2 moves plans and reviews from monolithic project-wide files into folder-backed entities and introduces entity-scoped local resources. After a successful upgrade, the project manifest discovered in `.kspec/` (normally `<project-slug>.yaml`) declares:
 
 ```yaml
 kynetic: "1.2"

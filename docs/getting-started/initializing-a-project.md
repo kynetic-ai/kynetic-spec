@@ -12,7 +12,7 @@ kspec init
 
 This command creates:
 
-- **`kynetic.yaml`** — the project manifest at the repository root, containing the project name and a default top-level module.
+- **`<project-slug>.yaml`** — the project manifest inside the shadow directory, containing the project name and a reference to the default top-level module. The filename is derived from the project name.
 - **`.kspec/`** — the shadow directory where all specs and tasks are stored.
 
 If your repository does not have any commits yet, `kspec init` will create an initial commit for you.
@@ -23,8 +23,8 @@ kspec stores specs, tasks, and project metadata on a separate Git branch called 
 
 This design means:
 
-- Spec and task changes never appear in your main branch history
-- Your code PRs stay clean — no YAML spec files mixed into diffs
+- Spec and task changes never appear in your source branch history
+- Your code changes stay clean — no YAML spec files mixed into diffs
 - kspec commits to the shadow branch automatically when you run CLI commands
 
 **The `.kspec/` directory is not a regular directory.** It is a Git worktree managed by kspec. The files inside it are real and readable, but you should treat them as managed state.
@@ -86,13 +86,13 @@ This shows your project summary, active tasks, and suggested next actions. It is
 
 After `kspec init` and `kspec setup`, your repository has:
 
-| Item              | Purpose                                                     |
-| ----------------- | ----------------------------------------------------------- |
-| `kynetic.yaml`    | Project manifest                                            |
-| `.kspec/`         | Shadow directory (worktree on `kspec-meta` branch)          |
-| `AGENTS.md`       | Entry point for agent instructions                          |
-| `kspec-agents.md` | Generated agent instructions with conventions and workflows |
-| `.agents/skills/` | Rendered skill files for agent use                          |
+| Item                  | Purpose                                                     |
+| --------------------- | ----------------------------------------------------------- |
+| `<project-slug>.yaml` | Project manifest inside `.kspec/`                           |
+| `.kspec/`             | Shadow directory (worktree on `kspec-meta` branch)          |
+| `AGENTS.md`           | Entry point for agent instructions                          |
+| `kspec-agents.md`     | Generated agent instructions with conventions and workflows |
+| `.agents/skills/`     | Rendered skill files for agent use                          |
 
 Your project is ready for agent integration.
 

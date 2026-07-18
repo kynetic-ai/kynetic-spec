@@ -6,7 +6,7 @@ kspec stores all of its state — specs, tasks, plans, inbox items, reviews, and
 
 The shadow branch is an orphan branch (by default named `kspec-meta`) that has no common history with your source code branches. It's checked out as a git worktree into the `.kspec/` directory at your project root.
 
-From git's perspective, `.kspec/` is a separate working tree pointing at a different branch. From your perspective, it's a directory containing YAML files that kspec reads and writes. Your main branch gitignores `.kspec/`, so spec state never appears in your source code commits.
+From git's perspective, `.kspec/` is a separate working tree pointing at a different branch. From your perspective, it's a directory containing YAML files that kspec reads and writes. Your source-code worktree gitignores `.kspec/`, so spec state never appears in source-code commits, regardless of how your project names its branches.
 
 Every kspec CLI command that modifies state — adding a spec, starting a task, recording a note — automatically commits the change to the shadow branch. You don't run `git add` or `git commit` for spec state. The audit trail builds itself.
 
@@ -16,7 +16,7 @@ On a project at `kynetic: "1.2"` or newer, the shadow branch holds a mix of lean
 
 ```
 .kspec/
-├── kynetic.yaml                 # Project manifest: version, storage formats, etc.
+├── <project-slug>.yaml          # Project manifest: version, storage formats, etc.
 ├── project.tasks.yaml           # Lean task index
 ├── project.plans.yaml           # Lean plan index
 ├── project.reviews.yaml         # Lean review index
@@ -35,7 +35,7 @@ Files that kspec does not recognize inside an entity's directory are ignored by 
 
 Spec and task state needs version control, but mixing it into your source branch creates problems:
 
-- **Noisy history.** Every task note, status change, and spec edit would be a commit on your main branch. The signal-to-noise ratio drops fast.
+- **Noisy history.** Every task note, status change, and spec edit would be a commit on your source-code branches. The signal-to-noise ratio drops fast.
 - **Merge conflicts.** Spec YAML files would conflict with other developers' spec changes during code merges, even though spec edits and code edits are independent.
 - **Branch coupling.** Feature branches would carry spec state that might not be relevant to the code changes on that branch.
 

@@ -116,7 +116,7 @@ After approving the work, confirm the task status:
 kspec task get @task-some-feature
 ```
 
-The task should be in `pending_review` with an approved review. The task can now be completed and the work merged:
+The task should remain in `pending_review` with an approved review. The work can now be merged through the project-defined integration process; complete the task only after that merge succeeds:
 
 ```bash
 kspec review for-task @task-some-feature

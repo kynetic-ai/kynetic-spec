@@ -24,20 +24,23 @@ Read the full review to identify unresolved threads:
 kspec review get @review-ref
 ```
 
-Look for threads with kind "blocker" that are still open. For each unresolved thread, reply with what you did to address it, then resolve it:
+Look for threads with kind "blocker" that are still open. If the feedback is already addressed in the reviewed version and no code change is needed, reply with the evidence and resolve the thread:
 
 ```bash
 kspec review reply @review-ref --thread <thread-id> --body "Fixed: description of what changed"
 kspec review resolve @review-ref --thread <thread-id>
 ```
 
-If the disposition is stale because new commits were pushed after the verdict, resubmit the task so a new review cycle can evaluate the current code:
+If addressing the feedback requires code changes, or newer commits made the reviewed version stale, the reviewer records a `request_changes` verdict. That moves the task from `pending_review` to `needs_work`. Start the fix cycle, make and commit the changes, then reply to and resolve every addressed thread:
 
 ```bash
+kspec task start @your-task
+kspec review reply @review-ref --thread <thread-id> --body "Fixed: description of what changed"
+kspec review resolve @review-ref --thread <thread-id>
 kspec task submit @your-task
 ```
 
-This moves the task back to "pending review" and a fresh review record is created for the new round. The reviewer evaluates the updated code from scratch, and the previous review record is preserved in the history.
+`kspec task submit` is valid after `kspec task start` has moved the `needs_work` task back to `in_progress`. Submission returns it to `pending_review`; the reviewer then creates a fresh review record for the new round, preserving the previous review in the history. Do not run `kspec task submit` while the task is already in `pending_review`.
 
 ## Verification
 

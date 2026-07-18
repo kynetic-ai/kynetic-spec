@@ -1235,6 +1235,7 @@ describe("section landing page structure", () => {
   it("every child-page link on a landing page resolves to a real manifest entry", () => {
     const docsDir = join(__dirname, "..", "docs");
     const plugin = docsPlugin(docsDir, {
+      releaseNotesPath: join(__dirname, "..", "RELEASE_NOTES.md"),
       exclude: ["history", "agents-eval-scenarios.md", "prime-mock.md"],
     });
     const load = plugin.load as (id: string) => string | undefined;
@@ -1318,19 +1319,20 @@ describe("getting started section content", () => {
     return manifest.entries.find((e) => e.slug === slug);
   }
 
-  // The six required Getting Started pages in reading order
+  // The required stages plus the published tutorial in reading order
   const GETTING_STARTED_PAGES = [
     "getting-started/overview",
     "getting-started/installation",
     "getting-started/initializing-a-project",
     "getting-started/connecting-your-agent",
     "getting-started/your-first-action",
+    "getting-started/tutorial",
     "getting-started/where-to-go-next",
   ];
 
   // AC: @docs-getting-started-section ac-1
   describe("pages cover all required stages with executable commands", () => {
-    it("all six Getting Started pages exist in the manifest", () => {
+    it("all published Getting Started pages exist in the manifest", () => {
       for (const slug of GETTING_STARTED_PAGES) {
         const entry = getEntry(slug);
         expect(entry, `page ${slug} should exist`).toBeDefined();
@@ -1456,6 +1458,7 @@ describe("getting started section content", () => {
       "./initializing-a-project.md",
       "./connecting-your-agent.md",
       "./your-first-action.md",
+      "./tutorial.md",
       "./where-to-go-next.md",
     ];
 

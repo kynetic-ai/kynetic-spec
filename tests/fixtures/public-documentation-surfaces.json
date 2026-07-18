@@ -3,14 +3,6 @@
   "reviewed_lifecycle_commit": "b28c29557d3ec15ee1cfc0b14c6d2ee5a57b86aa",
   "integrated_lifecycle_commit": "3f22e6c93c68115d77e1bde062f7cd12034f91d8",
   "tracked_markdown_count": 146,
-  "construction_pending_additions": [
-    "docs/guides/configuring-dispatch-workspaces.md",
-    "docs/guides/controlling-dispatch-lifecycle.md",
-    "docs/concepts/dispatch-workspaces.md",
-    "docs/troubleshooting/dispatch-bootstrap-failures.md",
-    "docs/troubleshooting/dispatch-workspace-sync-and-cleanup.md",
-    "docs/troubleshooting/dispatch-lifecycle-control-failures.md"
-  ],
   "section_reading_order": {
     "getting-started": [
       "./overview.md",
@@ -18,8 +10,8 @@
       "./initializing-a-project.md",
       "./connecting-your-agent.md",
       "./your-first-action.md",
-      "./where-to-go-next.md",
-      "./tutorial.md"
+      "./tutorial.md",
+      "./where-to-go-next.md"
     ],
     "guides": [
       "./starting-a-new-project.md",
@@ -29,6 +21,8 @@
       "./reviewing-an-agents-work.md",
       "./working-with-local-resources.md",
       "./configuring-agent-runners.md",
+      "./configuring-dispatch-workspaces.md",
+      "./controlling-dispatch-lifecycle.md",
       "./upgrading-kspec.md",
       "./recovering-from-shadow-branch-issues.md"
     ],
@@ -41,6 +35,7 @@
       "./reviews.md",
       "./local-resources.md",
       "./agents-and-dispatch.md",
+      "./dispatch-workspaces.md",
       "./agent-runners.md",
       "./web-ui-and-daemon.md"
     ],
@@ -53,10 +48,13 @@
       "./entity-storage-incompatible.md",
       "./plan-or-review-index-drift.md",
       "./dispatch-refuses-to-assign.md",
+      "./dispatch-bootstrap-failures.md",
+      "./dispatch-workspace-sync-and-cleanup.md",
+      "./dispatch-lifecycle-control-failures.md",
       "./review-blocking-merge.md",
       "./runner-validation-failures.md"
     ],
-    "release-notes": []
+    "release-notes": ["./changelog.md"]
   },
   "records": [
     {
@@ -66,8 +64,8 @@
       "classification": "internal-agent-guidance",
       "source_of_truth": [".agents/skills/audit/SKILL.md"],
       "audit_topics": ["ownership", "safety", "exclusion"],
-      "audit_status": "pending",
-      "disposition": "pending-task-7-audit",
+      "audit_status": "scope-verified",
+      "disposition": "verified-limited-audit",
       "exclusion_reason": "Project or runtime agent guidance, not public operator documentation."
     },
     {
@@ -77,8 +75,8 @@
       "classification": "internal-agent-guidance",
       "source_of_truth": [".agents/skills/codex/SKILL.md"],
       "audit_topics": ["ownership", "safety", "exclusion"],
-      "audit_status": "pending",
-      "disposition": "pending-task-7-audit",
+      "audit_status": "scope-verified",
+      "disposition": "verified-limited-audit",
       "exclusion_reason": "Project or runtime agent guidance, not public operator documentation."
     },
     {
@@ -88,8 +86,8 @@
       "classification": "internal-agent-guidance",
       "source_of_truth": [".agents/skills/e2e/SKILL.md"],
       "audit_topics": ["ownership", "safety", "exclusion"],
-      "audit_status": "pending",
-      "disposition": "pending-task-7-audit",
+      "audit_status": "scope-verified",
+      "disposition": "verified-limited-audit",
       "exclusion_reason": "Project or runtime agent guidance, not public operator documentation."
     },
     {
@@ -99,8 +97,8 @@
       "classification": "internal-agent-guidance",
       "source_of_truth": [".agents/skills/eval-agents/SKILL.md"],
       "audit_topics": ["ownership", "safety", "exclusion"],
-      "audit_status": "pending",
-      "disposition": "pending-task-7-audit",
+      "audit_status": "scope-verified",
+      "disposition": "verified-limited-audit",
       "exclusion_reason": "Project or runtime agent guidance, not public operator documentation."
     },
     {
@@ -110,8 +108,8 @@
       "classification": "generated",
       "source_of_truth": ["templates/skills/create-workflow/SKILL.md"],
       "audit_topics": ["ownership", "safety", "exclusion"],
-      "audit_status": "pending",
-      "disposition": "pending-task-7-audit",
+      "audit_status": "scope-verified",
+      "disposition": "verified-limited-audit",
       "exclusion_reason": "Generated output audited through its source and regeneration pairing.",
       "generated_from": ["templates/skills/create-workflow/SKILL.md"],
       "build_command": "kspec skill render"
@@ -123,8 +121,8 @@
       "classification": "generated",
       "source_of_truth": ["templates/skills/help/SKILL.md"],
       "audit_topics": ["ownership", "safety", "exclusion"],
-      "audit_status": "pending",
-      "disposition": "pending-task-7-audit",
+      "audit_status": "scope-verified",
+      "disposition": "verified-limited-audit",
       "exclusion_reason": "Generated output audited through its source and regeneration pairing.",
       "generated_from": ["templates/skills/help/SKILL.md"],
       "build_command": "kspec skill render"
@@ -136,8 +134,8 @@
       "classification": "generated",
       "source_of_truth": ["templates/skills/merge/SKILL.md"],
       "audit_topics": ["ownership", "safety", "exclusion"],
-      "audit_status": "pending",
-      "disposition": "pending-task-7-audit",
+      "audit_status": "scope-verified",
+      "disposition": "verified-limited-audit",
       "exclusion_reason": "Generated output audited through its source and regeneration pairing.",
       "generated_from": ["templates/skills/merge/SKILL.md"],
       "build_command": "kspec skill render"
@@ -149,8 +147,8 @@
       "classification": "generated",
       "source_of_truth": ["templates/skills/observe/SKILL.md"],
       "audit_topics": ["ownership", "safety", "exclusion"],
-      "audit_status": "pending",
-      "disposition": "pending-task-7-audit",
+      "audit_status": "scope-verified",
+      "disposition": "verified-limited-audit",
       "exclusion_reason": "Generated output audited through its source and regeneration pairing.",
       "generated_from": ["templates/skills/observe/SKILL.md"],
       "build_command": "kspec skill render"
@@ -162,8 +160,8 @@
       "classification": "generated",
       "source_of_truth": ["templates/skills/plan/SKILL.md"],
       "audit_topics": ["ownership", "safety", "exclusion"],
-      "audit_status": "pending",
-      "disposition": "pending-task-7-audit",
+      "audit_status": "scope-verified",
+      "disposition": "verified-limited-audit",
       "exclusion_reason": "Generated output audited through its source and regeneration pairing.",
       "generated_from": ["templates/skills/plan/SKILL.md"],
       "build_command": "kspec skill render"
@@ -175,8 +173,8 @@
       "classification": "generated",
       "source_of_truth": ["templates/skills/reflect/SKILL.md"],
       "audit_topics": ["ownership", "safety", "exclusion"],
-      "audit_status": "pending",
-      "disposition": "pending-task-7-audit",
+      "audit_status": "scope-verified",
+      "disposition": "verified-limited-audit",
       "exclusion_reason": "Generated output audited through its source and regeneration pairing.",
       "generated_from": ["templates/skills/reflect/SKILL.md"],
       "build_command": "kspec skill render"
@@ -188,8 +186,8 @@
       "classification": "generated",
       "source_of_truth": ["templates/skills/review-plan/SKILL.md"],
       "audit_topics": ["ownership", "safety", "exclusion"],
-      "audit_status": "pending",
-      "disposition": "pending-task-7-audit",
+      "audit_status": "scope-verified",
+      "disposition": "verified-limited-audit",
       "exclusion_reason": "Generated output audited through its source and regeneration pairing.",
       "generated_from": ["templates/skills/review-plan/SKILL.md"],
       "build_command": "kspec skill render"
@@ -201,8 +199,8 @@
       "classification": "generated",
       "source_of_truth": ["templates/skills/review/SKILL.md"],
       "audit_topics": ["ownership", "safety", "exclusion"],
-      "audit_status": "pending",
-      "disposition": "pending-task-7-audit",
+      "audit_status": "scope-verified",
+      "disposition": "verified-limited-audit",
       "exclusion_reason": "Generated output audited through its source and regeneration pairing.",
       "generated_from": ["templates/skills/review/SKILL.md"],
       "build_command": "kspec skill render"
@@ -214,8 +212,8 @@
       "classification": "generated",
       "source_of_truth": ["templates/skills/task-work/SKILL.md"],
       "audit_topics": ["ownership", "safety", "exclusion"],
-      "audit_status": "pending",
-      "disposition": "pending-task-7-audit",
+      "audit_status": "scope-verified",
+      "disposition": "verified-limited-audit",
       "exclusion_reason": "Generated output audited through its source and regeneration pairing.",
       "generated_from": ["templates/skills/task-work/SKILL.md"],
       "build_command": "kspec skill render"
@@ -227,8 +225,8 @@
       "classification": "generated",
       "source_of_truth": ["templates/skills/triage-automation/SKILL.md"],
       "audit_topics": ["ownership", "safety", "exclusion"],
-      "audit_status": "pending",
-      "disposition": "pending-task-7-audit",
+      "audit_status": "scope-verified",
+      "disposition": "verified-limited-audit",
       "exclusion_reason": "Generated output audited through its source and regeneration pairing.",
       "generated_from": ["templates/skills/triage-automation/SKILL.md"],
       "build_command": "kspec skill render"
@@ -240,8 +238,8 @@
       "classification": "generated",
       "source_of_truth": ["templates/skills/triage-inbox/SKILL.md"],
       "audit_topics": ["ownership", "safety", "exclusion"],
-      "audit_status": "pending",
-      "disposition": "pending-task-7-audit",
+      "audit_status": "scope-verified",
+      "disposition": "verified-limited-audit",
       "exclusion_reason": "Generated output audited through its source and regeneration pairing.",
       "generated_from": ["templates/skills/triage-inbox/SKILL.md"],
       "build_command": "kspec skill render"
@@ -253,8 +251,8 @@
       "classification": "generated",
       "source_of_truth": ["templates/skills/triage/SKILL.md"],
       "audit_topics": ["ownership", "safety", "exclusion"],
-      "audit_status": "pending",
-      "disposition": "pending-task-7-audit",
+      "audit_status": "scope-verified",
+      "disposition": "verified-limited-audit",
       "exclusion_reason": "Generated output audited through its source and regeneration pairing.",
       "generated_from": ["templates/skills/triage/SKILL.md"],
       "build_command": "kspec skill render"
@@ -266,8 +264,8 @@
       "classification": "generated",
       "source_of_truth": ["templates/skills/triage/docs/automation.md"],
       "audit_topics": ["ownership", "safety", "exclusion"],
-      "audit_status": "pending",
-      "disposition": "pending-task-7-audit",
+      "audit_status": "scope-verified",
+      "disposition": "verified-limited-audit",
       "exclusion_reason": "Generated output audited through its source and regeneration pairing.",
       "generated_from": ["templates/skills/triage/docs/automation.md"],
       "build_command": "kspec skill render"
@@ -279,8 +277,8 @@
       "classification": "generated",
       "source_of_truth": ["templates/skills/triage/docs/inbox.md"],
       "audit_topics": ["ownership", "safety", "exclusion"],
-      "audit_status": "pending",
-      "disposition": "pending-task-7-audit",
+      "audit_status": "scope-verified",
+      "disposition": "verified-limited-audit",
       "exclusion_reason": "Generated output audited through its source and regeneration pairing.",
       "generated_from": ["templates/skills/triage/docs/inbox.md"],
       "build_command": "kspec skill render"
@@ -292,8 +290,8 @@
       "classification": "generated",
       "source_of_truth": ["templates/skills/triage/docs/observations.md"],
       "audit_topics": ["ownership", "safety", "exclusion"],
-      "audit_status": "pending",
-      "disposition": "pending-task-7-audit",
+      "audit_status": "scope-verified",
+      "disposition": "verified-limited-audit",
       "exclusion_reason": "Generated output audited through its source and regeneration pairing.",
       "generated_from": ["templates/skills/triage/docs/observations.md"],
       "build_command": "kspec skill render"
@@ -305,8 +303,8 @@
       "classification": "generated",
       "source_of_truth": ["templates/skills/writing-specs/SKILL.md"],
       "audit_topics": ["ownership", "safety", "exclusion"],
-      "audit_status": "pending",
-      "disposition": "pending-task-7-audit",
+      "audit_status": "scope-verified",
+      "disposition": "verified-limited-audit",
       "exclusion_reason": "Generated output audited through its source and regeneration pairing.",
       "generated_from": ["templates/skills/writing-specs/SKILL.md"],
       "build_command": "kspec skill render"
@@ -318,8 +316,8 @@
       "classification": "internal-agent-guidance",
       "source_of_truth": [".agents/skills/release/SKILL.md"],
       "audit_topics": ["ownership", "safety", "exclusion"],
-      "audit_status": "pending",
-      "disposition": "pending-task-7-audit",
+      "audit_status": "scope-verified",
+      "disposition": "verified-limited-audit",
       "exclusion_reason": "Project or runtime agent guidance, not public operator documentation."
     },
     {
@@ -329,8 +327,8 @@
       "classification": "internal-agent-guidance",
       "source_of_truth": [".agents/skills/review-gates/SKILL.md"],
       "audit_topics": ["ownership", "safety", "exclusion"],
-      "audit_status": "pending",
-      "disposition": "pending-task-7-audit",
+      "audit_status": "scope-verified",
+      "disposition": "verified-limited-audit",
       "exclusion_reason": "Project or runtime agent guidance, not public operator documentation."
     },
     {
@@ -340,8 +338,8 @@
       "classification": "internal-agent-guidance",
       "source_of_truth": [".agents/skills/shared-guidance-neutrality/SKILL.md"],
       "audit_topics": ["ownership", "safety", "exclusion"],
-      "audit_status": "pending",
-      "disposition": "pending-task-7-audit",
+      "audit_status": "scope-verified",
+      "disposition": "verified-limited-audit",
       "exclusion_reason": "Project or runtime agent guidance, not public operator documentation."
     },
     {
@@ -351,8 +349,8 @@
       "classification": "internal-agent-guidance",
       "source_of_truth": [".agents/skills/svelte-5/SKILL.md"],
       "audit_topics": ["ownership", "safety", "exclusion"],
-      "audit_status": "pending",
-      "disposition": "pending-task-7-audit",
+      "audit_status": "scope-verified",
+      "disposition": "verified-limited-audit",
       "exclusion_reason": "Project or runtime agent guidance, not public operator documentation."
     },
     {
@@ -362,8 +360,8 @@
       "classification": "internal-agent-guidance",
       "source_of_truth": [".agents/skills/ui-data-layer/SKILL.md"],
       "audit_topics": ["ownership", "safety", "exclusion"],
-      "audit_status": "pending",
-      "disposition": "pending-task-7-audit",
+      "audit_status": "scope-verified",
+      "disposition": "verified-limited-audit",
       "exclusion_reason": "Project or runtime agent guidance, not public operator documentation."
     },
     {
@@ -373,8 +371,8 @@
       "classification": "internal-agent-guidance",
       "source_of_truth": [".agents/skills/work-gates/SKILL.md"],
       "audit_topics": ["ownership", "safety", "exclusion"],
-      "audit_status": "pending",
-      "disposition": "pending-task-7-audit",
+      "audit_status": "scope-verified",
+      "disposition": "verified-limited-audit",
       "exclusion_reason": "Project or runtime agent guidance, not public operator documentation."
     },
     {
@@ -384,8 +382,8 @@
       "classification": "internal-agent-guidance",
       "source_of_truth": [".claude/skills/audit/SKILL.md"],
       "audit_topics": ["ownership", "safety", "exclusion"],
-      "audit_status": "pending",
-      "disposition": "pending-task-7-audit",
+      "audit_status": "scope-verified",
+      "disposition": "verified-limited-audit",
       "exclusion_reason": "Project or runtime agent guidance, not public operator documentation."
     },
     {
@@ -395,8 +393,8 @@
       "classification": "internal-agent-guidance",
       "source_of_truth": [".claude/skills/codex/SKILL.md"],
       "audit_topics": ["ownership", "safety", "exclusion"],
-      "audit_status": "pending",
-      "disposition": "pending-task-7-audit",
+      "audit_status": "scope-verified",
+      "disposition": "verified-limited-audit",
       "exclusion_reason": "Project or runtime agent guidance, not public operator documentation."
     },
     {
@@ -406,8 +404,8 @@
       "classification": "internal-agent-guidance",
       "source_of_truth": [".claude/skills/e2e/SKILL.md"],
       "audit_topics": ["ownership", "safety", "exclusion"],
-      "audit_status": "pending",
-      "disposition": "pending-task-7-audit",
+      "audit_status": "scope-verified",
+      "disposition": "verified-limited-audit",
       "exclusion_reason": "Project or runtime agent guidance, not public operator documentation."
     },
     {
@@ -417,8 +415,8 @@
       "classification": "internal-agent-guidance",
       "source_of_truth": [".claude/skills/eval-agents/SKILL.md"],
       "audit_topics": ["ownership", "safety", "exclusion"],
-      "audit_status": "pending",
-      "disposition": "pending-task-7-audit",
+      "audit_status": "scope-verified",
+      "disposition": "verified-limited-audit",
       "exclusion_reason": "Project or runtime agent guidance, not public operator documentation."
     },
     {
@@ -428,8 +426,8 @@
       "classification": "internal-agent-guidance",
       "source_of_truth": [".claude/skills/release/SKILL.md"],
       "audit_topics": ["ownership", "safety", "exclusion"],
-      "audit_status": "pending",
-      "disposition": "pending-task-7-audit",
+      "audit_status": "scope-verified",
+      "disposition": "verified-limited-audit",
       "exclusion_reason": "Project or runtime agent guidance, not public operator documentation."
     },
     {
@@ -439,8 +437,8 @@
       "classification": "internal-agent-guidance",
       "source_of_truth": [".claude/skills/review-gates/SKILL.md"],
       "audit_topics": ["ownership", "safety", "exclusion"],
-      "audit_status": "pending",
-      "disposition": "pending-task-7-audit",
+      "audit_status": "scope-verified",
+      "disposition": "verified-limited-audit",
       "exclusion_reason": "Project or runtime agent guidance, not public operator documentation."
     },
     {
@@ -450,8 +448,8 @@
       "classification": "internal-agent-guidance",
       "source_of_truth": [".claude/skills/shared-guidance-neutrality/SKILL.md"],
       "audit_topics": ["ownership", "safety", "exclusion"],
-      "audit_status": "pending",
-      "disposition": "pending-task-7-audit",
+      "audit_status": "scope-verified",
+      "disposition": "verified-limited-audit",
       "exclusion_reason": "Project or runtime agent guidance, not public operator documentation."
     },
     {
@@ -461,8 +459,8 @@
       "classification": "internal-agent-guidance",
       "source_of_truth": [".claude/skills/svelte-5/SKILL.md"],
       "audit_topics": ["ownership", "safety", "exclusion"],
-      "audit_status": "pending",
-      "disposition": "pending-task-7-audit",
+      "audit_status": "scope-verified",
+      "disposition": "verified-limited-audit",
       "exclusion_reason": "Project or runtime agent guidance, not public operator documentation."
     },
     {
@@ -472,8 +470,8 @@
       "classification": "internal-agent-guidance",
       "source_of_truth": [".claude/skills/ui-data-layer/SKILL.md"],
       "audit_topics": ["ownership", "safety", "exclusion"],
-      "audit_status": "pending",
-      "disposition": "pending-task-7-audit",
+      "audit_status": "scope-verified",
+      "disposition": "verified-limited-audit",
       "exclusion_reason": "Project or runtime agent guidance, not public operator documentation."
     },
     {
@@ -483,8 +481,8 @@
       "classification": "internal-agent-guidance",
       "source_of_truth": [".claude/skills/ui-design/SKILL.md"],
       "audit_topics": ["ownership", "safety", "exclusion"],
-      "audit_status": "pending",
-      "disposition": "pending-task-7-audit",
+      "audit_status": "scope-verified",
+      "disposition": "verified-limited-audit",
       "exclusion_reason": "Project or runtime agent guidance, not public operator documentation."
     },
     {
@@ -494,8 +492,8 @@
       "classification": "internal-agent-guidance",
       "source_of_truth": [".claude/skills/work-gates/SKILL.md"],
       "audit_topics": ["ownership", "safety", "exclusion"],
-      "audit_status": "pending",
-      "disposition": "pending-task-7-audit",
+      "audit_status": "scope-verified",
+      "disposition": "verified-limited-audit",
       "exclusion_reason": "Project or runtime agent guidance, not public operator documentation."
     },
     {
@@ -505,8 +503,8 @@
       "classification": "internal-agent-guidance",
       "source_of_truth": [".factory/skills/droid-status/SKILL.md"],
       "audit_topics": ["ownership", "safety", "exclusion"],
-      "audit_status": "pending",
-      "disposition": "pending-task-7-audit",
+      "audit_status": "scope-verified",
+      "disposition": "verified-limited-audit",
       "exclusion_reason": "Project or runtime agent guidance, not public operator documentation."
     },
     {
@@ -516,8 +514,8 @@
       "classification": "generated",
       "source_of_truth": ["templates/skills/create-workflow/SKILL.md"],
       "audit_topics": ["ownership", "safety", "exclusion"],
-      "audit_status": "pending",
-      "disposition": "pending-task-7-audit",
+      "audit_status": "scope-verified",
+      "disposition": "verified-limited-audit",
       "exclusion_reason": "Generated output audited through its source and regeneration pairing.",
       "generated_from": ["templates/skills/create-workflow/SKILL.md"],
       "build_command": "kspec skill render"
@@ -529,8 +527,8 @@
       "classification": "generated",
       "source_of_truth": ["templates/skills/help/SKILL.md"],
       "audit_topics": ["ownership", "safety", "exclusion"],
-      "audit_status": "pending",
-      "disposition": "pending-task-7-audit",
+      "audit_status": "scope-verified",
+      "disposition": "verified-limited-audit",
       "exclusion_reason": "Generated output audited through its source and regeneration pairing.",
       "generated_from": ["templates/skills/help/SKILL.md"],
       "build_command": "kspec skill render"
@@ -542,8 +540,8 @@
       "classification": "generated",
       "source_of_truth": ["templates/skills/merge/SKILL.md"],
       "audit_topics": ["ownership", "safety", "exclusion"],
-      "audit_status": "pending",
-      "disposition": "pending-task-7-audit",
+      "audit_status": "scope-verified",
+      "disposition": "verified-limited-audit",
       "exclusion_reason": "Generated output audited through its source and regeneration pairing.",
       "generated_from": ["templates/skills/merge/SKILL.md"],
       "build_command": "kspec skill render"
@@ -555,8 +553,8 @@
       "classification": "generated",
       "source_of_truth": ["templates/skills/observe/SKILL.md"],
       "audit_topics": ["ownership", "safety", "exclusion"],
-      "audit_status": "pending",
-      "disposition": "pending-task-7-audit",
+      "audit_status": "scope-verified",
+      "disposition": "verified-limited-audit",
       "exclusion_reason": "Generated output audited through its source and regeneration pairing.",
       "generated_from": ["templates/skills/observe/SKILL.md"],
       "build_command": "kspec skill render"
@@ -568,8 +566,8 @@
       "classification": "generated",
       "source_of_truth": ["templates/skills/plan/SKILL.md"],
       "audit_topics": ["ownership", "safety", "exclusion"],
-      "audit_status": "pending",
-      "disposition": "pending-task-7-audit",
+      "audit_status": "scope-verified",
+      "disposition": "verified-limited-audit",
       "exclusion_reason": "Generated output audited through its source and regeneration pairing.",
       "generated_from": ["templates/skills/plan/SKILL.md"],
       "build_command": "kspec skill render"
@@ -581,8 +579,8 @@
       "classification": "generated",
       "source_of_truth": ["templates/skills/reflect/SKILL.md"],
       "audit_topics": ["ownership", "safety", "exclusion"],
-      "audit_status": "pending",
-      "disposition": "pending-task-7-audit",
+      "audit_status": "scope-verified",
+      "disposition": "verified-limited-audit",
       "exclusion_reason": "Generated output audited through its source and regeneration pairing.",
       "generated_from": ["templates/skills/reflect/SKILL.md"],
       "build_command": "kspec skill render"
@@ -594,8 +592,8 @@
       "classification": "generated",
       "source_of_truth": ["templates/skills/review-plan/SKILL.md"],
       "audit_topics": ["ownership", "safety", "exclusion"],
-      "audit_status": "pending",
-      "disposition": "pending-task-7-audit",
+      "audit_status": "scope-verified",
+      "disposition": "verified-limited-audit",
       "exclusion_reason": "Generated output audited through its source and regeneration pairing.",
       "generated_from": ["templates/skills/review-plan/SKILL.md"],
       "build_command": "kspec skill render"
@@ -607,8 +605,8 @@
       "classification": "generated",
       "source_of_truth": ["templates/skills/review/SKILL.md"],
       "audit_topics": ["ownership", "safety", "exclusion"],
-      "audit_status": "pending",
-      "disposition": "pending-task-7-audit",
+      "audit_status": "scope-verified",
+      "disposition": "verified-limited-audit",
       "exclusion_reason": "Generated output audited through its source and regeneration pairing.",
       "generated_from": ["templates/skills/review/SKILL.md"],
       "build_command": "kspec skill render"
@@ -620,8 +618,8 @@
       "classification": "generated",
       "source_of_truth": ["templates/skills/task-work/SKILL.md"],
       "audit_topics": ["ownership", "safety", "exclusion"],
-      "audit_status": "pending",
-      "disposition": "pending-task-7-audit",
+      "audit_status": "scope-verified",
+      "disposition": "verified-limited-audit",
       "exclusion_reason": "Generated output audited through its source and regeneration pairing.",
       "generated_from": ["templates/skills/task-work/SKILL.md"],
       "build_command": "kspec skill render"
@@ -633,8 +631,8 @@
       "classification": "generated",
       "source_of_truth": ["templates/skills/triage-automation/SKILL.md"],
       "audit_topics": ["ownership", "safety", "exclusion"],
-      "audit_status": "pending",
-      "disposition": "pending-task-7-audit",
+      "audit_status": "scope-verified",
+      "disposition": "verified-limited-audit",
       "exclusion_reason": "Generated output audited through its source and regeneration pairing.",
       "generated_from": ["templates/skills/triage-automation/SKILL.md"],
       "build_command": "kspec skill render"
@@ -646,8 +644,8 @@
       "classification": "generated",
       "source_of_truth": ["templates/skills/triage-inbox/SKILL.md"],
       "audit_topics": ["ownership", "safety", "exclusion"],
-      "audit_status": "pending",
-      "disposition": "pending-task-7-audit",
+      "audit_status": "scope-verified",
+      "disposition": "verified-limited-audit",
       "exclusion_reason": "Generated output audited through its source and regeneration pairing.",
       "generated_from": ["templates/skills/triage-inbox/SKILL.md"],
       "build_command": "kspec skill render"
@@ -659,8 +657,8 @@
       "classification": "generated",
       "source_of_truth": ["templates/skills/triage/SKILL.md"],
       "audit_topics": ["ownership", "safety", "exclusion"],
-      "audit_status": "pending",
-      "disposition": "pending-task-7-audit",
+      "audit_status": "scope-verified",
+      "disposition": "verified-limited-audit",
       "exclusion_reason": "Generated output audited through its source and regeneration pairing.",
       "generated_from": ["templates/skills/triage/SKILL.md"],
       "build_command": "kspec skill render"
@@ -672,8 +670,8 @@
       "classification": "generated",
       "source_of_truth": ["templates/skills/triage/docs/automation.md"],
       "audit_topics": ["ownership", "safety", "exclusion"],
-      "audit_status": "pending",
-      "disposition": "pending-task-7-audit",
+      "audit_status": "scope-verified",
+      "disposition": "verified-limited-audit",
       "exclusion_reason": "Generated output audited through its source and regeneration pairing.",
       "generated_from": ["templates/skills/triage/docs/automation.md"],
       "build_command": "kspec skill render"
@@ -685,8 +683,8 @@
       "classification": "generated",
       "source_of_truth": ["templates/skills/triage/docs/inbox.md"],
       "audit_topics": ["ownership", "safety", "exclusion"],
-      "audit_status": "pending",
-      "disposition": "pending-task-7-audit",
+      "audit_status": "scope-verified",
+      "disposition": "verified-limited-audit",
       "exclusion_reason": "Generated output audited through its source and regeneration pairing.",
       "generated_from": ["templates/skills/triage/docs/inbox.md"],
       "build_command": "kspec skill render"
@@ -698,8 +696,8 @@
       "classification": "generated",
       "source_of_truth": ["templates/skills/triage/docs/observations.md"],
       "audit_topics": ["ownership", "safety", "exclusion"],
-      "audit_status": "pending",
-      "disposition": "pending-task-7-audit",
+      "audit_status": "scope-verified",
+      "disposition": "verified-limited-audit",
       "exclusion_reason": "Generated output audited through its source and regeneration pairing.",
       "generated_from": ["templates/skills/triage/docs/observations.md"],
       "build_command": "kspec skill render"
@@ -711,8 +709,8 @@
       "classification": "generated",
       "source_of_truth": ["templates/skills/writing-specs/SKILL.md"],
       "audit_topics": ["ownership", "safety", "exclusion"],
-      "audit_status": "pending",
-      "disposition": "pending-task-7-audit",
+      "audit_status": "scope-verified",
+      "disposition": "verified-limited-audit",
       "exclusion_reason": "Generated output audited through its source and regeneration pairing.",
       "generated_from": ["templates/skills/writing-specs/SKILL.md"],
       "build_command": "kspec skill render"
@@ -724,8 +722,8 @@
       "classification": "internal-agent-guidance",
       "source_of_truth": [".factory/skills/review-gates/SKILL.md"],
       "audit_topics": ["ownership", "safety", "exclusion"],
-      "audit_status": "pending",
-      "disposition": "pending-task-7-audit",
+      "audit_status": "scope-verified",
+      "disposition": "verified-limited-audit",
       "exclusion_reason": "Project or runtime agent guidance, not public operator documentation."
     },
     {
@@ -735,8 +733,8 @@
       "classification": "internal-agent-guidance",
       "source_of_truth": [".factory/skills/shared-guidance-neutrality/SKILL.md"],
       "audit_topics": ["ownership", "safety", "exclusion"],
-      "audit_status": "pending",
-      "disposition": "pending-task-7-audit",
+      "audit_status": "scope-verified",
+      "disposition": "verified-limited-audit",
       "exclusion_reason": "Project or runtime agent guidance, not public operator documentation."
     },
     {
@@ -746,8 +744,8 @@
       "classification": "internal-agent-guidance",
       "source_of_truth": [".factory/skills/work-gates/SKILL.md"],
       "audit_topics": ["ownership", "safety", "exclusion"],
-      "audit_status": "pending",
-      "disposition": "pending-task-7-audit",
+      "audit_status": "scope-verified",
+      "disposition": "verified-limited-audit",
       "exclusion_reason": "Project or runtime agent guidance, not public operator documentation."
     },
     {
@@ -757,8 +755,8 @@
       "classification": "active-public",
       "source_of_truth": [".github/ISSUE_TEMPLATE/maintainer-approved-issues-and-features.md"],
       "audit_topics": ["factual-accuracy", "navigation", "links"],
-      "audit_status": "pending",
-      "disposition": "pending-task-7-audit"
+      "audit_status": "source-verified",
+      "disposition": "verified-or-corrected"
     },
     {
       "id": "markdown:AGENTS.md",
@@ -767,8 +765,8 @@
       "classification": "internal-agent-guidance",
       "source_of_truth": ["AGENTS.md"],
       "audit_topics": ["ownership", "safety", "exclusion"],
-      "audit_status": "pending",
-      "disposition": "pending-task-7-audit",
+      "audit_status": "scope-verified",
+      "disposition": "verified-limited-audit",
       "exclusion_reason": "Project or runtime agent guidance, not public operator documentation."
     },
     {
@@ -778,8 +776,8 @@
       "classification": "internal-agent-guidance",
       "source_of_truth": ["CLAUDE.md"],
       "audit_topics": ["ownership", "safety", "exclusion"],
-      "audit_status": "pending",
-      "disposition": "pending-task-7-audit",
+      "audit_status": "scope-verified",
+      "disposition": "verified-limited-audit",
       "exclusion_reason": "Project or runtime agent guidance, not public operator documentation."
     },
     {
@@ -789,8 +787,8 @@
       "classification": "active-public",
       "source_of_truth": ["CONTRIBUTING.md"],
       "audit_topics": ["factual-accuracy", "navigation", "links"],
-      "audit_status": "pending",
-      "disposition": "pending-task-7-audit"
+      "audit_status": "source-verified",
+      "disposition": "verified-or-corrected"
     },
     {
       "id": "markdown:INSTALL.md",
@@ -799,8 +797,8 @@
       "classification": "active-public",
       "source_of_truth": ["INSTALL.md"],
       "audit_topics": ["factual-accuracy", "navigation", "links"],
-      "audit_status": "pending",
-      "disposition": "pending-task-7-audit"
+      "audit_status": "source-verified",
+      "disposition": "verified-or-corrected"
     },
     {
       "id": "markdown:README.md",
@@ -809,8 +807,8 @@
       "classification": "active-public",
       "source_of_truth": ["README.md"],
       "audit_topics": ["factual-accuracy", "navigation", "links"],
-      "audit_status": "pending",
-      "disposition": "pending-task-7-audit"
+      "audit_status": "source-verified",
+      "disposition": "verified-or-corrected"
     },
     {
       "id": "markdown:RELEASE_NOTES.md",
@@ -819,8 +817,8 @@
       "classification": "active-public",
       "source_of_truth": ["RELEASE_NOTES.md"],
       "audit_topics": ["factual-accuracy", "navigation", "links"],
-      "audit_status": "pending",
-      "disposition": "pending-task-7-audit"
+      "audit_status": "source-verified",
+      "disposition": "verified-or-corrected"
     },
     {
       "id": "markdown:SECURITY.md",
@@ -829,8 +827,8 @@
       "classification": "active-public",
       "source_of_truth": ["SECURITY.md"],
       "audit_topics": ["factual-accuracy", "navigation", "links"],
-      "audit_status": "pending",
-      "disposition": "pending-task-7-audit"
+      "audit_status": "source-verified",
+      "disposition": "verified-or-corrected"
     },
     {
       "id": "markdown:docs/agents-eval-scenarios.md",
@@ -839,8 +837,8 @@
       "classification": "internal-eval",
       "source_of_truth": ["docs/agents-eval-scenarios.md"],
       "audit_topics": ["ownership", "safety", "exclusion"],
-      "audit_status": "pending",
-      "disposition": "pending-task-7-audit",
+      "audit_status": "scope-verified",
+      "disposition": "verified-limited-audit",
       "exclusion_reason": "Internal evaluation or design input, not an operator documentation surface."
     },
     {
@@ -850,8 +848,8 @@
       "classification": "active-public",
       "source_of_truth": ["docs/concepts/agent-runners.md"],
       "audit_topics": ["factual-accuracy", "navigation", "links"],
-      "audit_status": "pending",
-      "disposition": "pending-task-7-audit"
+      "audit_status": "source-verified",
+      "disposition": "verified-or-corrected"
     },
     {
       "id": "markdown:docs/concepts/agents-and-dispatch.md",
@@ -860,8 +858,18 @@
       "classification": "active-public",
       "source_of_truth": ["docs/concepts/agents-and-dispatch.md"],
       "audit_topics": ["factual-accuracy", "navigation", "links"],
-      "audit_status": "pending",
-      "disposition": "pending-task-7-audit"
+      "audit_status": "source-verified",
+      "disposition": "verified-or-corrected"
+    },
+    {
+      "id": "markdown:docs/concepts/dispatch-workspaces.md",
+      "kind": "markdown-file",
+      "path": "docs/concepts/dispatch-workspaces.md",
+      "classification": "active-public",
+      "source_of_truth": ["docs/concepts/dispatch-workspaces.md"],
+      "audit_topics": ["factual-accuracy", "navigation", "links"],
+      "audit_status": "source-verified",
+      "disposition": "verified-or-corrected"
     },
     {
       "id": "markdown:docs/concepts/index.md",
@@ -870,8 +878,8 @@
       "classification": "active-public",
       "source_of_truth": ["docs/concepts/index.md"],
       "audit_topics": ["factual-accuracy", "navigation", "links"],
-      "audit_status": "pending",
-      "disposition": "pending-task-7-audit"
+      "audit_status": "source-verified",
+      "disposition": "verified-or-corrected"
     },
     {
       "id": "markdown:docs/concepts/local-resources.md",
@@ -880,8 +888,8 @@
       "classification": "active-public",
       "source_of_truth": ["docs/concepts/local-resources.md"],
       "audit_topics": ["factual-accuracy", "navigation", "links"],
-      "audit_status": "pending",
-      "disposition": "pending-task-7-audit"
+      "audit_status": "source-verified",
+      "disposition": "verified-or-corrected"
     },
     {
       "id": "markdown:docs/concepts/reviews.md",
@@ -890,8 +898,8 @@
       "classification": "active-public",
       "source_of_truth": ["docs/concepts/reviews.md"],
       "audit_topics": ["factual-accuracy", "navigation", "links"],
-      "audit_status": "pending",
-      "disposition": "pending-task-7-audit"
+      "audit_status": "source-verified",
+      "disposition": "verified-or-corrected"
     },
     {
       "id": "markdown:docs/concepts/specs-tasks-plans-inbox.md",
@@ -900,8 +908,8 @@
       "classification": "active-public",
       "source_of_truth": ["docs/concepts/specs-tasks-plans-inbox.md"],
       "audit_topics": ["factual-accuracy", "navigation", "links"],
-      "audit_status": "pending",
-      "disposition": "pending-task-7-audit"
+      "audit_status": "source-verified",
+      "disposition": "verified-or-corrected"
     },
     {
       "id": "markdown:docs/concepts/the-shadow-branch.md",
@@ -910,8 +918,8 @@
       "classification": "active-public",
       "source_of_truth": ["docs/concepts/the-shadow-branch.md"],
       "audit_topics": ["factual-accuracy", "navigation", "links"],
-      "audit_status": "pending",
-      "disposition": "pending-task-7-audit"
+      "audit_status": "source-verified",
+      "disposition": "verified-or-corrected"
     },
     {
       "id": "markdown:docs/concepts/traits.md",
@@ -920,8 +928,8 @@
       "classification": "active-public",
       "source_of_truth": ["docs/concepts/traits.md"],
       "audit_topics": ["factual-accuracy", "navigation", "links"],
-      "audit_status": "pending",
-      "disposition": "pending-task-7-audit"
+      "audit_status": "source-verified",
+      "disposition": "verified-or-corrected"
     },
     {
       "id": "markdown:docs/concepts/web-ui-and-daemon.md",
@@ -930,8 +938,8 @@
       "classification": "active-public",
       "source_of_truth": ["docs/concepts/web-ui-and-daemon.md"],
       "audit_topics": ["factual-accuracy", "navigation", "links"],
-      "audit_status": "pending",
-      "disposition": "pending-task-7-audit"
+      "audit_status": "source-verified",
+      "disposition": "verified-or-corrected"
     },
     {
       "id": "markdown:docs/concepts/what-kspec-is.md",
@@ -940,8 +948,8 @@
       "classification": "active-public",
       "source_of_truth": ["docs/concepts/what-kspec-is.md"],
       "audit_topics": ["factual-accuracy", "navigation", "links"],
-      "audit_status": "pending",
-      "disposition": "pending-task-7-audit"
+      "audit_status": "source-verified",
+      "disposition": "verified-or-corrected"
     },
     {
       "id": "markdown:docs/concepts/working-with-an-agent.md",
@@ -950,8 +958,8 @@
       "classification": "active-public",
       "source_of_truth": ["docs/concepts/working-with-an-agent.md"],
       "audit_topics": ["factual-accuracy", "navigation", "links"],
-      "audit_status": "pending",
-      "disposition": "pending-task-7-audit"
+      "audit_status": "source-verified",
+      "disposition": "verified-or-corrected"
     },
     {
       "id": "markdown:docs/getting-started/connecting-your-agent.md",
@@ -960,8 +968,8 @@
       "classification": "active-public",
       "source_of_truth": ["docs/getting-started/connecting-your-agent.md"],
       "audit_topics": ["factual-accuracy", "navigation", "links"],
-      "audit_status": "pending",
-      "disposition": "pending-task-7-audit"
+      "audit_status": "source-verified",
+      "disposition": "verified-or-corrected"
     },
     {
       "id": "markdown:docs/getting-started/index.md",
@@ -970,8 +978,8 @@
       "classification": "active-public",
       "source_of_truth": ["docs/getting-started/index.md"],
       "audit_topics": ["factual-accuracy", "navigation", "links"],
-      "audit_status": "pending",
-      "disposition": "pending-task-7-audit"
+      "audit_status": "source-verified",
+      "disposition": "verified-or-corrected"
     },
     {
       "id": "markdown:docs/getting-started/initializing-a-project.md",
@@ -980,8 +988,8 @@
       "classification": "active-public",
       "source_of_truth": ["docs/getting-started/initializing-a-project.md"],
       "audit_topics": ["factual-accuracy", "navigation", "links"],
-      "audit_status": "pending",
-      "disposition": "pending-task-7-audit"
+      "audit_status": "source-verified",
+      "disposition": "verified-or-corrected"
     },
     {
       "id": "markdown:docs/getting-started/installation.md",
@@ -990,8 +998,8 @@
       "classification": "active-public",
       "source_of_truth": ["docs/getting-started/installation.md"],
       "audit_topics": ["factual-accuracy", "navigation", "links"],
-      "audit_status": "pending",
-      "disposition": "pending-task-7-audit"
+      "audit_status": "source-verified",
+      "disposition": "verified-or-corrected"
     },
     {
       "id": "markdown:docs/getting-started/overview.md",
@@ -1000,8 +1008,8 @@
       "classification": "active-public",
       "source_of_truth": ["docs/getting-started/overview.md"],
       "audit_topics": ["factual-accuracy", "navigation", "links"],
-      "audit_status": "pending",
-      "disposition": "pending-task-7-audit"
+      "audit_status": "source-verified",
+      "disposition": "verified-or-corrected"
     },
     {
       "id": "markdown:docs/getting-started/tutorial.md",
@@ -1010,8 +1018,8 @@
       "classification": "active-public",
       "source_of_truth": ["docs/getting-started/tutorial.md"],
       "audit_topics": ["factual-accuracy", "navigation", "links"],
-      "audit_status": "pending",
-      "disposition": "pending-task-7-audit"
+      "audit_status": "source-verified",
+      "disposition": "verified-or-corrected"
     },
     {
       "id": "markdown:docs/getting-started/where-to-go-next.md",
@@ -1020,8 +1028,8 @@
       "classification": "active-public",
       "source_of_truth": ["docs/getting-started/where-to-go-next.md"],
       "audit_topics": ["factual-accuracy", "navigation", "links"],
-      "audit_status": "pending",
-      "disposition": "pending-task-7-audit"
+      "audit_status": "source-verified",
+      "disposition": "verified-or-corrected"
     },
     {
       "id": "markdown:docs/getting-started/your-first-action.md",
@@ -1030,8 +1038,8 @@
       "classification": "active-public",
       "source_of_truth": ["docs/getting-started/your-first-action.md"],
       "audit_topics": ["factual-accuracy", "navigation", "links"],
-      "audit_status": "pending",
-      "disposition": "pending-task-7-audit"
+      "audit_status": "source-verified",
+      "disposition": "verified-or-corrected"
     },
     {
       "id": "markdown:docs/guides/authoring-and-completing-a-task.md",
@@ -1040,8 +1048,8 @@
       "classification": "active-public",
       "source_of_truth": ["docs/guides/authoring-and-completing-a-task.md"],
       "audit_topics": ["factual-accuracy", "navigation", "links"],
-      "audit_status": "pending",
-      "disposition": "pending-task-7-audit"
+      "audit_status": "source-verified",
+      "disposition": "verified-or-corrected"
     },
     {
       "id": "markdown:docs/guides/configuring-agent-runners.md",
@@ -1050,8 +1058,28 @@
       "classification": "active-public",
       "source_of_truth": ["docs/guides/configuring-agent-runners.md"],
       "audit_topics": ["factual-accuracy", "navigation", "links"],
-      "audit_status": "pending",
-      "disposition": "pending-task-7-audit"
+      "audit_status": "source-verified",
+      "disposition": "verified-or-corrected"
+    },
+    {
+      "id": "markdown:docs/guides/configuring-dispatch-workspaces.md",
+      "kind": "markdown-file",
+      "path": "docs/guides/configuring-dispatch-workspaces.md",
+      "classification": "active-public",
+      "source_of_truth": ["docs/guides/configuring-dispatch-workspaces.md"],
+      "audit_topics": ["factual-accuracy", "navigation", "links"],
+      "audit_status": "source-verified",
+      "disposition": "verified-or-corrected"
+    },
+    {
+      "id": "markdown:docs/guides/controlling-dispatch-lifecycle.md",
+      "kind": "markdown-file",
+      "path": "docs/guides/controlling-dispatch-lifecycle.md",
+      "classification": "active-public",
+      "source_of_truth": ["docs/guides/controlling-dispatch-lifecycle.md"],
+      "audit_topics": ["factual-accuracy", "navigation", "links"],
+      "audit_status": "source-verified",
+      "disposition": "verified-or-corrected"
     },
     {
       "id": "markdown:docs/guides/directing-your-agent.md",
@@ -1060,8 +1088,8 @@
       "classification": "active-public",
       "source_of_truth": ["docs/guides/directing-your-agent.md"],
       "audit_topics": ["factual-accuracy", "navigation", "links"],
-      "audit_status": "pending",
-      "disposition": "pending-task-7-audit"
+      "audit_status": "source-verified",
+      "disposition": "verified-or-corrected"
     },
     {
       "id": "markdown:docs/guides/importing-and-approving-a-plan.md",
@@ -1070,8 +1098,8 @@
       "classification": "active-public",
       "source_of_truth": ["docs/guides/importing-and-approving-a-plan.md"],
       "audit_topics": ["factual-accuracy", "navigation", "links"],
-      "audit_status": "pending",
-      "disposition": "pending-task-7-audit"
+      "audit_status": "source-verified",
+      "disposition": "verified-or-corrected"
     },
     {
       "id": "markdown:docs/guides/index.md",
@@ -1080,8 +1108,8 @@
       "classification": "active-public",
       "source_of_truth": ["docs/guides/index.md"],
       "audit_topics": ["factual-accuracy", "navigation", "links"],
-      "audit_status": "pending",
-      "disposition": "pending-task-7-audit"
+      "audit_status": "source-verified",
+      "disposition": "verified-or-corrected"
     },
     {
       "id": "markdown:docs/guides/recovering-from-shadow-branch-issues.md",
@@ -1090,8 +1118,8 @@
       "classification": "active-public",
       "source_of_truth": ["docs/guides/recovering-from-shadow-branch-issues.md"],
       "audit_topics": ["factual-accuracy", "navigation", "links"],
-      "audit_status": "pending",
-      "disposition": "pending-task-7-audit"
+      "audit_status": "source-verified",
+      "disposition": "verified-or-corrected"
     },
     {
       "id": "markdown:docs/guides/reviewing-an-agents-work.md",
@@ -1100,8 +1128,8 @@
       "classification": "active-public",
       "source_of_truth": ["docs/guides/reviewing-an-agents-work.md"],
       "audit_topics": ["factual-accuracy", "navigation", "links"],
-      "audit_status": "pending",
-      "disposition": "pending-task-7-audit"
+      "audit_status": "source-verified",
+      "disposition": "verified-or-corrected"
     },
     {
       "id": "markdown:docs/guides/starting-a-new-project.md",
@@ -1110,8 +1138,8 @@
       "classification": "active-public",
       "source_of_truth": ["docs/guides/starting-a-new-project.md"],
       "audit_topics": ["factual-accuracy", "navigation", "links"],
-      "audit_status": "pending",
-      "disposition": "pending-task-7-audit"
+      "audit_status": "source-verified",
+      "disposition": "verified-or-corrected"
     },
     {
       "id": "markdown:docs/guides/upgrading-kspec.md",
@@ -1120,8 +1148,8 @@
       "classification": "active-public",
       "source_of_truth": ["docs/guides/upgrading-kspec.md"],
       "audit_topics": ["factual-accuracy", "navigation", "links"],
-      "audit_status": "pending",
-      "disposition": "pending-task-7-audit"
+      "audit_status": "source-verified",
+      "disposition": "verified-or-corrected"
     },
     {
       "id": "markdown:docs/guides/working-with-local-resources.md",
@@ -1130,8 +1158,8 @@
       "classification": "active-public",
       "source_of_truth": ["docs/guides/working-with-local-resources.md"],
       "audit_topics": ["factual-accuracy", "navigation", "links"],
-      "audit_status": "pending",
-      "disposition": "pending-task-7-audit"
+      "audit_status": "source-verified",
+      "disposition": "verified-or-corrected"
     },
     {
       "id": "markdown:docs/history/KYNETIC_SPEC_DESIGN.md",
@@ -1140,8 +1168,8 @@
       "classification": "historical",
       "source_of_truth": ["docs/history/KYNETIC_SPEC_DESIGN.md"],
       "audit_topics": ["ownership", "safety", "exclusion"],
-      "audit_status": "pending",
-      "disposition": "pending-task-7-audit",
+      "audit_status": "scope-verified",
+      "disposition": "verified-limited-audit",
       "exclusion_reason": "Historical record retained for context and checked only for dangerous current recovery advice."
     },
     {
@@ -1151,8 +1179,8 @@
       "classification": "historical",
       "source_of_truth": ["docs/history/living-spec-research.md"],
       "audit_topics": ["ownership", "safety", "exclusion"],
-      "audit_status": "pending",
-      "disposition": "pending-task-7-audit",
+      "audit_status": "scope-verified",
+      "disposition": "verified-limited-audit",
       "exclusion_reason": "Historical record retained for context and checked only for dangerous current recovery advice."
     },
     {
@@ -1162,8 +1190,8 @@
       "classification": "internal-eval",
       "source_of_truth": ["docs/prime-mock.md"],
       "audit_topics": ["ownership", "safety", "exclusion"],
-      "audit_status": "pending",
-      "disposition": "pending-task-7-audit",
+      "audit_status": "scope-verified",
+      "disposition": "verified-limited-audit",
       "exclusion_reason": "Internal evaluation or design input, not an operator documentation surface."
     },
     {
@@ -1173,8 +1201,8 @@
       "classification": "active-public",
       "source_of_truth": ["docs/release-notes/index.md"],
       "audit_topics": ["factual-accuracy", "navigation", "links"],
-      "audit_status": "pending",
-      "disposition": "pending-task-7-audit"
+      "audit_status": "source-verified",
+      "disposition": "verified-or-corrected"
     },
     {
       "id": "markdown:docs/troubleshooting/cannot-run-from-inside-kspec.md",
@@ -1183,8 +1211,8 @@
       "classification": "active-public",
       "source_of_truth": ["docs/troubleshooting/cannot-run-from-inside-kspec.md"],
       "audit_topics": ["factual-accuracy", "navigation", "links"],
-      "audit_status": "pending",
-      "disposition": "pending-task-7-audit"
+      "audit_status": "source-verified",
+      "disposition": "verified-or-corrected"
     },
     {
       "id": "markdown:docs/troubleshooting/daemon-port-in-use.md",
@@ -1193,8 +1221,28 @@
       "classification": "active-public",
       "source_of_truth": ["docs/troubleshooting/daemon-port-in-use.md"],
       "audit_topics": ["factual-accuracy", "navigation", "links"],
-      "audit_status": "pending",
-      "disposition": "pending-task-7-audit"
+      "audit_status": "source-verified",
+      "disposition": "verified-or-corrected"
+    },
+    {
+      "id": "markdown:docs/troubleshooting/dispatch-bootstrap-failures.md",
+      "kind": "markdown-file",
+      "path": "docs/troubleshooting/dispatch-bootstrap-failures.md",
+      "classification": "active-public",
+      "source_of_truth": ["docs/troubleshooting/dispatch-bootstrap-failures.md"],
+      "audit_topics": ["factual-accuracy", "navigation", "links"],
+      "audit_status": "source-verified",
+      "disposition": "verified-or-corrected"
+    },
+    {
+      "id": "markdown:docs/troubleshooting/dispatch-lifecycle-control-failures.md",
+      "kind": "markdown-file",
+      "path": "docs/troubleshooting/dispatch-lifecycle-control-failures.md",
+      "classification": "active-public",
+      "source_of_truth": ["docs/troubleshooting/dispatch-lifecycle-control-failures.md"],
+      "audit_topics": ["factual-accuracy", "navigation", "links"],
+      "audit_status": "source-verified",
+      "disposition": "verified-or-corrected"
     },
     {
       "id": "markdown:docs/troubleshooting/dispatch-refuses-to-assign.md",
@@ -1203,8 +1251,18 @@
       "classification": "active-public",
       "source_of_truth": ["docs/troubleshooting/dispatch-refuses-to-assign.md"],
       "audit_topics": ["factual-accuracy", "navigation", "links"],
-      "audit_status": "pending",
-      "disposition": "pending-task-7-audit"
+      "audit_status": "source-verified",
+      "disposition": "verified-or-corrected"
+    },
+    {
+      "id": "markdown:docs/troubleshooting/dispatch-workspace-sync-and-cleanup.md",
+      "kind": "markdown-file",
+      "path": "docs/troubleshooting/dispatch-workspace-sync-and-cleanup.md",
+      "classification": "active-public",
+      "source_of_truth": ["docs/troubleshooting/dispatch-workspace-sync-and-cleanup.md"],
+      "audit_topics": ["factual-accuracy", "navigation", "links"],
+      "audit_status": "source-verified",
+      "disposition": "verified-or-corrected"
     },
     {
       "id": "markdown:docs/troubleshooting/entity-storage-incompatible.md",
@@ -1213,8 +1271,8 @@
       "classification": "active-public",
       "source_of_truth": ["docs/troubleshooting/entity-storage-incompatible.md"],
       "audit_topics": ["factual-accuracy", "navigation", "links"],
-      "audit_status": "pending",
-      "disposition": "pending-task-7-audit"
+      "audit_status": "source-verified",
+      "disposition": "verified-or-corrected"
     },
     {
       "id": "markdown:docs/troubleshooting/index.md",
@@ -1223,8 +1281,8 @@
       "classification": "active-public",
       "source_of_truth": ["docs/troubleshooting/index.md"],
       "audit_topics": ["factual-accuracy", "navigation", "links"],
-      "audit_status": "pending",
-      "disposition": "pending-task-7-audit"
+      "audit_status": "source-verified",
+      "disposition": "verified-or-corrected"
     },
     {
       "id": "markdown:docs/troubleshooting/plan-or-review-index-drift.md",
@@ -1233,8 +1291,8 @@
       "classification": "active-public",
       "source_of_truth": ["docs/troubleshooting/plan-or-review-index-drift.md"],
       "audit_topics": ["factual-accuracy", "navigation", "links"],
-      "audit_status": "pending",
-      "disposition": "pending-task-7-audit"
+      "audit_status": "source-verified",
+      "disposition": "verified-or-corrected"
     },
     {
       "id": "markdown:docs/troubleshooting/review-blocking-merge.md",
@@ -1243,8 +1301,8 @@
       "classification": "active-public",
       "source_of_truth": ["docs/troubleshooting/review-blocking-merge.md"],
       "audit_topics": ["factual-accuracy", "navigation", "links"],
-      "audit_status": "pending",
-      "disposition": "pending-task-7-audit"
+      "audit_status": "source-verified",
+      "disposition": "verified-or-corrected"
     },
     {
       "id": "markdown:docs/troubleshooting/runner-validation-failures.md",
@@ -1253,8 +1311,8 @@
       "classification": "active-public",
       "source_of_truth": ["docs/troubleshooting/runner-validation-failures.md"],
       "audit_topics": ["factual-accuracy", "navigation", "links"],
-      "audit_status": "pending",
-      "disposition": "pending-task-7-audit"
+      "audit_status": "source-verified",
+      "disposition": "verified-or-corrected"
     },
     {
       "id": "markdown:docs/troubleshooting/shadow-branch-out-of-sync.md",
@@ -1263,8 +1321,8 @@
       "classification": "active-public",
       "source_of_truth": ["docs/troubleshooting/shadow-branch-out-of-sync.md"],
       "audit_topics": ["factual-accuracy", "navigation", "links"],
-      "audit_status": "pending",
-      "disposition": "pending-task-7-audit"
+      "audit_status": "source-verified",
+      "disposition": "verified-or-corrected"
     },
     {
       "id": "markdown:docs/troubleshooting/shadow-branch-worktree-broken.md",
@@ -1273,8 +1331,8 @@
       "classification": "active-public",
       "source_of_truth": ["docs/troubleshooting/shadow-branch-worktree-broken.md"],
       "audit_topics": ["factual-accuracy", "navigation", "links"],
-      "audit_status": "pending",
-      "disposition": "pending-task-7-audit"
+      "audit_status": "source-verified",
+      "disposition": "verified-or-corrected"
     },
     {
       "id": "markdown:docs/troubleshooting/upgrade-pre-plan-state.md",
@@ -1283,8 +1341,8 @@
       "classification": "active-public",
       "source_of_truth": ["docs/troubleshooting/upgrade-pre-plan-state.md"],
       "audit_topics": ["factual-accuracy", "navigation", "links"],
-      "audit_status": "pending",
-      "disposition": "pending-task-7-audit"
+      "audit_status": "source-verified",
+      "disposition": "verified-or-corrected"
     },
     {
       "id": "markdown:kspec-agents.md",
@@ -1293,8 +1351,8 @@
       "classification": "generated",
       "source_of_truth": ["templates/agents-sections/", "project meta conventions/workflows"],
       "audit_topics": ["ownership", "safety", "exclusion"],
-      "audit_status": "pending",
-      "disposition": "pending-task-7-audit",
+      "audit_status": "scope-verified",
+      "disposition": "verified-limited-audit",
       "exclusion_reason": "Generated output audited through its source and regeneration pairing.",
       "generated_from": ["templates/agents-sections/", "project meta conventions/workflows"],
       "build_command": "kspec agents generate"
@@ -1306,8 +1364,8 @@
       "classification": "active-public",
       "source_of_truth": ["packages/web-ui/README.md"],
       "audit_topics": ["factual-accuracy", "navigation", "links"],
-      "audit_status": "pending",
-      "disposition": "pending-task-7-audit"
+      "audit_status": "source-verified",
+      "disposition": "verified-or-corrected"
     },
     {
       "id": "markdown:templates/agents-sections/01-quick-start.md",
@@ -1316,8 +1374,8 @@
       "classification": "source-template",
       "source_of_truth": ["templates/agents-sections/01-quick-start.md"],
       "audit_topics": ["factual-accuracy", "package-neutrality", "generated-pairing"],
-      "audit_status": "pending",
-      "disposition": "pending-task-7-audit",
+      "audit_status": "source-verified",
+      "disposition": "verified-package-neutral",
       "exclusion_reason": "Package authoring source audited for factual neutrality; consumers read rendered outputs."
     },
     {
@@ -1327,8 +1385,8 @@
       "classification": "source-template",
       "source_of_truth": ["templates/agents-sections/02-shadow-branch.md"],
       "audit_topics": ["factual-accuracy", "package-neutrality", "generated-pairing"],
-      "audit_status": "pending",
-      "disposition": "pending-task-7-audit",
+      "audit_status": "source-verified",
+      "disposition": "verified-package-neutral",
       "exclusion_reason": "Package authoring source audited for factual neutrality; consumers read rendered outputs."
     },
     {
@@ -1338,8 +1396,8 @@
       "classification": "source-template",
       "source_of_truth": ["templates/agents-sections/03-task-lifecycle.md"],
       "audit_topics": ["factual-accuracy", "package-neutrality", "generated-pairing"],
-      "audit_status": "pending",
-      "disposition": "pending-task-7-audit",
+      "audit_status": "source-verified",
+      "disposition": "verified-package-neutral",
       "exclusion_reason": "Package authoring source audited for factual neutrality; consumers read rendered outputs."
     },
     {
@@ -1349,8 +1407,8 @@
       "classification": "source-template",
       "source_of_truth": ["templates/agents-sections/04-pr-workflow.md"],
       "audit_topics": ["factual-accuracy", "package-neutrality", "generated-pairing"],
-      "audit_status": "pending",
-      "disposition": "pending-task-7-audit",
+      "audit_status": "source-verified",
+      "disposition": "verified-package-neutral",
       "exclusion_reason": "Package authoring source audited for factual neutrality; consumers read rendered outputs."
     },
     {
@@ -1360,8 +1418,8 @@
       "classification": "source-template",
       "source_of_truth": ["templates/agents-sections/05-commit-convention.md"],
       "audit_topics": ["factual-accuracy", "package-neutrality", "generated-pairing"],
-      "audit_status": "pending",
-      "disposition": "pending-task-7-audit",
+      "audit_status": "source-verified",
+      "disposition": "verified-package-neutral",
       "exclusion_reason": "Package authoring source audited for factual neutrality; consumers read rendered outputs."
     },
     {
@@ -1371,8 +1429,8 @@
       "classification": "source-template",
       "source_of_truth": ["templates/agents-sections/06-agent-dispatch-mode.md"],
       "audit_topics": ["factual-accuracy", "package-neutrality", "generated-pairing"],
-      "audit_status": "pending",
-      "disposition": "pending-task-7-audit",
+      "audit_status": "source-verified",
+      "disposition": "verified-package-neutral",
       "exclusion_reason": "Package authoring source audited for factual neutrality; consumers read rendered outputs."
     },
     {
@@ -1382,8 +1440,8 @@
       "classification": "source-template",
       "source_of_truth": ["templates/agents-sections/07-batch-usage.md"],
       "audit_topics": ["factual-accuracy", "package-neutrality", "generated-pairing"],
-      "audit_status": "pending",
-      "disposition": "pending-task-7-audit",
+      "audit_status": "source-verified",
+      "disposition": "verified-package-neutral",
       "exclusion_reason": "Package authoring source audited for factual neutrality; consumers read rendered outputs."
     },
     {
@@ -1393,8 +1451,8 @@
       "classification": "source-template",
       "source_of_truth": ["templates/skills/create-workflow/SKILL.md"],
       "audit_topics": ["factual-accuracy", "package-neutrality", "generated-pairing"],
-      "audit_status": "pending",
-      "disposition": "pending-task-7-audit",
+      "audit_status": "source-verified",
+      "disposition": "verified-package-neutral",
       "exclusion_reason": "Package authoring source audited for factual neutrality; consumers read rendered outputs."
     },
     {
@@ -1404,8 +1462,8 @@
       "classification": "source-template",
       "source_of_truth": ["templates/skills/help/SKILL.md"],
       "audit_topics": ["factual-accuracy", "package-neutrality", "generated-pairing"],
-      "audit_status": "pending",
-      "disposition": "pending-task-7-audit",
+      "audit_status": "source-verified",
+      "disposition": "verified-package-neutral",
       "exclusion_reason": "Package authoring source audited for factual neutrality; consumers read rendered outputs."
     },
     {
@@ -1415,8 +1473,8 @@
       "classification": "source-template",
       "source_of_truth": ["templates/skills/merge/SKILL.md"],
       "audit_topics": ["factual-accuracy", "package-neutrality", "generated-pairing"],
-      "audit_status": "pending",
-      "disposition": "pending-task-7-audit",
+      "audit_status": "source-verified",
+      "disposition": "verified-package-neutral",
       "exclusion_reason": "Package authoring source audited for factual neutrality; consumers read rendered outputs."
     },
     {
@@ -1426,8 +1484,8 @@
       "classification": "source-template",
       "source_of_truth": ["templates/skills/observe/SKILL.md"],
       "audit_topics": ["factual-accuracy", "package-neutrality", "generated-pairing"],
-      "audit_status": "pending",
-      "disposition": "pending-task-7-audit",
+      "audit_status": "source-verified",
+      "disposition": "verified-package-neutral",
       "exclusion_reason": "Package authoring source audited for factual neutrality; consumers read rendered outputs."
     },
     {
@@ -1437,8 +1495,8 @@
       "classification": "source-template",
       "source_of_truth": ["templates/skills/plan/SKILL.md"],
       "audit_topics": ["factual-accuracy", "package-neutrality", "generated-pairing"],
-      "audit_status": "pending",
-      "disposition": "pending-task-7-audit",
+      "audit_status": "source-verified",
+      "disposition": "verified-package-neutral",
       "exclusion_reason": "Package authoring source audited for factual neutrality; consumers read rendered outputs."
     },
     {
@@ -1448,8 +1506,8 @@
       "classification": "source-template",
       "source_of_truth": ["templates/skills/reflect/SKILL.md"],
       "audit_topics": ["factual-accuracy", "package-neutrality", "generated-pairing"],
-      "audit_status": "pending",
-      "disposition": "pending-task-7-audit",
+      "audit_status": "source-verified",
+      "disposition": "verified-package-neutral",
       "exclusion_reason": "Package authoring source audited for factual neutrality; consumers read rendered outputs."
     },
     {
@@ -1459,8 +1517,8 @@
       "classification": "source-template",
       "source_of_truth": ["templates/skills/review-plan/SKILL.md"],
       "audit_topics": ["factual-accuracy", "package-neutrality", "generated-pairing"],
-      "audit_status": "pending",
-      "disposition": "pending-task-7-audit",
+      "audit_status": "source-verified",
+      "disposition": "verified-package-neutral",
       "exclusion_reason": "Package authoring source audited for factual neutrality; consumers read rendered outputs."
     },
     {
@@ -1470,8 +1528,8 @@
       "classification": "source-template",
       "source_of_truth": ["templates/skills/review/SKILL.md"],
       "audit_topics": ["factual-accuracy", "package-neutrality", "generated-pairing"],
-      "audit_status": "pending",
-      "disposition": "pending-task-7-audit",
+      "audit_status": "source-verified",
+      "disposition": "verified-package-neutral",
       "exclusion_reason": "Package authoring source audited for factual neutrality; consumers read rendered outputs."
     },
     {
@@ -1481,8 +1539,8 @@
       "classification": "source-template",
       "source_of_truth": ["templates/skills/task-work/SKILL.md"],
       "audit_topics": ["factual-accuracy", "package-neutrality", "generated-pairing"],
-      "audit_status": "pending",
-      "disposition": "pending-task-7-audit",
+      "audit_status": "source-verified",
+      "disposition": "verified-package-neutral",
       "exclusion_reason": "Package authoring source audited for factual neutrality; consumers read rendered outputs."
     },
     {
@@ -1492,8 +1550,8 @@
       "classification": "source-template",
       "source_of_truth": ["templates/skills/triage-automation/SKILL.md"],
       "audit_topics": ["factual-accuracy", "package-neutrality", "generated-pairing"],
-      "audit_status": "pending",
-      "disposition": "pending-task-7-audit",
+      "audit_status": "source-verified",
+      "disposition": "verified-package-neutral",
       "exclusion_reason": "Package authoring source audited for factual neutrality; consumers read rendered outputs."
     },
     {
@@ -1503,8 +1561,8 @@
       "classification": "source-template",
       "source_of_truth": ["templates/skills/triage-inbox/SKILL.md"],
       "audit_topics": ["factual-accuracy", "package-neutrality", "generated-pairing"],
-      "audit_status": "pending",
-      "disposition": "pending-task-7-audit",
+      "audit_status": "source-verified",
+      "disposition": "verified-package-neutral",
       "exclusion_reason": "Package authoring source audited for factual neutrality; consumers read rendered outputs."
     },
     {
@@ -1514,8 +1572,8 @@
       "classification": "source-template",
       "source_of_truth": ["templates/skills/triage/SKILL.md"],
       "audit_topics": ["factual-accuracy", "package-neutrality", "generated-pairing"],
-      "audit_status": "pending",
-      "disposition": "pending-task-7-audit",
+      "audit_status": "source-verified",
+      "disposition": "verified-package-neutral",
       "exclusion_reason": "Package authoring source audited for factual neutrality; consumers read rendered outputs."
     },
     {
@@ -1525,8 +1583,8 @@
       "classification": "source-template",
       "source_of_truth": ["templates/skills/triage/docs/automation.md"],
       "audit_topics": ["factual-accuracy", "package-neutrality", "generated-pairing"],
-      "audit_status": "pending",
-      "disposition": "pending-task-7-audit",
+      "audit_status": "source-verified",
+      "disposition": "verified-package-neutral",
       "exclusion_reason": "Package authoring source audited for factual neutrality; consumers read rendered outputs."
     },
     {
@@ -1536,8 +1594,8 @@
       "classification": "source-template",
       "source_of_truth": ["templates/skills/triage/docs/inbox.md"],
       "audit_topics": ["factual-accuracy", "package-neutrality", "generated-pairing"],
-      "audit_status": "pending",
-      "disposition": "pending-task-7-audit",
+      "audit_status": "source-verified",
+      "disposition": "verified-package-neutral",
       "exclusion_reason": "Package authoring source audited for factual neutrality; consumers read rendered outputs."
     },
     {
@@ -1547,8 +1605,8 @@
       "classification": "source-template",
       "source_of_truth": ["templates/skills/triage/docs/observations.md"],
       "audit_topics": ["factual-accuracy", "package-neutrality", "generated-pairing"],
-      "audit_status": "pending",
-      "disposition": "pending-task-7-audit",
+      "audit_status": "source-verified",
+      "disposition": "verified-package-neutral",
       "exclusion_reason": "Package authoring source audited for factual neutrality; consumers read rendered outputs."
     },
     {
@@ -1558,8 +1616,8 @@
       "classification": "source-template",
       "source_of_truth": ["templates/skills/writing-specs/SKILL.md"],
       "audit_topics": ["factual-accuracy", "package-neutrality", "generated-pairing"],
-      "audit_status": "pending",
-      "disposition": "pending-task-7-audit",
+      "audit_status": "source-verified",
+      "disposition": "verified-package-neutral",
       "exclusion_reason": "Package authoring source audited for factual neutrality; consumers read rendered outputs."
     },
     {
@@ -1569,8 +1627,8 @@
       "classification": "fixture",
       "source_of_truth": ["tests/e2e/fixtures/plans/01KG0RRPCA45ZT43W2T6HJMVP1/plan.md"],
       "audit_topics": ["ownership", "safety", "exclusion"],
-      "audit_status": "pending",
-      "disposition": "pending-task-7-audit",
+      "audit_status": "scope-verified",
+      "disposition": "verified-limited-audit",
       "exclusion_reason": "Test input owned by its behavioral fixture consumer, not public documentation.",
       "owning_test": "tests/e2e/plans.spec.ts"
     },
@@ -1581,8 +1639,8 @@
       "classification": "fixture",
       "source_of_truth": ["tests/e2e/fixtures/plans/01KG0RRRCA45ZT43W2T6HJMVP2/plan.md"],
       "audit_topics": ["ownership", "safety", "exclusion"],
-      "audit_status": "pending",
-      "disposition": "pending-task-7-audit",
+      "audit_status": "scope-verified",
+      "disposition": "verified-limited-audit",
       "exclusion_reason": "Test input owned by its behavioral fixture consumer, not public documentation.",
       "owning_test": "tests/e2e/plans.spec.ts"
     },
@@ -1593,8 +1651,8 @@
       "classification": "fixture",
       "source_of_truth": ["tests/e2e/fixtures/plans/01KG0RRSCA45ZT43W2T6HJMVP3/plan.md"],
       "audit_topics": ["ownership", "safety", "exclusion"],
-      "audit_status": "pending",
-      "disposition": "pending-task-7-audit",
+      "audit_status": "scope-verified",
+      "disposition": "verified-limited-audit",
       "exclusion_reason": "Test input owned by its behavioral fixture consumer, not public documentation.",
       "owning_test": "tests/e2e/plans.spec.ts"
     },
@@ -1605,8 +1663,8 @@
       "classification": "fixture",
       "source_of_truth": ["tests/fixtures/multi-dir/README.md"],
       "audit_topics": ["ownership", "safety", "exclusion"],
-      "audit_status": "pending",
-      "disposition": "pending-task-7-audit",
+      "audit_status": "scope-verified",
+      "disposition": "verified-limited-audit",
       "exclusion_reason": "Test input owned by its behavioral fixture consumer, not public documentation.",
       "owning_test": "tests/daemon-context-manager.test.ts"
     },
@@ -1617,8 +1675,8 @@
       "classification": "fixture",
       "source_of_truth": ["tests/fixtures/multi-dir/project-invalid/README.md"],
       "audit_topics": ["ownership", "safety", "exclusion"],
-      "audit_status": "pending",
-      "disposition": "pending-task-7-audit",
+      "audit_status": "scope-verified",
+      "disposition": "verified-limited-audit",
       "exclusion_reason": "Test input owned by its behavioral fixture consumer, not public documentation.",
       "owning_test": "tests/daemon-path-validation-middleware.test.ts"
     },
