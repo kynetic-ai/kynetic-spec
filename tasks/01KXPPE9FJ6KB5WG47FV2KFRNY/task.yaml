@@ -112,7 +112,7 @@ tags:
   - audit
   - consistency
 vcs_refs: []
-review_ref: "@01KXSC7H0FQXSQ8RMHMBEFQ1DN"
+review_ref: "@01KXSFEG08CJEGS635G17XWYVA"
 submission_linkage:
   review_url: null
   branch: dispatch/task/task-audit-remaining-public-docs/01kxppe9
@@ -220,6 +220,13 @@ history:
         previous: 2026-07-18T00:59:53.692Z
     command: task-submit
     timestamp: 2026-07-18T01:57:25.788Z
+  - author: Jacob Chapel
+    changes:
+      review_ref:
+        new: "@01KXSFEG08CJEGS635G17XWYVA"
+        previous: "@01KXSC7H0FQXSQ8RMHMBEFQ1DN"
+    command: review-link
+    timestamp: 2026-07-18T02:03:56.893Z
 created_at: 2026-07-17T00:08:24.306Z
 started_at: 2026-07-18T01:34:59.702Z
 submitted_at: 2026-07-18T01:57:25.788Z
