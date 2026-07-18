@@ -415,6 +415,12 @@ events:
     payload:
       thread_ulid: 01KXSGXGTYCBZTCNF3P0M1FJZM
     timestamp: 2026-07-18T03:09:41.565Z
+  - _ulid: 01KXSK77ZS9K7XFNQ6Z38YFKWG
+    actor: Jacob Chapel
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KXSGXPT50EBZN69DGJJYPYBR
+    timestamp: 2026-07-18T03:09:50.969Z
 examined_commit: 6a6a1f66957df8d97877d57a143efaf4ee3c6555
 external_links: []
 lifecycle_state: closed
@@ -534,6 +540,10 @@ threads:
         body: "Fixed in fbee7a5082: the shadow concept now describes project-defined source-code branches
           without assuming main."
         created_at: 2026-07-18T03:08:46.069Z
+      - _ulid: 01KXSK77Q562YM5EGEAQ25CK3N
+        author: Jacob Chapel
+        body: "Fixed in fbee7a5082: removed main branch assumptions."
+        created_at: 2026-07-18T03:09:50.693Z
     kind: blocker
     resolved_at: 2026-07-18T03:08:49.628Z
     resolved_by: Jacob Chapel
@@ -648,5 +658,5 @@ verdicts:
     role: reviewer
     created_at: 2026-07-18T02:30:52.454Z
 created_at: 2026-07-18T02:03:54.248Z
-updated_at: 2026-07-18T03:09:41.286Z
+updated_at: 2026-07-18T03:09:50.693Z
 notes: []
