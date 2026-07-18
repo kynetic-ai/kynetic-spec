@@ -84103,9 +84103,22 @@ runs:
     completed_at: 2026-07-18T01:30:08.390Z
   - _ulid: 01KXSF3HMV2X9GKMJ9Q0DZ9203
     status: active
-    current_step: 0
+    current_step: 1
     initiated_by: Jacob Chapel
-    step_results: []
+    step_results:
+      - status: completed
+        step_index: 0
+        started_at: 2026-07-18T01:57:55.483Z
+        completed_at: 2026-07-18T01:58:48.671Z
+        notes: "What worked well: reading the closed review as structured JSON exposed both blockers and
+          exact anchors; reproducing the production Vite docs-plugin configuration turned the
+          release child omission into a deterministic behavioral test; syncing package core sources
+          before rendering preserved the newer merge-helper safety behavior; the full gate run
+          completed without retries (2839 suites, 10986 passed)."
+      - status: completed
+        step_index: 1
+        started_at: 2026-07-18T01:58:48.671Z
+        completed_at: 2026-07-18T01:58:48.671Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-07-18T01:57:55.483Z
