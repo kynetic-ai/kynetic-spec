@@ -34262,7 +34262,7 @@
   type: task
   spec_ref: "@readme-landing-page"
   plan_ref: "@plan-documentation-completeness-and-dispatch-workspaces"
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on:
     - "@task-document-dispatch-recovery"
@@ -34278,6 +34278,7 @@
   created_at: 2026-07-17T00:08:23.334Z
   started_at: 2026-07-17T23:32:39.087Z
   submitted_at: 2026-07-17T23:58:34.393Z
+  completed_at: 2026-07-18T00:31:03.538Z
   automation: eligible
 - _ulid: 01KXPPE9FJ6KB5WG47FV2KFRNY
   slugs:
