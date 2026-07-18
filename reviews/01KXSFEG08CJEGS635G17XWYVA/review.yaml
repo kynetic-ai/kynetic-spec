@@ -427,6 +427,12 @@ events:
     payload:
       thread_ulid: 01KXSGXWM2XW73DHJM5EYYW6TD
     timestamp: 2026-07-18T03:09:59.960Z
+  - _ulid: 01KXSK7TRQ774CBCS8Z64WFZKT
+    actor: Jacob Chapel
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KXSGY2M43CK2EP57VYHKZDA5
+    timestamp: 2026-07-18T03:10:10.199Z
 examined_commit: 6a6a1f66957df8d97877d57a143efaf4ee3c6555
 external_links: []
 lifecycle_state: closed
@@ -603,6 +609,10 @@ threads:
         body: "Fixed in fbee7a5082: the upgrade guide now refers to the discovered .kspec manifest, normally
           <project-slug>.yaml."
         created_at: 2026-07-18T03:09:01.251Z
+      - _ulid: 01KXSK7TG5YVQA4W8K9HEMG84C
+        author: Jacob Chapel
+        body: "Fixed in fbee7a5082: upgrade uses the discovered project manifest."
+        created_at: 2026-07-18T03:10:09.925Z
     kind: blocker
     resolved_at: 2026-07-18T03:09:05.192Z
     resolved_by: Jacob Chapel
@@ -668,5 +678,5 @@ verdicts:
     role: reviewer
     created_at: 2026-07-18T02:30:52.454Z
 created_at: 2026-07-18T02:03:54.248Z
-updated_at: 2026-07-18T03:09:59.688Z
+updated_at: 2026-07-18T03:10:09.925Z
 notes: []
