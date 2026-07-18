@@ -1621,7 +1621,9 @@ describe("dispatch operator fact fixture", () => {
       expect(guide).toContain("public API uses snake_case");
       expect(guide).toContain("UI adapter maps those fields to camelCase");
 
-      for (const target of relativeMarkdownLinks(guide)) {
+      const guideLinks = relativeMarkdownLinks(guide);
+      expect(guideLinks).toContain("../../agents");
+      for (const target of guideLinks.filter((link) => link.endsWith(".md"))) {
         const resolvedTarget = normalize(join(dirname(entry.path), target)).replaceAll("\\", "/");
         expect(
           entries.some((candidate) => candidate.path === resolvedTarget),

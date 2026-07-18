@@ -7,9 +7,13 @@
  */
 
 import { test, expect } from "./fixtures/test-base";
+import { cpSync, existsSync, mkdirSync, mkdtempSync, rmSync } from "node:fs";
+import { execFileSync } from "node:child_process";
 import { dirname, resolve, sep } from "node:path";
 import { fileURLToPath } from "node:url";
 
+const PROJECT_ROOT = resolve(dirname(fileURLToPath(import.meta.url)), "../..");
+const WEB_UI_BUILD = resolve(PROJECT_ROOT, "dist/web-ui");
 const PAGEFIND_BUILD = resolve(
   dirname(fileURLToPath(import.meta.url)),
   "../../dist/web-ui/pagefind",
@@ -27,6 +31,106 @@ async function serveStaticPagefind(page: import("@playwright/test").Page): Promi
       return;
     }
     await route.fulfill({ path: assetPath });
+  });
+}
+
+function buildPagefindVariant(basePath: string): { root: string; pagefindDir: string } {
+  const root = mkdtempSync(resolve(PROJECT_ROOT, ".docs-e2e-search-"));
+  mkdirSync(resolve(root, "scripts"), { recursive: true });
+  mkdirSync(resolve(root, "packages/web-ui/build"), { recursive: true });
+  cpSync(resolve(PROJECT_ROOT, "docs"), resolve(root, "docs"), { recursive: true });
+  cpSync(resolve(PROJECT_ROOT, "RELEASE_NOTES.md"), resolve(root, "RELEASE_NOTES.md"));
+  cpSync(
+    resolve(PROJECT_ROOT, "scripts/build-docs-search.cjs"),
+    resolve(root, "scripts/build-docs-search.cjs"),
+  );
+  execFileSync(
+    process.execPath,
+    [resolve(root, "scripts/build-docs-search.cjs"), "--base-path", basePath],
+    { cwd: root, stdio: "pipe" },
+  );
+  return { root, pagefindDir: resolve(root, "packages/web-ui/build/pagefind") };
+}
+
+async function queryPagefindVariant(
+  page: import("@playwright/test").Page,
+  variant: string,
+  pagefindDir: string,
+  queries: readonly string[],
+): Promise<string[][]> {
+  await page.route(`http://search.local/${variant}/pagefind/**`, async (route) => {
+    const prefix = `/${variant}/pagefind/`;
+    const relativePath = decodeURIComponent(new URL(route.request().url()).pathname).slice(
+      prefix.length,
+    );
+    const assetPath = resolve(pagefindDir, relativePath);
+    if (assetPath !== pagefindDir && !assetPath.startsWith(`${pagefindDir}${sep}`)) {
+      await route.abort("blockedbyclient");
+      return;
+    }
+    await route.fulfill({ path: assetPath });
+  });
+  await page.route("http://search.local/", (route) =>
+    route.fulfill({
+      contentType: "text/html",
+      body: "<!doctype html><title>Search fixture</title>",
+    }),
+  );
+  await page.goto("http://search.local/");
+
+  return page.evaluate(
+    async ({ selectedVariant, selectedQueries }) => {
+      const bundlePath = `${location.origin}/${selectedVariant}/pagefind/`;
+      const pagefind = (await import(/* @vite-ignore */ `${bundlePath}pagefind.js`)) as {
+        options: (options: { bundlePath: string }) => Promise<void>;
+        init: () => Promise<void>;
+        search: (query: string) => Promise<{
+          results: Array<{ data: () => Promise<{ url: string }> }>;
+        }>;
+        destroy: () => Promise<void>;
+      };
+      await pagefind.options({ bundlePath });
+      await pagefind.init();
+      const resultSets: string[][] = [];
+      for (const query of selectedQueries) {
+        const search = await pagefind.search(query);
+        const results = await Promise.all(search.results.map((result) => result.data()));
+        resultSets.push(
+          results
+            .map(({ url }) => url.replace(/^\/(?:local|public)(?:\/kynetic-spec)?\/docs\//, ""))
+            .toSorted(),
+        );
+      }
+      await pagefind.destroy();
+      return resultSets;
+    },
+    { selectedVariant: variant, selectedQueries: queries },
+  );
+}
+
+async function serveStaticWebUi(
+  page: import("@playwright/test").Page,
+  baseUrl: string,
+): Promise<void> {
+  const origin = new URL(baseUrl).origin;
+  await page.route("**/*", async (route) => {
+    const requestUrl = new URL(route.request().url());
+    if (requestUrl.origin !== origin || requestUrl.pathname.startsWith("/api/")) {
+      await route.abort("blockedbyclient");
+      return;
+    }
+
+    const relativePath = decodeURIComponent(requestUrl.pathname).replace(/^\/+/, "");
+    const assetPath = resolve(WEB_UI_BUILD, relativePath);
+    if (relativePath && assetPath.startsWith(`${WEB_UI_BUILD}${sep}`) && existsSync(assetPath)) {
+      await route.fulfill({ path: assetPath });
+      return;
+    }
+    if (route.request().resourceType() === "document") {
+      await route.fulfill({ path: resolve(WEB_UI_BUILD, "index.html") });
+      return;
+    }
+    await route.abort("blockedbyclient");
   });
 }
 
@@ -323,7 +427,6 @@ test.describe("Docs", () => {
     { name: "narrow", width: 375, height: 667 },
   ] as const) {
     // AC: @docs-search ac-1 — Search returns direct links to every new dispatch page
-    // AC: @docs-search ac-3 — The built public/local index exposes the same bundled pages
     test(`${viewport.name} docs search reaches all dispatch workspace and recovery pages`, async ({
       page,
       daemon: _daemon,
@@ -347,21 +450,53 @@ test.describe("Docs", () => {
     });
   }
 
+  // AC: @docs-search ac-3 — Public and local deployment indexes return the same pages
+  test("public and local docs searches return identical canonical result sets", async ({
+    page,
+  }) => {
+    test.slow();
+    const local = buildPagefindVariant("");
+    const publicDeployment = buildPagefindVariant("/kynetic-spec");
+    const queries = DISPATCH_DOCS.map((doc) => doc.query);
+    try {
+      const localResults = await queryPagefindVariant(page, "local", local.pagefindDir, queries);
+      const publicResults = await queryPagefindVariant(
+        page,
+        "public",
+        publicDeployment.pagefindDir,
+        queries,
+      );
+      expect(publicResults).toEqual(localResults);
+      for (let index = 0; index < DISPATCH_DOCS.length; index++) {
+        expect(localResults[index], DISPATCH_DOCS[index]!.query).toContain(
+          DISPATCH_DOCS[index]!.slug,
+        );
+      }
+    } finally {
+      rmSync(local.root, { recursive: true, force: true });
+      rmSync(publicDeployment.root, { recursive: true, force: true });
+    }
+  });
+
   // AC: @docs-reachability ac-2 — Bundled docs remain readable without daemon API access
   // AC: @docs-reachability ac-3 — Static docs navigation requires no server rendering
   test("dispatch docs render statically without API mutation or raw Markdown links", async ({
     page,
-    daemon: _daemon,
+    daemon,
   }) => {
-    const mutationRequests: string[] = [];
+    test.slow();
+    const externalRequests: string[] = [];
     page.on("request", (request) => {
-      if (request.url().includes("/api/") && request.method() !== "GET") {
-        mutationRequests.push(`${request.method()} ${request.url()}`);
+      if (new URL(request.url()).origin !== new URL(daemon.baseUrl).origin) {
+        externalRequests.push(request.url());
       }
     });
+    await page.routeWebSocket("**/*", (webSocket) => webSocket.close());
+    await daemon.stop();
+    await serveStaticWebUi(page, daemon.baseUrl);
 
     for (const doc of DISPATCH_DOCS) {
-      await page.goto(`/docs/${doc.slug}`);
+      await page.goto(`${daemon.baseUrl}/docs/${doc.slug}`);
       const article = page.locator("article");
       await expect(article.getByRole("heading", { level: 1, name: doc.title })).toBeVisible();
       const links = article.locator("a");
@@ -370,7 +505,7 @@ test.describe("Docs", () => {
       }
     }
 
-    expect(mutationRequests).toEqual([]);
+    expect(externalRequests).toEqual([]);
   });
 
   test("lifecycle guide exposes an accessible route to the agents UI", async ({
@@ -378,8 +513,10 @@ test.describe("Docs", () => {
     daemon: _daemon,
   }) => {
     await page.goto("/docs/guides/controlling-dispatch-lifecycle");
-    const agentsLink = page.getByTestId("nav-link-agents");
-    await expect(agentsLink).toHaveAccessibleName("Agents");
+    const agentsLink = page
+      .locator("article")
+      .getByRole("link", { name: "agents view", exact: true });
+    await expect(agentsLink).toBeVisible();
     await agentsLink.click();
     await expect(page).toHaveURL(/\/agents$/);
     await expect(page.getByRole("heading", { name: "Agents" })).toBeVisible();

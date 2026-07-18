@@ -13,6 +13,13 @@ import { mkdirSync, writeFileSync, rmSync } from "node:fs";
 import { join, resolve } from "node:path";
 import { tmpdir } from "node:os";
 
+function brokenLocalFragments(rendered: { html: string; toc: Array<{ id: string }> }): string[] {
+  const headingIds = new Set(rendered.toc.map((heading) => heading.id));
+  return [...rendered.html.matchAll(/href="(#([^"]+))"/g)]
+    .filter((match) => !headingIds.has(match[2]!))
+    .map((match) => match[1]!);
+}
+
 // ─── Vite Plugin Tests ────────────────────────────────────────────────────────
 
 describe("vite-plugin-docs", () => {
@@ -1199,6 +1206,15 @@ describe("published docs link and anchor closure", () => {
   });
 
   // AC: @docs-navigation-shape ac-2
+  it("rejects an authored local fragment that does not resolve to a rendered heading", () => {
+    const valid = renderDocsMarkdown("# Existing heading\n\n[Jump](#existing-heading)");
+    const broken = renderDocsMarkdown("# Existing heading\n\n[Jump](#missing)");
+
+    expect(brokenLocalFragments(valid)).toEqual([]);
+    expect(brokenLocalFragments(broken)).toEqual(["#missing"]);
+  });
+
+  // AC: @docs-navigation-shape ac-2
   it("renders every local fragment as a stable heading anchor without raw Markdown links", () => {
     const docsDir = join(__dirname, "..", "docs");
     const plugin = docsPlugin(docsDir, {
@@ -1228,7 +1244,6 @@ describe("published docs link and anchor closure", () => {
         knownSlugs,
         repoUrl: "https://github.com/lepahc/kynetic-spec/blob/main",
       });
-      const headingIds = new Set(rendered.toc.map((heading) => heading.id));
       for (const heading of rendered.toc) {
         expect(rendered.html, `${entry.slug} heading ${heading.id}`).toContain(
           `id="${heading.id}"`,
@@ -1237,9 +1252,7 @@ describe("published docs link and anchor closure", () => {
           `href="#${heading.id}"`,
         );
       }
-      for (const match of rendered.html.matchAll(/href="(#([^"]+))"/g)) {
-        expect(headingIds.has(match[2]!), `${entry.slug} broken anchor ${match[1]}`).toBe(true);
-      }
+      expect(brokenLocalFragments(rendered), `${entry.slug} broken local fragments`).toEqual([]);
       expect(rendered.html, `${entry.slug} leaked Markdown route`).not.toMatch(
         /href="(?!https?:\/\/)[^"]+\.md(?:#[^"]*)?"/,
       );
