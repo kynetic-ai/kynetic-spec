@@ -37,3 +37,14 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-07-18T01:26:19.131Z
+  - _ulid: 01KXSF1ZRNK5K21R797K5MZVBJ
+    content: "Fix cycle 1: addressed both review blockers. Added the production Changelog child
+      link/order and made landing membership tests use canonical RELEASE_NOTES.md wiring. Synced
+      same-version package core skill state and refreshed generated render hashes; kspec skill
+      verify exits 0. Re-verified all owned ACs. Focused docs: 57 suites/277 tests passed; fresh
+      full suite: 2839 suites, 10986 passed, 3 skipped; docs-search, format, lint, changed-file
+      lint, typecheck, and all three kspec validations passed. Recorded @01KXSE3S for the separate
+      skill status false-positive on portable supporting-doc transformations."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-07-18T01:57:04.405Z

@@ -249,6 +249,30 @@ events:
       from: open
       to: closed
     timestamp: 2026-07-18T01:26:16.888Z
+  - _ulid: 01KXSF1HWW37V9KBAGHWF4JVAC
+    actor: Jacob Chapel
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KXSD9C092FYK10VJE8ME8NKS
+    timestamp: 2026-07-18T01:56:50.204Z
+  - _ulid: 01KXSF1P8Y9DC20FG3M8XH8N1R
+    actor: Jacob Chapel
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KXSD9C092FYK10VJE8ME8NKS
+    timestamp: 2026-07-18T01:56:54.686Z
+  - _ulid: 01KXSF1TKY1ES6XF9GT8Y1EG61
+    actor: Jacob Chapel
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KXSD9FN7R0Z305YQ13S1YJ3K
+    timestamp: 2026-07-18T01:56:59.134Z
+  - _ulid: 01KXSF1YNH38DRP03DP6S5RJSA
+    actor: Jacob Chapel
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KXSD9FN7R0Z305YQ13S1YJ3K
+    timestamp: 2026-07-18T01:57:03.281Z
 examined_commit: 36c04a9b2252b2644bdde988b4f48e71bb366d9a
 external_links: []
 lifecycle_state: closed
@@ -278,7 +302,15 @@ threads:
           and the fixture declares an empty Release Notes reading order. Add the actual child
           link/order and make the membership test exercise the production release-notes manifest."
         created_at: 2026-07-18T01:26:09.161Z
+      - _ulid: 01KXSF1HJVYSE6HYHMPXWTDEWX
+        author: Jacob Chapel
+        body: "Fixed in 6a6a1f6695: the Release Notes landing now links ./changelog.md, declares it in
+          reading order, and both membership tests instantiate the docs plugin with the canonical
+          RELEASE_NOTES.md production input."
+        created_at: 2026-07-18T01:56:49.882Z
     kind: blocker
+    resolved_at: 2026-07-18T01:56:54.316Z
+    resolved_by: Jacob Chapel
   - _ulid: 01KXSD9FN7R0Z305YQ13S1YJ3K
     anchor:
       type: code
@@ -297,7 +329,16 @@ threads:
           their declared sources. Restore or otherwise resolve the pairing, then rerun the verifier
           before marking these records closed."
         created_at: 2026-07-18T01:26:12.903Z
+      - _ulid: 01KXSF1T4364AS818HGJ3F1AN8
+        author: Jacob Chapel
+        body: "Fixed: synced same-version core skill sources from package templates, forced source-backed
+          merge/triage renders without regressing the merge-helper safety fixes, and refreshed
+          render hashes. kspec skill verify now exits 0 with 53 rendered skills OK; the remaining
+          not-rendered entries are pre-existing unregistered/project skills, not drift."
+        created_at: 2026-07-18T01:56:58.627Z
     kind: blocker
+    resolved_at: 2026-07-18T01:57:03.017Z
+    resolved_by: Jacob Chapel
 verdicts:
   - applies_to_version:
       type: entity_version
@@ -307,5 +348,5 @@ verdicts:
     role: reviewer
     created_at: 2026-07-18T01:26:16.888Z
 created_at: 2026-07-18T01:07:40.175Z
-updated_at: 2026-07-18T01:26:16.888Z
+updated_at: 2026-07-18T01:57:03.017Z
 notes: []

@@ -30848,7 +30848,7 @@ reviews:
       ref: "@01KXPPE9FJ6KB5WG47FV2KFRNY"
       shadow_commit: ""
     thread_count: 2
-    unresolved_blocker_count: 2
+    unresolved_blocker_count: 0
     verdict_count: 1
     created_at: 2026-07-18T01:07:40.175Z
-    updated_at: 2026-07-18T01:26:16.888Z
+    updated_at: 2026-07-18T01:57:03.017Z
