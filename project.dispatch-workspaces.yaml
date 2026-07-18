@@ -15661,7 +15661,7 @@ workspaces:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-07-18T03:54:35.510Z
+      updated_at: 2026-07-18T03:55:51.363Z
     integration:
       status: merged
       detail: integration:merged
@@ -15678,18 +15678,13 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-07-18T03:15:08.679Z
-      last_reconciled_at: 2026-07-18T03:55:24.010Z
+      last_reconciled_at: 2026-07-18T03:55:51.363Z
       created_at: 2026-07-18T00:33:28.484Z
-      updated_at: 2026-07-18T03:55:24.010Z
+      updated_at: 2026-07-18T03:55:51.363Z
     workspace_id: dispatch-workspace-01KXPPE9FJ6KB5WG47FV2KFRNY
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
-      reviewer:
-        branch_mode: detached
-        branch_ref: null
-        head: fbee7a50823eec0c6ed2f7efee61858cc29d4cdc
-        last_seen_at: 2026-07-18T03:14:19.859Z
-        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-audit-remaining-public-docs-01kxppe9-review
+      reviewer: null
       worker:
         branch_mode: branch
         branch_ref: dispatch/task/task-audit-remaining-public-docs/01kxppe9
