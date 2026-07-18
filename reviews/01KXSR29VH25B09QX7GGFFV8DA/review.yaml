@@ -284,6 +284,78 @@ events:
       from: open
       to: closed
     timestamp: 2026-07-18T05:02:03.982Z
+  - _ulid: 01KXSW9GG40K6HKKNT2CRETX4Y
+    actor: Jacob Chapel
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KXSSKNWTV32QH4B5QXVCDAQZ
+    timestamp: 2026-07-18T05:48:22.404Z
+  - _ulid: 01KXSW9M2NG6PTZVTNDHNT04BJ
+    actor: Jacob Chapel
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KXSSKNWTV32QH4B5QXVCDAQZ
+    timestamp: 2026-07-18T05:48:26.069Z
+  - _ulid: 01KXSW9Q9YQ1DEZ4CYC8QGRYWJ
+    actor: Jacob Chapel
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KXSSKTBCW6K3NR3QZBKQR2B4
+    timestamp: 2026-07-18T05:48:29.374Z
+  - _ulid: 01KXSW9TMRPCGECY38WP06KQJD
+    actor: Jacob Chapel
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KXSSKTBCW6K3NR3QZBKQR2B4
+    timestamp: 2026-07-18T05:48:32.792Z
+  - _ulid: 01KXSW9XYR2D7SRVPD3W2BH304
+    actor: Jacob Chapel
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KXSSKXN6KG0X7VCMM5ZJ5NN9
+    timestamp: 2026-07-18T05:48:36.184Z
+  - _ulid: 01KXSWA18JZC8NVA9X9Z7D80AN
+    actor: Jacob Chapel
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KXSSKXN6KG0X7VCMM5ZJ5NN9
+    timestamp: 2026-07-18T05:48:39.570Z
+  - _ulid: 01KXSWA4NTB03ZH4RN6BYPC692
+    actor: Jacob Chapel
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KXSSM0YQSP3A3BA150CQDJSD
+    timestamp: 2026-07-18T05:48:43.066Z
+  - _ulid: 01KXSWA7XMQ4KQN598J9B14AG2
+    actor: Jacob Chapel
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KXSSM0YQSP3A3BA150CQDJSD
+    timestamp: 2026-07-18T05:48:46.388Z
+  - _ulid: 01KXSWACKCK1NCHCK77RG8MSVM
+    actor: Jacob Chapel
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KXSSM4G6DDQ7H405KGY7KYSF
+    timestamp: 2026-07-18T05:48:51.180Z
+  - _ulid: 01KXSWAGDC7G09P7W4811T24ZC
+    actor: Jacob Chapel
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KXSSM4G6DDQ7H405KGY7KYSF
+    timestamp: 2026-07-18T05:48:55.084Z
+  - _ulid: 01KXSWAMNQCAGFYJZ6WE6SBJ46
+    actor: Jacob Chapel
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KXSSMA44TFKK78G5KAME69SS
+    timestamp: 2026-07-18T05:48:59.447Z
+  - _ulid: 01KXSWARDGS5PCE57WY1Y3SBMY
+    actor: Jacob Chapel
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KXSSMA44TFKK78G5KAME69SS
+    timestamp: 2026-07-18T05:49:03.280Z
 examined_commit: 11f98ee5fa3a30d01f527d964744fa0bca98c3e5
 external_links: []
 lifecycle_state: closed
@@ -313,7 +385,15 @@ threads:
           the checked-in output cannot be reproduced from the checked-in generator. Commit the exact
           generated output or fix the generator/formatter contract, then prove a clean second run.
         created_at: 2026-07-18T05:01:29.882Z
+      - _ulid: 01KXSW9G80AT77YSGDC688YH8Q
+        author: Jacob Chapel
+        body: "Fixed in 25cfd2ac40: agents generation now normalizes output to exactly one trailing newline,
+          with a CLI regression test proving the second generation is already up to date. Two
+          consecutive branch-local generations now leave no diff."
+        created_at: 2026-07-18T05:48:22.144Z
     kind: blocker
+    resolved_at: 2026-07-18T05:48:25.779Z
+    resolved_by: Jacob Chapel
   - _ulid: 01KXSSKTBCW6K3NR3QZBKQR2B4
     anchor:
       type: code
@@ -333,7 +413,15 @@ threads:
           non-local network access blocked (while serving only the static shell/assets), and assert
           the pages still render.
         created_at: 2026-07-18T05:01:34.444Z
+      - _ulid: 01KXSW9Q28BJK6PBACS3KN4X4K
+        author: Jacob Chapel
+        body: "Fixed in 25cfd2ac40: the rendered-docs E2E now stops the daemon, intercepts WebSockets,
+          serves only built dist/web-ui files, and rejects /api and external HTTP. All six required
+          pages render under those offline/static constraints."
+        created_at: 2026-07-18T05:48:29.128Z
     kind: blocker
+    resolved_at: 2026-07-18T05:48:32.538Z
+    resolved_by: Jacob Chapel
   - _ulid: 01KXSSKXN6KG0X7VCMM5ZJ5NN9
     anchor:
       type: code
@@ -352,7 +440,15 @@ threads:
           Assert and follow a link inside the lifecycle guide article (with an accessible name),
           coordinating the prose owner if the link is missing.
         created_at: 2026-07-18T05:01:37.830Z
+      - _ulid: 01KXSW9XP56H97NV8YKSZ20MW5
+        author: Jacob Chapel
+        body: "Fixed in 25cfd2ac40: the lifecycle guide now contains an accessible article-body agents view
+          link, and the E2E locates that link within the article and follows it instead of using
+          global navigation."
+        created_at: 2026-07-18T05:48:35.909Z
     kind: blocker
+    resolved_at: 2026-07-18T05:48:39.320Z
+    resolved_by: Jacob Chapel
   - _ulid: 01KXSSM0YQSP3A3BA150CQDJSD
     anchor:
       type: code
@@ -371,7 +467,15 @@ threads:
           page set. Build/query both deployment variants for the same terms and compare canonical
           result slugs (allowing only the expected base-path difference).
         created_at: 2026-07-18T05:01:41.207Z
+      - _ulid: 01KXSWA4E4EET7Z7A0C67RFVMD
+        author: Jacob Chapel
+        body: "Fixed in 25cfd2ac40: the test copies and runs the actual docs-search builder for local and
+          public base paths, queries both generated Pagefind indexes in the browser for all six
+          terms, normalizes only fixture/base prefixes, and compares canonical slug result sets."
+        created_at: 2026-07-18T05:48:42.820Z
     kind: blocker
+    resolved_at: 2026-07-18T05:48:46.134Z
+    resolved_by: Jacob Chapel
   - _ulid: 01KXSSM4G6DDQ7H405KGY7KYSF
     anchor:
       type: code
@@ -390,7 +494,15 @@ threads:
           behavioral negative fixture (or extracted closure validator exercised with one) that
           contains a broken local fragment and fails while valid fragments pass.
         created_at: 2026-07-18T05:01:44.838Z
+      - _ulid: 01KXSWAC6PV3Y44BKH8J8W3CYD
+        author: Jacob Chapel
+        body: "Fixed in 25cfd2ac40: fragment validation is now input-driven, with a behavioral negative
+          Markdown fixture that accepts #existing-heading and rejects #missing. The real six-page
+          documentation closure uses the same validator."
+        created_at: 2026-07-18T05:48:50.774Z
     kind: blocker
+    resolved_at: 2026-07-18T05:48:54.808Z
+    resolved_by: Jacob Chapel
   - _ulid: 01KXSSMA44TFKK78G5KAME69SS
     entries:
       - _ulid: 01KXSSMA44M58V7SRQ9DHNHY7A
@@ -409,7 +521,15 @@ threads:
           removed instruction requiring relocation; the artifact-refresh/convergence check failed as
           recorded above."
         created_at: 2026-07-18T05:01:50.596Z
+      - _ulid: 01KXSWAM6X6VHZT45KTG9693Q5
+        author: Jacob Chapel
+        body: Addressed and re-verified in 25cfd2ac40. Final evidence includes 17/17 docs E2E tests, 10,992
+          passing full-suite tests with 3 skipped, format/lint/typecheck success, and
+          refs/alignment/completeness validation passing with the unchanged warning baseline.
+        created_at: 2026-07-18T05:48:58.973Z
     kind: nit
+    resolved_at: 2026-07-18T05:49:03.010Z
+    resolved_by: Jacob Chapel
 verdicts:
   - applies_to_version:
       type: entity_version
@@ -419,5 +539,5 @@ verdicts:
     role: reviewer
     created_at: 2026-07-18T05:02:03.982Z
 created_at: 2026-07-18T04:34:31.921Z
-updated_at: 2026-07-18T05:02:03.982Z
+updated_at: 2026-07-18T05:49:03.010Z
 notes: []
