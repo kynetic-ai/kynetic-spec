@@ -356,6 +356,12 @@ events:
     payload:
       thread_ulid: 01KXSSMA44TFKK78G5KAME69SS
     timestamp: 2026-07-18T05:49:03.280Z
+  - _ulid: 01KXSWAV8V79K45GKZQ1APF9QK
+    actor: Jacob Chapel
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KXSSKNWTV32QH4B5QXVCDAQZ
+    timestamp: 2026-07-18T05:49:06.203Z
 examined_commit: 11f98ee5fa3a30d01f527d964744fa0bca98c3e5
 external_links: []
 lifecycle_state: closed
@@ -391,6 +397,12 @@ threads:
           with a CLI regression test proving the second generation is already up to date. Two
           consecutive branch-local generations now leave no diff."
         created_at: 2026-07-18T05:48:22.144Z
+      - _ulid: 01KXSWATZXQR8QYRWCZXV98Z2F
+        author: Jacob Chapel
+        body: "Fixed in 25cfd2ac40: agents generation now normalizes output to exactly one trailing newline,
+          with a CLI regression test proving the second generation is already up to date. Two
+          consecutive branch-local generations now leave no diff."
+        created_at: 2026-07-18T05:49:05.911Z
     kind: blocker
     resolved_at: 2026-07-18T05:48:25.779Z
     resolved_by: Jacob Chapel
@@ -539,5 +551,5 @@ verdicts:
     role: reviewer
     created_at: 2026-07-18T05:02:03.982Z
 created_at: 2026-07-18T04:34:31.921Z
-updated_at: 2026-07-18T05:49:03.010Z
+updated_at: 2026-07-18T05:49:05.911Z
 notes: []
