@@ -4,7 +4,7 @@ slugs:
 title: Documentation Completeness and Dispatch Workspaces
 status: active
 approved_at: 2026-07-17T00:06:20.402Z
-branch: plan/plan-dispatch-lifecycle-pause-resume-and-stop-controls/01kxc2vx
+branch: null
 derived_specs: []
 derived_tasks:
   - "@task-freeze-doc-facts-and-inventory"
