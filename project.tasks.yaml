@@ -34287,7 +34287,7 @@
   type: task
   spec_ref: "@docs-getting-started-section"
   plan_ref: "@plan-documentation-completeness-and-dispatch-workspaces"
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on:
     - "@task-correct-adjacent-public-guidance"
@@ -34302,6 +34302,7 @@
   created_at: 2026-07-17T00:08:24.306Z
   started_at: 2026-07-18T02:41:08.075Z
   submitted_at: 2026-07-18T03:10:16.994Z
+  completed_at: 2026-07-18T03:50:52.635Z
   automation: eligible
 - _ulid: 01KXPPEAYMN69MKK49CA73D6AG
   slugs:
