@@ -301,6 +301,102 @@ events:
       from: open
       to: closed
     timestamp: 2026-07-18T02:30:52.461Z
+  - _ulid: 01KXSK4KV9S8NYB81QH17SQ1D4
+    actor: Jacob Chapel
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KXSGX535NXCJPWQZ61XFW3HC
+    timestamp: 2026-07-18T03:08:24.809Z
+  - _ulid: 01KXSK4QESNK0CB6NZWS8FNDWS
+    actor: Jacob Chapel
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KXSGX535NXCJPWQZ61XFW3HC
+    timestamp: 2026-07-18T03:08:28.505Z
+  - _ulid: 01KXSK4TV2KAF9P1BEWQ8WKYK7
+    actor: Jacob Chapel
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KXSGXB0PWJ5576YDTY7C32AA
+    timestamp: 2026-07-18T03:08:31.970Z
+  - _ulid: 01KXSK4Y63F24WQECJ2QMX7998
+    actor: Jacob Chapel
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KXSGXB0PWJ5576YDTY7C32AA
+    timestamp: 2026-07-18T03:08:35.395Z
+  - _ulid: 01KXSK51YG4QBP9X9ZHX0CWB0P
+    actor: Jacob Chapel
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KXSGXGTYCBZTCNF3P0M1FJZM
+    timestamp: 2026-07-18T03:08:39.248Z
+  - _ulid: 01KXSK55FA1R5TD3T3Z7YA5PFQ
+    actor: Jacob Chapel
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KXSGXGTYCBZTCNF3P0M1FJZM
+    timestamp: 2026-07-18T03:08:42.858Z
+  - _ulid: 01KXSK58X55PTBB2VZ33WWNXEA
+    actor: Jacob Chapel
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KXSGXPT50EBZN69DGJJYPYBR
+    timestamp: 2026-07-18T03:08:46.373Z
+  - _ulid: 01KXSK5CF0E6E9RC0SRDK8FH84
+    actor: Jacob Chapel
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KXSGXPT50EBZN69DGJJYPYBR
+    timestamp: 2026-07-18T03:08:50.016Z
+  - _ulid: 01KXSK5GDRR6FN50VQ6DKKMZQY
+    actor: Jacob Chapel
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KXSGXWM2XW73DHJM5EYYW6TD
+    timestamp: 2026-07-18T03:08:54.072Z
+  - _ulid: 01KXSK5KWPY9DRR5A8JN6ZKMDD
+    actor: Jacob Chapel
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KXSGXWM2XW73DHJM5EYYW6TD
+    timestamp: 2026-07-18T03:08:57.622Z
+  - _ulid: 01KXSK5QPNGTSZ3Y3WQCJF8TXE
+    actor: Jacob Chapel
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KXSGY2M43CK2EP57VYHKZDA5
+    timestamp: 2026-07-18T03:09:01.525Z
+  - _ulid: 01KXSK5VTCN8CY323JQ49NN5P2
+    actor: Jacob Chapel
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KXSGY2M43CK2EP57VYHKZDA5
+    timestamp: 2026-07-18T03:09:05.740Z
+  - _ulid: 01KXSK5ZXGJY2BYMSGXM4SZHPZ
+    actor: Jacob Chapel
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KXSGY8D5JYT8BCDVJ9PF20PN
+    timestamp: 2026-07-18T03:09:09.936Z
+  - _ulid: 01KXSK64BKEZQ81Z6WK8DSV5WB
+    actor: Jacob Chapel
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KXSGY8D5JYT8BCDVJ9PF20PN
+    timestamp: 2026-07-18T03:09:14.483Z
+  - _ulid: 01KXSK680ZPTV7E8V223Z21J1K
+    actor: Jacob Chapel
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KXSGYE7A06V2EAN1T1JWZZXP
+    timestamp: 2026-07-18T03:09:18.239Z
+  - _ulid: 01KXSK6CHFH09YBF1HWRQDRNB7
+    actor: Jacob Chapel
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KXSGYE7A06V2EAN1T1JWZZXP
+    timestamp: 2026-07-18T03:09:22.863Z
 examined_commit: 6a6a1f66957df8d97877d57a143efaf4ee3c6555
 external_links: []
 lifecycle_state: closed
@@ -329,7 +425,14 @@ threads:
           Evidence: `templates/agents-sections/04-pr-workflow.md:19` and
           `templates/skills/task-work/SKILL.md:42` both require completion after merge."
         created_at: 2026-07-18T02:29:23.173Z
+      - _ulid: 01KXSK4KJWP5BRVDN7X4E1ARYW
+        author: Jacob Chapel
+        body: "Fixed in fbee7a5082: the canonical loop and after-coding guidance now require review,
+          project-defined integration, then task completion."
+        created_at: 2026-07-18T03:08:24.530Z
     kind: blocker
+    resolved_at: 2026-07-18T03:08:28.242Z
+    resolved_by: Jacob Chapel
   - _ulid: 01KXSGXB0PWJ5576YDTY7C32AA
     anchor:
       type: code
@@ -347,7 +450,14 @@ threads:
           and can leave task metadata claiming completion before integration. Evidence: the package
           task-work and merge workflows define `kspec task complete` as the final post-merge step."
         created_at: 2026-07-18T02:29:29.238Z
+      - _ulid: 01KXSK4THFY2Q9VZTC17Y26F6B
+        author: Jacob Chapel
+        body: "Fixed in fbee7a5082: the concept lifecycle now explicitly merges approved work before marking
+          the task complete."
+        created_at: 2026-07-18T03:08:31.663Z
     kind: blocker
+    resolved_at: 2026-07-18T03:08:35.123Z
+    resolved_by: Jacob Chapel
   - _ulid: 01KXSGXGTYCBZTCNF3P0M1FJZM
     anchor:
       type: code
@@ -365,7 +475,14 @@ threads:
           one project policy as a universal mechanic; this task already corrected the same
           assumption in `initializing-a-project.md`."
         created_at: 2026-07-18T02:29:35.198Z
+      - _ulid: 01KXSK51KRB0ZRKNVSETQJ0HSN
+        author: Jacob Chapel
+        body: "Fixed in fbee7a5082: replaced the hard-coded main-branch claim with project-neutral
+          source-code branch history wording."
+        created_at: 2026-07-18T03:08:38.904Z
     kind: blocker
+    resolved_at: 2026-07-18T03:08:42.555Z
+    resolved_by: Jacob Chapel
   - _ulid: 01KXSGXPT50EBZN69DGJJYPYBR
     anchor:
       type: code
@@ -382,7 +499,14 @@ threads:
           names are project-defined. Impact: a page declared `source-verified` still teaches a
           non-universal branch policy as core behavior."
         created_at: 2026-07-18T02:29:41.318Z
+      - _ulid: 01KXSK58KNWZ4ZV2V58NNAJY4G
+        author: Jacob Chapel
+        body: "Fixed in fbee7a5082: the shadow concept now describes project-defined source-code branches
+          without assuming main."
+        created_at: 2026-07-18T03:08:46.069Z
     kind: blocker
+    resolved_at: 2026-07-18T03:08:49.628Z
+    resolved_by: Jacob Chapel
   - _ulid: 01KXSGXWM2XW73DHJM5EYYW6TD
     anchor:
       type: code
@@ -400,7 +524,13 @@ threads:
           `tests/init-folder-storage-declarations.test.ts` explicitly verifies that contract.
           Impact: users of any differently named project are directed to a nonexistent file."
         created_at: 2026-07-18T02:29:47.267Z
+      - _ulid: 01KXSK5G4V8PN8HSPXXZQ63S8A
+        author: Jacob Chapel
+        body: "Fixed in fbee7a5082: the shadow tree now identifies the manifest as <project-slug>.yaml."
+        created_at: 2026-07-18T03:08:53.787Z
     kind: blocker
+    resolved_at: 2026-07-18T03:08:57.362Z
+    resolved_by: Jacob Chapel
   - _ulid: 01KXSGY2M43CK2EP57VYHKZDA5
     anchor:
       type: code
@@ -418,7 +548,14 @@ threads:
           misidentify the file for arbitrary project names even though this record is declared
           `source-verified`."
         created_at: 2026-07-18T02:29:53.412Z
+      - _ulid: 01KXSK5QE3ZF6ZSHSB5NGK51DV
+        author: Jacob Chapel
+        body: "Fixed in fbee7a5082: the upgrade guide now refers to the discovered .kspec manifest, normally
+          <project-slug>.yaml."
+        created_at: 2026-07-18T03:09:01.251Z
     kind: blocker
+    resolved_at: 2026-07-18T03:09:05.192Z
+    resolved_by: Jacob Chapel
   - _ulid: 01KXSGY8D5JYT8BCDVJ9PF20PN
     anchor:
       type: code
@@ -438,7 +575,14 @@ threads:
           source verification is factually false. Distinguish writable daemon mode from read-only
           static export mode."
         created_at: 2026-07-18T02:29:59.333Z
+      - _ulid: 01KXSK5ZMH2T4YQEAM7MKRPHWM
+        author: Jacob Chapel
+        body: "Fixed in fbee7a5082: the page distinguishes writable daemon-connected UI controls from
+          read-only static export mode."
+        created_at: 2026-07-18T03:09:09.649Z
     kind: blocker
+    resolved_at: 2026-07-18T03:09:14.135Z
+    resolved_by: Jacob Chapel
   - _ulid: 01KXSGYE7A06V2EAN1T1JWZZXP
     anchor:
       type: code
@@ -457,7 +601,14 @@ threads:
           remains blocked instead of entering a valid new review cycle. Document the
           status-appropriate fix-cycle or review-replacement flow."
         created_at: 2026-07-18T02:30:05.290Z
+      - _ulid: 01KXSK67PK6VWGYSTNBZ2P08P3
+        author: Jacob Chapel
+        body: "Fixed in fbee7a5082: recovery now requires request_changes to reach needs_work, task start to
+          return in_progress, and only then task submit for a fresh cycle."
+        created_at: 2026-07-18T03:09:17.907Z
     kind: blocker
+    resolved_at: 2026-07-18T03:09:22.553Z
+    resolved_by: Jacob Chapel
 verdicts:
   - applies_to_version:
       type: entity_version
@@ -467,5 +618,5 @@ verdicts:
     role: reviewer
     created_at: 2026-07-18T02:30:52.454Z
 created_at: 2026-07-18T02:03:54.248Z
-updated_at: 2026-07-18T02:30:52.461Z
+updated_at: 2026-07-18T03:09:22.553Z
 notes: []
