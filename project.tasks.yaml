@@ -34311,7 +34311,7 @@
   type: task
   spec_ref: "@docs-navigation-shape"
   plan_ref: "@plan-documentation-completeness-and-dispatch-workspaces"
-  status: in_progress
+  status: pending_review
   blocked_by: []
   depends_on:
     - "@task-audit-remaining-public-docs"
@@ -34324,4 +34324,5 @@
   todos_count: 0
   created_at: 2026-07-17T00:08:25.812Z
   started_at: 2026-07-18T03:54:50.419Z
+  submitted_at: 2026-07-18T04:27:56.005Z
   automation: eligible
