@@ -17,6 +17,14 @@ import { execSync } from "node:child_process";
 import { readTestOutputSync } from "./helpers/cli.js";
 
 const PROJECT_ROOT = resolve(__dirname, "..");
+const REQUIRED_DISPATCH_DOCS = [
+  "guides/configuring-dispatch-workspaces",
+  "guides/controlling-dispatch-lifecycle",
+  "concepts/dispatch-workspaces",
+  "troubleshooting/dispatch-bootstrap-failures",
+  "troubleshooting/dispatch-workspace-sync-and-cleanup",
+  "troubleshooting/dispatch-lifecycle-control-failures",
+] as const;
 
 // ─── Test Fixture Helpers ───────────────────────────────────────────────────
 
@@ -443,6 +451,13 @@ describe("docs search exclusion behavior", () => {
 // ─── Real Project Indexing ──────────────────────────────────────────────────
 
 describe("docs search against real project docs", () => {
+  // AC: @docs-search ac-1
+  it("includes all six dispatch operator pages in the searchable docs universe", () => {
+    for (const slug of REQUIRED_DISPATCH_DOCS) {
+      expect(existsSync(join(PROJECT_ROOT, "docs", `${slug}.md`)), slug).toBe(true);
+    }
+  });
+
   // AC: @docs-search ac-1
   it("build-docs-search.cjs indexes the real docs directory successfully", () => {
     const buildDir = join(tmpdir(), `docs-search-real-${Date.now()}`);

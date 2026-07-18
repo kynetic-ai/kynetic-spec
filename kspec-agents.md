@@ -558,4 +558,3 @@ kspec batch commands "task set" --json  # structured output for programmatic use
 ```
 
 Quote multi-word command paths: `"task set"`, `"item ac add"`, `"meta observe"`.
-

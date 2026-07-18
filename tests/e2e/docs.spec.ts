@@ -7,6 +7,61 @@
  */
 
 import { test, expect } from "./fixtures/test-base";
+import { dirname, resolve, sep } from "node:path";
+import { fileURLToPath } from "node:url";
+
+const PAGEFIND_BUILD = resolve(
+  dirname(fileURLToPath(import.meta.url)),
+  "../../dist/web-ui/pagefind",
+);
+
+async function serveStaticPagefind(page: import("@playwright/test").Page): Promise<void> {
+  await page.route("**/pagefind/**", async (route) => {
+    const relativePath = decodeURIComponent(new URL(route.request().url()).pathname).replace(
+      /^\/pagefind\//,
+      "",
+    );
+    const assetPath = resolve(PAGEFIND_BUILD, relativePath);
+    if (assetPath !== PAGEFIND_BUILD && !assetPath.startsWith(`${PAGEFIND_BUILD}${sep}`)) {
+      await route.abort("blockedbyclient");
+      return;
+    }
+    await route.fulfill({ path: assetPath });
+  });
+}
+
+const DISPATCH_DOCS = [
+  {
+    query: "Configuring Dispatch Workspaces",
+    title: "Configuring Dispatch Workspaces",
+    slug: "guides/configuring-dispatch-workspaces",
+  },
+  {
+    query: "Controlling the Dispatch Lifecycle",
+    title: "Controlling the Dispatch Lifecycle",
+    slug: "guides/controlling-dispatch-lifecycle",
+  },
+  {
+    query: "Dispatch Workspaces",
+    title: "Dispatch Workspaces",
+    slug: "concepts/dispatch-workspaces",
+  },
+  {
+    query: "Dispatch Bootstrap Fails",
+    title: "Dispatch Bootstrap Fails Before the Agent Starts",
+    slug: "troubleshooting/dispatch-bootstrap-failures",
+  },
+  {
+    query: "Workspace Cannot Sync",
+    title: "A Dispatch Workspace Cannot Sync or Clean Up",
+    slug: "troubleshooting/dispatch-workspace-sync-and-cleanup",
+  },
+  {
+    query: "Lifecycle Status Rejects",
+    title: "Dispatch Lifecycle Status Rejects an Action or Shows Cleanup",
+    slug: "troubleshooting/dispatch-lifecycle-control-failures",
+  },
+] as const;
 
 test.describe("Docs", () => {
   // AC: @docs-reachability ac-1 — Docs entry is present in primary navigation and navigates to docs
@@ -261,5 +316,72 @@ test.describe("Docs", () => {
         }
       }
     }
+  });
+
+  for (const viewport of [
+    { name: "wide", width: 1280, height: 900 },
+    { name: "narrow", width: 375, height: 667 },
+  ] as const) {
+    // AC: @docs-search ac-1 — Search returns direct links to every new dispatch page
+    // AC: @docs-search ac-3 — The built public/local index exposes the same bundled pages
+    test(`${viewport.name} docs search reaches all dispatch workspace and recovery pages`, async ({
+      page,
+      daemon: _daemon,
+    }) => {
+      await page.setViewportSize(viewport);
+      // Exercise the packaged static Pagefind output directly. The daemon fixture owns the
+      // SPA shell; routing these generated assets models the public/static deployment.
+      await serveStaticPagefind(page);
+
+      for (const doc of DISPATCH_DOCS) {
+        await page.goto("/docs");
+        const search = page.getByTestId("docs-search-input");
+        await search.fill(doc.query);
+        const results = page.getByTestId("docs-search-results");
+        const result = results.getByText(doc.title, { exact: true }).locator("..");
+        await expect(result, `${viewport.name} search result for ${doc.title}`).toBeVisible();
+        await result.click();
+        await expect(page).toHaveURL(new RegExp(`/docs/${doc.slug}$`));
+        await expect(page.getByRole("heading", { level: 1, name: doc.title })).toBeVisible();
+      }
+    });
+  }
+
+  // AC: @docs-reachability ac-2 — Bundled docs remain readable without daemon API access
+  // AC: @docs-reachability ac-3 — Static docs navigation requires no server rendering
+  test("dispatch docs render statically without API mutation or raw Markdown links", async ({
+    page,
+    daemon: _daemon,
+  }) => {
+    const mutationRequests: string[] = [];
+    page.on("request", (request) => {
+      if (request.url().includes("/api/") && request.method() !== "GET") {
+        mutationRequests.push(`${request.method()} ${request.url()}`);
+      }
+    });
+
+    for (const doc of DISPATCH_DOCS) {
+      await page.goto(`/docs/${doc.slug}`);
+      const article = page.locator("article");
+      await expect(article.getByRole("heading", { level: 1, name: doc.title })).toBeVisible();
+      const links = article.locator("a");
+      for (let index = 0; index < (await links.count()); index++) {
+        expect(await links.nth(index).getAttribute("href"), doc.slug).not.toMatch(/\.md(?:#|$)/);
+      }
+    }
+
+    expect(mutationRequests).toEqual([]);
+  });
+
+  test("lifecycle guide exposes an accessible route to the agents UI", async ({
+    page,
+    daemon: _daemon,
+  }) => {
+    await page.goto("/docs/guides/controlling-dispatch-lifecycle");
+    const agentsLink = page.getByTestId("nav-link-agents");
+    await expect(agentsLink).toHaveAccessibleName("Agents");
+    await agentsLink.click();
+    await expect(page).toHaveURL(/\/agents$/);
+    await expect(page.getByRole("heading", { name: "Agents" })).toBeVisible();
   });
 });
