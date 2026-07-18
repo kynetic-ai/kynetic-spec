@@ -84102,7 +84102,7 @@ runs:
     started_at: 2026-07-18T01:27:12.559Z
     completed_at: 2026-07-18T01:30:08.390Z
   - _ulid: 01KXSF3HMV2X9GKMJ9Q0DZ9203
-    status: active
+    status: completed
     current_step: 5
     initiated_by: Jacob Chapel
     step_results:
@@ -84149,7 +84149,11 @@ runs:
       - status: completed
         step_index: 5
         started_at: 2026-07-18T01:59:36.596Z
-        completed_at: 2026-07-18T01:59:36.596Z
+        completed_at: 2026-07-18T01:59:56.140Z
+        notes: "Capture complete: resolved @01KXSE3S as a duplicate of existing friction observation
+          @01KT5EJA. No new inbox items, tasks, questions, or observations were created because
+          existing tracking fully covers the session friction."
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-07-18T01:57:55.483Z
+    completed_at: 2026-07-18T01:59:56.141Z
