@@ -303,9 +303,25 @@ events:
       status: pass
       name: review evidence log
     timestamp: 2026-07-18T23:11:34.672Z
+  - _ulid: 01KXVR0RF8ZQYQGB9MZ1AAD7BH
+    actor: codex
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: request_changes
+    timestamp: 2026-07-18T23:12:10.216Z
+  - _ulid: 01KXVR0RF8DW2HMW9SFR8SP6J7
+    actor: codex
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-07-18T23:12:10.216Z
 examined_commit: null
 external_links: []
-lifecycle_state: open
+lifecycle_state: closed
 related_refs: []
 subject:
   type: task
@@ -377,7 +393,14 @@ threads:
           focused tests, E2E, full test, validation, and diff checks."
         created_at: 2026-07-18T23:09:25.828Z
     kind: blocker
-verdicts: []
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: request_changes
+    reviewer: codex
+    role: reviewer
+    created_at: 2026-07-18T23:12:10.210Z
 created_at: 2026-07-18T23:08:17.978Z
-updated_at: 2026-07-18T23:11:34.416Z
+updated_at: 2026-07-18T23:12:10.216Z
 notes: []
