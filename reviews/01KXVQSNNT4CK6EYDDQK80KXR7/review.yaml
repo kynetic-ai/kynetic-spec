@@ -15,6 +15,18 @@ checks:
     runner: manual source/task inspection
     created_at: 2026-07-18T23:10:13.925Z
     completed_at: 2026-07-18T23:10:13.925Z
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Task omits an explicit pf_meta/CSS matrix, uses and/or for lazy chunk classes, and does
+      not bind directory/malformed encoding behavior to focused tests despite actual eight-extension
+      output.
+    name: route correctness and boundary matrix
+    required: true
+    runner: manual source/task inspection
+    created_at: 2026-07-18T23:10:20.080Z
+    completed_at: 2026-07-18T23:10:20.080Z
 events:
   - _ulid: 01KXVQSNNPWF5KHHJPV4VD0MA9
     actor: codex
@@ -57,6 +69,13 @@ events:
       status: pass
       name: standalone context and buildability
     timestamp: 2026-07-18T23:10:14.177Z
+  - _ulid: 01KXVQXD66K36D3YH3SVF0WA3N
+    actor: codex
+    event_type: check_added
+    payload:
+      status: fail
+      name: route correctness and boundary matrix
+    timestamp: 2026-07-18T23:10:20.358Z
 examined_commit: null
 external_links: []
 lifecycle_state: open
@@ -133,5 +152,5 @@ threads:
     kind: blocker
 verdicts: []
 created_at: 2026-07-18T23:08:17.978Z
-updated_at: 2026-07-18T23:10:13.925Z
+updated_at: 2026-07-18T23:10:20.080Z
 notes: []
