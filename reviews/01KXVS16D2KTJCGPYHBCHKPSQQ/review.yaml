@@ -589,9 +589,25 @@ events:
       status: pass
       name: review evidence log
     timestamp: 2026-07-18T23:35:02.469Z
+  - _ulid: 01KXVSB0AJFAD7C5BTYYVPCGJN
+    actor: codex
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: approve
+    timestamp: 2026-07-18T23:35:14.514Z
+  - _ulid: 01KXVSB0AJ9V8NCA6A9NTWEDCB
+    actor: codex
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-07-18T23:35:14.514Z
 examined_commit: null
 external_links: []
-lifecycle_state: open
+lifecycle_state: closed
 related_refs: []
 subject:
   type: task
@@ -599,7 +615,14 @@ subject:
   ref: "@01KXVPGACWKT77Y967EWP3Y7DQ"
   shadow_commit: ""
 threads: []
-verdicts: []
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: approve
+    reviewer: codex
+    role: reviewer
+    created_at: 2026-07-18T23:35:14.508Z
 created_at: 2026-07-18T23:29:53.058Z
-updated_at: 2026-07-18T23:35:02.202Z
+updated_at: 2026-07-18T23:35:14.514Z
 notes: []
