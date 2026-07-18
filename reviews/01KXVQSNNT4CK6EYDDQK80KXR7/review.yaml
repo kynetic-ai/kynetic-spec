@@ -117,6 +117,17 @@ checks:
     runner: kspec validate --alignment --warnings-ok
     created_at: 2026-07-18T23:11:09.692Z
     completed_at: 2026-07-18T23:11:09.692Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Exit 0 under warnings-ok; existing completeness debt reported, with docs-search AC
+      annotations present in current tests.
+    name: kspec validate completeness
+    required: true
+    runner: kspec validate --completeness --warnings-ok
+    created_at: 2026-07-18T23:11:16.240Z
+    completed_at: 2026-07-18T23:11:16.240Z
 events:
   - _ulid: 01KXVQSNNPWF5KHHJPV4VD0MA9
     actor: codex
@@ -222,6 +233,13 @@ events:
       status: pass
       name: kspec validate alignment
     timestamp: 2026-07-18T23:11:09.941Z
+  - _ulid: 01KXVQZ40V4Q2N2Q9M5GGFEXG8
+    actor: codex
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate completeness
+    timestamp: 2026-07-18T23:11:16.507Z
 examined_commit: null
 external_links: []
 lifecycle_state: open
@@ -298,5 +316,5 @@ threads:
     kind: blocker
 verdicts: []
 created_at: 2026-07-18T23:08:17.978Z
-updated_at: 2026-07-18T23:11:09.692Z
+updated_at: 2026-07-18T23:11:16.240Z
 notes: []
