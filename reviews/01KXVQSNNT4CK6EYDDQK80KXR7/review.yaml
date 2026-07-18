@@ -51,6 +51,18 @@ checks:
     runner: kspec item get and test annotation inspection
     created_at: 2026-07-18T23:10:32.293Z
     completed_at: 2026-07-18T23:10:32.293Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Scope is limited to a Node-only /pagefind/* route, focused daemon/E2E tests, and
+      conditional build-script changes; Bun, general static serving, docs prose, search semantics,
+      generated hand edits, and unrelated cleanup are excluded.
+    name: scope and proportionality
+    required: true
+    runner: manual plan/source inspection
+    created_at: 2026-07-18T23:10:38.346Z
+    completed_at: 2026-07-18T23:10:38.346Z
 events:
   - _ulid: 01KXVQSNNPWF5KHHJPV4VD0MA9
     actor: codex
@@ -114,6 +126,13 @@ events:
       status: pass
       name: AC ownership and annotation plan
     timestamp: 2026-07-18T23:10:32.556Z
+  - _ulid: 01KXVQXZ1SK6BRAKKDDHQ9P7ZC
+    actor: codex
+    event_type: check_added
+    payload:
+      status: pass
+      name: scope and proportionality
+    timestamp: 2026-07-18T23:10:38.649Z
 examined_commit: null
 external_links: []
 lifecycle_state: open
@@ -190,5 +209,5 @@ threads:
     kind: blocker
 verdicts: []
 created_at: 2026-07-18T23:08:17.978Z
-updated_at: 2026-07-18T23:10:32.293Z
+updated_at: 2026-07-18T23:10:38.346Z
 notes: []
