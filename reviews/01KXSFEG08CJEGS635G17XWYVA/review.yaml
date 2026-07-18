@@ -244,6 +244,13 @@ events:
       kind: blocker
       thread_ulid: 01KXSGY8D5JYT8BCDVJ9PF20PN
     timestamp: 2026-07-18T02:29:59.638Z
+  - _ulid: 01KXSGYEFWNVGZQN6ETHVS3K2F
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KXSGYE7A06V2EAN1T1JWZZXP
+    timestamp: 2026-07-18T02:30:05.564Z
 examined_commit: 6a6a1f66957df8d97877d57a143efaf4ee3c6555
 external_links: []
 lifecycle_state: open
@@ -382,7 +389,26 @@ threads:
           static export mode."
         created_at: 2026-07-18T02:29:59.333Z
     kind: blocker
+  - _ulid: 01KXSGYE7A06V2EAN1T1JWZZXP
+    anchor:
+      type: code
+      commit: 6a6a1f66957df8d97877d57a143efaf4ee3c6555
+      line_end: 40
+      line_start: 34
+      path: docs/troubleshooting/review-blocking-merge.md
+      side: head
+    entries:
+      - _ulid: 01KXSGYE7ACVWAAGAXXECGD7SC
+        author: Jacob Chapel
+        body: "MUST-FIX — The recovery step cannot perform the transition it claims. `kspec task submit`
+          accepts only `in_progress` tasks and exits with `Task must be in_progress` for a task
+          already in `pending_review` (`src/cli/commands/task.ts:1890-1914`;
+          `tests/integration.test.ts:214-223`). Impact: a user following this troubleshooting page
+          remains blocked instead of entering a valid new review cycle. Document the
+          status-appropriate fix-cycle or review-replacement flow."
+        created_at: 2026-07-18T02:30:05.290Z
+    kind: blocker
 verdicts: []
 created_at: 2026-07-18T02:03:54.248Z
-updated_at: 2026-07-18T02:29:59.333Z
+updated_at: 2026-07-18T02:30:05.290Z
 notes: []
