@@ -237,6 +237,13 @@ events:
       kind: blocker
       thread_ulid: 01KXSGY2M43CK2EP57VYHKZDA5
     timestamp: 2026-07-18T02:29:53.687Z
+  - _ulid: 01KXSGY8PPXZ5P37S0QZVH50PF
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KXSGY8D5JYT8BCDVJ9PF20PN
+    timestamp: 2026-07-18T02:29:59.638Z
 examined_commit: 6a6a1f66957df8d97877d57a143efaf4ee3c6555
 external_links: []
 lifecycle_state: open
@@ -355,7 +362,27 @@ threads:
           `source-verified`."
         created_at: 2026-07-18T02:29:53.412Z
     kind: blocker
+  - _ulid: 01KXSGY8D5JYT8BCDVJ9PF20PN
+    anchor:
+      type: code
+      commit: 6a6a1f66957df8d97877d57a143efaf4ee3c6555
+      line_end: 49
+      line_start: 37
+      path: docs/concepts/web-ui-and-daemon.md
+      side: head
+    entries:
+      - _ulid: 01KXSGY8D5A9Z5HNTZZAAQXJ3J
+        author: Jacob Chapel
+        body: "MUST-FIX — The page describes the daemon-backed web UI as read-mostly and ultimately as a
+          read surface, which is no longer true. `packages/web-ui/src/lib/api.ts` exposes supported
+          POST/PATCH/DELETE mutations for task lifecycle and notes, dispatch controls, agent
+          definitions, triage, reviews, and other flows; E2E tests exercise task completion and
+          dispatch mutation. Impact: users are told to avoid supported UI controls and the declared
+          source verification is factually false. Distinguish writable daemon mode from read-only
+          static export mode."
+        created_at: 2026-07-18T02:29:59.333Z
+    kind: blocker
 verdicts: []
 created_at: 2026-07-18T02:03:54.248Z
-updated_at: 2026-07-18T02:29:53.412Z
+updated_at: 2026-07-18T02:29:59.333Z
 notes: []
