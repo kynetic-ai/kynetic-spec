@@ -15691,7 +15691,7 @@ workspaces:
         head: fbee7a50823eec0c6ed2f7efee61858cc29d4cdc
         last_seen_at: 2026-07-18T03:14:19.859Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-audit-remaining-public-docs-01kxppe9
-  - active_role: null
+  - active_role: worker
     base_branch_point: 8d8daeaccf703c23c3441327aa069e535a171e3a
     bootstrap:
       status: succeeded
@@ -16172,7 +16172,7 @@ workspaces:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-07-18T05:10:56.067Z
+      updated_at: 2026-07-18T05:11:56.016Z
     integration:
       status: pending
       detail: null
@@ -16181,17 +16181,17 @@ workspaces:
       target_branch: plan/plan-dispatch-lifecycle-pause-resume-and-stop-controls/01kxc2vx
       target_commit: 8d8daeaccf703c23c3441327aa069e535a171e3a
       updated_at: 2026-07-18T05:10:56.067Z
-    lifecycle_state: ready
+    lifecycle_state: active
     resolved_base_branch: plan/plan-dispatch-lifecycle-pause-resume-and-stop-controls/01kxc2vx
     task_id: 01KXPPEAYMN69MKK49CA73D6AG
     task_ref: "@01KXPPEAYMN69MKK49CA73D6AG"
     task_slug: task-close-documentation-drift-gates
     timestamps:
       closed_at: null
-      last_active_at: 2026-07-18T04:32:55.822Z
-      last_reconciled_at: 2026-07-18T05:10:56.067Z
+      last_active_at: 2026-07-18T05:11:56.016Z
+      last_reconciled_at: 2026-07-18T05:11:56.016Z
       created_at: 2026-07-18T03:52:22.467Z
-      updated_at: 2026-07-18T05:11:34.805Z
+      updated_at: 2026-07-18T05:11:56.016Z
     workspace_id: dispatch-workspace-01KXPPEAYMN69MKK49CA73D6AG
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
