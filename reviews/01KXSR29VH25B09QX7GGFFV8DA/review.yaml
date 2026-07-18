@@ -226,6 +226,48 @@ events:
       status: pass
       name: skill render verification
     timestamp: 2026-07-18T05:00:28.813Z
+  - _ulid: 01KXSSKP5HMQKTCZARABKVNAEV
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KXSSKNWTV32QH4B5QXVCDAQZ
+    timestamp: 2026-07-18T05:01:30.161Z
+  - _ulid: 01KXSSKTM88K0M46X646X5A98S
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KXSSKTBCW6K3NR3QZBKQR2B4
+    timestamp: 2026-07-18T05:01:34.729Z
+  - _ulid: 01KXSSKXWVPW216X9NSPZ1SYRE
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KXSSKXN6KG0X7VCMM5ZJ5NN9
+    timestamp: 2026-07-18T05:01:38.075Z
+  - _ulid: 01KXSSM171NKR1133ARHKMHM9Y
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KXSSM0YQSP3A3BA150CQDJSD
+    timestamp: 2026-07-18T05:01:41.473Z
+  - _ulid: 01KXSSM4T131FMT69AD48P2S6T
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KXSSM4G6DDQ7H405KGY7KYSF
+    timestamp: 2026-07-18T05:01:45.154Z
+  - _ulid: 01KXSSMAPQC7QX0KDCTV3BC62A
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KXSSMA44TFKK78G5KAME69SS
+    timestamp: 2026-07-18T05:01:51.191Z
 examined_commit: 11f98ee5fa3a30d01f527d964744fa0bca98c3e5
 external_links: []
 lifecycle_state: open
@@ -235,8 +277,124 @@ subject:
   content_hash: ""
   ref: "@01KXPPEAYMN69MKK49CA73D6AG"
   shadow_commit: ""
-threads: []
+threads:
+  - _ulid: 01KXSSKNWTV32QH4B5QXVCDAQZ
+    anchor:
+      type: code
+      commit: 11f98ee5fa3a30d01f527d964744fa0bca98c3e5
+      line_end: 560
+      line_start: 560
+      path: kspec-agents.md
+      side: head
+    entries:
+      - _ulid: 01KXSSKNWT2K0W4QS7E0ANCAW8
+        author: Jacob Chapel
+        body: MUST-FIX — The submitted generated artifact is not convergent. Running the snapshot-local
+          generator (`npm run dev -- agents generate`) twice makes the second run report up-to-date,
+          but the first run re-adds the trailing generated newline removed by this commit (and
+          refreshes the generated timestamp), so `git diff --exit-code -- kspec-agents.md` fails.
+          This directly contradicts the task's required double-generation/clean-diff gate and means
+          the checked-in output cannot be reproduced from the checked-in generator. Commit the exact
+          generated output or fix the generator/formatter contract, then prove a clean second run.
+        created_at: 2026-07-18T05:01:29.882Z
+    kind: blocker
+  - _ulid: 01KXSSKTBCW6K3NR3QZBKQR2B4
+    anchor:
+      type: code
+      commit: 11f98ee5fa3a30d01f527d964744fa0bca98c3e5
+      line_end: 373
+      line_start: 350
+      path: tests/e2e/docs.spec.ts
+      side: head
+    entries:
+      - _ulid: 01KXSSKTBCHXR62N2V2NT8A43X
+        author: Jacob Chapel
+        body: MUST-FIX — This test is annotated as proving offline/static rendering without daemon API
+          access, but it keeps the real daemon fixture running and ignores every GET request plus
+          every non-API external request. It would still pass if docs rendering depended on a daemon
+          GET or an internet-hosted GET, so it does not prove @docs-reachability ac-2/ac-3 or the
+          task's browser offline/static gate. Exercise the built browser surface with daemon/API and
+          non-local network access blocked (while serving only the static shell/assets), and assert
+          the pages still render.
+        created_at: 2026-07-18T05:01:34.444Z
+    kind: blocker
+  - _ulid: 01KXSSKXN6KG0X7VCMM5ZJ5NN9
+    anchor:
+      type: code
+      commit: 11f98ee5fa3a30d01f527d964744fa0bca98c3e5
+      line_end: 385
+      line_start: 376
+      path: tests/e2e/docs.spec.ts
+      side: head
+    entries:
+      - _ulid: 01KXSSKXN6RGZ8N2QC9G2KVRT4
+        author: Jacob Chapel
+        body: MUST-FIX — The task requires lifecycle-document links to reach the agents UI, but this test
+          selects `nav-link-agents`, the global application navigation present on every page. The
+          guide itself currently renders `/agents` as inline code rather than an article link, and
+          this test would pass unchanged if all guide-owned agents links were absent or broken.
+          Assert and follow a link inside the lifecycle guide article (with an accessible name),
+          coordinating the prose owner if the link is missing.
+        created_at: 2026-07-18T05:01:37.830Z
+    kind: blocker
+  - _ulid: 01KXSSM0YQSP3A3BA150CQDJSD
+    anchor:
+      type: code
+      commit: 11f98ee5fa3a30d01f527d964744fa0bca98c3e5
+      line_end: 347
+      line_start: 321
+      path: tests/e2e/docs.spec.ts
+      side: head
+    entries:
+      - _ulid: 01KXSSM0YQ5DQ5W37QP2Z7N08F
+        author: Jacob Chapel
+        body: MUST-FIX — The @docs-search ac-3 annotation claims public/local result-set parity, but both
+          viewport cases query one `dist/web-ui/pagefind` index with an empty-base daemon shell. No
+          second public-base build/index is queried or compared, so the test proves six-page
+          inclusion in one artifact, not that public and local deployments return the same matching
+          page set. Build/query both deployment variants for the same terms and compare canonical
+          result slugs (allowing only the expected base-path difference).
+        created_at: 2026-07-18T05:01:41.207Z
+    kind: blocker
+  - _ulid: 01KXSSM4G6DDQ7H405KGY7KYSF
+    anchor:
+      type: code
+      commit: 11f98ee5fa3a30d01f527d964744fa0bca98c3e5
+      line_end: 1242
+      line_start: 1240
+      path: tests/web-ui-docs-rendering.test.ts
+      side: head
+    entries:
+      - _ulid: 01KXSSM4G6AEP3DSPTSJ9S1MGR
+        author: Jacob Chapel
+        body: MUST-FIX — The task explicitly requires a negative broken-anchor fixture, but none of the six
+          current pages contains an authored local fragment link. Consequently this loop sees only
+          heading self-links generated from the same TOC ids and is tautological for the
+          broken-authored-anchor case; no mutation/input demonstrates rejection of `#missing`. Add a
+          behavioral negative fixture (or extracted closure validator exercised with one) that
+          contains a broken local fragment and fails while valid fragments pass.
+        created_at: 2026-07-18T05:01:44.838Z
+    kind: blocker
+  - _ulid: 01KXSSMA44TFKK78G5KAME69SS
+    entries:
+      - _ulid: 01KXSSMA44M58V7SRQ9DHNHY7A
+        author: Jacob Chapel
+        body: "Review evidence log — Files read: all six changed files; full changed hunks and relevant
+          surrounding validators; tests/e2e/fixtures/test-base.ts; DocsSearch.svelte; both docs
+          routes; all six dispatch docs pages; templates/agents-sections/06-agent-dispatch-mode.md.
+          Commands run: format, repo/focused lint, typecheck, fresh focused tests, fresh full suite,
+          docs-search/web builds, docs E2E, refs/alignment/completeness validation, local/global
+          generation probes, skill status/verify, git diff/status/history. Claims verified: focused
+          57/298, E2E 16/16, full 2840/10990+3 skipped, and exact six-warning refs baseline all
+          reproduced; generated-clean claim was disproved locally. Categories searched: correctness,
+          AC/test quality, offline/error paths, links/anchors, search parity, integration, generated
+          convergence, neutrality. Shared-guidance review: only generated kspec-agents.md whitespace
+          was changed; direction 1 found no semantic Kynetic-policy addition and direction 2 had no
+          removed instruction requiring relocation; the artifact-refresh/convergence check failed as
+          recorded above."
+        created_at: 2026-07-18T05:01:50.596Z
+    kind: nit
 verdicts: []
 created_at: 2026-07-18T04:34:31.921Z
-updated_at: 2026-07-18T05:00:28.544Z
+updated_at: 2026-07-18T05:01:50.596Z
 notes: []
