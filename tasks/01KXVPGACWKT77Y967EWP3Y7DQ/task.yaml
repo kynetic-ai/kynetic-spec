@@ -2,10 +2,244 @@ _ulid: 01KXVPGACWKT77Y967EWP3Y7DQ
 slugs: []
 title: Serve packaged Pagefind assets from the Node daemon for real local docs search
 type: bug
-description: "Node daemon static serving does not expose nested Pagefind assets:
-  /pagefind/pagefind.js falls through because registerWebUiNodeStaticRoutes only serves /_app/* and
-  root-level files. Add a source-owned daemon asset-delivery fix and behavioral coverage so locally
-  served docs search works without Playwright static-asset routing."
+description: >-
+  ## Covers
+
+
+  - `@docs-search ac-1`: a reader's query returns matching docs pages as navigable results from the
+  actual locally served UI.
+
+  - `@docs-search ac-2`: the Node-daemon path performs search entirely from same-origin packaged
+  assets, with no non-local request.
+
+  - `@docs-search ac-3`: the real local-daemon result set remains canonically equivalent to the
+  public deployment index built from the same docs content.
+
+
+  This is supplemental implementation work on active plan
+  `@plan-documentation-completeness-and-dispatch-workspaces`. It closes a runtime proof gap exposed
+  after the plan's documentation work merged in `7a3d8db2f3463635563b1904c5a6822204e2478a`.
+
+
+  ## What
+
+
+  Serve the generated Pagefind bundle under a narrow nested `/pagefind/*` path from the Node daemon,
+  remove the Playwright route-fulfillment hack used by the local docs-search test, and prove that
+  wide and narrow browser searches reach all six dispatch documentation pages through the actual
+  daemon and packaged `dist/web-ui/pagefind` assets.
+
+
+  ## Why
+
+
+  `packages/daemon/src/web-ui-static.ts` currently registers only `/_app/*` and a root-level
+  `/:asset` route. A browser request such as `/pagefind/pagefind.js`, and the nested `index/*`,
+  `fragment/*`, and `filter/*` requests Pagefind lazily makes, therefore falls through instead of
+  being served by the Node daemon.
+
+
+  `tests/e2e/docs.spec.ts` currently hides that production failure in the wide/narrow local-daemon
+  search proof: `serveStaticPagefind()` intercepts `**/pagefind/**` and calls `route.fulfill({ path:
+  ... })` from `dist/web-ui/pagefind`. That verifies the browser UI against test-injected files, not
+  locally served offline search. The separate public/local parity helper also serves two generated
+  indexes through synthetic `search.local` interception and cannot substitute for a real
+  local-daemon proof.
+
+
+  ## Source authorities and current evidence
+
+
+  - Primary behavior owner: `@docs-search ac-1`, `ac-2`, and `ac-3`.
+
+  - Parent work owner: `@plan-documentation-completeness-and-dispatch-workspaces` (active
+  supplemental work).
+
+  - Node static implementation and route registration: `packages/daemon/src/web-ui-static.ts` and
+  `packages/daemon/src/server.ts`.
+
+  - Existing Node static fixture and traversal/404 assertions:
+  `tests/daemon-web-ui-startup-asset-coherence.test.ts`.
+
+  - Actual daemon-backed browser fixture: `tests/e2e/fixtures/test-base.ts`, which copies
+  `dist/web-ui` into an isolated fixture and defaults E2E to the Node runtime.
+
+  - Search source and browser proof: `packages/web-ui/src/lib/components/DocsSearch.svelte`,
+  `scripts/build-docs-search.cjs`, `tests/web-ui-docs-search.test.ts`, and `tests/e2e/docs.spec.ts`.
+
+  - Deterministic packaging sequence: root `package.json` runs the web UI build, `npm run
+  build:docs-search`, then copies `packages/web-ui/build` into `dist/web-ui`; `build:e2e` includes
+  `build:web-ui`.
+
+  - Current generated extensions inspected under `dist/web-ui/pagefind`: `.js`, `.css`, `.json`,
+  `.pagefind`, `.pf_meta`, `.pf_index`, `.pf_fragment`, and `.pf_filter`. JS/CSS/JSON need their
+  existing correct text/application types; Pagefind/WASM and `pf_*` payloads must retain
+  byte-for-byte binary fidelity and an appropriate binary content type (the existing
+  `application/octet-stream` fallback is acceptable unless runtime inspection proves Pagefind
+  requires a more specific mapping).
+
+
+  ## How
+
+
+  1. Add the minimal source-owned Node route for `/pagefind/*` in `registerWebUiNodeStaticRoutes`,
+  or an equally narrow supported mechanism. Reuse the existing static-asset response helper where
+  safe. Do not add a general nested-file catch-all.
+
+  2. Keep filesystem authority rooted at the configured web UI bundle. Decode/normalize request
+  handling deliberately so raw and encoded traversal attempts cannot escape `webUiPath` or broaden
+  access beyond the `pagefind` subtree. Directories, absent files, malformed encoding, and rejected
+  paths must not become SPA HTML or leak filesystem details; return the existing not-found behavior.
+
+  3. Preserve existing cache behavior (`public, max-age=86400` unless a source-backed reason
+  requires otherwise), missing-file 404s, exact binary bytes, and correct content types for real
+  generated assets. Inspect the emitted extensions above and actual browser requirements before
+  adding MIME entries; do not turn compressed Pagefind chunks into text.
+
+  4. Add focused RED tests to `tests/daemon-web-ui-startup-asset-coherence.test.ts` (or a narrowly
+  named adjacent daemon static-route test if clearer), using representative files copied from or
+  byte-shaped like real Pagefind output. Before implementation they must demonstrate that
+  `/pagefind/pagefind.js` and nested assets are not deliverable by the Node route.
+
+  5. Turn those tests GREEN for representative entry and runtime assets (`pagefind.js`,
+  `pagefind-entry.json`, and a `.pagefind` binary), lazy nested chunks (`index/*.pf_index`,
+  `fragment/*.pf_fragment`, and/or `filter/*.pf_filter`), binary fidelity, content type, and cache
+  headers. Also assert absent assets return 404 and raw/encoded traversal or separator variants
+  cannot read a sentinel outside the bundle or outside the Pagefind subtree.
+
+  6. In `tests/e2e/docs.spec.ts`, remove `PAGEFIND_BUILD`, `serveStaticPagefind()`, and any
+  imports/constants used only by that helper. The wide and narrow six-page search test must use its
+  existing real Node daemon fixture and the packaged `dist/web-ui/pagefind` tree without
+  `page.route('**/pagefind/**')`, direct `route.fulfill`, an API mock, or an alternate static server
+  for the local-daemon path.
+
+  7. Strengthen that real local-daemon browser proof to collect and assert: no request to a
+  non-local origin; no failed Pagefind request; no browser console error or uncaught page error;
+  successful real searches for all six `DISPATCH_DOCS`; each result is reachable and renders the
+  expected heading at both wide and narrow viewports. Assert observed Pagefind requests are
+  same-origin daemon requests so a test that never initializes search cannot pass vacuously.
+
+  8. Keep or improve an honest `ac-3` public/local canonical result-set parity check built from
+  identical docs content. It may use purpose-built generated variants for parity, but two
+  synthetic/intercepted indexes must not be presented as the `ac-1`/`ac-2` local-daemon proof.
+
+  9. Keep the build/package sequence deterministic: `npm run build:web-ui` must leave the generated
+  Pagefind directory in `dist/web-ui/pagefind` before the daemon-backed E2E runs. Change
+  `scripts/build-docs-search.cjs`, package scripts, or public search code only if the implementation
+  exposes a real deterministic-copy defect, and cover any such change directly. Do not change public
+  search matching, ranking, URL, or indexing semantics beyond restoring asset delivery.
+
+
+  ## Likely files
+
+
+  - Modify: `packages/daemon/src/web-ui-static.ts`
+
+  - Modify: `tests/daemon-web-ui-startup-asset-coherence.test.ts` (or create one narrowly scoped
+  adjacent daemon static-route test instead)
+
+  - Modify: `tests/e2e/docs.spec.ts`
+
+  - Inspect and normally leave unchanged: `packages/daemon/src/server.ts`,
+  `tests/e2e/fixtures/test-base.ts`, `packages/web-ui/src/lib/components/DocsSearch.svelte`,
+  `scripts/build-docs-search.cjs`, `tests/web-ui-docs-search.test.ts`, and root `package.json`
+
+  - Generated verification output only: `packages/web-ui/build/pagefind/**` and
+  `dist/web-ui/pagefind/**`; do not hand-edit generated files.
+
+
+  ## Required RED/GREEN proof
+
+
+  **RED before source implementation:** focused Node static-route tests fail because real
+  `/pagefind/*` entry/nested assets are unavailable; the interception-free wide/narrow local search
+  fails on Pagefind requests.
+
+
+  **GREEN after implementation:** the narrow route serves representative real entry, binary runtime,
+  index, fragment, and filter assets with containment, 404, fidelity, MIME, and cache guarantees;
+  interception-free wide/narrow searches use same-origin daemon assets, return and navigate to all
+  six pages, and produce no external/failed/error evidence; canonical public/local result sets match
+  for the same content.
+
+
+  Tests must carry machine-readable `// AC: @docs-search ac-N` annotations for the behavior each
+  test proves.
+
+
+  ## Verification
+
+
+  Run all of the following from the repository root and report focused results separately from any
+  pre-existing full-suite warning baseline:
+
+
+  ```bash
+
+  npm test -- tests/daemon-web-ui-startup-asset-coherence.test.ts
+
+  npm test -- tests/web-ui-docs-search.test.ts
+
+  npm run build:docs-search
+
+  npm run build:web-ui
+
+  npm run test:e2e -- tests/e2e/docs.spec.ts
+
+  npm run format:check
+
+  npm run lint
+
+  npm run typecheck
+
+  npm test
+
+  kspec validate --refs --warnings-ok
+
+  kspec validate --alignment --warnings-ok
+
+  kspec validate --completeness --warnings-ok
+
+  git diff --check
+
+  ```
+
+
+  If the daemon tests are placed in a new focused file, include that exact file in the first command
+  as well as retaining the existing static-coherence suite.
+
+
+  ## Out of scope / do not
+
+
+  - No broad arbitrary nested static-file route, catch-all filesystem server, or unrelated
+  Bun/static-route redesign.
+
+  - No `page.route('**/pagefind/**')`, direct `route.fulfill`, API mock, synthetic-only index, or
+  alternate static server as proof of the local-daemon path.
+
+  - No public search semantics, ranking, content, canonical URL, or docs-index scope changes beyond
+  what is necessary to restore actual asset delivery.
+
+  - No documentation prose changes unless implementation reveals a factual correction owned by the
+  active parent plan; return any such correction to that owner and explain it.
+
+  - No unrelated documentation, lifecycle, dispatch, daemon, or web UI cleanup.
+
+  - No hand edits to generated Pagefind or web UI output.
+
+
+  ## Reviewer handoff
+
+
+  Reviewer must inspect the route scope and path-containment logic, compare all emitted Pagefind
+  extensions to the MIME/fidelity assertions, and independently confirm absent/encoded/traversal
+  requests cannot expand filesystem authority. Review the E2E diff to prove every local Pagefind
+  interception helper/import/constant is gone. Then run the deterministic build and exact docs E2E
+  under the default Node fixture, confirming observed `/pagefind/*` requests are same-origin and
+  successful, all six pages are found and reached at wide/narrow sizes, browser error collections
+  are empty, and the public/local parity assertion remains canonical and honest. Reject a passing
+  test that can succeed without loading the real packaged local index.
 spec_ref: "@docs-search"
 plan_ref: "@plan-documentation-completeness-and-dispatch-workspaces"
 status: pending
@@ -29,6 +263,263 @@ history:
         previous: null
     command: task-set
     timestamp: 2026-07-18T22:46:11.901Z
+  - author: Jacob Chapel
+    changes:
+      description:
+        new: >-
+          ## Covers
+
+
+          - `@docs-search ac-1`: a reader's query returns matching docs pages as navigable results
+          from the actual locally served UI.
+
+          - `@docs-search ac-2`: the Node-daemon path performs search entirely from same-origin
+          packaged assets, with no non-local request.
+
+          - `@docs-search ac-3`: the real local-daemon result set remains canonically equivalent to
+          the public deployment index built from the same docs content.
+
+
+          This is supplemental implementation work on active plan
+          `@plan-documentation-completeness-and-dispatch-workspaces`. It closes a runtime proof gap
+          exposed after the plan's documentation work merged in
+          `7a3d8db2f3463635563b1904c5a6822204e2478a`.
+
+
+          ## What
+
+
+          Serve the generated Pagefind bundle under a narrow nested `/pagefind/*` path from the Node
+          daemon, remove the Playwright route-fulfillment hack used by the local docs-search test,
+          and prove that wide and narrow browser searches reach all six dispatch documentation pages
+          through the actual daemon and packaged `dist/web-ui/pagefind` assets.
+
+
+          ## Why
+
+
+          `packages/daemon/src/web-ui-static.ts` currently registers only `/_app/*` and a root-level
+          `/:asset` route. A browser request such as `/pagefind/pagefind.js`, and the nested
+          `index/*`, `fragment/*`, and `filter/*` requests Pagefind lazily makes, therefore falls
+          through instead of being served by the Node daemon.
+
+
+          `tests/e2e/docs.spec.ts` currently hides that production failure in the wide/narrow
+          local-daemon search proof: `serveStaticPagefind()` intercepts `**/pagefind/**` and calls
+          `route.fulfill({ path: ... })` from `dist/web-ui/pagefind`. That verifies the browser UI
+          against test-injected files, not locally served offline search. The separate public/local
+          parity helper also serves two generated indexes through synthetic `search.local`
+          interception and cannot substitute for a real local-daemon proof.
+
+
+          ## Source authorities and current evidence
+
+
+          - Primary behavior owner: `@docs-search ac-1`, `ac-2`, and `ac-3`.
+
+          - Parent work owner: `@plan-documentation-completeness-and-dispatch-workspaces` (active
+          supplemental work).
+
+          - Node static implementation and route registration:
+          `packages/daemon/src/web-ui-static.ts` and `packages/daemon/src/server.ts`.
+
+          - Existing Node static fixture and traversal/404 assertions:
+          `tests/daemon-web-ui-startup-asset-coherence.test.ts`.
+
+          - Actual daemon-backed browser fixture: `tests/e2e/fixtures/test-base.ts`, which copies
+          `dist/web-ui` into an isolated fixture and defaults E2E to the Node runtime.
+
+          - Search source and browser proof: `packages/web-ui/src/lib/components/DocsSearch.svelte`,
+          `scripts/build-docs-search.cjs`, `tests/web-ui-docs-search.test.ts`, and
+          `tests/e2e/docs.spec.ts`.
+
+          - Deterministic packaging sequence: root `package.json` runs the web UI build, `npm run
+          build:docs-search`, then copies `packages/web-ui/build` into `dist/web-ui`; `build:e2e`
+          includes `build:web-ui`.
+
+          - Current generated extensions inspected under `dist/web-ui/pagefind`: `.js`, `.css`,
+          `.json`, `.pagefind`, `.pf_meta`, `.pf_index`, `.pf_fragment`, and `.pf_filter`.
+          JS/CSS/JSON need their existing correct text/application types; Pagefind/WASM and `pf_*`
+          payloads must retain byte-for-byte binary fidelity and an appropriate binary content type
+          (the existing `application/octet-stream` fallback is acceptable unless runtime inspection
+          proves Pagefind requires a more specific mapping).
+
+
+          ## How
+
+
+          1. Add the minimal source-owned Node route for `/pagefind/*` in
+          `registerWebUiNodeStaticRoutes`, or an equally narrow supported mechanism. Reuse the
+          existing static-asset response helper where safe. Do not add a general nested-file
+          catch-all.
+
+          2. Keep filesystem authority rooted at the configured web UI bundle. Decode/normalize
+          request handling deliberately so raw and encoded traversal attempts cannot escape
+          `webUiPath` or broaden access beyond the `pagefind` subtree. Directories, absent files,
+          malformed encoding, and rejected paths must not become SPA HTML or leak filesystem
+          details; return the existing not-found behavior.
+
+          3. Preserve existing cache behavior (`public, max-age=86400` unless a source-backed reason
+          requires otherwise), missing-file 404s, exact binary bytes, and correct content types for
+          real generated assets. Inspect the emitted extensions above and actual browser
+          requirements before adding MIME entries; do not turn compressed Pagefind chunks into text.
+
+          4. Add focused RED tests to `tests/daemon-web-ui-startup-asset-coherence.test.ts` (or a
+          narrowly named adjacent daemon static-route test if clearer), using representative files
+          copied from or byte-shaped like real Pagefind output. Before implementation they must
+          demonstrate that `/pagefind/pagefind.js` and nested assets are not deliverable by the Node
+          route.
+
+          5. Turn those tests GREEN for representative entry and runtime assets (`pagefind.js`,
+          `pagefind-entry.json`, and a `.pagefind` binary), lazy nested chunks (`index/*.pf_index`,
+          `fragment/*.pf_fragment`, and/or `filter/*.pf_filter`), binary fidelity, content type, and
+          cache headers. Also assert absent assets return 404 and raw/encoded traversal or separator
+          variants cannot read a sentinel outside the bundle or outside the Pagefind subtree.
+
+          6. In `tests/e2e/docs.spec.ts`, remove `PAGEFIND_BUILD`, `serveStaticPagefind()`, and any
+          imports/constants used only by that helper. The wide and narrow six-page search test must
+          use its existing real Node daemon fixture and the packaged `dist/web-ui/pagefind` tree
+          without `page.route('**/pagefind/**')`, direct `route.fulfill`, an API mock, or an
+          alternate static server for the local-daemon path.
+
+          7. Strengthen that real local-daemon browser proof to collect and assert: no request to a
+          non-local origin; no failed Pagefind request; no browser console error or uncaught page
+          error; successful real searches for all six `DISPATCH_DOCS`; each result is reachable and
+          renders the expected heading at both wide and narrow viewports. Assert observed Pagefind
+          requests are same-origin daemon requests so a test that never initializes search cannot
+          pass vacuously.
+
+          8. Keep or improve an honest `ac-3` public/local canonical result-set parity check built
+          from identical docs content. It may use purpose-built generated variants for parity, but
+          two synthetic/intercepted indexes must not be presented as the `ac-1`/`ac-2` local-daemon
+          proof.
+
+          9. Keep the build/package sequence deterministic: `npm run build:web-ui` must leave the
+          generated Pagefind directory in `dist/web-ui/pagefind` before the daemon-backed E2E runs.
+          Change `scripts/build-docs-search.cjs`, package scripts, or public search code only if the
+          implementation exposes a real deterministic-copy defect, and cover any such change
+          directly. Do not change public search matching, ranking, URL, or indexing semantics beyond
+          restoring asset delivery.
+
+
+          ## Likely files
+
+
+          - Modify: `packages/daemon/src/web-ui-static.ts`
+
+          - Modify: `tests/daemon-web-ui-startup-asset-coherence.test.ts` (or create one narrowly
+          scoped adjacent daemon static-route test instead)
+
+          - Modify: `tests/e2e/docs.spec.ts`
+
+          - Inspect and normally leave unchanged: `packages/daemon/src/server.ts`,
+          `tests/e2e/fixtures/test-base.ts`, `packages/web-ui/src/lib/components/DocsSearch.svelte`,
+          `scripts/build-docs-search.cjs`, `tests/web-ui-docs-search.test.ts`, and root
+          `package.json`
+
+          - Generated verification output only: `packages/web-ui/build/pagefind/**` and
+          `dist/web-ui/pagefind/**`; do not hand-edit generated files.
+
+
+          ## Required RED/GREEN proof
+
+
+          **RED before source implementation:** focused Node static-route tests fail because real
+          `/pagefind/*` entry/nested assets are unavailable; the interception-free wide/narrow local
+          search fails on Pagefind requests.
+
+
+          **GREEN after implementation:** the narrow route serves representative real entry, binary
+          runtime, index, fragment, and filter assets with containment, 404, fidelity, MIME, and
+          cache guarantees; interception-free wide/narrow searches use same-origin daemon assets,
+          return and navigate to all six pages, and produce no external/failed/error evidence;
+          canonical public/local result sets match for the same content.
+
+
+          Tests must carry machine-readable `// AC: @docs-search ac-N` annotations for the behavior
+          each test proves.
+
+
+          ## Verification
+
+
+          Run all of the following from the repository root and report focused results separately
+          from any pre-existing full-suite warning baseline:
+
+
+          ```bash
+
+          npm test -- tests/daemon-web-ui-startup-asset-coherence.test.ts
+
+          npm test -- tests/web-ui-docs-search.test.ts
+
+          npm run build:docs-search
+
+          npm run build:web-ui
+
+          npm run test:e2e -- tests/e2e/docs.spec.ts
+
+          npm run format:check
+
+          npm run lint
+
+          npm run typecheck
+
+          npm test
+
+          kspec validate --refs --warnings-ok
+
+          kspec validate --alignment --warnings-ok
+
+          kspec validate --completeness --warnings-ok
+
+          git diff --check
+
+          ```
+
+
+          If the daemon tests are placed in a new focused file, include that exact file in the first
+          command as well as retaining the existing static-coherence suite.
+
+
+          ## Out of scope / do not
+
+
+          - No broad arbitrary nested static-file route, catch-all filesystem server, or unrelated
+          Bun/static-route redesign.
+
+          - No `page.route('**/pagefind/**')`, direct `route.fulfill`, API mock, synthetic-only
+          index, or alternate static server as proof of the local-daemon path.
+
+          - No public search semantics, ranking, content, canonical URL, or docs-index scope changes
+          beyond what is necessary to restore actual asset delivery.
+
+          - No documentation prose changes unless implementation reveals a factual correction owned
+          by the active parent plan; return any such correction to that owner and explain it.
+
+          - No unrelated documentation, lifecycle, dispatch, daemon, or web UI cleanup.
+
+          - No hand edits to generated Pagefind or web UI output.
+
+
+          ## Reviewer handoff
+
+
+          Reviewer must inspect the route scope and path-containment logic, compare all emitted
+          Pagefind extensions to the MIME/fidelity assertions, and independently confirm
+          absent/encoded/traversal requests cannot expand filesystem authority. Review the E2E diff
+          to prove every local Pagefind interception helper/import/constant is gone. Then run the
+          deterministic build and exact docs E2E under the default Node fixture, confirming observed
+          `/pagefind/*` requests are same-origin and successful, all six pages are found and reached
+          at wide/narrow sizes, browser error collections are empty, and the public/local parity
+          assertion remains canonical and honest. Reject a passing test that can succeed without
+          loading the real packaged local index.
+        previous: "Node daemon static serving does not expose nested Pagefind assets: /pagefind/pagefind.js
+          falls through because registerWebUiNodeStaticRoutes only serves /_app/* and root-level
+          files. Add a source-owned daemon asset-delivery fix and behavioral coverage so locally
+          served docs search works without Playwright static-asset routing."
+    command: task-set
+    timestamp: 2026-07-18T22:46:47.990Z
 created_at: 2026-07-18T22:45:42.940Z
 todos: []
 automation: manual_only
