@@ -31,6 +31,13 @@ events:
       kind: blocker
       thread_ulid: 01KXVQV9275WWXYB71XB35HX70
     timestamp: 2026-07-18T23:09:10.868Z
+  - _ulid: 01KXVQVR7N2X5N4PK3DA58QYQ8
+    actor: codex
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KXVQVQY4X164FAHBMY0NFPYW
+    timestamp: 2026-07-18T23:09:26.133Z
 examined_commit: null
 external_links: []
 lifecycle_state: open
@@ -85,7 +92,27 @@ threads:
           origin. Keep console-error and page-error collections as already required."
         created_at: 2026-07-18T23:09:10.599Z
     kind: blocker
+  - _ulid: 01KXVQVQY4X164FAHBMY0NFPYW
+    anchor:
+      type: structured
+      field: Verification
+      ref: "@01KXVPGACWKT77Y967EWP3Y7DQ"
+      section: description
+    entries:
+      - _ulid: 01KXVQVQY4CJB2Y60PEBVGHPMH
+        author: codex
+        body: "The verification list does not match the mandatory Kynetic lint gates in work-gates and
+          review-gates. It lists npm run lint, but the hard repo gate is npm run lint -- --quiet and
+          every changed TypeScript or test file also requires focused oxlint with warnings
+          inspected. All three likely modified files are TypeScript, so the focused gate is
+          applicable. Smallest correction: replace or supplement the lint line with npm run lint --
+          --quiet and an executable focused command for packages/daemon/src/web-ui-static.ts,
+          tests/daemon-web-ui-startup-asset-coherence.test.ts, and tests/e2e/docs.spec.ts, adjusted
+          to include any newly created adjacent test file. Preserve the existing format, typecheck,
+          focused tests, E2E, full test, validation, and diff checks."
+        created_at: 2026-07-18T23:09:25.828Z
+    kind: blocker
 verdicts: []
 created_at: 2026-07-18T23:08:17.978Z
-updated_at: 2026-07-18T23:09:10.599Z
+updated_at: 2026-07-18T23:09:25.828Z
 notes: []
