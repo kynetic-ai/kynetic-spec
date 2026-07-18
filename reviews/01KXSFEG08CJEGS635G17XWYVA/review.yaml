@@ -111,6 +111,33 @@ checks:
     runner: kspec skill verify
     created_at: 2026-07-18T02:28:05.959Z
     completed_at: 2026-07-18T02:28:05.959Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Files read: all 11 changed files; every owned Getting Started, guide, concept,
+      troubleshooting, and release-notes page; inventory records; docs plugin/config;
+      init/shadow/task/review command sources; web UI API/E2E mutation coverage; linked specs; prior
+      review; task notes; package workflow/neutrality guidance. Commands run: git
+      diff/log/blame/status, rg/jq semantic searches, CLI help checks, focused docs tests, fresh
+      full tests, format/lint/focused-lint/typecheck, three kspec validates, production web build,
+      skill status/verify. Claims verified: release-notes child navigation now matches production
+      plugin; prior skill drift is fixed; strict inventory closure and classification counts pass;
+      tutorial/plan snippets resolve. Categories searched: correctness, lifecycle/state edge cases,
+      command error paths, security/data exposure, test quality, navigation/integration, and
+      semantic package neutrality. Findings: eight anchored blockers for two merge-before-complete
+      omissions, two hard-coded main-branch claims, two wrong manifest-name claims, obsolete
+      pending-review submit recovery, and false read-only web UI guidance. Shared surfaces: no
+      templates/skills or templates/agents-sections source changed, but their source-template
+      classifications were semantically sampled; direction 1 found no new leak in those shared
+      sources, direction 2 was not triggered because no Kynetic-only instruction was removed.
+      Project-local policy remains in AGENTS.md/work-gates/review-gates. Generated pairing verified
+      by kspec skill verify; no regeneration required because shared sources were unchanged."
+    name: analytical review evidence
+    required: false
+    runner: manual diff and source audit
+    created_at: 2026-07-18T02:30:27.755Z
+    completed_at: 2026-07-18T02:30:27.755Z
 events:
   - _ulid: 01KXSFEFZS8KWKJ2RR87K28FAJ
     actor: pr-reviewer
@@ -251,6 +278,13 @@ events:
       kind: blocker
       thread_ulid: 01KXSGYE7A06V2EAN1T1JWZZXP
     timestamp: 2026-07-18T02:30:05.564Z
+  - _ulid: 01KXSGZ4DDJ5ZM4NSP43VM2ES9
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: analytical review evidence
+    timestamp: 2026-07-18T02:30:28.014Z
 examined_commit: 6a6a1f66957df8d97877d57a143efaf4ee3c6555
 external_links: []
 lifecycle_state: open
@@ -410,5 +444,5 @@ threads:
     kind: blocker
 verdicts: []
 created_at: 2026-07-18T02:03:54.248Z
-updated_at: 2026-07-18T02:30:05.290Z
+updated_at: 2026-07-18T02:30:27.755Z
 notes: []
