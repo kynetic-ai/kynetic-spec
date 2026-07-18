@@ -17,3 +17,18 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-07-18T00:35:51.893Z
+  - _ulid: 01KXSBRS43FKKCC3Q5N9C926KQ
+    content: "Completed the remaining public-doc audit: the manifest now strictly classifies every
+      tracked Markdown surface (including the six dispatch pages) with final evidence/dispositions
+      and no construction allowance; Getting Started now has an accurate shadow manifest path,
+      Node-default daemon guidance, and a complete linear tutorial sequence; the plan-import snippet
+      is parser-validated; merge/completion ordering and release-note single-source guidance are
+      corrected. Rechecked approved lifecycle tip 3f22e6c93c68115d77e1bde062f7cd12034f91d8 and
+      current local-only no-remote behavior. Focused 277-test docs suite, docs-search build,
+      formatting, lint, typecheck, and all kspec validations passed. Full npm test retry passed
+      every test file, including the known intermittent agent-invocation case, then remained alive
+      in runner teardown with no further output and was stopped after more than one minute; the
+      first run hit the already-tracked /proc identity flake and its targeted rerun passed 14/14."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-07-18T00:59:36.963Z
