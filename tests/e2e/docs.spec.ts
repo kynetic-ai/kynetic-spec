@@ -7,9 +7,10 @@
  */
 
 import { test, expect } from "./fixtures/test-base";
-import { cpSync, existsSync, mkdirSync, mkdtempSync, rmSync } from "node:fs";
+import { cpSync, existsSync, mkdirSync, mkdtempSync, rmSync, symlinkSync } from "node:fs";
 import { execFileSync } from "node:child_process";
 import { dirname, resolve, sep } from "node:path";
+import { tmpdir } from "node:os";
 import { fileURLToPath } from "node:url";
 
 const PROJECT_ROOT = resolve(dirname(fileURLToPath(import.meta.url)), "../..");
@@ -35,21 +36,27 @@ async function serveStaticPagefind(page: import("@playwright/test").Page): Promi
 }
 
 function buildPagefindVariant(basePath: string): { root: string; pagefindDir: string } {
-  const root = mkdtempSync(resolve(PROJECT_ROOT, ".docs-e2e-search-"));
-  mkdirSync(resolve(root, "scripts"), { recursive: true });
-  mkdirSync(resolve(root, "packages/web-ui/build"), { recursive: true });
-  cpSync(resolve(PROJECT_ROOT, "docs"), resolve(root, "docs"), { recursive: true });
-  cpSync(resolve(PROJECT_ROOT, "RELEASE_NOTES.md"), resolve(root, "RELEASE_NOTES.md"));
-  cpSync(
-    resolve(PROJECT_ROOT, "scripts/build-docs-search.cjs"),
-    resolve(root, "scripts/build-docs-search.cjs"),
-  );
-  execFileSync(
-    process.execPath,
-    [resolve(root, "scripts/build-docs-search.cjs"), "--base-path", basePath],
-    { cwd: root, stdio: "pipe" },
-  );
-  return { root, pagefindDir: resolve(root, "packages/web-ui/build/pagefind") };
+  const root = mkdtempSync(resolve(tmpdir(), "kspec-docs-e2e-search-"));
+  try {
+    mkdirSync(resolve(root, "scripts"), { recursive: true });
+    mkdirSync(resolve(root, "packages/web-ui/build"), { recursive: true });
+    symlinkSync(resolve(PROJECT_ROOT, "node_modules"), resolve(root, "node_modules"), "dir");
+    cpSync(resolve(PROJECT_ROOT, "docs"), resolve(root, "docs"), { recursive: true });
+    cpSync(resolve(PROJECT_ROOT, "RELEASE_NOTES.md"), resolve(root, "RELEASE_NOTES.md"));
+    cpSync(
+      resolve(PROJECT_ROOT, "scripts/build-docs-search.cjs"),
+      resolve(root, "scripts/build-docs-search.cjs"),
+    );
+    execFileSync(
+      process.execPath,
+      [resolve(root, "scripts/build-docs-search.cjs"), "--base-path", basePath],
+      { cwd: root, stdio: "pipe" },
+    );
+    return { root, pagefindDir: resolve(root, "packages/web-ui/build/pagefind") };
+  } catch (error) {
+    rmSync(root, { recursive: true, force: true });
+    throw error;
+  }
 }
 
 async function queryPagefindVariant(
@@ -455,10 +462,12 @@ test.describe("Docs", () => {
     page,
   }) => {
     test.slow();
-    const local = buildPagefindVariant("");
-    const publicDeployment = buildPagefindVariant("/kynetic-spec");
-    const queries = DISPATCH_DOCS.map((doc) => doc.query);
+    let local: ReturnType<typeof buildPagefindVariant> | undefined;
+    let publicDeployment: ReturnType<typeof buildPagefindVariant> | undefined;
     try {
+      local = buildPagefindVariant("");
+      publicDeployment = buildPagefindVariant("/kynetic-spec");
+      const queries = DISPATCH_DOCS.map((doc) => doc.query);
       const localResults = await queryPagefindVariant(page, "local", local.pagefindDir, queries);
       const publicResults = await queryPagefindVariant(
         page,
@@ -473,8 +482,8 @@ test.describe("Docs", () => {
         );
       }
     } finally {
-      rmSync(local.root, { recursive: true, force: true });
-      rmSync(publicDeployment.root, { recursive: true, force: true });
+      if (local) rmSync(local.root, { recursive: true, force: true });
+      if (publicDeployment) rmSync(publicDeployment.root, { recursive: true, force: true });
     }
   });
 
