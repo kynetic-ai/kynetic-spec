@@ -525,6 +525,18 @@ events:
       from: open
       to: closed
     timestamp: 2026-07-18T06:25:34.765Z
+  - _ulid: 01KXSYFJJCFYQC2AH78GZARBSA
+    actor: Jacob Chapel
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KXSY8Q59R9VPW93KRGVM0DAN
+    timestamp: 2026-07-18T06:26:38.284Z
+  - _ulid: 01KXSYFP2RC0REYR46A5MB151S
+    actor: Jacob Chapel
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KXSYADN9NNHAPCKC5J2XYAP0
+    timestamp: 2026-07-18T06:26:41.880Z
 examined_commit: 25cfd2ac400b8d5d58a06e0a33b661418f708d1f
 external_links: []
 lifecycle_state: closed
@@ -563,6 +575,8 @@ threads:
           does not begin until line 461, after both helper calls at lines 458-459."
         created_at: 2026-07-18T06:25:19.494Z
     kind: blocker
+    resolved_at: 2026-07-18T06:26:38.029Z
+    resolved_by: Jacob Chapel
   - _ulid: 01KXSYADN9NNHAPCKC5J2XYAP0
     entries:
       - _ulid: 01KXSYADN9EV5W6HMNTKQKDWDJ
@@ -584,6 +598,8 @@ threads:
           repository-local temporary Pagefind fixtures and failure-path leakage."
         created_at: 2026-07-18T06:23:49.417Z
     kind: nit
+    resolved_at: 2026-07-18T06:26:41.558Z
+    resolved_by: Jacob Chapel
   - _ulid: 01KXSYB0PP7R2ZNHYCTEP2JC2J
     anchor:
       type: code
@@ -636,5 +652,5 @@ verdicts:
     role: reviewer
     created_at: 2026-07-18T06:25:34.764Z
 created_at: 2026-07-18T05:58:12.571Z
-updated_at: 2026-07-18T06:25:34.765Z
+updated_at: 2026-07-18T06:26:41.558Z
 notes: []
