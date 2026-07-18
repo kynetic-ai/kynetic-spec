@@ -100,6 +100,17 @@ checks:
     runner: npm run build:docs-search
     created_at: 2026-07-18T03:49:59.316Z
     completed_at: 2026-07-18T03:49:59.316Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: 53 rendered skills verified and 14 plugin-provided skills recognized. No skill source or
+      rendered skill changed in this branch.
+    name: skill verification
+    required: false
+    runner: kspec skill verify
+    created_at: 2026-07-18T03:50:05.846Z
+    completed_at: 2026-07-18T03:50:05.846Z
 events:
   - _ulid: 01KXSKPA0R09R8STVPZ19XCHXA
     actor: Jacob Chapel
@@ -177,6 +188,13 @@ events:
       status: pass
       name: docs search build
     timestamp: 2026-07-18T03:49:59.595Z
+  - _ulid: 01KXSNGYH2EYEMNTKQFES0VFKB
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: skill verification
+    timestamp: 2026-07-18T03:50:06.114Z
 examined_commit: fbee7a50823eec0c6ed2f7efee61858cc29d4cdc
 external_links: []
 lifecycle_state: open
@@ -189,5 +207,5 @@ subject:
 threads: []
 verdicts: []
 created_at: 2026-07-18T03:18:04.569Z
-updated_at: 2026-07-18T03:49:59.316Z
+updated_at: 2026-07-18T03:50:05.846Z
 notes: []
