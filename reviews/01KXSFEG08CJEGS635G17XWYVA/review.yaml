@@ -223,6 +223,13 @@ events:
       kind: blocker
       thread_ulid: 01KXSGXPT50EBZN69DGJJYPYBR
     timestamp: 2026-07-18T02:29:41.600Z
+  - _ulid: 01KXSGXWXG7BCYPKXYSF127ZJG
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KXSGXWM2XW73DHJM5EYYW6TD
+    timestamp: 2026-07-18T02:29:47.568Z
 examined_commit: 6a6a1f66957df8d97877d57a143efaf4ee3c6555
 external_links: []
 lifecycle_state: open
@@ -305,7 +312,25 @@ threads:
           non-universal branch policy as core behavior."
         created_at: 2026-07-18T02:29:41.318Z
     kind: blocker
+  - _ulid: 01KXSGXWM2XW73DHJM5EYYW6TD
+    anchor:
+      type: code
+      commit: 6a6a1f66957df8d97877d57a143efaf4ee3c6555
+      line_end: 20
+      line_start: 15
+      path: docs/concepts/the-shadow-branch.md
+      side: head
+    entries:
+      - _ulid: 01KXSGXWM3WEWE62PF4EP3J555
+        author: Jacob Chapel
+        body: "MUST-FIX — The current 1.2 tree claims every project manifest is `.kspec/kynetic.yaml`.
+          Shadow initialization derives the filename from the project name and writes
+          `.kspec/<project-slug>.yaml` (`src/parser/shadow.ts:2860,2974`);
+          `tests/init-folder-storage-declarations.test.ts` explicitly verifies that contract.
+          Impact: users of any differently named project are directed to a nonexistent file."
+        created_at: 2026-07-18T02:29:47.267Z
+    kind: blocker
 verdicts: []
 created_at: 2026-07-18T02:03:54.248Z
-updated_at: 2026-07-18T02:29:41.318Z
+updated_at: 2026-07-18T02:29:47.267Z
 notes: []
