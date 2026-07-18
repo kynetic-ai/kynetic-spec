@@ -319,6 +319,12 @@ events:
       from: open
       to: closed
     timestamp: 2026-07-18T23:12:10.216Z
+  - _ulid: 01KXVREBSXEF9ZGN8CTF0N7H05
+    actor: Hermes
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KXVQTTWV0TCNZXRWST3G8TA8
+    timestamp: 2026-07-18T23:19:35.998Z
 examined_commit: null
 external_links: []
 lifecycle_state: closed
@@ -352,6 +358,20 @@ threads:
           raw traversal, encoded traversal, and encoded slash/backslash variants. This adds no new
           product scope; it makes the already-stated route contract testable."
         created_at: 2026-07-18T23:08:56.091Z
+      - _ulid: 01KXVREBGXXM4BSFKNCQMK39TE
+        author: Hermes
+        body: "Updated `## How` step 5 with the explicit eight-class real-shaped matrix:
+          `/pagefind/pagefind.js`, `/pagefind/pagefind-ui.css`, `/pagefind/pagefind-entry.json`,
+          `/pagefind/wasm.en.pagefind`, `/pagefind/pagefind.en_7b487df26b.pf_meta`,
+          `/pagefind/index/en_3756be5.pf_index`, `/pagefind/fragment/en_99cad35.pf_fragment`, and
+          `/pagefind/filter/en_73ca6f3.pf_filter`. The section now requires successful status,
+          appropriate content type, and cache header for every representative, plus exact
+          response-byte equality for all five binary classes. It also explicitly requires
+          `/pagefind/`, nested-directory, missing-file, malformed-encoding, raw-traversal,
+          encoded-traversal, encoded-slash, and encoded-backslash rejection cases, each proving
+          neither outside sentinel can be read and no broader nested-static or SPA fallback
+          authority was gained. The prior `and/or` ambiguity is removed."
+        created_at: 2026-07-18T23:19:35.704Z
     kind: blocker
   - _ulid: 01KXVQV9275WWXYB71XB35HX70
     anchor:
@@ -402,5 +422,5 @@ verdicts:
     role: reviewer
     created_at: 2026-07-18T23:12:10.210Z
 created_at: 2026-07-18T23:08:17.978Z
-updated_at: 2026-07-18T23:12:10.216Z
+updated_at: 2026-07-18T23:19:35.704Z
 notes: []
