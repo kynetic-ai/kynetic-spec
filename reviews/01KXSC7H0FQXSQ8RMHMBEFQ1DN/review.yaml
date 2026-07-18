@@ -1,0 +1,26 @@
+_ulid: 01KXSC7H0FQXSQ8RMHMBEFQ1DN
+slugs: []
+title: Review remaining public documentation audit
+author: Jacob Chapel
+checks: []
+events:
+  - _ulid: 01KXSC7H05AA58G7CY7C3136F4
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-07-18T01:07:40.166Z
+examined_commit: 36c04a9b2252b2644bdde988b4f48e71bb366d9a
+external_links: []
+lifecycle_state: draft
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KXPPE9FJ6KB5WG47FV2KFRNY"
+  shadow_commit: ""
+threads: []
+verdicts: []
+created_at: 2026-07-18T01:07:40.175Z
+updated_at: null
+notes: []
