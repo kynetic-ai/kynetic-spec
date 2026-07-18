@@ -285,9 +285,25 @@ events:
       status: pass
       name: analytical review evidence
     timestamp: 2026-07-18T02:30:28.014Z
+  - _ulid: 01KXSGZW9D405MJ3QMH7E19TK9
+    actor: pr-reviewer
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: request_changes
+    timestamp: 2026-07-18T02:30:52.461Z
+  - _ulid: 01KXSGZW9DBFKBVBFA17J0K8CE
+    actor: pr-reviewer
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-07-18T02:30:52.461Z
 examined_commit: 6a6a1f66957df8d97877d57a143efaf4ee3c6555
 external_links: []
-lifecycle_state: open
+lifecycle_state: closed
 related_refs: []
 subject:
   type: task
@@ -442,7 +458,14 @@ threads:
           status-appropriate fix-cycle or review-replacement flow."
         created_at: 2026-07-18T02:30:05.290Z
     kind: blocker
-verdicts: []
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: request_changes
+    reviewer: pr-reviewer
+    role: reviewer
+    created_at: 2026-07-18T02:30:52.454Z
 created_at: 2026-07-18T02:03:54.248Z
-updated_at: 2026-07-18T02:30:27.755Z
+updated_at: 2026-07-18T02:30:52.461Z
 notes: []
