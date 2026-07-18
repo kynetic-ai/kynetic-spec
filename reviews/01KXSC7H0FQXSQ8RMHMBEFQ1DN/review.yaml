@@ -2,7 +2,132 @@ _ulid: 01KXSC7H0FQXSQ8RMHMBEFQ1DN
 slugs: []
 title: Review remaining public documentation audit
 author: Jacob Chapel
-checks: []
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: All 1067 files matched formatting.
+    name: format
+    required: true
+    runner: npm run format:check
+    created_at: 2026-07-18T01:25:30.581Z
+    completed_at: 2026-07-18T01:25:30.581Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: 0 errors. Focused oxlint on both changed TypeScript tests produced only three pre-existing
+      warnings on unchanged lines.
+    name: lint
+    required: true
+    runner: npm run lint -- --quiet
+    created_at: 2026-07-18T01:25:34.684Z
+    completed_at: 2026-07-18T01:25:34.684Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Shared package build and tsc --noEmit passed.
+    name: typecheck
+    required: true
+    runner: npm run typecheck
+    created_at: 2026-07-18T01:25:38.224Z
+    completed_at: 2026-07-18T01:25:38.224Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Fresh run: 2839 suites passed; 10986 tests passed; 3 skipped; exit 0."
+    name: full test suite
+    required: true
+    runner: npm test -- --fresh
+    created_at: 2026-07-18T01:25:41.544Z
+    completed_at: 2026-07-18T01:25:41.544Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Exit 0; References OK with the six documented deprecation warnings.
+    name: kspec validate refs
+    required: true
+    runner: kspec validate --refs --warnings-ok
+    created_at: 2026-07-18T01:25:45.042Z
+    completed_at: 2026-07-18T01:25:45.042Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Exit 0 under the task's documented warnings policy.
+    name: kspec validate alignment
+    required: true
+    runner: kspec validate --alignment --warnings-ok
+    created_at: 2026-07-18T01:25:48.542Z
+    completed_at: 2026-07-18T01:25:48.542Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Exit 0 under the task's documented warnings policy; owned AC annotations were
+      independently inspected.
+    name: kspec validate completeness
+    required: true
+    runner: kspec validate --completeness --warnings-ok
+    created_at: 2026-07-18T01:25:51.896Z
+    completed_at: 2026-07-18T01:25:51.896Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: 57 suites and 277 tests passed, including inventory, rendering, search, README, and
+      resource docs.
+    name: focused documentation suite
+    required: true
+    runner: npm test -- focused documentation files
+    created_at: 2026-07-18T01:25:55.192Z
+    completed_at: 2026-07-18T01:25:55.192Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Indexed 48 documentation entries successfully.
+    name: docs search build
+    required: true
+    runner: npm run build:docs-search
+    created_at: 2026-07-18T01:25:58.709Z
+    completed_at: 2026-07-18T01:25:58.709Z
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Exit 1: merge [codex] is drifted. kspec skill status also reports triage rendered docs drift."
+    name: generated-source pairing
+    required: true
+    runner: kspec skill verify
+    created_at: 2026-07-18T01:26:02.074Z
+    completed_at: 2026-07-18T01:26:02.074Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Files read: all 11 changed files plus Vite docs plugin/config, parser/schema/CLI
+      authorities, release-note tests, source templates, historical/internal samples, and local
+      policy homes. Commands run: full base/head diff, task/spec/plan/review lookups, git/jq
+      independent inventory derivation, CLI help checks, format/lint/typecheck, focused and fresh
+      full tests, docs-search build, three validations, skill status/verify, diff check. Claims
+      verified: exact 146-file Markdown closure and six additions; factual init path, Node runtime
+      default, active derived-plan status, parser-valid plan snippet, review/merge ordering,
+      canonical release-note build wiring. Categories searched: correctness, navigation/edge cases,
+      error paths, security/recovery safety, test quality, integration, generated pairing, and
+      semantic package neutrality. Shared surfaces touched: none by this patch; direction-1 sampling
+      found neutral package templates and direction-2 Kynetic policy remains in AGENTS.md and
+      project-local work/review gates. Findings: release child omission and generated pairing
+      drift."
+    name: analytical review
+    required: true
+    runner: manual reviewer investigation
+    created_at: 2026-07-18T01:26:05.692Z
+    completed_at: 2026-07-18T01:26:05.692Z
 events:
   - _ulid: 01KXSC7H05AA58G7CY7C3136F4
     actor: Jacob Chapel
@@ -17,17 +142,170 @@ events:
       from: draft
       to: open
     timestamp: 2026-07-18T01:07:54.745Z
+  - _ulid: 01KXSD86KTD9ZNEMCVF07E0B4P
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: format
+    timestamp: 2026-07-18T01:25:30.874Z
+  - _ulid: 01KXSD8AK4JGDB6129XXW8XW62
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: lint
+    timestamp: 2026-07-18T01:25:34.948Z
+  - _ulid: 01KXSD8E1VJFMCNFPA3N552X6Z
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: typecheck
+    timestamp: 2026-07-18T01:25:38.491Z
+  - _ulid: 01KXSD8H9R8A585SC2MXHZ1N1B
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: full test suite
+    timestamp: 2026-07-18T01:25:41.816Z
+  - _ulid: 01KXSD8MPRN42TF9HV0PT5D818
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate refs
+    timestamp: 2026-07-18T01:25:45.304Z
+  - _ulid: 01KXSD8R3QSQYYJ9CXWGSNG1Q3
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate alignment
+    timestamp: 2026-07-18T01:25:48.792Z
+  - _ulid: 01KXSD8VCRFPF2ZGDVDXFWQPC5
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate completeness
+    timestamp: 2026-07-18T01:25:52.152Z
+  - _ulid: 01KXSD8YPRKCCTVZ55AQ0KQR2H
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: focused documentation suite
+    timestamp: 2026-07-18T01:25:55.544Z
+  - _ulid: 01KXSD921Q0YCE7RAEYR85DS0N
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: docs search build
+    timestamp: 2026-07-18T01:25:58.967Z
+  - _ulid: 01KXSD95AWE94XV0SD6JDW5YPN
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: fail
+      name: generated-source pairing
+    timestamp: 2026-07-18T01:26:02.332Z
+  - _ulid: 01KXSD98WX7J6MDGH0CZZ4SQBR
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: analytical review
+    timestamp: 2026-07-18T01:26:05.981Z
+  - _ulid: 01KXSD9CFDVHRMQKH9P3JTDY5X
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KXSD9C092FYK10VJE8ME8NKS
+    timestamp: 2026-07-18T01:26:09.645Z
+  - _ulid: 01KXSD9FX9ZBKHZPSEQQBSS55G
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KXSD9FN7R0Z305YQ13S1YJ3K
+    timestamp: 2026-07-18T01:26:13.161Z
+  - _ulid: 01KXSD9KHRCVG8F5RRK7C7863Z
+    actor: pr-reviewer
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: request_changes
+    timestamp: 2026-07-18T01:26:16.888Z
+  - _ulid: 01KXSD9KHR5JH57CMH44VBMK92
+    actor: pr-reviewer
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-07-18T01:26:16.888Z
 examined_commit: 36c04a9b2252b2644bdde988b4f48e71bb366d9a
 external_links: []
-lifecycle_state: open
+lifecycle_state: closed
 related_refs: []
 subject:
   type: task
   content_hash: ""
   ref: "@01KXPPE9FJ6KB5WG47FV2KFRNY"
   shadow_commit: ""
-threads: []
-verdicts: []
+threads:
+  - _ulid: 01KXSD9C092FYK10VJE8ME8NKS
+    anchor:
+      type: code
+      commit: 36c04a9b2252b2644bdde988b4f48e71bb366d9a
+      line_end: 7
+      line_start: 7
+      path: docs/release-notes/index.md
+      side: head
+    entries:
+      - _ulid: 01KXSD9C0981Q9PWTYV9X971G5
+        author: Jacob Chapel
+        body: "MUST-FIX: The real docs build adds `release-notes/changelog` as a child because
+          `packages/web-ui/vite.config.ts` passes the canonical `RELEASE_NOTES.md` to the docs
+          plugin, but this landing page only bolds “Changelog” and links externally to GitHub; it
+          does not link the docs child. That violates @docs-section-taxonomy ac-2. The closure test
+          misses the defect because `docsEntries()` constructs the plugin without `releaseNotesPath`
+          and the fixture declares an empty Release Notes reading order. Add the actual child
+          link/order and make the membership test exercise the production release-notes manifest."
+        created_at: 2026-07-18T01:26:09.161Z
+    kind: blocker
+  - _ulid: 01KXSD9FN7R0Z305YQ13S1YJ3K
+    anchor:
+      type: code
+      commit: 36c04a9b2252b2644bdde988b4f48e71bb366d9a
+      line_end: 141
+      line_start: 137
+      path: tests/fixtures/public-documentation-surfaces.json
+      side: head
+    entries:
+      - _ulid: 01KXSD9FN7SSYQ0GJD6P0EG8BW
+        author: Jacob Chapel
+        body: "MUST-FIX: This record now claims a verified generated/source pairing, but the supported
+          verifier contradicts it: `kspec skill verify` exits 1 and reports `merge [codex]` drifted;
+          `kspec skill status` also reports drift in the rendered triage docs. The task cannot close
+          every inventory record as verified while tracked generated outputs are out of sync with
+          their declared sources. Restore or otherwise resolve the pairing, then rerun the verifier
+          before marking these records closed."
+        created_at: 2026-07-18T01:26:12.903Z
+    kind: blocker
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: request_changes
+    reviewer: pr-reviewer
+    role: reviewer
+    created_at: 2026-07-18T01:26:16.888Z
 created_at: 2026-07-18T01:07:40.175Z
-updated_at: 2026-07-18T01:07:54.484Z
+updated_at: 2026-07-18T01:26:16.888Z
 notes: []
