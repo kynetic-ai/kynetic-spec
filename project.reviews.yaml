@@ -30859,7 +30859,7 @@ reviews:
     author: pr-reviewer
     check_count: 0
     examined_commit: 6a6a1f66957df8d97877d57a143efaf4ee3c6555
-    lifecycle_state: draft
+    lifecycle_state: open
     related_refs: []
     subject:
       type: task
@@ -30870,3 +30870,4 @@ reviews:
     unresolved_blocker_count: 0
     verdict_count: 0
     created_at: 2026-07-18T02:03:54.248Z
+    updated_at: 2026-07-18T02:04:06.984Z
