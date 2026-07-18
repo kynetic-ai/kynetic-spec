@@ -39,6 +39,18 @@ checks:
     runner: Playwright requirement review
     created_at: 2026-07-18T23:10:26.005Z
     completed_at: 2026-07-18T23:10:26.005Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: docs-search ac-1 owns navigable real search, ac-2 owns same-origin offline local search,
+      and ac-3 owns canonical public/local parity. The task separates real local ac-1/ac-2 proof
+      from purpose-built ac-3 parity and requires machine-readable annotations.
+    name: AC ownership and annotation plan
+    required: true
+    runner: kspec item get and test annotation inspection
+    created_at: 2026-07-18T23:10:32.293Z
+    completed_at: 2026-07-18T23:10:32.293Z
 events:
   - _ulid: 01KXVQSNNPWF5KHHJPV4VD0MA9
     actor: codex
@@ -95,6 +107,13 @@ events:
       status: fail
       name: real local browser proof
     timestamp: 2026-07-18T23:10:26.294Z
+  - _ulid: 01KXVQXS3CXJK7J0DBG8XZ3GT7
+    actor: codex
+    event_type: check_added
+    payload:
+      status: pass
+      name: AC ownership and annotation plan
+    timestamp: 2026-07-18T23:10:32.556Z
 examined_commit: null
 external_links: []
 lifecycle_state: open
@@ -171,5 +190,5 @@ threads:
     kind: blocker
 verdicts: []
 created_at: 2026-07-18T23:08:17.978Z
-updated_at: 2026-07-18T23:10:26.005Z
+updated_at: 2026-07-18T23:10:32.293Z
 notes: []
