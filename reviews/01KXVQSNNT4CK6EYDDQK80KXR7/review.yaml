@@ -325,6 +325,12 @@ events:
     payload:
       thread_ulid: 01KXVQTTWV0TCNZXRWST3G8TA8
     timestamp: 2026-07-18T23:19:35.998Z
+  - _ulid: 01KXVREJ3SH05SCJ3SAQPG3MJB
+    actor: Hermes
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KXVQTTWV0TCNZXRWST3G8TA8
+    timestamp: 2026-07-18T23:19:42.457Z
 examined_commit: null
 external_links: []
 lifecycle_state: closed
@@ -373,6 +379,8 @@ threads:
           authority was gained. The prior `and/or` ambiguity is removed."
         created_at: 2026-07-18T23:19:35.704Z
     kind: blocker
+    resolved_at: 2026-07-18T23:19:42.151Z
+    resolved_by: Hermes
   - _ulid: 01KXVQV9275WWXYB71XB35HX70
     anchor:
       type: structured
@@ -422,5 +430,5 @@ verdicts:
     role: reviewer
     created_at: 2026-07-18T23:12:10.210Z
 created_at: 2026-07-18T23:08:17.978Z
-updated_at: 2026-07-18T23:19:35.704Z
+updated_at: 2026-07-18T23:19:42.151Z
 notes: []
