@@ -118,6 +118,67 @@ checks:
     runner: node dist/cli/index.js skill render
     created_at: 2026-07-18T00:28:38.542Z
     completed_at: 2026-07-18T00:28:38.542Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: All 1067 formatted files matched.
+    name: format
+    required: true
+    runner: npm run format:check
+    created_at: 2026-07-18T00:29:05.421Z
+    completed_at: 2026-07-18T00:29:05.421Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: 0 errors; 696 repository-baseline warnings.
+    name: lint
+    required: true
+    runner: npm run lint -- --quiet
+    created_at: 2026-07-18T00:29:08.830Z
+    completed_at: 2026-07-18T00:29:08.830Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Changed TypeScript and test files: 0 errors; 20 warnings all pre-existing and outside
+      changed lines."
+    name: focused-lint
+    required: true
+    runner: npx oxlint
+    created_at: 2026-07-18T00:29:12.183Z
+    completed_at: 2026-07-18T00:29:12.183Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Shared package build and tsc --noEmit passed.
+    name: typecheck
+    required: true
+    runner: npm run typecheck
+    created_at: 2026-07-18T00:29:15.529Z
+    completed_at: 2026-07-18T00:29:15.529Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: 2839 suites passed; 10984 tests passed; 3 skipped; 0 failed.
+    name: full test suite
+    required: true
+    runner: npm test
+    created_at: 2026-07-18T00:29:19.407Z
+    completed_at: 2026-07-18T00:29:19.407Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: 37 suites and 137 tests passed.
+    name: focused tests
+    required: true
+    runner: npm test -- changed documentation and scaffold tests
+    created_at: 2026-07-18T00:29:23.109Z
+    completed_at: 2026-07-18T00:29:23.109Z
 events:
   - _ulid: 01KXS8N51V597XTXNGC6J8HAF0
     actor: Jacob Chapel
@@ -216,6 +277,48 @@ events:
       kind: nit
       thread_ulid: 01KXSA05J78M0DV1TN645HDK34
     timestamp: 2026-07-18T00:28:42.194Z
+  - _ulid: 01KXSA0WRHJSN4K0QCS13ACBX4
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: format
+    timestamp: 2026-07-18T00:29:05.681Z
+  - _ulid: 01KXSA103W1K9Y0CB39EGT9Q8K
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: lint
+    timestamp: 2026-07-18T00:29:09.117Z
+  - _ulid: 01KXSA13BFJ01T5Y363NH69MWA
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: focused-lint
+    timestamp: 2026-07-18T00:29:12.431Z
+  - _ulid: 01KXSA16M12VTVS2YX3AJ7HW63
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: typecheck
+    timestamp: 2026-07-18T00:29:15.777Z
+  - _ulid: 01KXSA1AKD406JT0SZ78Y7PS8M
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: full test suite
+    timestamp: 2026-07-18T00:29:19.853Z
+  - _ulid: 01KXSA1E1CKPT36PE1MT73J7CY
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: focused tests
+    timestamp: 2026-07-18T00:29:23.372Z
 examined_commit: c54fee7bd1823d858065c19b33aa65df6f5bfadb
 external_links: []
 lifecycle_state: open
@@ -259,5 +362,5 @@ threads:
     kind: nit
 verdicts: []
 created_at: 2026-07-18T00:05:12.384Z
-updated_at: 2026-07-18T00:28:41.927Z
+updated_at: 2026-07-18T00:29:23.109Z
 notes: []
