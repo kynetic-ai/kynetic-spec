@@ -195,6 +195,13 @@ events:
       status: pass
       name: skill render pairing
     timestamp: 2026-07-18T02:28:06.242Z
+  - _ulid: 01KXSGX5BAN2DA983J3XAS4FH7
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KXSGX535NXCJPWQZ61XFW3HC
+    timestamp: 2026-07-18T02:29:23.434Z
 examined_commit: 6a6a1f66957df8d97877d57a143efaf4ee3c6555
 external_links: []
 lifecycle_state: open
@@ -204,8 +211,27 @@ subject:
   content_hash: ""
   ref: "@01KXPPE9FJ6KB5WG47FV2KFRNY"
   shadow_commit: ""
-threads: []
+threads:
+  - _ulid: 01KXSGX535NXCJPWQZ61XFW3HC
+    anchor:
+      type: code
+      commit: 6a6a1f66957df8d97877d57a143efaf4ee3c6555
+      line_end: 26
+      line_start: 26
+      path: docs/getting-started/overview.md
+      side: head
+    entries:
+      - _ulid: 01KXSGX535XXMPZ92R6WM1A8P7
+        author: Jacob Chapel
+        body: "MUST-FIX — The overview presents the canonical loop as `Review → Complete`, omitting
+          publication. This task explicitly requires merge-before-complete ordering; the current
+          workflow keeps a task in `pending_review` through integration and completes it only after
+          merge. Impact: a new user can close task state before the reviewed code is delivered.
+          Evidence: `templates/agents-sections/04-pr-workflow.md:19` and
+          `templates/skills/task-work/SKILL.md:42` both require completion after merge."
+        created_at: 2026-07-18T02:29:23.173Z
+    kind: blocker
 verdicts: []
 created_at: 2026-07-18T02:03:54.248Z
-updated_at: 2026-07-18T02:28:05.959Z
+updated_at: 2026-07-18T02:29:23.173Z
 notes: []
