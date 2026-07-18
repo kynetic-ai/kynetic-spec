@@ -211,6 +211,91 @@ checks:
     runner: readiness-review
     created_at: 2026-07-18T23:33:29.098Z
     completed_at: 2026-07-18T23:33:29.098Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Current web-ui-static.ts has scoped /_app and root routes plus centralized bundle-root
+      containment. Task requires narrow /pagefind/* only, preserves containment, forbids general
+      nested serving, and requires direct outside-subtree rejection.
+    name: route scope and filesystem boundary
+    required: true
+    runner: source-review
+    created_at: 2026-07-18T23:34:01.115Z
+    completed_at: 2026-07-18T23:34:01.115Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Requires pagefind.js MIME/cache, one nested binary asset fidelity/MIME/cache, one missing
+      404, and one direct traversal rejection; explicitly excludes exhaustive extension, encoding,
+      separator, malformed URL, directory, and traversal matrices.
+    name: representative route regression proof
+    required: true
+    runner: readiness-review
+    created_at: 2026-07-18T23:34:04.884Z
+    completed_at: 2026-07-18T23:34:04.884Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Task removes PAGEFIND_BUILD, serveStaticPagefind, local route.fulfill, and related
+      imports; uses default Node fixture; searches and navigates all six pages at wide/narrow sizes;
+      requires observed same-origin Pagefind traffic and empty transport-failure, non-2xx,
+      non-local, console-error, and page-error collections.
+    name: real Node-daemon browser proof
+    required: true
+    runner: source-review
+    created_at: 2026-07-18T23:34:08.754Z
+    completed_at: 2026-07-18T23:34:08.754Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Task keeps ac-3 separate from the real local ac-1/ac-2 proof and limits the synthetic
+      helper to canonical result-set comparison of local/public indexes generated from identical
+      docs content.
+    name: canonical parity integrity
+    required: true
+    runner: source-review
+    created_at: 2026-07-18T23:34:12.292Z
+    completed_at: 2026-07-18T23:34:12.292Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Read the small daemon, E2E fixture/search, build, and package-script surface. Minimal
+      Elysia Node request against current dist returned 404 for /pagefind/pagefind.js, reproducing
+      the defect. Likely files and commands provide a complete normal-worker path.
+    name: standalone source fit and defect reproduction
+    required: true
+    runner: node
+    created_at: 2026-07-18T23:34:16.016Z
+    completed_at: 2026-07-18T23:34:16.016Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Task has no blockers/dependencies, is supplemental to the active parent plan, and parent
+      plan branch is null. Project policy sets normal integration target dev; checkout was clean dev
+      at 7a3d8db2f3.
+    name: dependency and branch targeting
+    required: true
+    runner: readiness-review
+    created_at: 2026-07-18T23:34:19.701Z
+    completed_at: 2026-07-18T23:34:19.701Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Task names focused route/build/E2E/diff proof and explicitly requires attached
+      project-defined work gates without duplicating generic format/lint/typecheck/full-suite/kspec
+      boilerplate.
+    name: project work-gate inheritance
+    required: true
+    runner: readiness-review
+    created_at: 2026-07-18T23:34:23.461Z
+    completed_at: 2026-07-18T23:34:23.461Z
 events:
   - _ulid: 01KXVS16CS1C8S12Z9TNBPDBYG
     actor: Jacob Chapel
@@ -344,6 +429,55 @@ events:
       status: pass
       name: AC ownership and coverage mapping
     timestamp: 2026-07-18T23:33:29.439Z
+  - _ulid: 01KXVS8RXN44WBJXTSVKC2W2S7
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: route scope and filesystem boundary
+    timestamp: 2026-07-18T23:34:01.397Z
+  - _ulid: 01KXVS8WMSX11FVAG4QVVA3DT9
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: representative route regression proof
+    timestamp: 2026-07-18T23:34:05.209Z
+  - _ulid: 01KXVS90CC6NQA2TAG5KEMQNBH
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: real Node-daemon browser proof
+    timestamp: 2026-07-18T23:34:09.036Z
+  - _ulid: 01KXVS93TPM0A6TWQVJARH8XA5
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: canonical parity integrity
+    timestamp: 2026-07-18T23:34:12.566Z
+  - _ulid: 01KXVS97FR6NM1HB7PDZTV6WR0
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: standalone source fit and defect reproduction
+    timestamp: 2026-07-18T23:34:16.312Z
+  - _ulid: 01KXVS9B1NMABFW4ZJ88132DA2
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: dependency and branch targeting
+    timestamp: 2026-07-18T23:34:19.957Z
+  - _ulid: 01KXVS9EQ6S44R1R6GV7DGNG5A
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: project work-gate inheritance
+    timestamp: 2026-07-18T23:34:23.718Z
 examined_commit: null
 external_links: []
 lifecycle_state: open
@@ -356,5 +490,5 @@ subject:
 threads: []
 verdicts: []
 created_at: 2026-07-18T23:29:53.058Z
-updated_at: 2026-07-18T23:33:29.098Z
+updated_at: 2026-07-18T23:34:23.461Z
 notes: []
