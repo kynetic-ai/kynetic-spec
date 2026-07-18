@@ -2,7 +2,192 @@ _ulid: 01KXVS16D2KTJCGPYHBCHKPSQQ
 slugs: []
 title: "Fresh constrained readiness review: Node Pagefind delivery"
 author: Jacob Chapel
-checks: []
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Task 01KXVPGACWKT77Y967EWP3Y7DQ is pending and manual_only, spec-linked to @docs-search
+      and plan-linked to @plan-documentation-completeness-and-dispatch-workspaces. Review creation
+      changed only the expected review linkage.
+    name: task identity and lifecycle
+    required: true
+    runner: readiness-review
+    created_at: 2026-07-18T23:32:30.607Z
+    completed_at: 2026-07-18T23:32:30.607Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "@docs-search ac-1/ac-2/ac-3 directly own navigable matching results, local
+      no-nonlocal-host search, and local/public same-content parity. The supplemental bug task maps
+      each AC to a distinct real-daemon or parity proof and requires machine-readable AC
+      annotations."
+    name: AC ownership and coverage mapping
+    required: true
+    runner: readiness-review
+    created_at: 2026-07-18T23:32:34.313Z
+    completed_at: 2026-07-18T23:32:34.313Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Current packages/daemon/src/web-ui-static.ts registers only /_app/* and /:asset and
+      centralizes bundle-root containment in serveWebUiStaticAsset. The task requires a narrow
+      /pagefind/* route, reuse/preservation of containment, no general nested serving, and a direct
+      outside-subtree traversal rejection.
+    name: route scope and filesystem boundary
+    required: true
+    runner: source-review
+    created_at: 2026-07-18T23:32:37.833Z
+    completed_at: 2026-07-18T23:32:37.833Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Task proportionately requires normal pagefind.js delivery with MIME/cache, one nested
+      binary asset with byte fidelity and binary MIME/cache, one missing 404, and one direct
+      traversal rejection. It explicitly excludes exhaustive extensions, encodings, separators,
+      malformed URLs, directories, and traversal spellings.
+    name: representative route regression proof
+    required: true
+    runner: readiness-review
+    created_at: 2026-07-18T23:32:41.376Z
+    completed_at: 2026-07-18T23:32:41.376Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Current tests/e2e/docs.spec.ts local wide/narrow proof calls serveStaticPagefind and
+      route.fulfill. The task explicitly removes PAGEFIND_BUILD, that helper, local fulfillment, and
+      related imports; retains the default Node fixture; searches/navigates all six pages at both
+      viewports; and requires non-empty observed Pagefind requests plus empty transport-failure,
+      non-2xx, non-local, console-error, and page-error collections.
+    name: real Node-daemon browser proof
+    required: true
+    runner: source-review
+    created_at: 2026-07-18T23:32:44.944Z
+    completed_at: 2026-07-18T23:32:44.944Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Task keeps ac-3 separate from the real local ac-1/ac-2 proof and permits the synthetic
+      helper only for canonical result-set comparison of local/public indexes generated from
+      identical docs content.
+    name: canonical parity integrity
+    required: true
+    runner: source-review
+    created_at: 2026-07-18T23:32:48.531Z
+    completed_at: 2026-07-18T23:32:48.531Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Read web-ui-static.ts, server.ts registration, daemon static-route tests, docs E2E, Node
+      fixture, build-docs-search.cjs, DocsSearch.svelte, web-ui docs-search tests, and package
+      scripts. Minimal Elysia Node route request against current dist/web-ui returned 404 for
+      /pagefind/pagefind.js, reproducing the named defect. Likely files and verification commands
+      give a normal worker a complete path.
+    name: standalone source fit and defect reproduction
+    required: true
+    runner: node
+    created_at: 2026-07-18T23:32:52.139Z
+    completed_at: 2026-07-18T23:32:52.139Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Task has no blocked_by or depends_on entries, is linked as supplemental work to the active
+      parent plan, and parent plan JSON has branch:null. AGENTS.md defines normal integration target
+      dev; current checkout is clean dev at 7a3d8db2f3.
+    name: dependency and branch targeting
+    required: true
+    runner: readiness-review
+    created_at: 2026-07-18T23:32:55.823Z
+    completed_at: 2026-07-18T23:32:55.823Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Task names focused route test, docs-search build, web-ui build, docs E2E, and git diff
+      --check, then explicitly requires the attached project-defined work gates. Per binding
+      constraint it does not duplicate generic format/lint/typecheck/full-suite/kspec boilerplate.
+    name: project work-gate inheritance
+    required: true
+    runner: readiness-review
+    created_at: 2026-07-18T23:32:59.745Z
+    completed_at: 2026-07-18T23:32:59.745Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Exit 0; References OK with the documented six pre-existing deprecation warnings.
+    name: kspec validate refs
+    required: true
+    runner: kspec validate --refs --warnings-ok
+    created_at: 2026-07-18T23:33:03.374Z
+    completed_at: 2026-07-18T23:33:03.374Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Exit 0; baseline warnings only. Task spec_ref and plan_ref resolve.
+    name: kspec validate alignment
+    required: true
+    runner: kspec validate --alignment --warnings-ok
+    created_at: 2026-07-18T23:33:07.116Z
+    completed_at: 2026-07-18T23:33:07.116Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Exit 0 under the repository warning baseline; no task-specific completeness error blocks
+      readiness.
+    name: kspec validate completeness
+    required: true
+    runner: kspec validate --completeness --warnings-ok
+    created_at: 2026-07-18T23:33:10.935Z
+    completed_at: 2026-07-18T23:33:10.935Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Exit 0; 5 tests passed. This establishes the current adjacent suite is runnable before
+      adding the required RED/GREEN Pagefind cases.
+    name: current focused route baseline
+    required: true
+    runner: npm test -- tests/daemon-web-ui-startup-asset-coherence.test.ts
+    created_at: 2026-07-18T23:33:14.791Z
+    completed_at: 2026-07-18T23:33:14.791Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Exit 0; build:e2e completed and 17 Playwright tests passed. This is executability
+      evidence only: source inspection confirms current wide/narrow search still passes through
+      serveStaticPagefind interception, exactly the false-proof condition the task removes."
+    name: current docs E2E baseline
+    required: true
+    runner: npm run test:e2e -- tests/e2e/docs.spec.ts
+    created_at: 2026-07-18T23:33:18.700Z
+    completed_at: 2026-07-18T23:33:18.700Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Files read: AGENTS.md, kspec-agents.md, complete task, @docs-search ac-1/ac-2/ac-3,
+      complete parent plan, web-ui-static.ts, server.ts, daemon static-route test, docs.spec.ts,
+      test-base.ts, build-docs-search.cjs, DocsSearch.svelte, web-ui docs-search test, package.json.
+      Commands: task/spec/plan/review lookups, source rg/sed, git status, three kspec validations,
+      focused route test, minimal Node defect repro, full docs E2E. Categories: correctness,
+      filesystem security boundary, test non-vacuity, error capture, AC ownership, parity,
+      dependencies, branch target, proportionality, normal-dev executability."
+    name: review evidence log
+    required: true
+    runner: readiness-review
+    created_at: 2026-07-18T23:33:22.311Z
+    completed_at: 2026-07-18T23:33:22.311Z
 events:
   - _ulid: 01KXVS16CS1C8S12Z9TNBPDBYG
     actor: Jacob Chapel
@@ -17,6 +202,111 @@ events:
       from: draft
       to: open
     timestamp: 2026-07-18T23:30:06.134Z
+  - _ulid: 01KXVS60GN1RZFNA9GXKP7JEYH
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: task identity and lifecycle
+    timestamp: 2026-07-18T23:32:30.869Z
+  - _ulid: 01KXVS644PNVFJQAQMTDCQ8RWE
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: AC ownership and coverage mapping
+    timestamp: 2026-07-18T23:32:34.582Z
+  - _ulid: 01KXVS67JZZ282CPM06XPNWZMC
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: route scope and filesystem boundary
+    timestamp: 2026-07-18T23:32:38.111Z
+  - _ulid: 01KXVS6B1TN1AN0YNB0BDRY9XD
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: representative route regression proof
+    timestamp: 2026-07-18T23:32:41.658Z
+  - _ulid: 01KXVS6EH3K1HT6C0MK654PE5J
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: real Node-daemon browser proof
+    timestamp: 2026-07-18T23:32:45.219Z
+  - _ulid: 01KXVS6J0HZ0BD5NK0936T91K6
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: canonical parity integrity
+    timestamp: 2026-07-18T23:32:48.785Z
+  - _ulid: 01KXVS6NJE0Z6AWYHRTEW5YFR2
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: standalone source fit and defect reproduction
+    timestamp: 2026-07-18T23:32:52.430Z
+  - _ulid: 01KXVS6S4HJJB6P90ZGE4JVF4D
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: dependency and branch targeting
+    timestamp: 2026-07-18T23:32:56.081Z
+  - _ulid: 01KXVS6WZ2BJ55AJHAJGN2XGC2
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: project work-gate inheritance
+    timestamp: 2026-07-18T23:33:00.002Z
+  - _ulid: 01KXVS70H4M5MKJM0PZ2EVNT3G
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate refs
+    timestamp: 2026-07-18T23:33:03.652Z
+  - _ulid: 01KXVS747A884Q4PKKJP8WHHVW
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate alignment
+    timestamp: 2026-07-18T23:33:07.434Z
+  - _ulid: 01KXVS77WMK3YB90DF2Z9VX3RC
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate completeness
+    timestamp: 2026-07-18T23:33:11.188Z
+  - _ulid: 01KXVS7BNQ1C6R76QXMZYKYTND
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: current focused route baseline
+    timestamp: 2026-07-18T23:33:15.063Z
+  - _ulid: 01KXVS7FFDQQ55X1MJ16KM30C9
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: current docs E2E baseline
+    timestamp: 2026-07-18T23:33:18.957Z
+  - _ulid: 01KXVS7K18XFJTFYKF80Z2K67J
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: review evidence log
+    timestamp: 2026-07-18T23:33:22.600Z
 examined_commit: null
 external_links: []
 lifecycle_state: open
@@ -29,5 +319,5 @@ subject:
 threads: []
 verdicts: []
 created_at: 2026-07-18T23:29:53.058Z
-updated_at: 2026-07-18T23:30:05.854Z
+updated_at: 2026-07-18T23:33:22.311Z
 notes: []
