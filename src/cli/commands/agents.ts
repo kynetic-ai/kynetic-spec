@@ -204,7 +204,7 @@ export async function generateAgentsContent(
     }
   }
 
-  return sections.join("");
+  return `${sections.join("").trimEnd()}\n`;
 }
 
 /**

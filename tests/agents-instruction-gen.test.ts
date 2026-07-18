@@ -67,6 +67,20 @@ describe("Agent Instruction Generation", () => {
       const content = await readTestOutput(filePath);
       expect(content).toContain("Rule for overwrite test");
     });
+
+    // AC: @agent-instruction-gen ac-1
+    it("should end generated output with exactly one newline", async () => {
+      const result = kspecFull("agents generate", tempDir);
+      expect(result.exitCode).toBe(0);
+
+      const content = await readTestOutput(path.join(tempDir, "kspec-agents.md"));
+      expect(content.endsWith("\n")).toBe(true);
+      expect(content.endsWith("\n\n")).toBe(false);
+
+      const secondResult = kspecFull("agents generate", tempDir);
+      expect(secondResult.exitCode).toBe(0);
+      expect(secondResult.stdout).toContain("already up to date");
+    });
   });
 
   // Skill table removed — agent runtimes discover skills via rendered SKILL.md frontmatter.

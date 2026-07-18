@@ -117,7 +117,7 @@ The canonical mutation endpoint is `POST /api/agent/dispatch/control`. Send a gl
 
 Read public lifecycle status from `GET /api/agent/status`. The compatibility `GET /api/agent/dispatch/status` route remains available for dispatch-focused consumers. The public API uses snake_case wire fields such as `global_authority`, `cleanup_state`, `active_count`, `queue_depth`, `held_count`, `held_tasks`, and `task_controls`. The UI adapter maps those fields to camelCase values such as `globalAuthority`, `cleanupState`, `activeCount`, `queueDepth`, `heldCount`, `heldTasks`, and `taskControls`.
 
-The agents view at `/agents` exposes only actions valid for the current global or task state. It labels pause, resume, start, hard stop, and retry hard stop; confirms hard stop; keeps active, queued, held, and cleanup evidence visible; retains focus after updates; and announces lifecycle changes and failures to assistive technology. A degraded target or blocked task is shown separately from lifecycle control.
+The [agents view](../../agents) exposes only actions valid for the current global or task state. It labels pause, resume, start, hard stop, and retry hard stop; confirms hard stop; keeps active, queued, held, and cleanup evidence visible; retains focus after updates; and announces lifecycle changes and failures to assistive technology. A degraded target or blocked task is shown separately from lifecycle control.
 
 ### 7. Account for the static, read-only UI
 

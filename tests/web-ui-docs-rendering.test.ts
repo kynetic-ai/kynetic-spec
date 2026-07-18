@@ -13,6 +13,13 @@ import { mkdirSync, writeFileSync, rmSync } from "node:fs";
 import { join, resolve } from "node:path";
 import { tmpdir } from "node:os";
 
+function brokenLocalFragments(rendered: { html: string; toc: Array<{ id: string }> }): string[] {
+  const headingIds = new Set(rendered.toc.map((heading) => heading.id));
+  return [...rendered.html.matchAll(/href="(#([^"]+))"/g)]
+    .filter((match) => !headingIds.has(match[2]!))
+    .map((match) => match[1]!);
+}
+
 // ─── Vite Plugin Tests ────────────────────────────────────────────────────────
 
 describe("vite-plugin-docs", () => {
@@ -1184,6 +1191,71 @@ describe("docs plugin exclude option", () => {
       expect(slugs).toEqual(["guides/setup", "index"]);
     } finally {
       rmSync(tempDir, { recursive: true, force: true });
+    }
+  });
+});
+
+describe("published docs link and anchor closure", () => {
+  let docsPlugin: (typeof import("../packages/web-ui/vite-plugin-docs"))["docsPlugin"];
+  let renderDocsMarkdown: (typeof import("../packages/web-ui/src/lib/utils/docs-markdown"))["renderDocsMarkdown"];
+
+  beforeAll(async () => {
+    docsPlugin = (await import("../packages/web-ui/vite-plugin-docs")).docsPlugin;
+    renderDocsMarkdown = (await import("../packages/web-ui/src/lib/utils/docs-markdown"))
+      .renderDocsMarkdown;
+  });
+
+  // AC: @docs-navigation-shape ac-2
+  it("rejects an authored local fragment that does not resolve to a rendered heading", () => {
+    const valid = renderDocsMarkdown("# Existing heading\n\n[Jump](#existing-heading)");
+    const broken = renderDocsMarkdown("# Existing heading\n\n[Jump](#missing)");
+
+    expect(brokenLocalFragments(valid)).toEqual([]);
+    expect(brokenLocalFragments(broken)).toEqual(["#missing"]);
+  });
+
+  // AC: @docs-navigation-shape ac-2
+  it("renders every local fragment as a stable heading anchor without raw Markdown links", () => {
+    const docsDir = join(__dirname, "..", "docs");
+    const plugin = docsPlugin(docsDir, {
+      repoUrl: "https://github.com/lepahc/kynetic-spec/blob/main",
+      releaseNotesPath: join(__dirname, "..", "RELEASE_NOTES.md"),
+      exclude: ["history", "agents-eval-scenarios.md", "prime-mock.md"],
+    });
+    const load = plugin.load as (id: string) => string | undefined;
+    const result = load("\0virtual:docs")!;
+    const manifest = JSON.parse(result.slice("export default ".length, -1)) as {
+      entries: Array<{ slug: string; path: string; content: string }>;
+    };
+    const knownSlugs = new Set(manifest.entries.map((entry) => entry.slug));
+
+    const closureSlugs = new Set([
+      "guides/configuring-dispatch-workspaces",
+      "guides/controlling-dispatch-lifecycle",
+      "concepts/dispatch-workspaces",
+      "troubleshooting/dispatch-bootstrap-failures",
+      "troubleshooting/dispatch-workspace-sync-and-cleanup",
+      "troubleshooting/dispatch-lifecycle-control-failures",
+    ]);
+
+    for (const entry of manifest.entries.filter((candidate) => closureSlugs.has(candidate.slug))) {
+      const rendered = renderDocsMarkdown(entry.content, {
+        currentDocPath: entry.path,
+        knownSlugs,
+        repoUrl: "https://github.com/lepahc/kynetic-spec/blob/main",
+      });
+      for (const heading of rendered.toc) {
+        expect(rendered.html, `${entry.slug} heading ${heading.id}`).toContain(
+          `id="${heading.id}"`,
+        );
+        expect(rendered.html, `${entry.slug} anchor ${heading.id}`).toContain(
+          `href="#${heading.id}"`,
+        );
+      }
+      expect(brokenLocalFragments(rendered), `${entry.slug} broken local fragments`).toEqual([]);
+      expect(rendered.html, `${entry.slug} leaked Markdown route`).not.toMatch(
+        /href="(?!https?:\/\/)[^"]+\.md(?:#[^"]*)?"/,
+      );
     }
   });
 });

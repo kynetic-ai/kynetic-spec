@@ -701,6 +701,15 @@ describe("public documentation inventory", () => {
     expect(() => validateInventory(fixture)).toThrow(/unpaired generated output/);
   });
 
+  it("rejects a generated file presented as its own source", () => {
+    const fixture = cloneFixture();
+    const generated = fixture.records.find((record) => record.id === "markdown:kspec-agents.md")!;
+    generated.source_of_truth = ["kspec-agents.md"];
+    generated.generated_from = ["kspec-agents.md"];
+
+    expect(() => validateInventory(fixture)).toThrow(/Markdown contract/);
+  });
+
   it("rejects omitted and stale records in every non-file surface class", () => {
     for (const [kind, id] of [
       ["api-surface", "api:lifecycle-control"],

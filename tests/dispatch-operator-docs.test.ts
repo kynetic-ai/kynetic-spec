@@ -1621,7 +1621,9 @@ describe("dispatch operator fact fixture", () => {
       expect(guide).toContain("public API uses snake_case");
       expect(guide).toContain("UI adapter maps those fields to camelCase");
 
-      for (const target of relativeMarkdownLinks(guide)) {
+      const guideLinks = relativeMarkdownLinks(guide);
+      expect(guideLinks).toContain("../../agents");
+      for (const target of guideLinks.filter((link) => link.endsWith(".md"))) {
         const resolvedTarget = normalize(join(dirname(entry.path), target)).replaceAll("\\", "/");
         expect(
           entries.some((candidate) => candidate.path === resolvedTarget),
@@ -3147,6 +3149,35 @@ describe("dispatch operator fact fixture", () => {
       ["safety", (facts) => facts.safety.evidence_preserved.pop()],
       ["limitations", (facts) => facts.limitations.pop()],
     ];
+    for (const [label, mutate] of mutations) {
+      const stale = cloneFacts();
+      mutate(stale);
+      expect(() => validateFacts(stale), label).toThrow();
+    }
+  });
+
+  it("rejects the named operator-documentation drift cases", () => {
+    const mutations: Array<[string, (facts: DispatchFacts) => void]> = [
+      ["wrong global action", (facts) => facts.lifecycle.global_actions.running.push("start")],
+      ["wrong task action", (facts) => facts.lifecycle.task_actions.stopped.push("pause")],
+      [
+        "alias/canonical mismatch",
+        (facts) => (facts.lifecycle.identity.durable_key = "task alias"),
+      ],
+      ["omitted status field", (facts) => facts.lifecycle.status_fields.pop()],
+      [
+        "aggregate cleanup blanket gate",
+        (facts) =>
+          (facts.lifecycle.cleanup.gate_scope = "aggregate cleanup blocks every operation"),
+      ],
+      ["stale API projection", (facts) => (facts.api.status.path = "/api/agent/dispatch")],
+      [
+        "stale UI projection",
+        (facts) => (facts.ui.mapping.held_count = facts.ui.mapping.queue_depth),
+      ],
+      ["undocumented event", (facts) => facts.events.names.pop()],
+    ];
+
     for (const [label, mutate] of mutations) {
       const stale = cloneFacts();
       mutate(stale);
