@@ -216,6 +216,13 @@ events:
       kind: blocker
       thread_ulid: 01KXSGXGTYCBZTCNF3P0M1FJZM
     timestamp: 2026-07-18T02:29:35.448Z
+  - _ulid: 01KXSGXQ30B787DRQKYZGMN50M
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KXSGXPT50EBZN69DGJJYPYBR
+    timestamp: 2026-07-18T02:29:41.600Z
 examined_commit: 6a6a1f66957df8d97877d57a143efaf4ee3c6555
 external_links: []
 lifecycle_state: open
@@ -281,7 +288,24 @@ threads:
           assumption in `initializing-a-project.md`."
         created_at: 2026-07-18T02:29:35.198Z
     kind: blocker
+  - _ulid: 01KXSGXPT50EBZN69DGJJYPYBR
+    anchor:
+      type: code
+      commit: 6a6a1f66957df8d97877d57a143efaf4ee3c6555
+      line_end: 9
+      line_start: 9
+      path: docs/concepts/the-shadow-branch.md
+      side: head
+    entries:
+      - _ulid: 01KXSGXPT51EXXB6BD489RVGR0
+        author: Jacob Chapel
+        body: "MUST-FIX — The shadow-branch concept repeats the project-specific `main` assumption here and
+          again at line 38. The shadow worktree is independent of all source-code branches, whose
+          names are project-defined. Impact: a page declared `source-verified` still teaches a
+          non-universal branch policy as core behavior."
+        created_at: 2026-07-18T02:29:41.318Z
+    kind: blocker
 verdicts: []
 created_at: 2026-07-18T02:03:54.248Z
-updated_at: 2026-07-18T02:29:35.198Z
+updated_at: 2026-07-18T02:29:41.318Z
 notes: []
