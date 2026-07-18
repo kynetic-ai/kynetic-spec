@@ -1,6 +1,6 @@
 import { execFileSync } from "node:child_process";
 import { existsSync } from "node:fs";
-import { dirname, join, relative, resolve } from "node:path";
+import { dirname, join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import { describe, expect, it } from "vitest";
 import manifestFixture from "./fixtures/public-documentation-surfaces.json" with { type: "json" };
@@ -8,6 +8,7 @@ import factsFixture from "./fixtures/dispatch-operator-facts.json" with { type: 
 import packageFixture from "../package.json" with { type: "json" };
 import { createProgram } from "../src/cli/index.js";
 import { extractCommandTree, flattenCommandTree } from "../src/cli/introspection.js";
+import { parsePlanDocument } from "../src/parser/plan-document.js";
 import { DOCS_SECTION_ORDER } from "../packages/web-ui/src/lib/utils/docs-utils.js";
 import { docsPlugin } from "../packages/web-ui/vite-plugin-docs.js";
 
@@ -41,7 +42,6 @@ interface InventoryFixture {
   reviewed_lifecycle_commit: string;
   integrated_lifecycle_commit: string;
   tracked_markdown_count: number;
-  construction_pending_additions: string[];
   section_reading_order: Record<string, string[]>;
   records: InventoryRecord[];
 }
@@ -80,18 +80,18 @@ const ACTIVE_PUBLIC_ROOTS = new Set([
 ]);
 const EXCLUSION_METADATA = {
   audit_topics: ["ownership", "safety", "exclusion"],
-  audit_status: "pending",
-  disposition: "pending-task-7-audit",
+  audit_status: "scope-verified",
+  disposition: "verified-limited-audit",
 } as const;
 const ACTIVE_PUBLIC_METADATA = {
   audit_topics: ["factual-accuracy", "navigation", "links"],
-  audit_status: "pending",
-  disposition: "pending-task-7-audit",
+  audit_status: "source-verified",
+  disposition: "verified-or-corrected",
 } as const;
 const SOURCE_TEMPLATE_METADATA = {
   audit_topics: ["factual-accuracy", "package-neutrality", "generated-pairing"],
-  audit_status: "pending",
-  disposition: "pending-task-7-audit",
+  audit_status: "source-verified",
+  disposition: "verified-package-neutral",
 } as const;
 const FIXTURE_OWNERS: Record<string, string> = {
   "tests/e2e/fixtures/plans/01KG0RRPCA45ZT43W2T6HJMVP1/plan.md": "tests/e2e/plans.spec.ts",
@@ -396,7 +396,7 @@ function normalizedRecord(record: InventoryRecord): string {
   return JSON.stringify(normalized);
 }
 
-function validateInventory(fixture: InventoryFixture): { pendingAdditions: string[] } {
+function validateInventory(fixture: InventoryFixture): void {
   if (fixture.schema_version !== factsFixture.schema_version) {
     throw new Error("unsupported inventory schema version");
   }
@@ -426,10 +426,8 @@ function validateInventory(fixture: InventoryFixture): { pendingAdditions: strin
   if (extras.length > 0) throw new Error(`unexpected manifest extra: ${extras.join(", ")}`);
 
   const missing = tracked.filter((path) => !manifestSet.has(path));
-  const allowed = new Set(fixture.construction_pending_additions);
-  const unexpectedMissing = missing.filter((path) => !allowed.has(path));
-  if (unexpectedMissing.length > 0) {
-    throw new Error(`unclassified tracked Markdown: ${unexpectedMissing.join(", ")}`);
+  if (missing.length > 0) {
+    throw new Error(`unclassified tracked Markdown: ${missing.join(", ")}`);
   }
 
   for (const record of markdownRecords) {
@@ -458,7 +456,6 @@ function validateInventory(fixture: InventoryFixture): { pendingAdditions: strin
   }
 
   const expectedMarkdownRecords = tracked
-    .filter((path) => manifestSet.has(path) || !allowed.has(path))
     .map(markdownSurfaceRecord)
     .map(normalizedRecord)
     .toSorted();
@@ -511,8 +508,6 @@ function validateInventory(fixture: InventoryFixture): { pendingAdditions: strin
       throw new Error(`unexpected stale ${kind} surface: ${staleSurface.join(", ")}`);
     }
   }
-
-  return { pendingAdditions: missing };
 }
 
 function cloneFixture(): InventoryFixture {
@@ -569,19 +564,26 @@ describe("public documentation inventory", () => {
       const firstParagraph = markdown.split(/\n\s*\n/)[1]?.trim();
       const links = landingLinks(markdown);
       const declaredOrder = manifestFixture.section_reading_order[section];
-      const pendingLinks = new Set(
-        manifestFixture.construction_pending_additions
-          .filter((path) => path.startsWith(`docs/${section}/`))
-          .map((path) => `./${path.slice(`docs/${section}/`.length)}`),
-      );
       expect(firstParagraph).toBeTruthy();
       expect(new Set(links).size).toBe(links.length);
-      expect(links.filter((link) => !pendingLinks.has(link))).toEqual(declaredOrder);
-      expect(new Set(declaredOrder)).toEqual(
-        new Set([...sectionChildPaths(section, entries)].filter((path) => !pendingLinks.has(path))),
-      );
+      expect(links).toEqual(declaredOrder);
+      expect(new Set(declaredOrder)).toEqual(sectionChildPaths(section, entries));
     },
   );
+
+  it("parses the tagged plan-import example through the public plan parser", () => {
+    const entry = docsEntries().find(
+      (candidate) => candidate.path === "guides/importing-and-approving-a-plan.md",
+    );
+    if (!entry) throw new Error("missing plan import guide");
+    const tagged = entry.content.match(/````markdown kspec-plan\n([\s\S]*?)\n````/);
+    if (!tagged?.[1]) throw new Error("missing tagged kspec plan example");
+
+    const parsed = parsePlanDocument(tagged[1]);
+    expect(parsed.errors).toEqual([]);
+    expect(parsed.specs).toHaveLength(1);
+    expect(parsed.tasks.additional_tasks).toHaveLength(1);
+  });
 
   // AC: @auto-cli-docs ac-1
   it("matches every exported Commander node to a declared CLI help surface", () => {
@@ -598,35 +600,21 @@ describe("public documentation inventory", () => {
   });
 
   it("matches every tracked Markdown and required non-file public surface", () => {
-    const result = validateInventory(cloneFixture());
-    expect(
-      result.pendingAdditions.every((path) =>
-        manifestFixture.construction_pending_additions.includes(path),
-      ),
-    ).toBe(true);
+    validateInventory(cloneFixture());
     const markdownRecords = (manifestFixture.records as InventoryRecord[]).filter(
       (record) => record.kind === "markdown-file",
     );
-    expect(markdownRecords.map((record) => record.path).toSorted()).toEqual(
-      trackedMarkdown().filter(
-        (path) => !manifestFixture.construction_pending_additions.includes(path),
-      ),
-    );
+    expect(markdownRecords.map((record) => record.path).toSorted()).toEqual(trackedMarkdown());
   });
 
-  it("reports only the six planned pages as construction-phase additions", () => {
+  it("enforces strict closure without construction-phase additions", () => {
     const fixture = cloneFixture();
-    expect(fixture.construction_pending_additions).toEqual([
-      "docs/guides/configuring-dispatch-workspaces.md",
-      "docs/guides/controlling-dispatch-lifecycle.md",
-      "docs/concepts/dispatch-workspaces.md",
-      "docs/troubleshooting/dispatch-bootstrap-failures.md",
-      "docs/troubleshooting/dispatch-workspace-sync-and-cleanup.md",
-      "docs/troubleshooting/dispatch-lifecycle-control-failures.md",
-    ]);
-    for (const planned of fixture.construction_pending_additions) {
-      expect(relative(ROOT, resolve(ROOT, planned))).toBe(planned);
-    }
+    const tracked = trackedMarkdown();
+    const declared = fixture.records
+      .filter((record) => record.kind === "markdown-file")
+      .map((record) => record.path)
+      .toSorted();
+    expect(declared).toEqual(tracked);
   });
 
   it("rejects a missing or duplicate Markdown record", () => {
@@ -691,7 +679,7 @@ describe("public documentation inventory", () => {
       ],
       ["source authority", (record) => (record.source_of_truth = ["INSTALL.md"])],
       ["audit topics", (record) => (record.audit_topics = [])],
-      ["audit status", (record) => (record.audit_status = "source-verified")],
+      ["audit status", (record) => (record.audit_status = "pending")],
       ["disposition", (record) => (record.disposition = "arbitrary")],
     ];
     for (const [label, mutate] of mutations) {
