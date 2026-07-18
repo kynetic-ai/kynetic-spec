@@ -47,6 +47,16 @@ checks:
     runner: npm test
     created_at: 2026-07-18T03:49:22.850Z
     completed_at: 2026-07-18T03:49:22.850Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Passed 1723 files, 698 items, 1715 tasks; 6 accepted deprecated-ref baseline warnings.
+    name: kspec validate refs
+    required: true
+    runner: kspec validate --refs --warnings-ok
+    created_at: 2026-07-18T03:49:29.122Z
+    completed_at: 2026-07-18T03:49:29.122Z
 events:
   - _ulid: 01KXSKPA0R09R8STVPZ19XCHXA
     actor: Jacob Chapel
@@ -89,6 +99,13 @@ events:
       status: pass
       name: full test suite
     timestamp: 2026-07-18T03:49:23.142Z
+  - _ulid: 01KXSNFTN6GSWEK1F4XC84CRK3
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate refs
+    timestamp: 2026-07-18T03:49:29.382Z
 examined_commit: fbee7a50823eec0c6ed2f7efee61858cc29d4cdc
 external_links: []
 lifecycle_state: open
@@ -101,5 +118,5 @@ subject:
 threads: []
 verdicts: []
 created_at: 2026-07-18T03:18:04.569Z
-updated_at: 2026-07-18T03:49:22.850Z
+updated_at: 2026-07-18T03:49:29.122Z
 notes: []
