@@ -83930,7 +83930,7 @@ runs:
     completed_at: 2026-07-17T23:28:31.765Z
   - _ulid: 01KXS8ACZ7GSF3CMK54WV1J2N4
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -83945,7 +83945,18 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-07-18T00:01:26.698Z
-        completed_at: 2026-07-18T00:01:26.698Z
+        completed_at: 2026-07-18T00:01:39.116Z
+        notes: "High-confidence patterns: (1) installed kspec regeneration can ignore worktree template
+          changes; (2) skill render can skip one drifted runtime while rewriting another and emit
+          unrelated skills; (3) stale review retries can duplicate threads; (4) generating shipped
+          guidance in an isolated fixture and matching exact CLI usages/options catches missing
+          --force semantics; (5) the fresh full suite has a very long green-looking tail and took
+          3,037.4 seconds. Each is concrete and repeatable, but all map to existing tracking found
+          in the baseline/search phase."
+      - status: completed
+        step_index: 2
+        started_at: 2026-07-18T00:01:39.116Z
+        completed_at: 2026-07-18T00:01:39.116Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-07-17T23:59:20.039Z
