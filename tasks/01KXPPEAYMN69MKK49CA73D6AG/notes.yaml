@@ -89,3 +89,19 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-07-18T06:36:38.943Z
+  - _ulid: 01KXT091YQHGPA1MPM7W15EQNS
+    content: "Fix cycle 2: resolved the duplicated isolation blocker in bbecb7d084. Pagefind E2E
+      variants now build under system temp roots, resolve dependencies through a node_modules
+      symlink without generating inside the checkout, clean their own partial roots on setup/build
+      failure, and clean the first completed variant if the second build fails. The initial
+      dependency-resolution failure exercised partial cleanup and left no temp root; the corrected
+      browser run passed 17/17 and also left no roots. Re-verified all linked ACs and gates: focused
+      docs 57 suites/299 tests; full suite 2,840 suites/10,992 passed/3 skipped; format,
+      repo/focused lint, typecheck, docs search/web builds, and generation convergence passed. Refs
+      remain exactly the documented six-warning baseline; alignment/completeness pass under
+      --warnings-ok with existing debt. Live shadow meta contains three newer local skills absent
+      this branch snapshot; their six untracked probe renders were removed, while tracked
+      kspec-agents.md/.agents/.factory stayed clean. All four cycle-two threads are resolved."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-07-18T06:58:01.815Z

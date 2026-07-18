@@ -34311,7 +34311,7 @@
   type: task
   spec_ref: "@docs-navigation-shape"
   plan_ref: "@plan-documentation-completeness-and-dispatch-workspaces"
-  status: in_progress
+  status: pending_review
   blocked_by: []
   depends_on:
     - "@task-audit-remaining-public-docs"
@@ -34321,9 +34321,9 @@
     - testing
     - web-ui
   review_ref: "@01KXSWVGTVV2QAVDW43B0XE9W8"
-  notes_count: 8
+  notes_count: 9
   todos_count: 0
   created_at: 2026-07-17T00:08:25.812Z
   started_at: 2026-07-18T06:35:36.583Z
-  submitted_at: 2026-07-18T05:49:57.803Z
+  submitted_at: 2026-07-18T06:58:02.812Z
   automation: eligible
