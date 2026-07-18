@@ -24,6 +24,13 @@ events:
       kind: blocker
       thread_ulid: 01KXVQTTWV0TCNZXRWST3G8TA8
     timestamp: 2026-07-18T23:08:56.366Z
+  - _ulid: 01KXVQV9AMGPCST92Y0ND728X2
+    actor: codex
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KXVQV9275WWXYB71XB35HX70
+    timestamp: 2026-07-18T23:09:10.868Z
 examined_commit: null
 external_links: []
 lifecycle_state: open
@@ -58,7 +65,27 @@ threads:
           product scope; it makes the already-stated route contract testable."
         created_at: 2026-07-18T23:08:56.091Z
     kind: blocker
+  - _ulid: 01KXVQV9275WWXYB71XB35HX70
+    anchor:
+      type: structured
+      field: How step 7
+      ref: "@01KXVPGACWKT77Y967EWP3Y7DQ"
+      section: description
+    entries:
+      - _ulid: 01KXVQV927VDNS57TG1J67AXEQ
+        author: codex
+        body: "The browser failure assertion is not concrete enough for Playwright. page requestfailed
+          events cover transport failures, not HTTP 404 or 500 responses, and the production defect
+          currently manifests as an HTTP miss. Successful six-page searches make the main path fail
+          today, but they do not prove the explicit requirement that every observed Pagefind request
+          succeeded; an optional or swallowed Pagefind HTTP error could remain invisible. Smallest
+          correction: require collection of both Pagefind requestfailed events and Pagefind
+          responses with non-2xx status, then assert both collections are empty, the observed
+          Pagefind response set is non-empty, and every observed Pagefind URL uses the daemon
+          origin. Keep console-error and page-error collections as already required."
+        created_at: 2026-07-18T23:09:10.599Z
+    kind: blocker
 verdicts: []
 created_at: 2026-07-18T23:08:17.978Z
-updated_at: 2026-07-18T23:08:56.091Z
+updated_at: 2026-07-18T23:09:10.599Z
 notes: []
