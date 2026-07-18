@@ -139,6 +139,18 @@ checks:
     runner: npm test focused files
     created_at: 2026-07-18T23:11:22.487Z
     completed_at: 2026-07-18T23:11:22.487Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Build sequence completed and 17/17 docs E2E tests passed. The wide/narrow local searches
+      still call serveStaticPagefind and route.fulfill, so this confirms command/build executability
+      and reproduces the proof gap, not production correctness.
+    name: current docs e2e command
+    required: false
+    runner: npm run test:e2e -- tests/e2e/docs.spec.ts
+    created_at: 2026-07-18T23:11:28.356Z
+    completed_at: 2026-07-18T23:11:28.356Z
 events:
   - _ulid: 01KXVQSNNPWF5KHHJPV4VD0MA9
     actor: codex
@@ -258,6 +270,13 @@ events:
       status: pass
       name: current focused baseline
     timestamp: 2026-07-18T23:11:22.767Z
+  - _ulid: 01KXVQZFVC69KWW4HBBSZM5WVK
+    actor: codex
+    event_type: check_added
+    payload:
+      status: pass
+      name: current docs e2e command
+    timestamp: 2026-07-18T23:11:28.620Z
 examined_commit: null
 external_links: []
 lifecycle_state: open
@@ -334,5 +353,5 @@ threads:
     kind: blocker
 verdicts: []
 created_at: 2026-07-18T23:08:17.978Z
-updated_at: 2026-07-18T23:11:22.487Z
+updated_at: 2026-07-18T23:11:28.356Z
 notes: []
