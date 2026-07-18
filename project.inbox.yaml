@@ -5375,14 +5375,3 @@ inbox:
       - docs
     added_by: Jacob Chapel
     created_at: 2026-07-17T14:24:40.266Z
-  - _ulid: 01KXSPEX48H8DPKCSVDMZBR647
-    text: "Node daemon static serving does not expose nested Pagefind assets: /pagefind/pagefind.js
-      falls through because registerWebUiNodeStaticRoutes only serves /_app/* and root-level files.
-      Add a source-owned daemon asset-delivery fix and behavioral coverage so locally served docs
-      search works without Playwright static-asset routing."
-    tags:
-      - daemon
-      - docs
-      - web-ui
-    added_by: Jacob Chapel
-    created_at: 2026-07-18T04:06:27.721Z
