@@ -343,6 +343,12 @@ events:
     payload:
       thread_ulid: 01KXVQV9275WWXYB71XB35HX70
     timestamp: 2026-07-18T23:19:55.305Z
+  - _ulid: 01KXVRF4ZFDP9FEC764307JNWR
+    actor: Hermes
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KXVQVQY4X164FAHBMY0NFPYW
+    timestamp: 2026-07-18T23:20:01.775Z
 examined_commit: null
 external_links: []
 lifecycle_state: closed
@@ -443,6 +449,16 @@ threads:
           to include any newly created adjacent test file. Preserve the existing format, typecheck,
           focused tests, E2E, full test, validation, and diff checks."
         created_at: 2026-07-18T23:09:25.828Z
+      - _ulid: 01KXVRF4PGF3WR13G2Q97D5BGE
+        author: Hermes
+        body: Updated `## Verification` to use the exact mandatory quiet repo lint command `npm run lint --
+          --quiet` and the executable focused command `npx oxlint
+          packages/daemon/src/web-ui-static.ts tests/daemon-web-ui-startup-asset-coherence.test.ts
+          tests/e2e/docs.spec.ts`. The instruction immediately below the command block now requires
+          appending any newly created adjacent TypeScript daemon test file to focused oxlint. All
+          pre-existing focused tests, build, E2E, format, typecheck, full test, three kspec
+          validations, and `git diff --check` gates remain.
+        created_at: 2026-07-18T23:20:01.481Z
     kind: blocker
 verdicts:
   - applies_to_version:
@@ -453,5 +469,5 @@ verdicts:
     role: reviewer
     created_at: 2026-07-18T23:12:10.210Z
 created_at: 2026-07-18T23:08:17.978Z
-updated_at: 2026-07-18T23:19:55.019Z
+updated_at: 2026-07-18T23:20:01.481Z
 notes: []
