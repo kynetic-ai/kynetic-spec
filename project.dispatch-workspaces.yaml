@@ -15691,7 +15691,7 @@ workspaces:
         head: fbee7a50823eec0c6ed2f7efee61858cc29d4cdc
         last_seen_at: 2026-07-18T03:14:19.859Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-audit-remaining-public-docs-01kxppe9
-  - active_role: reviewer
+  - active_role: null
     base_branch_point: 8d8daeaccf703c23c3441327aa069e535a171e3a
     bootstrap:
       status: succeeded
@@ -16188,9 +16188,9 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-07-18T07:03:35.050Z
-      last_reconciled_at: 2026-07-18T07:35:45.555Z
+      last_reconciled_at: 2026-07-18T07:39:51.273Z
       created_at: 2026-07-18T03:52:22.467Z
-      updated_at: 2026-07-18T07:35:45.555Z
+      updated_at: 2026-07-18T07:39:51.273Z
     workspace_id: dispatch-workspace-01KXPPEAYMN69MKK49CA73D6AG
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
