@@ -2,7 +2,122 @@ _ulid: 01KXS8N520PRZ4V22MNYH1JWVW
 slugs: []
 title: Review correct adjacent public guidance (cycle 2)
 author: Jacob Chapel
-checks: []
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: All 1067 formatted files matched.
+    name: format
+    required: true
+    runner: npm run format:check
+    created_at: 2026-07-18T00:28:03.016Z
+    completed_at: 2026-07-18T00:28:03.016Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: 0 errors; 696 repository-baseline warnings.
+    name: lint
+    required: true
+    runner: npm run lint -- --quiet
+    created_at: 2026-07-18T00:28:07.780Z
+    completed_at: 2026-07-18T00:28:07.780Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Changed TypeScript and test files: 0 errors; 20 warnings all pre-existing and outside
+      changed lines."
+    name: focused-lint
+    required: true
+    runner: npx oxlint
+    created_at: 2026-07-18T00:28:11.143Z
+    completed_at: 2026-07-18T00:28:11.143Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Shared package build and tsc --noEmit passed.
+    name: typecheck
+    required: true
+    runner: npm run typecheck
+    created_at: 2026-07-18T00:28:14.757Z
+    completed_at: 2026-07-18T00:28:14.757Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: 2839 suites passed; 10984 tests passed; 3 skipped; 0 failed.
+    name: full test suite
+    required: true
+    runner: npm test
+    created_at: 2026-07-18T00:28:18.056Z
+    completed_at: 2026-07-18T00:28:18.056Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: 37 suites and 137 tests passed.
+    name: focused tests
+    required: true
+    runner: npm test -- changed documentation and scaffold tests
+    created_at: 2026-07-18T00:28:21.388Z
+    completed_at: 2026-07-18T00:28:21.388Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: References OK; six documented deprecation warnings accepted by --warnings-ok.
+    name: kspec validate refs
+    required: true
+    runner: kspec validate --refs --warnings-ok
+    created_at: 2026-07-18T00:28:24.744Z
+    completed_at: 2026-07-18T00:28:24.744Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Passed under the documented warnings baseline.
+    name: kspec validate alignment
+    required: true
+    runner: kspec validate --alignment --warnings-ok
+    created_at: 2026-07-18T00:28:28.192Z
+    completed_at: 2026-07-18T00:28:28.192Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Passed under the documented warnings baseline; owned README, release-note, and
+      generated-default AC annotations verified.
+    name: kspec validate completeness
+    required: true
+    runner: kspec validate --completeness --warnings-ok
+    created_at: 2026-07-18T00:28:31.590Z
+    completed_at: 2026-07-18T00:28:31.590Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Two agents-generation passes reported kspec-agents.md up to date; template and generated
+      dispatch section match; plugin built successfully twice.
+    name: generated agent guidance
+    required: true
+    runner: worktree CLI agents generate and npm run build:plugin
+    created_at: 2026-07-18T00:28:35.203Z
+    completed_at: 2026-07-18T00:28:35.203Z
+  - status: skipped
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Broad skill render reproduces unrelated pre-existing asymmetric drift captured at
+      observation @01KXS2HP; this branch changes no skill source or generated skill file. Diagnostic
+      side effects were removed.
+    name: skill render baseline
+    required: false
+    runner: node dist/cli/index.js skill render
+    created_at: 2026-07-18T00:28:38.542Z
+    completed_at: 2026-07-18T00:28:38.542Z
 events:
   - _ulid: 01KXS8N51V597XTXNGC6J8HAF0
     actor: Jacob Chapel
@@ -17,6 +132,90 @@ events:
       from: draft
       to: open
     timestamp: 2026-07-18T00:05:48.332Z
+  - _ulid: 01KXS9YZSWE90V9J4X74Z6K7DJ
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: format
+    timestamp: 2026-07-18T00:28:03.260Z
+  - _ulid: 01KXS9Z4G83G2EWZPWSJW6XN7F
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: lint
+    timestamp: 2026-07-18T00:28:08.072Z
+  - _ulid: 01KXS9Z7S6PAG9A2CTZ6T3BDHK
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: focused-lint
+    timestamp: 2026-07-18T00:28:11.430Z
+  - _ulid: 01KXS9ZB97ZYWB34N10B6HWF6W
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: typecheck
+    timestamp: 2026-07-18T00:28:15.015Z
+  - _ulid: 01KXS9ZEG5MSMKG9FPYB94DP45
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: full test suite
+    timestamp: 2026-07-18T00:28:18.309Z
+  - _ulid: 01KXS9ZHR7D04PGE60QW5TQ0NP
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: focused tests
+    timestamp: 2026-07-18T00:28:21.639Z
+  - _ulid: 01KXS9ZN1E9QZTEPPBHKQ09PVY
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate refs
+    timestamp: 2026-07-18T00:28:25.007Z
+  - _ulid: 01KXS9ZRCP09TV9RHZWFFYZDDF
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate alignment
+    timestamp: 2026-07-18T00:28:28.438Z
+  - _ulid: 01KXS9ZVQFHA2V5M59WEGN105M
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate completeness
+    timestamp: 2026-07-18T00:28:31.855Z
+  - _ulid: 01KXS9ZZ84NRSYT16AB608YBFC
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: generated agent guidance
+    timestamp: 2026-07-18T00:28:35.460Z
+  - _ulid: 01KXSA02G089531DY7VAZTDNA2
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: skipped
+      name: skill render baseline
+    timestamp: 2026-07-18T00:28:38.784Z
+  - _ulid: 01KXSA05TJYCMWJ5VPZQ4CZA9B
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KXSA05J78M0DV1TN645HDK34
+    timestamp: 2026-07-18T00:28:42.194Z
 examined_commit: c54fee7bd1823d858065c19b33aa65df6f5bfadb
 external_links: []
 lifecycle_state: open
@@ -26,8 +225,39 @@ subject:
   content_hash: ""
   ref: "@01KXPPE8H63QJCHCVSXW17G4B7"
   shadow_commit: ""
-threads: []
+threads:
+  - _ulid: 01KXSA05J78M0DV1TN645HDK34
+    entries:
+      - _ulid: 01KXSA05J7QVFZF49NQAGFN45B
+        author: Jacob Chapel
+        body: "Review evidence log (non-finding). Files read: all nine changed-file diffs; RELEASE_NOTES.md;
+          packages/web-ui/README.md and package.json; setup and upgrade scaffold functions; shared
+          dispatch template; generated kspec-agents.md dispatch and changed dynamic sections; all
+          changed tests; README.md, INSTALL.md, CONTRIBUTING.md, SECURITY.md, issue template;
+          related CLI lifecycle registration, hard-stop preflight, test helpers, task/spec/plan
+          context, and prior review threads. Commands run: base/head diff and history;
+          task/spec/plan/review lookups; AC annotation search; source and built CLI help; format;
+          repo and focused lint; typecheck; focused and full tests; refs/alignment/completeness
+          validation; two worktree-source agents generations, skill renders, and plugin builds;
+          generated-section comparison; diff check. Claims verified: setup and upgrade comments do
+          not change resolved config behavior; all three publication modes render through the public
+          release-notes command in historical tense; generated guidance exposes pause/resume/global
+          and canonical-task hard stops with exact force options; web-ui package is private and
+          bundled into the root package; README already reaches Getting Started, Concepts, and
+          Guides in one click; prior source-scanning blocker is behaviorally fixed. Categories
+          searched: correctness, edge cases and non-TTY force behavior, error handling,
+          security/data exposure, test quality, integration, generated convergence, and additional
+          issues after the prior blocker. Shared/package surfaces touched:
+          templates/agents-sections/06-agent-dispatch-mode.md and its generated kspec-agents.md
+          section. Neutrality direction 1 passes: edited shared prose contains universal kspec
+          lifecycle mechanics and configurable identities only, with no Kynetic branch, toolchain,
+          fixed-agent, repo-path, or external-review policy. Direction 2 is N/A because no
+          Kynetic-only instruction was removed; local Kynetic policy remains in AGENTS.md, project
+          meta, work-gates, and review-gates. Relevant generated agent guidance converges; unrelated
+          skill-render asymmetry remains captured by @01KXS2HP."
+        created_at: 2026-07-18T00:28:41.927Z
+    kind: nit
 verdicts: []
 created_at: 2026-07-18T00:05:12.384Z
-updated_at: 2026-07-18T00:05:48.053Z
+updated_at: 2026-07-18T00:28:41.927Z
 notes: []
