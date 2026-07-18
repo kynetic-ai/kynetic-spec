@@ -90,6 +90,16 @@ checks:
     runner: npm test -- documentation test files
     created_at: 2026-07-18T03:49:51.677Z
     completed_at: 2026-07-18T03:49:51.677Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Passed; Pagefind indexed 48 documentation entries.
+    name: docs search build
+    required: true
+    runner: npm run build:docs-search
+    created_at: 2026-07-18T03:49:59.316Z
+    completed_at: 2026-07-18T03:49:59.316Z
 events:
   - _ulid: 01KXSKPA0R09R8STVPZ19XCHXA
     actor: Jacob Chapel
@@ -160,6 +170,13 @@ events:
       status: pass
       name: focused documentation tests
     timestamp: 2026-07-18T03:49:52.003Z
+  - _ulid: 01KXSNGR5B4WRN5NB9174F5H51
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: docs search build
+    timestamp: 2026-07-18T03:49:59.595Z
 examined_commit: fbee7a50823eec0c6ed2f7efee61858cc29d4cdc
 external_links: []
 lifecycle_state: open
@@ -172,5 +189,5 @@ subject:
 threads: []
 verdicts: []
 created_at: 2026-07-18T03:18:04.569Z
-updated_at: 2026-07-18T03:49:51.677Z
+updated_at: 2026-07-18T03:49:59.316Z
 notes: []
