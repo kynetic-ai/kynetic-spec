@@ -17,6 +17,13 @@ events:
       from: draft
       to: open
     timestamp: 2026-07-18T23:08:38.968Z
+  - _ulid: 01KXVQTV5E07RYRH69CWVYAEJG
+    actor: codex
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KXVQTTWV0TCNZXRWST3G8TA8
+    timestamp: 2026-07-18T23:08:56.366Z
 examined_commit: null
 external_links: []
 lifecycle_state: open
@@ -26,8 +33,32 @@ subject:
   content_hash: ""
   ref: "@01KXVPGACWKT77Y967EWP3Y7DQ"
   shadow_commit: ""
-threads: []
+threads:
+  - _ulid: 01KXVQTTWV0TCNZXRWST3G8TA8
+    anchor:
+      type: structured
+      field: How / Required RED-GREEN proof
+      ref: "@01KXVPGACWKT77Y967EWP3Y7DQ"
+      section: description
+    entries:
+      - _ulid: 01KXVQTTWVZZA2ZMM3E075KJJR
+        author: codex
+        body: "The focused GREEN matrix is incomplete and internally ambiguous. Current dev emits eight
+          extension classes under dist/web-ui/pagefind: .js, .css, .json, .pagefind, .pf_meta,
+          .pf_index, .pf_fragment, and .pf_filter. The task source-authority section names all
+          eight, but How step 5 omits .pf_meta and CSS, permits index/fragment/filter with and/or,
+          and does not explicitly require the directory and malformed-encoding cases promised by
+          step 2. An automated worker could therefore pass its stated focused tests while leaving a
+          real metadata/filter asset or directory error path unverified. Smallest correction:
+          enumerate one real-shaped fixture for every emitted extension class, including
+          pagefind*.pf_meta and one each of index, fragment, and filter; require status, content
+          type, and cache assertions for each, exact byte equality for every binary class, and
+          explicit 404 cases for /pagefind/, nested directories, missing files, malformed encoding,
+          raw traversal, encoded traversal, and encoded slash/backslash variants. This adds no new
+          product scope; it makes the already-stated route contract testable."
+        created_at: 2026-07-18T23:08:56.091Z
+    kind: blocker
 verdicts: []
 created_at: 2026-07-18T23:08:17.978Z
-updated_at: 2026-07-18T23:08:38.675Z
+updated_at: 2026-07-18T23:08:56.091Z
 notes: []
