@@ -111,6 +111,25 @@ checks:
     runner: kspec skill verify
     created_at: 2026-07-18T03:50:05.846Z
     completed_at: 2026-07-18T03:50:05.846Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Files read: all 17 changed files, all six cycle-3 fix files against prior head, prior
+      review records, linked plan/specs, parser/task/web-UI source authorities, and sampled package
+      guidance templates. Claims verified: all eight cycle-2 blockers are corrected; inventory
+      closes over all 146 tracked markdown files; release notes use the production changelog child
+      without duplicate content; the plan snippet is parsed behaviorally; Getting Started navigation
+      and all seven AC annotations match their AC text. Categories searched: correctness, edge
+      cases, error handling, security, test quality, integration, and semantic neutrality.
+      Shared-guidance neutrality: no shared template/generated guidance source changed; direction-1
+      sampling found project-neutral language, direction 2 was not triggered, Kynetic-only policy
+      remains in AGENTS.md/work-gates/review-gates, and regeneration was not required. No findings."
+    name: manual review evidence
+    required: false
+    runner: reviewer inspection
+    created_at: 2026-07-18T03:50:11.825Z
+    completed_at: 2026-07-18T03:50:11.825Z
 events:
   - _ulid: 01KXSKPA0R09R8STVPZ19XCHXA
     actor: Jacob Chapel
@@ -195,6 +214,13 @@ events:
       status: pass
       name: skill verification
     timestamp: 2026-07-18T03:50:06.114Z
+  - _ulid: 01KXSNH4BQ7229EC68FNK42FBN
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: manual review evidence
+    timestamp: 2026-07-18T03:50:12.087Z
 examined_commit: fbee7a50823eec0c6ed2f7efee61858cc29d4cdc
 external_links: []
 lifecycle_state: open
@@ -207,5 +233,5 @@ subject:
 threads: []
 verdicts: []
 created_at: 2026-07-18T03:18:04.569Z
-updated_at: 2026-07-18T03:50:05.846Z
+updated_at: 2026-07-18T03:50:11.825Z
 notes: []
