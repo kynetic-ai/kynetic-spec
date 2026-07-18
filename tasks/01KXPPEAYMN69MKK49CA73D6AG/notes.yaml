@@ -44,3 +44,17 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-07-18T05:02:06.292Z
+  - _ulid: 01KXSTBXN896ZKA7FFYDNGTNJD
+    content: "Fix cycle 1 approach: preserve the documentation-only boundary and reuse the existing docs
+      renderer, Pagefind build, and Playwright fixtures. Address all five blockers by committing
+      exact generated output; serving built static artifacts under explicit local/public bases with
+      daemon/API/external requests blocked; comparing canonical search-result slugs across both
+      bases; following an article-owned accessible agents link already present in lifecycle content
+      or returning that gap to its prose owner; and adding an input-driven local-fragment closure
+      validator test that rejects #missing while accepting valid fragments. Re-read
+      @docs-navigation-shape, @docs-search, @docs-reachability, and @auto-cli-docs; test plan covers
+      every named AC plus fresh focused/full, generation, build, E2E, lint/type, and validation
+      gates."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-07-18T05:14:44.264Z
