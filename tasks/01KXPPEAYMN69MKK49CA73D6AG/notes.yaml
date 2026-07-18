@@ -58,3 +58,17 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-07-18T05:14:44.264Z
+  - _ulid: 01KXSWC9ZM2KHS08WJQDSSDTHW
+    content: "Fix cycle 1: addressed and resolved all six review threads in commit 25cfd2ac40. Made
+      generated agent instructions convergent with an idempotence regression; converted
+      rendered-docs browser QA to a daemon-stopped static fixture that blocks API/external traffic;
+      followed the lifecycle article's actual agents-view link; compared browser-queried
+      local/public Pagefind indexes for all six canonical searches; and added a behavioral
+      broken-fragment negative fixture. Re-verified every linked AC. Gates: format, lint (0 errors),
+      focused oxlint (no new warnings), typecheck, docs builds, 17/17 docs E2E, full suite 10,992
+      passed/3 skipped, and refs/alignment/completeness validation all pass. Generated outputs are
+      clean after two consecutive branch-local generations. Captured generator provenance friction
+      as observation @01KXSV42."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-07-18T05:49:54.036Z
