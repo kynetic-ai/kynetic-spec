@@ -30983,3 +30983,21 @@ reviews:
     verdict_count: 1
     created_at: 2026-07-18T23:29:53.058Z
     updated_at: 2026-07-18T23:35:14.514Z
+  - _ulid: 01KXW0VTXQFQ14AG8MCBWRRPK2
+    slugs: []
+    title: "Implementation review: Serve packaged Pagefind assets from Node daemon"
+    disposition: pending
+    author: Jacob Chapel
+    check_count: 0
+    examined_commit: 6627036ddfb8e0163081f9ddd85d89898c1874bd
+    lifecycle_state: draft
+    related_refs: []
+    subject:
+      type: task
+      content_hash: ""
+      ref: "@01KXVPGACWKT77Y967EWP3Y7DQ"
+      shadow_commit: ""
+    thread_count: 0
+    unresolved_blocker_count: 0
+    verdict_count: 0
+    created_at: 2026-07-19T01:46:46.071Z

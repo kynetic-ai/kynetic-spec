@@ -155,7 +155,7 @@ tags:
   - docs
   - web-ui
 vcs_refs: []
-review_ref: "@01KXVS16D2KTJCGPYHBCHKPSQQ"
+review_ref: "@01KXW0VTXQFQ14AG8MCBWRRPK2"
 submission_linkage:
   review_url: null
   branch: dispatch/task/serve-packaged-pagefind-assets-from-the-node-daemon-for-real-local-docs-search/01kxvpga
@@ -1453,6 +1453,13 @@ history:
           upstream_ref: dev
     command: task-set
     timestamp: 2026-07-19T01:40:04.215Z
+  - author: Jacob Chapel
+    changes:
+      review_ref:
+        new: "@01KXW0VTXQFQ14AG8MCBWRRPK2"
+        previous: "@01KXVS16D2KTJCGPYHBCHKPSQQ"
+    command: review-link
+    timestamp: 2026-07-19T01:46:48.681Z
 created_at: 2026-07-18T22:45:42.940Z
 started_at: 2026-07-19T01:18:24.668Z
 submitted_at: 2026-07-19T01:38:58.661Z

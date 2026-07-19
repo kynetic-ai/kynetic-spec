@@ -1,0 +1,26 @@
+_ulid: 01KXW0VTXQFQ14AG8MCBWRRPK2
+slugs: []
+title: "Implementation review: Serve packaged Pagefind assets from Node daemon"
+author: Jacob Chapel
+checks: []
+events:
+  - _ulid: 01KXW0VTXFZD9WTX3ST11BADRZ
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-07-19T01:46:46.064Z
+examined_commit: 6627036ddfb8e0163081f9ddd85d89898c1874bd
+external_links: []
+lifecycle_state: draft
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KXVPGACWKT77Y967EWP3Y7DQ"
+  shadow_commit: ""
+threads: []
+verdicts: []
+created_at: 2026-07-19T01:46:46.071Z
+updated_at: null
+notes: []
