@@ -16201,7 +16201,7 @@ workspaces:
         head: bbecb7d0848cfbab42e1f3488f259794751587bb
         last_seen_at: 2026-07-18T07:02:49.789Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-close-documentation-drift-gates-01kxppea
-  - active_role: worker
+  - active_role: null
     base_branch_point: 7a3d8db2f3463635563b1904c5a6822204e2478a
     bootstrap:
       status: succeeded
@@ -16532,12 +16532,12 @@ workspaces:
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-07-19T01:40:29.774Z
+      updated_at: 2026-07-19T01:43:44.230Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-07-19T01:40:29.774Z
+      updated_at: 2026-07-19T01:43:44.230Z
     integration:
       status: pending
       detail: null
@@ -16545,8 +16545,8 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: 7a3d8db2f3463635563b1904c5a6822204e2478a
-      updated_at: 2026-07-19T01:40:29.774Z
-    lifecycle_state: active
+      updated_at: 2026-07-19T01:43:44.230Z
+    lifecycle_state: ready
     resolved_base_branch: dev
     task_id: 01KXVPGACWKT77Y967EWP3Y7DQ
     task_ref: "@01KXVPGACWKT77Y967EWP3Y7DQ"
@@ -16554,9 +16554,9 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-07-19T01:17:29.530Z
-      last_reconciled_at: 2026-07-19T01:40:29.774Z
+      last_reconciled_at: 2026-07-19T01:43:44.230Z
       created_at: 2026-07-19T01:16:50.090Z
-      updated_at: 2026-07-19T01:40:29.774Z
+      updated_at: 2026-07-19T01:43:44.230Z
     workspace_id: dispatch-workspace-01KXVPGACWKT77Y967EWP3Y7DQ
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
