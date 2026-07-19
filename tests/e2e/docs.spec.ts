@@ -15,25 +15,6 @@ import { fileURLToPath } from "node:url";
 
 const PROJECT_ROOT = resolve(dirname(fileURLToPath(import.meta.url)), "../..");
 const WEB_UI_BUILD = resolve(PROJECT_ROOT, "dist/web-ui");
-const PAGEFIND_BUILD = resolve(
-  dirname(fileURLToPath(import.meta.url)),
-  "../../dist/web-ui/pagefind",
-);
-
-async function serveStaticPagefind(page: import("@playwright/test").Page): Promise<void> {
-  await page.route("**/pagefind/**", async (route) => {
-    const relativePath = decodeURIComponent(new URL(route.request().url()).pathname).replace(
-      /^\/pagefind\//,
-      "",
-    );
-    const assetPath = resolve(PAGEFIND_BUILD, relativePath);
-    if (assetPath !== PAGEFIND_BUILD && !assetPath.startsWith(`${PAGEFIND_BUILD}${sep}`)) {
-      await route.abort("blockedbyclient");
-      return;
-    }
-    await route.fulfill({ path: assetPath });
-  });
-}
 
 function buildPagefindVariant(basePath: string): { root: string; pagefindDir: string } {
   const root = mkdtempSync(resolve(tmpdir(), "kspec-docs-e2e-search-"));
@@ -433,15 +414,47 @@ test.describe("Docs", () => {
     { name: "wide", width: 1280, height: 900 },
     { name: "narrow", width: 375, height: 667 },
   ] as const) {
-    // AC: @docs-search ac-1 — Search returns direct links to every new dispatch page
+    // AC: @docs-search ac-1 — Real daemon search returns navigable links to every dispatch page
+    // AC: @docs-search ac-2 — Pagefind loads only successful same-origin packaged assets
     test(`${viewport.name} docs search reaches all dispatch workspace and recovery pages`, async ({
       page,
-      daemon: _daemon,
+      daemon,
     }) => {
       await page.setViewportSize(viewport);
-      // Exercise the packaged static Pagefind output directly. The daemon fixture owns the
-      // SPA shell; routing these generated assets models the public/static deployment.
-      await serveStaticPagefind(page);
+      const daemonOrigin = new URL(daemon.baseUrl).origin;
+      const pagefindRequests: string[] = [];
+      const pagefindTransportFailures: string[] = [];
+      const pagefindHttpFailures: string[] = [];
+      const nonLocalRequests: string[] = [];
+      const consoleErrors: string[] = [];
+      const pageErrors: string[] = [];
+
+      page.on("request", (request) => {
+        const requestUrl = new URL(request.url());
+        if (requestUrl.pathname.startsWith("/pagefind/")) {
+          pagefindRequests.push(request.url());
+        }
+        if (requestUrl.origin !== daemonOrigin) {
+          nonLocalRequests.push(request.url());
+        }
+      });
+      page.on("requestfailed", (request) => {
+        if (new URL(request.url()).pathname.startsWith("/pagefind/")) {
+          pagefindTransportFailures.push(request.url());
+        }
+      });
+      page.on("response", (response) => {
+        if (
+          new URL(response.url()).pathname.startsWith("/pagefind/") &&
+          (response.status() < 200 || response.status() >= 300)
+        ) {
+          pagefindHttpFailures.push(`${response.status()} ${response.url()}`);
+        }
+      });
+      page.on("console", (message) => {
+        if (message.type() === "error") consoleErrors.push(message.text());
+      });
+      page.on("pageerror", (error) => pageErrors.push(error.message));
 
       for (const doc of DISPATCH_DOCS) {
         await page.goto("/docs");
@@ -454,6 +467,14 @@ test.describe("Docs", () => {
         await expect(page).toHaveURL(new RegExp(`/docs/${doc.slug}$`));
         await expect(page.getByRole("heading", { level: 1, name: doc.title })).toBeVisible();
       }
+
+      expect(pagefindRequests.length).toBeGreaterThan(0);
+      expect(pagefindRequests.every((url) => new URL(url).origin === daemonOrigin)).toBe(true);
+      expect(pagefindTransportFailures).toEqual([]);
+      expect(pagefindHttpFailures).toEqual([]);
+      expect(nonLocalRequests).toEqual([]);
+      expect(consoleErrors).toEqual([]);
+      expect(pageErrors).toEqual([]);
     });
   }
 
