@@ -16526,18 +16526,18 @@ workspaces:
       remote_ref: null
       source: provisioned
     canonical_branch: dispatch/task/serve-packaged-pagefind-assets-from-the-node-daemon-for-real-local-docs-search/01kxvpga
-    canonical_branch_head: 7a3d8db2f3463635563b1904c5a6822204e2478a
+    canonical_branch_head: e6929e01c8024c5e79a654ea7775c08c9535b40a
     cleanup:
       status: not_scheduled
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-07-19T01:16:50.090Z
+      updated_at: 2026-07-19T01:39:31.076Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-07-19T01:17:29.530Z
+      updated_at: 2026-07-19T01:39:31.076Z
     integration:
       status: pending
       detail: null
@@ -16545,7 +16545,7 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: 7a3d8db2f3463635563b1904c5a6822204e2478a
-      updated_at: 2026-07-19T01:16:50.090Z
+      updated_at: 2026-07-19T01:39:31.076Z
     lifecycle_state: active
     resolved_base_branch: dev
     task_id: 01KXVPGACWKT77Y967EWP3Y7DQ
@@ -16554,9 +16554,9 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-07-19T01:17:29.530Z
-      last_reconciled_at: 2026-07-19T01:17:29.530Z
+      last_reconciled_at: 2026-07-19T01:39:31.076Z
       created_at: 2026-07-19T01:16:50.090Z
-      updated_at: 2026-07-19T01:17:29.530Z
+      updated_at: 2026-07-19T01:39:31.076Z
     workspace_id: dispatch-workspace-01KXVPGACWKT77Y967EWP3Y7DQ
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
