@@ -99,6 +99,30 @@ checks:
     runner: npm run test:e2e -- tests/e2e/docs.spec.ts
     created_at: 2026-07-19T02:05:15.980Z
     completed_at: 2026-07-19T02:05:15.980Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Files read: packages/daemon/src/web-ui-static.ts, surrounding
+      packages/daemon/src/server.ts registration/path resolution,
+      tests/daemon-web-ui-startup-asset-coherence.test.ts, tests/e2e/docs.spec.ts,
+      tests/e2e/fixtures/test-base.ts and daemon-fixture.ts, scripts/build-docs-search.cjs, package
+      build/test scripts, full diff, task/spec, prior reviews, AGENTS.md/kspec-agents.md and review
+      gates. Commands run: git diff/status/log/diff-check, task/spec/review lookups, AC annotation
+      search, format, repo/focused lint, typecheck, focused route test, full build-backed docs E2E,
+      fresh full suite, three kspec validations. Claims verified: packaged dist/web-ui/pagefind is
+      copied by build:web-ui; default E2E runtime is Node and serves that bundle; real same-origin
+      Pagefind requests succeed without interception; all six dispatch docs navigate at wide/narrow
+      viewports; canonical public/local parity remains; route preserves MIME/cache/bytes and rejects
+      direct subtree traversal. Categories searched: correctness, edge cases, error handling,
+      security/containment, test quality/non-vacuity, build/package integration, AC alignment.
+      Findings: none. Shared/package guidance surfaces touched: none; neutrality directions 1/2 and
+      generated-guidance refresh are not applicable."
+    name: review evidence log
+    required: true
+    runner: codex reviewer
+    created_at: 2026-07-19T02:05:22.375Z
+    completed_at: 2026-07-19T02:05:22.375Z
 events:
   - _ulid: 01KXW0VTXFZD9WTX3ST11BADRZ
     actor: Jacob Chapel
@@ -176,6 +200,13 @@ events:
       status: pass
       name: real daemon docs search E2E
     timestamp: 2026-07-19T02:05:16.251Z
+  - _ulid: 01KXW1XXA2PAKDWSP805BS0QB2
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: review evidence log
+    timestamp: 2026-07-19T02:05:22.626Z
 examined_commit: 6627036ddfb8e0163081f9ddd85d89898c1874bd
 external_links: []
 lifecycle_state: open
@@ -188,5 +219,5 @@ subject:
 threads: []
 verdicts: []
 created_at: 2026-07-19T01:46:46.071Z
-updated_at: 2026-07-19T02:05:15.980Z
+updated_at: 2026-07-19T02:05:22.375Z
 notes: []
