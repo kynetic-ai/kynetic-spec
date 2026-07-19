@@ -123,6 +123,17 @@ checks:
     runner: codex reviewer
     created_at: 2026-07-19T02:05:22.375Z
     completed_at: 2026-07-19T02:05:22.375Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Exit 0; 7/7 tests passed. Verified JS MIME/cache/body, nested binary MIME/cache/exact
+      bytes, missing 404, and Pagefind-subtree traversal containment.
+    name: focused Node Pagefind route
+    required: true
+    runner: npm test -- tests/daemon-web-ui-startup-asset-coherence.test.ts --fresh
+    created_at: 2026-07-19T02:05:26.262Z
+    completed_at: 2026-07-19T02:05:26.262Z
 events:
   - _ulid: 01KXW0VTXFZD9WTX3ST11BADRZ
     actor: Jacob Chapel
@@ -207,6 +218,13 @@ events:
       status: pass
       name: review evidence log
     timestamp: 2026-07-19T02:05:22.626Z
+  - _ulid: 01KXW1Y15EV3ACC0NTVBC995WE
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: focused Node Pagefind route
+    timestamp: 2026-07-19T02:05:26.574Z
 examined_commit: 6627036ddfb8e0163081f9ddd85d89898c1874bd
 external_links: []
 lifecycle_state: open
@@ -219,5 +237,5 @@ subject:
 threads: []
 verdicts: []
 created_at: 2026-07-19T01:46:46.071Z
-updated_at: 2026-07-19T02:05:22.375Z
+updated_at: 2026-07-19T02:05:26.262Z
 notes: []
