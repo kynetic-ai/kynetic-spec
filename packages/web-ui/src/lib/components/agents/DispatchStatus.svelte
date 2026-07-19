@@ -168,6 +168,9 @@
 	<Dialog.Content
 		data-testid="dispatch-confirm-dialog"
 		aria-label={HARD_STOP_CONFIRMATION.title}
+		showCloseButton={!isToggling}
+		escapeKeydownBehavior={isToggling ? 'ignore' : 'close'}
+		interactOutsideBehavior={isToggling ? 'ignore' : 'close'}
 		onCloseAutoFocus={handleCloseAutoFocus}
 	>
 		<Dialog.Header>

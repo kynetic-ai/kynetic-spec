@@ -428,6 +428,74 @@ test.describe("Agent and Dispatch View", () => {
       });
     });
 
+    // AC: @ui-agent-dispatch ac-hard-stop-confirmation-cancellation
+    // AC: @ui-agent-dispatch ac-lifecycle-focus-retained
+    test("keeps pending hard stops modal and focuses the replacement control", async ({
+      page,
+      daemon: _daemon,
+    }) => {
+      const runningStatus = lifecycleStatusFixture({
+        dispatch_enabled: true,
+        global_authority: "running",
+        projection: "running",
+      });
+      const stoppedStatus = lifecycleStatusFixture({
+        dispatch_enabled: false,
+        global_authority: "stopped",
+        projection: "stopped",
+      });
+      let currentStatus = runningStatus;
+      await page.route("**/api/agent/status", async (route) => {
+        await route.fulfill({
+          status: 200,
+          contentType: "application/json",
+          body: JSON.stringify(currentStatus),
+        });
+      });
+
+      let releaseStop!: () => void;
+      const stopReleased = new Promise<void>((resolve) => {
+        releaseStop = resolve;
+      });
+      let markStopPending!: () => void;
+      const stopPending = new Promise<void>((resolve) => {
+        markStopPending = resolve;
+      });
+      await page.route("**/api/agent/dispatch/control", async (route) => {
+        markStopPending();
+        await stopReleased;
+        currentStatus = stoppedStatus;
+        await route.fulfill({
+          status: 200,
+          contentType: "application/json",
+          body: JSON.stringify({
+            ok: true,
+            data: { ...lifecycleMutationData(stoppedStatus), outcome: "applied" },
+            error: null,
+          }),
+        });
+      });
+
+      await page.goto("/agents");
+      await expect(page.getByTestId("agents-loading")).toHaveCount(0);
+      await page.getByRole("button", { name: "Hard stop", exact: true }).click();
+      const dialog = page.getByRole("dialog", { name: "Confirm hard stop" });
+      await dialog.getByRole("button", { name: "Confirm" }).click();
+      await stopPending;
+
+      await expect(dialog.getByRole("button", { name: "Close" })).toHaveCount(0);
+      await page.keyboard.press("Escape");
+      await expect(dialog).toBeVisible();
+      await page.mouse.click(4, 4);
+      await expect(dialog).toBeVisible();
+
+      releaseStop();
+      await expect(dialog).toHaveCount(0);
+      const startButton = page.getByRole("button", { name: "Start", exact: true });
+      await expect(startButton).toBeEnabled();
+      await expect(startButton).toBeFocused();
+    });
+
     // AC: @ui-agent-dispatch ac-status-active-work-visible
     // AC: @ui-agent-dispatch ac-status-queued-work-visible
     // AC: @ui-agent-dispatch ac-status-held-work-visible

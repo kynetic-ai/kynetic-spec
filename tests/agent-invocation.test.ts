@@ -95,9 +95,21 @@ async function readEventsJsonl(
     .map((line) => JSON.parse(line));
 }
 
-async function waitForMockPid(pidFile: string, timeoutMs = 5_000): Promise<number> {
-  const deadline = Date.now() + timeoutMs;
-  while (Date.now() < deadline) {
+interface WaitForMockPidTiming {
+  now: () => number;
+  sleep: (delayMs: number) => Promise<void>;
+}
+
+async function waitForMockPid(
+  pidFile: string,
+  timeoutMs = 5_000,
+  timing: WaitForMockPidTiming = {
+    now: () => performance.now(),
+    sleep: (delayMs) => new Promise((resolve) => setTimeout(resolve, delayMs)),
+  },
+): Promise<number> {
+  const deadline = timing.now() + timeoutMs;
+  while (timing.now() < deadline) {
     let content: string;
     try {
       content = await readTestOutput(pidFile);
@@ -108,7 +120,7 @@ async function waitForMockPid(pidFile: string, timeoutMs = 5_000): Promise<numbe
         }
         throw error;
       }
-      await new Promise((resolve) => setTimeout(resolve, 5));
+      await timing.sleep(5);
       continue;
     }
 
@@ -156,6 +168,29 @@ describe("waitForMockPid", () => {
     await expect(waitForMockPid(pidFile, 50)).rejects.toThrow(
       `Mock ACP PID file ${pidFile} contained invalid PID text: "123partial"`,
     );
+  });
+
+  it("bounds missing PID waits with a monotonic deadline despite wall-clock rollback", async () => {
+    const pidFile = path.join(testDir, "missing.pid");
+    const monotonicReadings = [100, 100, 105, 110];
+    const wallClock = vi
+      .spyOn(Date, "now")
+      .mockReturnValueOnce(10_000)
+      .mockReturnValueOnce(0)
+      .mockReturnValueOnce(0)
+      .mockReturnValue(10_010);
+
+    try {
+      await expect(
+        waitForMockPid(pidFile, 10, {
+          now: () => monotonicReadings.shift() ?? 110,
+          sleep: async () => {},
+        }),
+      ).rejects.toThrow(`Mock ACP PID file ${pidFile} was not created within 10ms`);
+      expect(wallClock).not.toHaveBeenCalled();
+    } finally {
+      wallClock.mockRestore();
+    }
   });
 });
 
