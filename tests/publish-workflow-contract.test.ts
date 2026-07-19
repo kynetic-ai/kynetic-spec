@@ -8,7 +8,8 @@ import { parse } from "yaml";
 import { describe, expect, it } from "vitest";
 
 const ROOT = join(import.meta.dirname, "..");
-const WORKFLOW_PATH = join(ROOT, ".github", "workflows", "publish.yml");
+const WORKFLOW_PATH =
+  process.env.KSPEC_PUBLISH_WORKFLOW_PATH ?? join(ROOT, ".github", "workflows", "publish.yml");
 
 interface WorkflowStep {
   name?: string;
@@ -20,6 +21,7 @@ interface WorkflowStep {
 }
 interface WorkflowJob {
   needs?: string | string[];
+  permissions?: Record<string, string>;
   outputs?: Record<string, string>;
   steps: WorkflowStep[];
 }
@@ -58,10 +60,17 @@ describe("npm publish workflow contract", () => {
       commit: "${{ steps.resolve.outputs.commit }}",
       version: "${{ steps.resolve.outputs.version }}",
     });
+    expect(resolve.permissions).toEqual({ contents: "read" });
+    const checkout = stepNamed(resolve, "Checkout release candidate");
+    expect(checkout.with).toMatchObject({
+      ref: "${{ github.event_name == 'release' && github.sha || inputs.release-tag }}",
+    });
     const resolution = stepNamed(resolve, "Resolve authoritative release");
     expect(resolution.run).toBe("scripts/validate-release.sh resolve");
     expect(resolution.env).toMatchObject({
       EVENT_NAME: "${{ github.event_name }}",
+      RELEASE_TAG:
+        "${{ github.event_name == 'release' && github.event.release.tag_name || inputs.release-tag }}",
       RELEASE_EVENT_COMMIT: "${{ github.sha }}",
     });
   });
@@ -117,5 +126,6 @@ describe("npm publish workflow contract", () => {
       stepNamed(workflow.jobs["verify-min-node"], "Setup Node.js").with?.["node-version"],
     ).toBe("20");
     expect(workflow.jobs.publish.needs).toEqual(["resolve-release", "verify-min-node"]);
+    expect(workflow.jobs.publish.permissions).toEqual({ contents: "read", "id-token": "write" });
   });
 });

@@ -1,4 +1,4 @@
-import { chmodSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from "node:fs";
+import { chmodSync, existsSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { spawnSync } from "node:child_process";
@@ -46,8 +46,9 @@ esac`,
   );
   fakeBoundary(
     "gh",
-    `[[ "\${FAKE_GH_FAIL:-0}" == 0 ]] || exit "\${FAKE_GH_FAIL}"
-printf '%b\\n' "\${FAKE_GH_OUTPUT}"`,
+    `[[ "\${FAKE_GH_FAIL_BEFORE_OUTPUT:-0}" == 0 ]] || exit "\${FAKE_GH_FAIL_BEFORE_OUTPUT}"
+printf '%b\\n' "\${FAKE_GH_OUTPUT}"
+exit "\${FAKE_GH_FAIL_AFTER_OUTPUT:-0}"`,
   );
   fakeBoundary(
     "node",
@@ -76,7 +77,8 @@ printf '%b\\n' "\${FAKE_GH_OUTPUT}"`,
       FAKE_PACKAGE_VERSION: "1.2.3",
       FAKE_LOCK_VERSION: "1.2.3",
       FAKE_GH_OUTPUT: "v1.2.3\\tfalse\\t2026-07-19T00:00:00Z",
-      FAKE_GH_FAIL: "0",
+      FAKE_GH_FAIL_BEFORE_OUTPUT: "0",
+      FAKE_GH_FAIL_AFTER_OUTPUT: "0",
       ...overrides,
     },
   });
@@ -106,8 +108,19 @@ describe("release validation executable", () => {
     expect(result.status, result.stderr).toBe(0);
   });
 
+  it("rejects invalid tag grammar before otherwise valid release checks", () => {
+    const result = run("resolve", {
+      RELEASE_TAG: "release-1.2.3",
+      FAKE_PACKAGE_VERSION: "release-1.2.3",
+      FAKE_LOCK_VERSION: "release-1.2.3",
+    });
+    expect(result.status).not.toBe(0);
+    expect(result.stderr).toContain(
+      "Release tag must use vX.Y.Z semantic-version grammar; got 'release-1.2.3'.",
+    );
+  });
+
   it.each([
-    ["invalid tag", { RELEASE_TAG: "release-1.2.3" }],
     ["package mismatch", { FAKE_PACKAGE_VERSION: "1.2.4" }],
     ["lock mismatch", { FAKE_LOCK_VERSION: "1.2.4" }],
     ["release event mismatch", { FAKE_TAG_COMMIT: COMMIT_B }],
@@ -119,9 +132,19 @@ describe("release validation executable", () => {
       "unpublished manual release",
       { EVENT_NAME: "workflow_dispatch", FAKE_GH_OUTPUT: "v1.2.3\\tfalse\\t" },
     ],
-    ["manual API failure", { EVENT_NAME: "workflow_dispatch", FAKE_GH_FAIL: "22" }],
+    ["manual API failure", { EVENT_NAME: "workflow_dispatch", FAKE_GH_FAIL_BEFORE_OUTPUT: "22" }],
   ])("fails closed for %s", (_name, env) => {
     expect(run("resolve", env).status).not.toBe(0);
+  });
+
+  it("fails without outputs when GitHub API emits a valid release then exits nonzero", () => {
+    const result = run("resolve", {
+      EVENT_NAME: "workflow_dispatch",
+      RELEASE_EVENT_COMMIT: "",
+      FAKE_GH_FAIL_AFTER_OUTPUT: "22",
+    });
+    expect(result.status).not.toBe(0);
+    expect(existsSync(join(dirs.at(-1)!, "github-output"))).toBe(false);
   });
 
   it.each(["lightweight", "annotated"])("accepts a remotely bound %s tag", (kind) => {
