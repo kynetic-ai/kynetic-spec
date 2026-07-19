@@ -145,7 +145,7 @@ description: >-
   - Unrelated docs, lifecycle, dispatch, daemon, or web UI cleanup; hand edits to generated outputs.
 spec_ref: "@docs-search"
 plan_ref: null
-status: in_progress
+status: pending_review
 blocked_by: []
 depends_on: []
 context: []
@@ -156,6 +156,14 @@ tags:
   - web-ui
 vcs_refs: []
 review_ref: "@01KXVS16D2KTJCGPYHBCHKPSQQ"
+submission_linkage:
+  review_url: null
+  branch: dispatch/task/serve-packaged-pagefind-assets-from-the-node-daemon-for-real-local-docs-search/01kxvpga
+  captured_at: 2026-07-19T01:38:58.651Z
+  commit: e6929e01c8024c5e79a654ea7775c08c9535b40a
+  remote: null
+  remote_url: null
+  upstream_ref: dev
 session_id: 01KXVZ622SF1H7Q9A1N6NKPWC2
 history:
   - author: Jacob Chapel
@@ -1404,7 +1412,28 @@ history:
         previous: null
     command: task-start
     timestamp: 2026-07-19T01:18:24.672Z
+  - author: Jacob Chapel
+    changes:
+      status:
+        new: pending_review
+        previous: in_progress
+      submission_linkage:
+        new:
+          review_url: null
+          branch: dispatch/task/serve-packaged-pagefind-assets-from-the-node-daemon-for-real-local-docs-search/01kxvpga
+          captured_at: 2026-07-19T01:38:58.651Z
+          commit: e6929e01c8024c5e79a654ea7775c08c9535b40a
+          remote: null
+          remote_url: null
+          upstream_ref: dev
+        previous: null
+      submitted_at:
+        new: 2026-07-19T01:38:58.661Z
+        previous: null
+    command: task-submit
+    timestamp: 2026-07-19T01:38:58.661Z
 created_at: 2026-07-18T22:45:42.940Z
 started_at: 2026-07-19T01:18:24.668Z
+submitted_at: 2026-07-19T01:38:58.661Z
 todos: []
 automation: eligible

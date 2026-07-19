@@ -34333,7 +34333,7 @@
   title: Serve packaged Pagefind assets from the Node daemon for real local docs search
   type: bug
   spec_ref: "@docs-search"
-  status: in_progress
+  status: pending_review
   blocked_by: []
   depends_on: []
   priority: 1
@@ -34346,4 +34346,5 @@
   todos_count: 0
   created_at: 2026-07-18T22:45:42.940Z
   started_at: 2026-07-19T01:18:24.668Z
+  submitted_at: 2026-07-19T01:38:58.661Z
   automation: eligible
