@@ -2176,7 +2176,7 @@ plans:
     slugs:
       - plan-documentation-completeness-and-dispatch-workspaces
     title: Documentation Completeness and Dispatch Workspaces
-    status: active
+    status: completed
     approved_at: 2026-07-17T00:06:20.402Z
     derived_specs: []
     derived_tasks:
