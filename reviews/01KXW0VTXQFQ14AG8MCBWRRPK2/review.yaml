@@ -87,6 +87,18 @@ checks:
     runner: npm test -- tests/daemon-web-ui-startup-asset-coherence.test.ts --fresh
     created_at: 2026-07-19T02:05:09.769Z
     completed_at: 2026-07-19T02:05:09.769Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Exit 0; build:e2e rebuilt daemon, web UI, and Pagefind index, then 17/17 Playwright tests
+      passed. Wide/narrow searches used the default Node daemon with no Pagefind request
+      interception.
+    name: real daemon docs search E2E
+    required: true
+    runner: npm run test:e2e -- tests/e2e/docs.spec.ts
+    created_at: 2026-07-19T02:05:15.980Z
+    completed_at: 2026-07-19T02:05:15.980Z
 events:
   - _ulid: 01KXW0VTXFZD9WTX3ST11BADRZ
     actor: Jacob Chapel
@@ -157,6 +169,13 @@ events:
       status: pass
       name: focused Node Pagefind route
     timestamp: 2026-07-19T02:05:10.042Z
+  - _ulid: 01KXW1XQ2T0RBZR37ZYGBXX7BH
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: real daemon docs search E2E
+    timestamp: 2026-07-19T02:05:16.251Z
 examined_commit: 6627036ddfb8e0163081f9ddd85d89898c1874bd
 external_links: []
 lifecycle_state: open
@@ -169,5 +188,5 @@ subject:
 threads: []
 verdicts: []
 created_at: 2026-07-19T01:46:46.071Z
-updated_at: 2026-07-19T02:05:09.769Z
+updated_at: 2026-07-19T02:05:15.980Z
 notes: []
