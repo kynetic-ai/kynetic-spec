@@ -382,9 +382,36 @@ test.describe("Agent and Dispatch View", () => {
       await expect(dialog).toContainText(
         "Session, branch, workspace, worktree, snapshot, and audit evidence will be preserved.",
       );
+      await page.evaluate(() => {
+        const testWindow = window as Window & {
+          lifecycleCloseAutoFocusPrevented?: boolean;
+          restoreLifecyclePreventDefault?: typeof Event.prototype.preventDefault;
+        };
+        testWindow.lifecycleCloseAutoFocusPrevented = false;
+        testWindow.restoreLifecyclePreventDefault = Event.prototype.preventDefault;
+        Event.prototype.preventDefault = function () {
+          if (this.type === "focusScope.onCloseAutoFocus") {
+            testWindow.lifecycleCloseAutoFocusPrevented = true;
+          }
+          testWindow.restoreLifecyclePreventDefault!.call(this);
+        };
+      });
       await dialog.getByRole("button", { name: "Cancel" }).click();
       await expect(dialog).toHaveCount(0);
       await expect(stopButton).toBeFocused();
+      expect(
+        await page.evaluate(() => {
+          const testWindow = window as Window & {
+            lifecycleCloseAutoFocusPrevented?: boolean;
+            restoreLifecyclePreventDefault?: typeof Event.prototype.preventDefault;
+          };
+          const prevented = testWindow.lifecycleCloseAutoFocusPrevented;
+          Event.prototype.preventDefault = testWindow.restoreLifecyclePreventDefault!;
+          delete testWindow.lifecycleCloseAutoFocusPrevented;
+          delete testWindow.restoreLifecyclePreventDefault;
+          return prevented;
+        }),
+      ).toBe(true);
       expect(controlRequests).toBe(0);
 
       await page.getByRole("button", { name: "Pause", exact: true }).click();

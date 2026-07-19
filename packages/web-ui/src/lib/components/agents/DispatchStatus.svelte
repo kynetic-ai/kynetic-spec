@@ -24,40 +24,58 @@
 	let confirmationOpen = $state(false);
 	let pendingStop = $state(false);
 	let invokingControl = $state<HTMLButtonElement | null>(null);
+	let preferInvokingOnDialogClose = $state(true);
+	let closeConfirmationWhenReady = $state(false);
 	let controlsElement = $state<HTMLDivElement | null>(null);
 	let liveStatus = $state('');
 	let actions = $derived(getGlobalLifecycleActions(status));
 	let badge = $derived(getLifecycleBadge(status));
+
+	$effect(() => {
+		if (closeConfirmationWhenReady && !isToggling) {
+			closeConfirmationWhenReady = false;
+			confirmationOpen = false;
+		}
+	});
 
 	async function invoke(action: GlobalLifecycleAction, button: HTMLButtonElement) {
 		if (isStaticMode()) return;
 		invokingControl = button;
 		if (action === 'stop') {
 			pendingStop = true;
+			preferInvokingOnDialogClose = true;
 			confirmationOpen = true;
 			return;
 		}
 		await runAction(action);
 	}
 
-	async function restoreLifecycleFocus(preferInvoking = false) {
+	function focusLifecycleControl(preferInvoking: boolean) {
+		const replacement = controlsElement?.isConnected
+			? controlsElement.querySelector<HTMLButtonElement>('button:not([disabled])')
+			: null;
+		const connectedInvoker = invokingControl?.isConnected ? invokingControl : null;
+		(preferInvoking ? connectedInvoker ?? replacement : replacement ?? connectedInvoker)?.focus();
+		invokingControl = null;
+	}
+
+	function handleCloseAutoFocus(event: Event) {
+		event.preventDefault();
+		focusLifecycleControl(preferInvokingOnDialogClose);
+	}
+
+	async function restoreFocusAfterDomRefresh(preferInvoking: boolean) {
 		await tick();
 		requestAnimationFrame(() => {
-			requestAnimationFrame(() => {
-				const replacement = controlsElement?.isConnected
-					? controlsElement.querySelector<HTMLButtonElement>('button:not([disabled])')
-					: null;
-				const connectedInvoker = invokingControl?.isConnected ? invokingControl : null;
-				(preferInvoking ? connectedInvoker ?? replacement : replacement ?? connectedInvoker)?.focus();
-				invokingControl = null;
-			});
+			requestAnimationFrame(() => focusLifecycleControl(preferInvoking));
 		});
 	}
 
-	async function cancelConfirmation() {
+	function cancelConfirmation() {
+		closeConfirmationWhenReady = false;
+		preferInvokingOnDialogClose = true;
 		confirmationOpen = false;
 		pendingStop = false;
-		await restoreLifecycleFocus(true);
 	}
 
 	async function runAction(action: GlobalLifecycleAction) {
@@ -71,9 +89,10 @@
 			await tick();
 			liveStatus = `Dispatch status unchanged: ${getLifecycleBadge(status)}`;
 		} finally {
-			confirmationOpen = false;
+			preferInvokingOnDialogClose = !succeeded;
 			pendingStop = false;
-			await restoreLifecycleFocus(!succeeded);
+			if (action === 'stop') closeConfirmationWhenReady = true;
+			else await restoreFocusAfterDomRefresh(!succeeded);
 		}
 	}
 </script>
@@ -146,7 +165,11 @@
 </div>
 
 <Dialog.Root bind:open={confirmationOpen}>
-	<Dialog.Content data-testid="dispatch-confirm-dialog" aria-label={HARD_STOP_CONFIRMATION.title}>
+	<Dialog.Content
+		data-testid="dispatch-confirm-dialog"
+		aria-label={HARD_STOP_CONFIRMATION.title}
+		onCloseAutoFocus={handleCloseAutoFocus}
+	>
 		<Dialog.Header>
 			<Dialog.Title>{HARD_STOP_CONFIRMATION.title}</Dialog.Title>
 			<Dialog.Description>{HARD_STOP_CONFIRMATION.description}</Dialog.Description>

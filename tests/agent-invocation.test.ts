@@ -98,14 +98,66 @@ async function readEventsJsonl(
 async function waitForMockPid(pidFile: string, timeoutMs = 5_000): Promise<number> {
   const deadline = Date.now() + timeoutMs;
   while (Date.now() < deadline) {
+    let content: string;
     try {
-      return Number(await readTestOutput(pidFile));
-    } catch {
+      content = await readTestOutput(pidFile);
+    } catch (error) {
+      if ((error as NodeJS.ErrnoException).code !== "ENOENT") {
+        if (error && typeof error === "object" && !("path" in error)) {
+          (error as NodeJS.ErrnoException).path = pidFile;
+        }
+        throw error;
+      }
       await new Promise((resolve) => setTimeout(resolve, 5));
+      continue;
     }
+
+    if (!/^[1-9]\d*$/.test(content)) {
+      throw new Error(
+        `Mock ACP PID file ${pidFile} contained invalid PID text: ${JSON.stringify(content)}`,
+      );
+    }
+    const pid = Number(content);
+    if (!Number.isSafeInteger(pid)) {
+      throw new Error(
+        `Mock ACP PID file ${pidFile} contained invalid PID text: ${JSON.stringify(content)}`,
+      );
+    }
+    return pid;
   }
-  throw new Error(`Mock ACP did not become ready within ${timeoutMs}ms`);
+  throw new Error(`Mock ACP PID file ${pidFile} was not created within ${timeoutMs}ms`);
 }
+
+describe("waitForMockPid", () => {
+  let testDir: string;
+
+  beforeEach(async () => {
+    testDir = await createTempDir("kspec-mock-pid-");
+  });
+
+  afterEach(async () => {
+    await cleanupTempDir(testDir);
+  });
+
+  it("rethrows permanent read errors with the PID path", async () => {
+    const pidFile = path.join(testDir, "pid-directory");
+    await fs.mkdir(pidFile);
+
+    await expect(waitForMockPid(pidFile, 50)).rejects.toMatchObject({
+      code: "EISDIR",
+      path: pidFile,
+    });
+  });
+
+  it("rejects malformed PID content with an actionable diagnostic", async () => {
+    const pidFile = path.join(testDir, "mock.pid");
+    await fs.writeFile(pidFile, "123partial", "utf8");
+
+    await expect(waitForMockPid(pidFile, 50)).rejects.toThrow(
+      `Mock ACP PID file ${pidFile} contained invalid PID text: "123partial"`,
+    );
+  });
+});
 
 // ─── ac-one-shot-uses-runner-resolution ──────────────────────────────────────
 
