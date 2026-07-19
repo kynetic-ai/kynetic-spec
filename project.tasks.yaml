@@ -34333,7 +34333,6 @@
   title: Serve packaged Pagefind assets from the Node daemon for real local docs search
   type: bug
   spec_ref: "@docs-search"
-  plan_ref: "@plan-documentation-completeness-and-dispatch-workspaces"
   status: pending
   blocked_by: []
   depends_on: []

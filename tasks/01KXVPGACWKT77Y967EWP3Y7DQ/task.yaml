@@ -144,7 +144,7 @@ description: >-
 
   - Unrelated docs, lifecycle, dispatch, daemon, or web UI cleanup; hand edits to generated outputs.
 spec_ref: "@docs-search"
-plan_ref: "@plan-documentation-completeness-and-dispatch-workspaces"
+plan_ref: null
 status: pending
 blocked_by: []
 depends_on: []
@@ -1383,6 +1383,13 @@ history:
         previous: manual_only
     command: task-set
     timestamp: 2026-07-18T23:36:49.564Z
+  - author: Hermes Closure Reviewer
+    changes:
+      plan_ref:
+        new: null
+        previous: "@plan-documentation-completeness-and-dispatch-workspaces"
+    command: task-set
+    timestamp: 2026-07-19T01:13:41.693Z
 created_at: 2026-07-18T22:45:42.940Z
 todos: []
 automation: eligible
