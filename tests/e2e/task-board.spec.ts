@@ -434,7 +434,8 @@ test.describe("Task Board (Kanban)", () => {
       page.getByTestId("board-columns").or(page.getByTestId("board-empty")),
     ).toBeVisible();
 
-    // Active fleet should NOT be visible when no agents running
+    await expect(page.getByTestId("dispatch-lifecycle-evidence")).toContainText("Stopped");
+    // Lifecycle evidence remains visible, but Active Fleet is only active work.
     await expect(page.getByTestId("active-fleet-row")).not.toBeVisible();
   });
 

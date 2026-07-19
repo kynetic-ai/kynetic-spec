@@ -33,16 +33,17 @@
 </script>
 
 {#if status}
-	<div class="mb-4" data-testid="active-fleet-row">
+	<div class="mb-4">
 		<LifecycleEvidence {status} />
 		{#if isVisible}
-		<div class="flex items-center gap-2 mb-2">
-			<Activity class="size-4 text-status-in-progress" />
-			<h3 class="text-sm font-medium">Active Fleet</h3>
-			<Badge variant="secondary" class="text-[10px]">{activeInvocations.length} running</Badge>
-		</div>
-		<div class="flex gap-3 overflow-x-auto pb-2">
-			{#each activeInvocations as invocation (invocation.sessionId)}
+			<div data-testid="active-fleet-row">
+				<div class="flex items-center gap-2 mb-2">
+					<Activity class="size-4 text-status-in-progress" />
+					<h3 class="text-sm font-medium">Active Fleet</h3>
+					<Badge variant="secondary" class="text-[10px]">{activeInvocations.length} running</Badge>
+				</div>
+				<div class="flex gap-3 overflow-x-auto pb-2">
+					{#each activeInvocations as invocation (invocation.sessionId)}
 				{@const lines = outputLines[invocation.sessionId] ?? []}
 				{@const title = invocation.taskTitle ?? undefined}
 				{@const agentName = agentNameMap[invocation.agentId] ?? invocation.agentId}
@@ -96,8 +97,9 @@
 						</div>
 					{/if}
 				</div>
-			{/each}
-		</div>
+					{/each}
+				</div>
+			</div>
 		{/if}
 	</div>
 {/if}

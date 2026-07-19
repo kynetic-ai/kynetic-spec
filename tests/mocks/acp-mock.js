@@ -84,14 +84,16 @@ const pidFile = process.env.MOCK_ACP_PID_FILE;
 const initializeMode = process.env.MOCK_ACP_INITIALIZE_MODE;
 const resistantDescendantPidFile = process.env.MOCK_ACP_RESISTANT_DESCENDANT_PID_FILE;
 
-if (pidFile) {
-  fs.writeFileSync(pidFile, String(process.pid));
-}
-
 if (resistTermination) {
   process.on("SIGTERM", () => {
     // Intentionally resist graceful termination. SIGKILL remains uncatchable.
   });
+}
+
+// The PID file is a readiness signal: once it exists, configured signal
+// handlers are installed and tests may safely trigger immediate cleanup.
+if (pidFile) {
+  fs.writeFileSync(pidFile, String(process.pid));
 }
 
 if (resistantDescendantPidFile) {

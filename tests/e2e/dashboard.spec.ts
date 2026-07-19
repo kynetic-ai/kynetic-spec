@@ -1,4 +1,5 @@
 import { test, expect, getFixtureTaskCounts } from "./fixtures/test-base";
+import { agentStatusFixture } from "./fixtures/agent-status";
 
 /**
  * Dashboard Overview E2E Tests
@@ -123,14 +124,9 @@ function fixtureValidation() {
   });
 }
 
-/** Agent status: no dispatch running */
+/** Agent status using the exact public dispatch-status wire contract. */
 function fixtureAgentStatus() {
-  return {
-    dispatch_enabled: false,
-    active_invocations: [],
-    queued_tasks: [],
-    agents: [],
-  };
+  return agentStatusFixture();
 }
 
 /**
@@ -250,20 +246,23 @@ test.describe("Dashboard Overview", () => {
         route.fulfill({
           status: 200,
           contentType: "application/json",
-          body: JSON.stringify({
-            dispatch_enabled: true,
-            active_invocations: [
-              {
-                session_id: "01JTEST0000000000000000001",
-                agent_id: "task-worker",
-                task_ref: "@test-task-in-progress",
-                elapsed_ms: 45000,
-                status: "running",
-              },
-            ],
-            queued_tasks: [],
-            agents: [],
-          }),
+          body: JSON.stringify(
+            agentStatusFixture({
+              dispatch_enabled: true,
+              active_invocations: [
+                {
+                  session_id: "01JTEST0000000000000000001",
+                  agent_id: "task-worker",
+                  task_ref: "@test-task-in-progress",
+                  task_title: "In progress task",
+                  elapsed_ms: 45000,
+                },
+              ],
+              active_count: 1,
+              global_authority: "running",
+              projection: "running",
+            }),
+          ),
         });
       });
 

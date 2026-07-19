@@ -95,6 +95,18 @@ async function readEventsJsonl(
     .map((line) => JSON.parse(line));
 }
 
+async function waitForMockPid(pidFile: string, timeoutMs = 5_000): Promise<number> {
+  const deadline = Date.now() + timeoutMs;
+  while (Date.now() < deadline) {
+    try {
+      return Number(await readTestOutput(pidFile));
+    } catch {
+      await new Promise((resolve) => setTimeout(resolve, 5));
+    }
+  }
+  throw new Error(`Mock ACP did not become ready within ${timeoutMs}ms`);
+}
+
 // ─── ac-one-shot-uses-runner-resolution ──────────────────────────────────────
 
 describe("runInvocation: runner resolution on one-shot path", { timeout: 120_000 }, () => {
@@ -322,6 +334,7 @@ describe("runInvocation: agent.dispatched event payload", { timeout: 120_000 }, 
       beforeCreate: async () => handoff,
       onOwnershipPersisted: async (ownership) => {
         childPid = ownership.pid ?? undefined;
+        expect(await waitForMockPid(pidFile)).toBe(childPid);
         throw new Error("injected ownership publication failure");
       },
       onOwnershipFailed: () => {
@@ -492,8 +505,9 @@ describe("runInvocation: agent.dispatched event payload", { timeout: 120_000 }, 
         runnerRegistry: { runners: {} },
         abortSignal: abortController.signal,
         beforeCreate: async () => handoff,
-        onOwnershipPersisted: (ownership) => {
+        onOwnershipPersisted: async (ownership) => {
           childPid = ownership.pid ?? undefined;
+          expect(await waitForMockPid(pidFile)).toBe(childPid);
           if (initializeMode === "hang") abortController.abort();
         },
       });

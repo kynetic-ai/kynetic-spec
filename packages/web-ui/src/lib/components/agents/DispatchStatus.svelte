@@ -43,12 +43,14 @@
 	async function restoreLifecycleFocus(preferInvoking = false) {
 		await tick();
 		requestAnimationFrame(() => {
-			const replacement = controlsElement?.isConnected
-				? controlsElement.querySelector<HTMLButtonElement>('button:not([disabled])')
-				: null;
-			const connectedInvoker = invokingControl?.isConnected ? invokingControl : null;
-			(preferInvoking ? connectedInvoker ?? replacement : replacement ?? connectedInvoker)?.focus();
-			invokingControl = null;
+			requestAnimationFrame(() => {
+				const replacement = controlsElement?.isConnected
+					? controlsElement.querySelector<HTMLButtonElement>('button:not([disabled])')
+					: null;
+				const connectedInvoker = invokingControl?.isConnected ? invokingControl : null;
+				(preferInvoking ? connectedInvoker ?? replacement : replacement ?? connectedInvoker)?.focus();
+				invokingControl = null;
+			});
 		});
 	}
 

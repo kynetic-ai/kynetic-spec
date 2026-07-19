@@ -15,29 +15,12 @@
  */
 
 import { test, expect } from "./fixtures/test-base";
+import { agentStatusFixture } from "./fixtures/agent-status";
 
 const lifecycleTaskId = "01KXH2PVX606KVK5C4ERCB8WTY";
 const lifecycleTimestamp = "2026-07-16T12:00:00.000Z";
 
-function lifecycleStatusFixture(overrides: Record<string, unknown> = {}) {
-  return {
-    dispatch_enabled: false,
-    active_invocations: [],
-    queued_invocations: [],
-    agent_definitions: [],
-    degraded: { active: false, reason: "", enteredAt: null },
-    global_authority: "stopped",
-    projection: "stopped",
-    cleanup_state: { status: "idle", entries: [] },
-    active_count: 0,
-    queue_depth: 0,
-    held_count: 0,
-    held_tasks: [],
-    task_controls: [],
-    degraded_targets: [],
-    ...overrides,
-  };
-}
+const lifecycleStatusFixture = agentStatusFixture;
 
 function lifecycleMutationData(status: ReturnType<typeof lifecycleStatusFixture>) {
   return {
