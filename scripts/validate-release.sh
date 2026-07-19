@@ -23,11 +23,12 @@ validate_versions() {
 
 validate_manual_release() {
   [[ "$EVENT_NAME" == "workflow_dispatch" ]] || return 0
-  local api_release_tag release_draft release_published_at
-  IFS=$'\t' read -r api_release_tag release_draft release_published_at < <(
+  local api_response api_release_tag release_draft release_published_at
+  api_response="$(
     gh api "repos/${GITHUB_REPOSITORY}/releases/tags/${RELEASE_TAG}" \
       --jq '[.tag_name, (.draft | tostring), (.published_at // "")] | @tsv'
-  )
+  )"
+  IFS=$'\t' read -r api_release_tag release_draft release_published_at <<< "$api_response"
   [[ "$api_release_tag" == "$RELEASE_TAG" && "$release_draft" == "false" && -n "$release_published_at" ]] ||
     fail "Manual recovery requires an existing published, non-draft GitHub release for '$RELEASE_TAG'."
 }
