@@ -16674,11 +16674,11 @@ workspaces:
     canonical_branch: dispatch/task/serve-packaged-pagefind-assets-from-the-node-daemon-for-real-local-docs-search/01kxvpga
     canonical_branch_head: 6627036ddfb8e0163081f9ddd85d89898c1874bd
     cleanup:
-      status: scheduled
+      status: completed
       detail: integrated-into-base-branch
       eligible: true
       reason: integrated-into-base-branch
-      updated_at: 2026-07-19T02:08:05.689Z
+      updated_at: 2026-07-19T02:11:55.844Z
     health:
       status: healthy
       issues: []
@@ -16692,17 +16692,17 @@ workspaces:
       target_branch: dev
       target_commit: 7a3d8db2f3463635563b1904c5a6822204e2478a
       updated_at: 2026-07-19T02:08:05.689Z
-    lifecycle_state: closing
+    lifecycle_state: closed
     resolved_base_branch: dev
     task_id: 01KXVPGACWKT77Y967EWP3Y7DQ
     task_ref: "@01KXVPGACWKT77Y967EWP3Y7DQ"
     task_slug: serve-packaged-pagefind-assets-from-the-node-daemon-for-real-local-docs-search
     timestamps:
-      closed_at: null
+      closed_at: 2026-07-19T02:11:55.844Z
       last_active_at: 2026-07-19T01:44:51.878Z
       last_reconciled_at: 2026-07-19T02:11:36.637Z
       created_at: 2026-07-19T01:16:50.090Z
-      updated_at: 2026-07-19T02:11:36.637Z
+      updated_at: 2026-07-19T02:11:55.844Z
     workspace_id: dispatch-workspace-01KXVPGACWKT77Y967EWP3Y7DQ
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
