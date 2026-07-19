@@ -359,7 +359,24 @@ describe("dispatch engine degraded state", () => {
 
     let resolveInvocation!: (result: any) => void;
     const invocationStarted = new Promise<void>((resolve) => {
-      vi.spyOn(invocationModule, "runInvocation").mockImplementation(async () => {
+      vi.spyOn(invocationModule, "runInvocation").mockImplementation(async (options) => {
+        const handoff = await options.beforeCreate?.();
+        if (handoff) {
+          await options.onOwnershipPersisted?.({
+            invocation_id: handoff.invocationId,
+            session_id: handoff.sessionId,
+            task_id: handoff.taskId,
+            agent_id: handoff.agentId,
+            adapter: handoff.adapter,
+            owner_instance_id: handoff.ownerInstanceId,
+            pid: process.pid,
+            pgid: process.pid,
+            process_start_ticks: "1",
+            process_identity_platform: "linux_proc_stat_v1",
+            captured_at: new Date().toISOString(),
+            group_members: [{ pid: process.pid, process_start_ticks: "1" }],
+          });
+        }
         resolve();
         return await new Promise((innerResolve) => {
           resolveInvocation = innerResolve;
@@ -813,6 +830,353 @@ describe("dispatch engine degraded state", () => {
     expect(drainSpy).toHaveBeenCalledTimes(1);
     expect(engine.getDegradedState()).toHaveLength(1);
     expect(engine.getDegradedState()[0].branch).toBe("plan/alpha");
+
+    await engine.stop();
+  });
+
+  // AC: @dispatch-remote-branch-sync ac-unsafe-occupied-checkout-degraded-recovery
+  // AC: @dispatch-remote-branch-sync ac-unsafe-occupied-checkout-degraded-recovery
+  // AC: @dispatch-integration-mutation-scope ac-auxiliary-target-checkout-refusal-identifies-blocker
+  // AC: @dispatch-integration-mutation-scope ac-4
+  // AC: @trait-error-guidance ac-4
+  it("clears occupied-checkout degraded state when the blocking auxiliary worktree is removed and sync re-runs", async () => {
+    ({ projectDir, remoteDir } = await setupProjectWithRemote());
+    await setupProjectFiles(projectDir);
+    // Dispatch root is NOT on the target branch — an auxiliary worktree owns it.
+    git(projectDir, "checkout -b human-feature");
+
+    const occupiedWorktreeDir = `${projectDir}-integration-occupant-sync`;
+    execSync(`git worktree add "${occupiedWorktreeDir}" dev`, {
+      cwd: projectDir,
+      stdio: "pipe",
+      env: workspaceModule.buildDispatchGitEnv(),
+    });
+    // Auxiliary marker so the mutation-scope resolver refuses the surface.
+    await fs.writeFile(
+      path.join(occupiedWorktreeDir, ".kspec-dispatch-workspace.json"),
+      `${JSON.stringify({ role: "helper", purpose: "test" })}\n`,
+      "utf-8",
+    );
+
+    const syncEvents: SyncStateEvent[] = [];
+    const engine = new DispatchEngine({
+      projectDir,
+      reconcileIntervalMs: 0,
+      coalesceWindowMs: 0,
+      onSyncStateEvent: (event) => syncEvents.push(event),
+    });
+
+    try {
+      await engine.start();
+
+      // The auxiliary blocker should cause dev to enter degraded state with a
+      // reason that identifies the blocking worktree path.
+      const degradedAfterStart = engine.getDegradedState();
+      expect(degradedAfterStart).toHaveLength(1);
+      expect(degradedAfterStart[0].branch).toBe("dev");
+      expect(degradedAfterStart[0].kind).toBe("occupied-checkout");
+      expect(degradedAfterStart[0].reason.toLowerCase()).toContain("auxiliary");
+      expect(degradedAfterStart[0].reason).toContain(occupiedWorktreeDir);
+
+      const statusAfterStart = engine.getTargetSyncStatus();
+      expect(statusAfterStart.degraded.active).toBe(true);
+      expect(statusAfterStart.degradedTargets).toHaveLength(1);
+      expect(statusAfterStart.degradedTargets[0].kind).toBe("occupied-checkout");
+
+      // Release the lock by removing the blocking worktree (the recommended
+      // operator recovery action).
+      execSync(`git worktree remove --force "${occupiedWorktreeDir}"`, {
+        cwd: projectDir,
+        stdio: "pipe",
+        env: workspaceModule.buildDispatchGitEnv(),
+      });
+
+      // The next sync evaluation must clear degraded state without a restart.
+      const result = await engine._syncTarget("dev");
+      expect(["up_to_date", "synced"]).toContain(result);
+      expect(engine.getDegradedState()).toEqual([]);
+
+      const statusAfterRecovery = engine.getTargetSyncStatus();
+      expect(statusAfterRecovery.degraded.active).toBe(false);
+      expect(statusAfterRecovery.degradedTargets).toEqual([]);
+
+      // A sync_state recovery event must broadcast so subscribers learn the
+      // engine is healthy again.
+      const enteredEvents = syncEvents.filter((e) => e.degraded);
+      const recoveredEvents = syncEvents.filter((e) => !e.degraded);
+      expect(enteredEvents).toHaveLength(1);
+      expect(enteredEvents[0].branch).toBe("dev");
+      expect(recoveredEvents).toHaveLength(1);
+      expect(recoveredEvents[0].branch).toBe("dev");
+      expect(recoveredEvents[0].recoveredAfterMs).toBeGreaterThanOrEqual(0);
+    } finally {
+      await engine.stop();
+      try {
+        execSync(`git worktree remove --force "${occupiedWorktreeDir}"`, {
+          cwd: projectDir,
+          stdio: "pipe",
+          env: workspaceModule.buildDispatchGitEnv(),
+        });
+      } catch {
+        // already removed
+      }
+    }
+  });
+
+  // AC: @dispatch-remote-branch-sync ac-unsafe-occupied-checkout-degraded-recovery
+  // AC: @dispatch-remote-branch-sync ac-unsafe-occupied-checkout-degraded-recovery
+  it("clears occupied-checkout degraded state via the periodic-sync push path", async () => {
+    ({ projectDir, remoteDir } = await setupProjectWithRemote());
+    await setupProjectFiles(projectDir);
+    git(projectDir, "checkout -b human-feature");
+
+    const occupiedWorktreeDir = `${projectDir}-integration-occupant-push`;
+    execSync(`git worktree add "${occupiedWorktreeDir}" dev`, {
+      cwd: projectDir,
+      stdio: "pipe",
+      env: workspaceModule.buildDispatchGitEnv(),
+    });
+    await fs.writeFile(
+      path.join(occupiedWorktreeDir, ".kspec-dispatch-workspace.json"),
+      `${JSON.stringify({ role: "helper", purpose: "test" })}\n`,
+      "utf-8",
+    );
+
+    const engine = new DispatchEngine({
+      projectDir,
+      reconcileIntervalMs: 0,
+      coalesceWindowMs: 0,
+    });
+
+    try {
+      await engine.start();
+
+      // Engine entered degraded via the start-time sync path (auxiliary lock).
+      expect(engine.getDegradedState()).toHaveLength(1);
+      expect(engine.getDegradedState()[0].kind).toBe("occupied-checkout");
+
+      // Release the lock.
+      execSync(`git worktree remove --force "${occupiedWorktreeDir}"`, {
+        cwd: projectDir,
+        stdio: "pipe",
+        env: workspaceModule.buildDispatchGitEnv(),
+      });
+
+      // Without any commits waiting to push, the periodic-sync push path must
+      // still re-evaluate the degraded target (instead of returning early on
+      // !integrationTargetNeedsPush) and clear degraded state once the lock is
+      // gone. This proves operators don't need a restart to recover.
+      await (engine as any)._pushIntegrationTargetAsync("dev", "periodic-sync");
+
+      expect(engine.getDegradedState()).toEqual([]);
+      expect(engine.getTargetSyncStatus().degraded.active).toBe(false);
+    } finally {
+      await engine.stop();
+      try {
+        execSync(`git worktree remove --force "${occupiedWorktreeDir}"`, {
+          cwd: projectDir,
+          stdio: "pipe",
+          env: workspaceModule.buildDispatchGitEnv(),
+        });
+      } catch {
+        // already removed
+      }
+    }
+  });
+
+  // AC: @dispatch-remote-branch-sync ac-unsafe-occupied-checkout-degraded-recovery
+  // The most important regression guard: an occupied-checkout entry must be
+  // upgraded to "divergence" once a later retry detects divergence, so the
+  // weak push-clear path cannot fire against the stale occupied-checkout
+  // classification and mask a real hard failure.
+  it("upgrades occupied-checkout to divergence when a later sync detects divergence, and the push path then leaves degraded state intact", async () => {
+    ({ projectDir, remoteDir } = await setupProjectWithRemote());
+    await setupProjectFiles(projectDir);
+    git(projectDir, "checkout -b human-feature");
+
+    const occupiedWorktreeDir = `${projectDir}-integration-occupant-transition`;
+    execSync(`git worktree add "${occupiedWorktreeDir}" dev`, {
+      cwd: projectDir,
+      stdio: "pipe",
+      env: workspaceModule.buildDispatchGitEnv(),
+    });
+    // Auxiliary marker so the mutation-scope resolver refuses the surface
+    // (a plain user-occupied checkout is now an eligible mutation surface).
+    await fs.writeFile(
+      path.join(occupiedWorktreeDir, ".kspec-dispatch-workspace.json"),
+      `${JSON.stringify({ role: "helper", purpose: "test" })}\n`,
+      "utf-8",
+    );
+
+    const engine = new DispatchEngine({
+      projectDir,
+      reconcileIntervalMs: 0,
+      coalesceWindowMs: 0,
+    });
+
+    try {
+      await engine.start();
+
+      // The blocking worktree degrades dev with kind=occupied-checkout.
+      const initial = engine.getDegradedState();
+      expect(initial).toHaveLength(1);
+      expect(initial[0].branch).toBe("dev");
+      expect(initial[0].kind).toBe("occupied-checkout");
+      const enteredAt = initial[0].enteredAt;
+
+      // Release the lock so the occupied-checkout cause is gone.
+      execSync(`git worktree remove --force "${occupiedWorktreeDir}"`, {
+        cwd: projectDir,
+        stdio: "pipe",
+        env: workspaceModule.buildDispatchGitEnv(),
+      });
+
+      // Move the dispatch root onto dev so divergence we create lands on the
+      // target branch (createDivergence commits to HEAD in projectDir).
+      git(projectDir, "checkout dev");
+
+      // Independently create divergence between local dev and origin/dev so the
+      // next ff-only sync fails. The blocking-worktree cause is no longer the
+      // reason this target is degraded — the kind classification must reflect
+      // the actual current failure mode.
+      await createDivergence(projectDir, remoteDir);
+
+      const syncResult = await engine._syncTarget("dev");
+      expect(syncResult).toBe("diverged");
+
+      // The kind must upgrade to "divergence" so the push path's
+      // occupied-checkout escape hatch does not apply. enteredAt is preserved
+      // so recovery duration tracking stays accurate.
+      const afterSync = engine.getDegradedState();
+      expect(afterSync).toHaveLength(1);
+      expect(afterSync[0].branch).toBe("dev");
+      expect(afterSync[0].kind).toBe("divergence");
+      expect(afterSync[0].enteredAt.getTime()).toBe(enteredAt.getTime());
+
+      // Now stub the post-merge push path to "succeed" — divergence-degraded
+      // state must NOT be cleared by a no-op push, only by a successful sync.
+      // This is the regression the reviewer's probe exercised: pre-fix, the
+      // stale occupied-checkout kind let _pushIntegrationTargetAsync clear
+      // hard-failure degraded state.
+      vi.spyOn(workspaceModule, "resolveDispatchIntegrationMutationScope").mockResolvedValue({
+        projectDir,
+        integrationBranch: "dev",
+        currentBranch: "dev",
+        targetBranchCheckedOut: true,
+        mutationCwd: projectDir,
+      } as any);
+      vi.spyOn(workspaceModule, "pushIntegrationTarget").mockResolvedValue({
+        pushed: true,
+        skipped: false,
+        error: null,
+      });
+      (engine as any).dispatchRemote = "origin";
+
+      await (engine as any)._pushIntegrationTargetAsync("dev", "periodic-sync");
+
+      const afterPush = engine.getDegradedState();
+      expect(afterPush).toHaveLength(1);
+      expect(afterPush[0].kind).toBe("divergence");
+    } finally {
+      await engine.stop();
+      try {
+        execSync(`git worktree remove --force "${occupiedWorktreeDir}"`, {
+          cwd: projectDir,
+          stdio: "pipe",
+          env: workspaceModule.buildDispatchGitEnv(),
+        });
+      } catch {
+        // already removed
+      }
+    }
+  });
+
+  // AC: @dispatch-remote-branch-sync ac-unsafe-occupied-checkout-degraded-recovery
+  // Strictness is one-way: a divergence-degraded entry must NOT be downgraded
+  // to occupied-checkout. If a later retry sees an occupied-checkout cause
+  // first, the existing divergence classification keeps its stricter exit
+  // requirements.
+  it("does not downgrade divergence to occupied-checkout when a later mutation-scope refusal reports occupied-checkout", async () => {
+    ({ projectDir, remoteDir } = await setupProjectWithRemote());
+    await setupProjectFiles(projectDir);
+    git(projectDir, "checkout dev");
+
+    const engine = new DispatchEngine({
+      projectDir,
+      reconcileIntervalMs: 0,
+      coalesceWindowMs: 0,
+    });
+    await engine.start();
+
+    // Enter divergence-degraded state via the real sync path.
+    await createDivergence(projectDir, remoteDir);
+    await engine._syncTarget("dev");
+    const initial = engine.getDegradedState();
+    expect(initial).toHaveLength(1);
+    expect(initial[0].kind).toBe("divergence");
+    const enteredAt = initial[0].enteredAt;
+
+    // Now report an occupied-checkout failure via the private entry point —
+    // this simulates a later push path observing a blocking worktree before
+    // the divergence is resolved. The existing divergence classification
+    // must stick (no downgrade), and enteredAt must be preserved.
+    (engine as any)._enterDegradedState(
+      "dev",
+      'Integration target "dev" is currently checked out at /tmp/foreign — release it.',
+      "occupied-checkout",
+    );
+
+    const after = engine.getDegradedState();
+    expect(after).toHaveLength(1);
+    expect(after[0].kind).toBe("divergence");
+    expect(after[0].enteredAt.getTime()).toBe(enteredAt.getTime());
+
+    await engine.stop();
+  });
+
+  // AC: @dispatch-remote-branch-sync ac-unsafe-occupied-checkout-degraded-recovery
+  // Conservative side: divergence-degraded targets must NOT auto-clear via a
+  // successful no-op push (keeping hard failures intact for divergent history).
+  it("does not clear divergence-degraded state on a successful push", async () => {
+    ({ projectDir, remoteDir } = await setupProjectWithRemote());
+    await setupProjectFiles(projectDir);
+    git(projectDir, "checkout dev");
+
+    const engine = new DispatchEngine({
+      projectDir,
+      reconcileIntervalMs: 0,
+      coalesceWindowMs: 0,
+    });
+    await engine.start();
+
+    // Force a divergence-degraded entry and verify its classification.
+    await createDivergence(projectDir, remoteDir);
+    await engine._syncTarget();
+    const degradedAfter = engine.getDegradedState();
+    expect(degradedAfter).toHaveLength(1);
+    expect(degradedAfter[0].kind).toBe("divergence");
+
+    // Simulate a push that would succeed (e.g. operator manually fixed
+    // upstream) — the divergence kind must remain degraded until a real sync
+    // proves recovery so we never mask divergent histories.
+    vi.spyOn(workspaceModule, "resolveDispatchIntegrationMutationScope").mockResolvedValue({
+      projectDir,
+      integrationBranch: "dev",
+      currentBranch: "dev",
+      targetBranchCheckedOut: true,
+      mutationCwd: projectDir,
+    } as any);
+    vi.spyOn(workspaceModule, "pushIntegrationTarget").mockResolvedValue({
+      pushed: true,
+      skipped: false,
+      error: null,
+    });
+    (engine as any).dispatchRemote = "origin";
+
+    await (engine as any)._pushIntegrationTargetAsync("dev", "post-merge");
+
+    expect(engine.getDegradedState()).toHaveLength(1);
+    expect(engine.getDegradedState()[0].kind).toBe("divergence");
 
     await engine.stop();
   });

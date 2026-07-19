@@ -1,6 +1,7 @@
 {
   "name": "@kynetic-ai/daemon",
   "version": "0.1.0",
+  "private": true,
   "description": "Kspec daemon server with WebSocket support",
   "bin": {
     "kspec-daemon": "./dist/index.js"

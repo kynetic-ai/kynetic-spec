@@ -34,6 +34,14 @@ async function countOpenFileDescriptors(): Promise<number> {
   return (await readdir("/proc/self/fd")).length;
 }
 
+function createSessionChangeHandler() {
+  return vi.fn<(file: string) => void>();
+}
+
+function createErrorHandler() {
+  return vi.fn<(error: Error, file?: string) => void>();
+}
+
 async function writeSessionFixture(
   projectDir: string,
   sessionId: string,
@@ -76,7 +84,7 @@ describeOrSkip("SessionWatcher", () => {
   // AC: @daemon-file-monitoring ac-active-only-watching
   // AC: @daemon-file-monitoring ac-startup-active-only
   it("only watches active sessions that exist when monitoring starts", async () => {
-    const onSessionChange = vi.fn();
+    const onSessionChange = createSessionChangeHandler();
     const activeDir = await writeSessionFixture(
       projectDir,
       "01JTESTSESSIONWATCHER0000001",
@@ -91,7 +99,7 @@ describeOrSkip("SessionWatcher", () => {
     const watcher = new SessionWatcher({
       sessionsDir: join(projectDir, ".kspec-sessions"),
       onSessionChange,
-      onError: vi.fn(),
+      onError: createErrorHandler(),
     });
 
     await watcher.start();
@@ -111,15 +119,16 @@ describeOrSkip("SessionWatcher", () => {
 
   // AC: @daemon-file-monitoring ac-7
   // AC: @daemon-file-monitoring ac-new-session-conditional-watch
+  // AC: @daemon-sensitive-cli-test-determinism ac-bounded-readiness
   it("detects a new active session created after monitoring starts", async () => {
-    const onSessionChange = vi.fn();
+    const onSessionChange = createSessionChangeHandler();
     const sessionsDir = join(projectDir, ".kspec-sessions");
     await rm(sessionsDir, { recursive: true, force: true });
 
     const watcher = new SessionWatcher({
       sessionsDir,
       onSessionChange,
-      onError: vi.fn(),
+      onError: createErrorHandler(),
     });
 
     await watcher.start();
@@ -128,10 +137,14 @@ describeOrSkip("SessionWatcher", () => {
     const sessionDir = join(sessionsDir, sessionId);
     await mkdir(sessionDir, { recursive: true });
     await writeSessionFixture(projectDir, sessionId, "active");
-    await waitForDebounce();
 
-    expect(onSessionChange).toHaveBeenCalledTimes(1);
-    expect(onSessionChange).toHaveBeenCalledWith(sessionDir);
+    await vi.waitFor(
+      () => {
+        expect(onSessionChange).toHaveBeenCalledTimes(1);
+        expect(onSessionChange).toHaveBeenCalledWith(sessionDir);
+      },
+      { timeout: process.env.CI ? 3000 : 2000 },
+    );
 
     await watcher.stop();
   });
@@ -139,7 +152,7 @@ describeOrSkip("SessionWatcher", () => {
   // AC: @daemon-file-monitoring ac-7
   // AC: @daemon-file-monitoring ac-new-session-conditional-watch
   it("attaches to a new active session when metadata arrives after the directory", async () => {
-    const onSessionChange = vi.fn();
+    const onSessionChange = createSessionChangeHandler();
     const sessionsDir = join(projectDir, ".kspec-sessions");
     const sessionId = "01JTESTSESSIONWATCHER000000A";
     const sessionDir = join(sessionsDir, sessionId);
@@ -147,7 +160,7 @@ describeOrSkip("SessionWatcher", () => {
     const watcher = new SessionWatcher({
       sessionsDir,
       onSessionChange,
-      onError: vi.fn(),
+      onError: createErrorHandler(),
     });
 
     await watcher.start();
@@ -172,11 +185,11 @@ describeOrSkip("SessionWatcher", () => {
   // AC: @daemon-file-monitoring ac-new-session-list-freshness
   // AC: @daemon-file-monitoring ac-new-session-conditional-watch
   it("notifies once on new non-active session arrival but does not watch for ongoing changes", async () => {
-    const onSessionChange = vi.fn();
+    const onSessionChange = createSessionChangeHandler();
     const watcher = new SessionWatcher({
       sessionsDir: join(projectDir, ".kspec-sessions"),
       onSessionChange,
-      onError: vi.fn(),
+      onError: createErrorHandler(),
     });
 
     await watcher.start();
@@ -208,7 +221,7 @@ describeOrSkip("SessionWatcher", () => {
 
   // AC: @daemon-file-monitoring ac-2
   it("fires when active session event logs change", async () => {
-    const onSessionChange = vi.fn();
+    const onSessionChange = createSessionChangeHandler();
     const sessionDir = await writeSessionFixture(
       projectDir,
       "01JTESTSESSIONWATCHER0000005",
@@ -219,7 +232,7 @@ describeOrSkip("SessionWatcher", () => {
     const watcher = new SessionWatcher({
       sessionsDir: join(projectDir, ".kspec-sessions"),
       onSessionChange,
-      onError: vi.fn(),
+      onError: createErrorHandler(),
     });
 
     await watcher.start();
@@ -235,7 +248,7 @@ describeOrSkip("SessionWatcher", () => {
 
   // AC: @daemon-file-monitoring ac-2
   it("ignores blob subtree writes so content storage does not trigger monitoring", async () => {
-    const onSessionChange = vi.fn();
+    const onSessionChange = createSessionChangeHandler();
     const sessionDir = await writeSessionFixture(
       projectDir,
       "01JTESTSESSIONWATCHER0000006",
@@ -245,7 +258,7 @@ describeOrSkip("SessionWatcher", () => {
     const watcher = new SessionWatcher({
       sessionsDir: join(projectDir, ".kspec-sessions"),
       onSessionChange,
-      onError: vi.fn(),
+      onError: createErrorHandler(),
     });
 
     await watcher.start();
@@ -263,7 +276,7 @@ describeOrSkip("SessionWatcher", () => {
 
   // AC: @daemon-file-monitoring ac-2
   it("ignores non-metadata file types in active session directories", async () => {
-    const onSessionChange = vi.fn();
+    const onSessionChange = createSessionChangeHandler();
     const sessionDir = await writeSessionFixture(
       projectDir,
       "01JTESTSESSIONWATCHER0000007",
@@ -273,7 +286,7 @@ describeOrSkip("SessionWatcher", () => {
     const watcher = new SessionWatcher({
       sessionsDir: join(projectDir, ".kspec-sessions"),
       onSessionChange,
-      onError: vi.fn(),
+      onError: createErrorHandler(),
     });
 
     await watcher.start();
@@ -289,7 +302,7 @@ describeOrSkip("SessionWatcher", () => {
 
   // AC: @daemon-file-monitoring ac-session-close-unwatch
   it("removes the per-session watch after a session becomes non-active", async () => {
-    const onSessionChange = vi.fn();
+    const onSessionChange = createSessionChangeHandler();
     const sessionId = "01JTESTSESSIONWATCHER0000008";
     const sessionDir = await writeSessionFixture(projectDir, sessionId, "active");
     const metadataPath = join(sessionDir, "session.yaml");
@@ -298,7 +311,7 @@ describeOrSkip("SessionWatcher", () => {
     const watcher = new SessionWatcher({
       sessionsDir: join(projectDir, ".kspec-sessions"),
       onSessionChange,
-      onError: vi.fn(),
+      onError: createErrorHandler(),
     });
 
     await watcher.start();
@@ -369,8 +382,8 @@ describeOrSkip("SessionWatcher", () => {
       const baselineFdCount = await countOpenFileDescriptors();
       const watcher = new SessionWatcher({
         sessionsDir,
-        onSessionChange: vi.fn(),
-        onError: vi.fn(),
+        onSessionChange: createSessionChangeHandler(),
+        onError: createErrorHandler(),
       });
 
       try {
@@ -397,11 +410,11 @@ describeOrSkip("SessionWatcher", () => {
   });
 
   it("stops emitting after watcher stop", async () => {
-    const onSessionChange = vi.fn();
+    const onSessionChange = createSessionChangeHandler();
     const watcher = new SessionWatcher({
       sessionsDir: join(projectDir, ".kspec-sessions"),
       onSessionChange,
-      onError: vi.fn(),
+      onError: createErrorHandler(),
     });
 
     await watcher.start();

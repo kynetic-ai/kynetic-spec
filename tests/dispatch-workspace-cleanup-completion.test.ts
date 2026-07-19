@@ -364,7 +364,7 @@ describe("blocked-path shadow persistence", () => {
     await markCleanupEligible(tempDir, taskRef, task);
 
     const result = await reapDispatchWorkspace(tempDir, taskRef, {
-      activeTaskRefs: [taskRef],
+      activeTaskIds: [taskRef],
       task,
     });
     expect(result.action).toBe("cleanup_blocked");

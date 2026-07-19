@@ -54,9 +54,10 @@ import { errors } from "../../strings/index.js";
 import { CommandExitError } from "../batch-context.js";
 import { EXIT_CODES } from "../exit-codes.js";
 import { describeEnumValues } from "../enum-help.js";
-import { error, info, isJsonMode, output, success } from "../output.js";
+import { error, info, isJsonMode, output, success, warn } from "../output.js";
 import { formatRelativeTime as formatRelativeTimeUtil } from "../../utils/time.js";
 import { validateEnumOption } from "../validators.js";
+import { registerReviewResourceCommands } from "./review-resource.js";
 
 // --- Helpers ---
 
@@ -456,6 +457,16 @@ function parseSubjectFromOptions(options: Record<string, unknown>): ReviewSubjec
 
 export function registerReviewCommands(program: Command): void {
   const review = program.command("review").description("Manage first-party review records");
+
+  // kspec review rebuild-index
+  // AC: @folder-backed-review-storage-1 ac-review-index-has-bounded-projection
+  // AC: @trait-folder-backed-entity-1 ac-index-rebuilds-from-folders
+  registerReviewRebuildIndexCommand(review);
+
+  // kspec review resource add|list|get|remove
+  // AC: @folder-backed-review-storage-1 ac-review-screenshot-resource-loads-in-ui
+  // AC: @trait-entity-scoped-local-resources-1 ac-resource-reference-resolves-within-owner
+  registerReviewResourceCommands(review);
 
   // --- review add ---
   // AC: @review-cli-creation-and-query ac-1, ac-2, ac-5
@@ -1567,6 +1578,154 @@ export function registerReviewCommands(program: Command): void {
       } catch (err) {
         if (err instanceof CommandExitError) throw err;
         error(errors.failures.findReviewsForTask, err);
+        process.exit(EXIT_CODES.ERROR);
+      }
+    });
+}
+
+/**
+ * Register `kspec review rebuild-index`. Validates that the lean index in
+ * `.kspec/project.reviews.yaml` agrees with the per-review folders under
+ * `.kspec/reviews/<ulid>/`. Exit codes and JSON envelope are defined by
+ * @folder-backed-review-storage-1 ac-review-index-has-bounded-projection
+ * and @trait-folder-backed-entity-1 ac-index-rebuilds-from-folders.
+ *
+ * Flag semantics:
+ *   default       — validate, exit 1 on drift, never writes
+ *   --dry-run     — same as default, never writes (explicit preview marker)
+ *   --repair      — rewrite the lean index from folders
+ *   --force       — only with --repair; permits dropping stale entries
+ *                   whose folders are missing
+ *   --json        — emits a structured envelope (status, summary, changes,
+ *                   conflicts) and uses exit codes 0/1/2 per status
+ */
+function registerReviewRebuildIndexCommand(review: Command): void {
+  markMutating(review.command("rebuild-index"))
+    .description("Rebuild the review index from .kspec/reviews/<ulid>/ folders")
+    .option("--repair", "Rewrite .kspec/project.reviews.yaml from review folders")
+    .option("--force", "With --repair, drop stale index entries whose folders are missing")
+    .option("--dry-run", "Report drift without writing — same as default")
+    .addHelpText(
+      "after",
+      `
+Exit codes:
+  0  clean or repaired
+  1  drift detected without --repair
+  2  blocked by conflicts (e.g. stale entry without --force)
+
+Examples:
+  $ kspec review rebuild-index                  # validate, fail if drift
+  $ kspec review rebuild-index --dry-run        # preview drift only
+  $ kspec review rebuild-index --repair         # apply additive drift
+  $ kspec review rebuild-index --repair --force # drop stale index entries`,
+    )
+    .action(async (options) => {
+      try {
+        const ctx = await initContext();
+        const isDryRun = Boolean(options.dryRun);
+        const isRepair = Boolean(options.repair) && !isDryRun;
+        const isForce = Boolean(options.force);
+
+        if (isForce && !options.repair) {
+          error("--force can only be used with --repair");
+          process.exit(EXIT_CODES.USAGE_ERROR);
+        }
+
+        const { computeReviewIndexDrift, rebuildReviewIndex, getReviewIndexFilePath } =
+          await import("../../parser/review-storage-manager.js");
+
+        const report = await computeReviewIndexDrift(ctx, { force: isForce });
+        const driftCount = report.changes.length;
+        const conflictCount = report.conflicts.length;
+
+        const baseEnvelope = {
+          domain: "reviews",
+          dry_run: isDryRun,
+          repair: isRepair,
+          force: isForce,
+          summary: {
+            folders: report.folders,
+            index_entries: report.indexEntries,
+            added: report.added,
+            updated: report.updated,
+            removed_stale: report.removedStale,
+            conflicts: conflictCount,
+          },
+          changes: report.changes.map((c) => ({
+            kind: c.kind,
+            ref: c.ref,
+            path: c.path,
+          })),
+          conflicts: report.conflicts.map((c) => ({
+            code: c.code,
+            ref: c.ref,
+            path: c.path,
+            message: c.message,
+          })),
+        };
+
+        // Blocked: conflicts that cannot be cleared by the current flag set.
+        if (conflictCount > 0) {
+          output({ ...baseEnvelope, status: "blocked" }, () => {
+            warn(
+              `${conflictCount} conflict(s) prevent index rebuild. ` +
+                `Use --force with --repair where applicable.`,
+            );
+            for (const conflict of report.conflicts) {
+              const refSuffix = conflict.ref ? ` (ref: ${conflict.ref})` : "";
+              console.error(`  ${conflict.code}: ${conflict.message}${refSuffix}`);
+            }
+          });
+          process.exit(2);
+        }
+
+        // Clean: no drift at all.
+        if (driftCount === 0) {
+          output({ ...baseEnvelope, status: "clean" }, () => {
+            success(`Review index is up to date (${report.folders} folder(s))`);
+          });
+          return;
+        }
+
+        // Repair path — write the new index from folders.
+        if (isRepair) {
+          await rebuildReviewIndex(ctx, { force: isForce });
+          await commitIfShadow(
+            ctx.shadow,
+            "review-rebuild-index",
+            undefined,
+            `${report.added} added, ${report.updated} updated, ${report.removedStale} stale dropped`,
+          );
+          output({ ...baseEnvelope, status: "repaired" }, () => {
+            for (const change of report.changes) {
+              console.log(`  ${change.kind}  ${change.ref}  (${change.path})`);
+            }
+            success(
+              `Rebuilt review index from ${report.folders} folder(s): ` +
+                `${report.added} added, ${report.updated} updated, ` +
+                `${report.removedStale} stale dropped`,
+            );
+          });
+          return;
+        }
+
+        // Drift detected but not repairing — print summary and exit 1.
+        const indexPath = getReviewIndexFilePath(ctx);
+        output({ ...baseEnvelope, status: "drift" }, () => {
+          if (isDryRun) {
+            warn("DRY RUN — no changes will be written");
+          }
+          for (const change of report.changes) {
+            console.log(`  ${change.kind}  ${change.ref}  (${change.path})`);
+          }
+          info(
+            `${driftCount} drift change(s) found. ` +
+              `Re-run with --repair to rewrite ${indexPath}.`,
+          );
+        });
+        process.exit(1);
+      } catch (err) {
+        error("Failed to rebuild review index", err);
         process.exit(EXIT_CODES.ERROR);
       }
     });

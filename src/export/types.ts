@@ -12,10 +12,13 @@ import type {
   Convention,
   InboxItem,
   Observation,
+  ReviewRecord,
   SessionContext,
   TriageRecord,
   Workflow,
 } from "../schema/index.js";
+import type { ResourceMetadata } from "../schema/resources.js";
+import type { ProjectedTaskResource } from "../parser/task-resource-resolver.js";
 import type { LoadedSpecItem, LoadedTask } from "../parser/yaml.js";
 import type { AlignmentWarning } from "../parser/alignment.js";
 import type {
@@ -37,12 +40,49 @@ export interface AlignmentResponse {
 }
 
 /**
+ * A single task resource reference projected into the static export. The base
+ * shape is exactly the daemon's `resolved_resources` projection
+ * (`projectResolvedTaskResources` in `src/parser/task-resource-resolver.ts`),
+ * so static-mode and live-mode consumers render task resources identically;
+ * the static export adds an `exported_path` pointer that is set only when the
+ * reference resolves to a `present` resource whose bytes were copied (or are
+ * advertised) under the static asset tree at
+ * `assets/resources/task/<task-ulid>/<relative-path>`.
+ *
+ * Drifted, missing, and unresolved references carry their status and message
+ * but never an `exported_path`: the export must not advertise an asset path
+ * for bytes that do not match the task's recorded resource hash.
+ *
+ * AC: @static-export-resource-assets-complete ac-static-task-plan-owned-asset-uses-recorded-hash
+ * AC: @static-export-resource-assets-complete ac-static-task-materialized-asset-exists
+ * AC: @static-export-resource-assets-complete ac-static-task-drift-is-visible-not-rewritten
+ */
+export type ExportedTaskResource = ProjectedTaskResource & {
+  /**
+   * Snapshot-relative POSIX path under the export root:
+   * `assets/resources/task/<task-ulid>/<relative-path>`. Present only for
+   * `present` references whose bytes match the task's recorded hash.
+   */
+  exported_path?: string;
+};
+
+/**
  * Exported task with resolved spec reference title.
  * AC: @gh-pages-export ac-3
  */
 export interface ExportedTask extends LoadedTask {
   /** Resolved title of the linked spec item (for display) */
   spec_ref_title?: string;
+  /**
+   * Task resource references resolved against the owning entity's current
+   * state, with exported asset pointers for present references. Absent when
+   * the task declares no resource references.
+   *
+   * AC: @static-export-resource-assets-complete ac-static-task-plan-owned-asset-uses-recorded-hash
+   * AC: @static-export-resource-assets-complete ac-static-task-materialized-asset-exists
+   * AC: @static-export-resource-assets-complete ac-static-task-drift-is-visible-not-rewritten
+   */
+  resolved_resources?: ExportedTaskResource[];
 }
 
 /**
@@ -78,6 +118,27 @@ export interface ExportedProject {
 }
 
 /**
+ * Plan-owned resource as it appears in a static export. Mirrors
+ * `ResourceMetadata` plus an `exported_path` pointer to the copied file
+ * location under the export root, using the standard layout
+ * `assets/resources/plan/<plan-ulid>/<relative-path>`.
+ *
+ * AC: @trait-entity-scoped-local-resources-1 ac-static-export-copies-resource-assets
+ */
+export interface ExportedPlanResource {
+  id: string;
+  label: string | null;
+  path: string;
+  content_type: string;
+  bytes: number;
+  sha256: string;
+  git_commit: string | null;
+  git_path: string | null;
+  description: string | null;
+  exported_path: string;
+}
+
+/**
  * Exported plan with computed progress for static display.
  * AC: @gh-pages-export ac-23
  */
@@ -101,6 +162,56 @@ export interface ExportedPlan {
     blocked: number;
   };
   content: string;
+  /**
+   * Declared plan-owned resources with exported file paths. Empty when the
+   * plan has no resources or when its manifest is absent.
+   *
+   * AC: @trait-entity-scoped-local-resources-1 ac-static-export-copies-resource-assets
+   * AC: @trait-entity-scoped-local-resources-1 ac-resource-metadata-exposes-safe-preview-fields
+   */
+  resources: ExportedPlanResource[];
+}
+
+/**
+ * A single review resource in the exported snapshot. Mirrors the runtime
+ * `ResourceMetadata` shape and adds the snapshot-relative `exported_path`
+ * pointer that consumers (web UI in static mode, agents reading the
+ * snapshot offline) follow to fetch resource bytes.
+ *
+ * AC: @trait-entity-scoped-local-resources-1 ac-static-export-copies-resource-assets
+ */
+export interface ExportedReviewResource extends ResourceMetadata {
+  /**
+   * Snapshot-relative path under the export root using POSIX separators:
+   * `assets/resources/review/<review-ulid>/<relative-path>`.
+   */
+  exported_path: string;
+}
+
+/**
+ * Bounded review projection included in the static export. The shape
+ * mirrors the lean index entry the daemon stores (no full thread or
+ * verdict bodies, no resource file bytes) plus the per-review resources
+ * array so the static UI can render evidence without depending on a live
+ * daemon.
+ *
+ * AC: @folder-backed-review-storage-1 ac-review-screenshot-resource-loads-in-ui
+ * AC: @folder-backed-review-storage-1 ac-review-index-has-bounded-projection
+ */
+export interface ExportedReview {
+  _ulid: string;
+  slugs: string[];
+  title: string;
+  lifecycle_state: ReviewRecord["lifecycle_state"];
+  author: string;
+  subject: ReviewRecord["subject"];
+  related_refs: string[];
+  external_links: ReviewRecord["external_links"];
+  created_at: string;
+  updated_at: string | null;
+  examined_commit: string | null;
+  disposition: string;
+  resources: ExportedReviewResource[];
 }
 
 /**
@@ -147,6 +258,14 @@ export interface KspecSnapshot {
   inbox: InboxItem[];
   /** Plans for static plans/specs/tasks filtering */
   plans?: ExportedPlan[];
+  /**
+   * Reviews exported as a bounded projection with linked resource metadata
+   * pointing at copied asset paths.
+   *
+   * AC: @folder-backed-review-storage-1 ac-review-screenshot-resource-loads-in-ui
+   * AC: @trait-entity-scoped-local-resources-1 ac-static-export-copies-resource-assets
+   */
+  reviews?: ExportedReview[];
   /** Triage records for static triage browsing */
   triage?: TriageRecord[];
   /** Session context */
@@ -188,6 +307,8 @@ export interface ExportStats {
   itemCount: number;
   inboxCount: number;
   planCount: number;
+  reviewCount: number;
+  reviewResourceCount: number;
   triageCount: number;
   observationCount: number;
   agentCount: number;

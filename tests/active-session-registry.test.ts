@@ -257,4 +257,22 @@ describe("SessionRegistry", () => {
       expect(registry.listActive()).toEqual(["keep"]);
     });
   });
+
+  describe("scoped hard-stop closure", () => {
+    // AC: @dispatch-lifecycle-control-authority ac-task-stop-closes-matching-session
+    // AC: @dispatch-lifecycle-control-authority ac-task-stop-preserves-unrelated-sessions
+    it("closes only registrations matching the canonical task ownership", () => {
+      const alpha = createMockHandle();
+      const beta = createMockHandle();
+      registry.register("alpha", alpha, { taskId: "TASK-A", invocationId: "INV-A" });
+      registry.register("beta", beta, { taskId: "TASK-B", invocationId: "INV-B" });
+
+      registry.closeMatching((registration) => registration.taskId === "TASK-A", "task stopped");
+
+      expect(alpha.requestClose).toHaveBeenCalledWith("task stopped");
+      expect(registry.get("alpha")).toBeUndefined();
+      expect(beta.requestClose).not.toHaveBeenCalled();
+      expect(registry.get("beta")).toBe(beta);
+    });
+  });
 });

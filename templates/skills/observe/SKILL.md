@@ -37,8 +37,8 @@ kspec meta observe question "When should agents enter plan mode vs just implemen
 # Idea: something that could improve the system
 kspec meta observe idea "CLI could suggest next steps after task completion"
 
-# Link to a workflow for context
-kspec meta observe friction "Plan import dropped acceptance criteria" --workflow @spec-plan-import
+# Link to a workflow for context (use a workflow ref defined in the project)
+kspec meta observe friction "Workflow step lost context unexpectedly" --workflow @<workflow-id>
 ```
 
 ## Reviewing Observations
@@ -70,7 +70,7 @@ When addressed, documented, or no longer relevant:
 
 ```bash
 # Single observation with resolution note
-kspec meta resolve @ref "Fixed in PR #123"
+kspec meta resolve @ref "Addressed by the recent change to the affected workflow"
 
 # Batch resolve related observations
 kspec meta resolve --refs @ref1 @ref2 @ref3 --resolution "All addressed by new workflow"

@@ -6,6 +6,7 @@
 <script lang="ts">
 	import type { AgentDispatchStatus } from '$lib/api';
 	import { Badge } from '$lib/components/ui/badge';
+	import LifecycleEvidence from '$lib/components/agents/LifecycleEvidence.svelte';
 	import ReferenceLink from '$lib/components/ReferenceLink.svelte';
 	import { formatElapsed } from './board-utils';
 	import Bot from 'lucide-svelte/icons/bot';
@@ -20,29 +21,32 @@
 		outputLines?: Record<string, string[]>;
 	} = $props();
 
-	let activeInvocations = $derived(status?.active_invocations ?? []);
-	let isVisible = $derived(status?.dispatch_enabled && activeInvocations.length > 0);
+	let activeInvocations = $derived(status?.activeInvocations ?? []);
+	let isVisible = $derived(activeInvocations.length > 0);
 
 	// AC: @ui-task-board ac-4 — Resolve agent name from agent_definitions
 	let agentNameMap = $derived(
 		Object.fromEntries(
-			(status?.agent_definitions ?? []).map((a) => [a.id, a.name])
+			(status?.agentDefinitions ?? []).map((a) => [a.id, a.name])
 		)
 	);
 </script>
 
-{#if isVisible}
-	<div class="mb-4" data-testid="active-fleet-row">
-		<div class="flex items-center gap-2 mb-2">
-			<Activity class="size-4 text-status-in-progress" />
-			<h3 class="text-sm font-medium">Active Fleet</h3>
-			<Badge variant="secondary" class="text-[10px]">{activeInvocations.length} running</Badge>
-		</div>
-		<div class="flex gap-3 overflow-x-auto pb-2">
-			{#each activeInvocations as invocation (invocation.session_id)}
-				{@const lines = outputLines[invocation.session_id] ?? []}
-				{@const title = invocation.task_title ?? undefined}
-				{@const agentName = agentNameMap[invocation.agent_id] ?? invocation.agent_id}
+{#if status}
+	<div class="mb-4">
+		<LifecycleEvidence {status} />
+		{#if isVisible}
+			<div data-testid="active-fleet-row">
+				<div class="flex items-center gap-2 mb-2">
+					<Activity class="size-4 text-status-in-progress" />
+					<h3 class="text-sm font-medium">Active Fleet</h3>
+					<Badge variant="secondary" class="text-[10px]">{activeInvocations.length} running</Badge>
+				</div>
+				<div class="flex gap-3 overflow-x-auto pb-2">
+					{#each activeInvocations as invocation (invocation.sessionId)}
+				{@const lines = outputLines[invocation.sessionId] ?? []}
+				{@const title = invocation.taskTitle ?? undefined}
+				{@const agentName = agentNameMap[invocation.agentId] ?? invocation.agentId}
 				<div
 					class="flex-shrink-0 w-72 rounded-lg border bg-card p-3 ds-breathe"
 					data-testid="fleet-card"
@@ -52,9 +56,9 @@
 						<span class="text-xs font-medium truncate" data-testid="fleet-agent-name">{agentName}</span>
 					</div>
 
-					{#if invocation.task_ref}
+					{#if invocation.taskRef}
 						<div class="truncate mb-1" data-testid="fleet-task-title">
-							<ReferenceLink ref={invocation.task_ref} type="task" title={title} class="text-xs" />
+							<ReferenceLink ref={invocation.taskRef} type="task" title={title} class="text-xs" />
 						</div>
 					{/if}
 
@@ -66,7 +70,7 @@
 							></span>
 							<span class="relative inline-flex size-2 rounded-full bg-status-in-progress"></span>
 						</span>
-						<span>{formatElapsed(invocation.elapsed_ms)}</span>
+						<span>{formatElapsed(invocation.elapsedMs)}</span>
 					</div>
 
 					<!-- AC: @ui-task-board ac-4 — Last few lines of buffered output -->
@@ -93,7 +97,9 @@
 						</div>
 					{/if}
 				</div>
-			{/each}
-		</div>
+					{/each}
+				</div>
+			</div>
+		{/if}
 	</div>
 {/if}

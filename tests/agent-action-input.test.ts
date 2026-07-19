@@ -384,6 +384,76 @@ describe("Agent action task_binding", () => {
     expect(spawnerCalls[0].task_ref).toBe("@task-explicit");
   });
 
+  // AC: @dispatch-canonical-task-identity ac-automation-agent-actions-canonicalize-task-binding
+  // task_binding forwards BOTH the event task_id and task_ref so the spawner can
+  // canonicalize identity and reject mismatched pairs.
+  it("task_binding forwards both event task_id and task_ref to the spawner", async () => {
+    const executor = makeExecutor();
+    const action: Action = {
+      type: "agent",
+      agent_id: "task-worker",
+      task_binding: true,
+    };
+    const ctx = makeEventContext({
+      task_id: "01JFFFFFFFFFFFFFFFFFFFFFF1",
+      task_ref: "@task-from-event",
+    });
+
+    await executor.execute(action, ctx);
+
+    expect(spawnerCalls[0].task_ref).toBe("@task-from-event");
+    expect(spawnerCalls[0].task_id).toBe("01JFFFFFFFFFFFFFFFFFFFFFF1");
+  });
+
+  // AC: @dispatch-canonical-task-identity ac-automation-agent-actions-canonicalize-task-binding
+  // task_binding with only a task_id in the event forwards the id (no display ref);
+  // the spawner derives the default @<task_id> display.
+  it("task_binding forwards a task_id-only event with no task_ref", async () => {
+    const executor = makeExecutor();
+    const action: Action = {
+      type: "agent",
+      agent_id: "task-worker",
+      task_binding: true,
+    };
+    const ctx: ActionEventContext = {
+      event_id: "01TEST0000000000000000000A",
+      event_type: "task.ready",
+      task_id: "01JFFFFFFFFFFFFFFFFFFFFFF2",
+      // No task_ref
+    };
+
+    await executor.execute(action, ctx);
+
+    expect(spawnerCalls[0].task_id).toBe("01JFFFFFFFFFFFFFFFFFFFFFF2");
+    expect(spawnerCalls[0].task_ref).toBeUndefined();
+  });
+
+  // AC: @dispatch-canonical-task-identity ac-automation-agent-actions-canonicalize-task-binding
+  // An explicit action.task_ref is the authoritative binding and display ref:
+  // event task_id/task_ref are ignored for identity entirely, even when the
+  // triggering event references a DIFFERENT task. The spawner must not receive
+  // the event task_id, so the explicit ref alone defines identity.
+  it("explicit action.task_ref drops event identity even when event references a different task", async () => {
+    const executor = makeExecutor();
+    const action: Action = {
+      type: "agent",
+      agent_id: "task-worker",
+      task_ref: "@task-explicit",
+      // task_binding may be true or false — explicit ref wins regardless
+      task_binding: true,
+    };
+    const ctx = makeEventContext({
+      task_id: "01JFFFFFFFFFFFFFFFFFFFFFF3",
+      task_ref: "@task-different-from-event",
+    });
+
+    await executor.execute(action, ctx);
+
+    expect(spawnerCalls[0].task_ref).toBe("@task-explicit");
+    // Event task_id must NOT leak through — explicit ref is the sole identity input
+    expect(spawnerCalls[0].task_id).toBeUndefined();
+  });
+
   // AC: @dispatch-agent-action-input ac-3
   it("invocation is non-task-scoped without task_binding", async () => {
     const executor = makeExecutor();

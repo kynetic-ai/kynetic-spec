@@ -92,6 +92,8 @@ export interface InboxItemCreatedEventData {
 /**
  * Data payload for agent_invocation broadcast events.
  * Includes task_title for display alongside task_id.
+ *
+ * AC: @runner-resolution-and-preflight ac-dispatched-event-records-runner
  */
 export interface AgentInvocationEventData {
   session_id: string;
@@ -100,6 +102,10 @@ export interface AgentInvocationEventData {
   task_title: string | null;
   status: string;
   timestamp: number;
+  /** Resolved adapter identity for this invocation, when known. */
+  resolved_adapter?: string;
+  /** Named runner that resolved this invocation, when one was configured. */
+  runner?: string;
 }
 
 // ─── Session Event Broadcast Types ──────────────────────────────────────────
@@ -188,6 +194,49 @@ export type SessionEventData =
 
 /** All possible `event` field values for session events on the 'agents' topic. */
 export type SessionEventType = SessionEventData["type"];
+
+export type DispatchControlEventType =
+  | "dispatch_control.start_applied"
+  | "dispatch_control.pause_applied"
+  | "dispatch_control.resume_applied"
+  | "dispatch_control.stop_applied"
+  | "dispatch_control.noop"
+  | "dispatch_control.failed";
+
+export type DispatchControlErrorCode =
+  | "validation_failed"
+  | "task_not_found"
+  | "task_identity_ambiguous"
+  | "task_identity_mismatch"
+  | "invalid_transition"
+  | "control_store_unavailable"
+  | "control_store_corrupt"
+  | "control_commit_failed"
+  | "cancellation_timeout"
+  | "cancellation_failed"
+  | "session_closure_failed"
+  | "cleanup_ownership_mismatch"
+  | "cleanup_process_birth_mismatch"
+  | "cleanup_leader_missing_group_alive"
+  | "cleanup_identity_unverifiable"
+  | "cleanup_group_unverifiable"
+  | "internal_error";
+
+/** Sanitized audit payload broadcast for a durable dispatch-control outcome. */
+export interface DispatchControlEventData {
+  scope: "global" | "task";
+  action: "start" | "pause" | "resume" | "stop";
+  authority: "stopped" | "running" | "paused";
+  projection: "stopped" | "running" | "paused" | "draining";
+  outcome: "applied" | "noop" | "failed";
+  reason: string;
+  actor: string;
+  source: "cli" | "api" | "ui" | "daemon_startup" | "daemon_shutdown" | "recovery";
+  timestamp: string;
+  task_id?: string;
+  task_ref?: string;
+  error_code?: DispatchControlErrorCode;
+}
 
 // ─── Review Event Data Payloads ──────────────────────────────────────────────
 // AC: @review-records-daemon-api ac-9

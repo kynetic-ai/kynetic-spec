@@ -9,6 +9,36 @@
 
 import { z } from "zod";
 
+export const DispatchProcessIdentityPlatformSchema = z.enum(["linux_proc_stat_v1", "unverifiable"]);
+
+export const DispatchProcessMemberProofSchema = z
+  .object({
+    pid: z.number().int().positive(),
+    process_start_ticks: z.string().regex(/^\d+$/),
+  })
+  .strict();
+
+/** Durable proof that a process belongs to one dispatch-created session. */
+export const DispatchOwnershipSchema = z
+  .object({
+    invocation_id: z.string(),
+    session_id: z.string(),
+    task_id: z.string().nullable(),
+    agent_id: z.string(),
+    adapter: z.string(),
+    owner_instance_id: z.string(),
+    pid: z.number().int().positive().nullable(),
+    pgid: z.number().int().positive().nullable(),
+    process_start_ticks: z.string().regex(/^\d+$/).nullable(),
+    process_identity_platform: DispatchProcessIdentityPlatformSchema,
+    captured_at: z.string().datetime(),
+    exited_at: z.string().datetime().optional(),
+    group_members: z.array(DispatchProcessMemberProofSchema),
+  })
+  .strict();
+
+export type DispatchOwnership = z.infer<typeof DispatchOwnershipSchema>;
+
 // ─── Session Status ──────────────────────────────────────────────────────────
 
 /**
@@ -79,8 +109,21 @@ export const SessionMetadataSchema = z.object({
   /** Session ULID */
   id: z.string(),
 
-  /** Optional task being worked on */
+  /**
+   * Canonical full task ULID — the authoritative task identity for a
+   * task-scoped session. Dispatch identity consumers key off this, never the
+   * display ref. Legacy/manual sessions that never resolved a canonical id may
+   * still carry a display-form ref here.
+   * AC: @dispatch-canonical-task-identity ac-session-and-event-payloads-separate-id-from-display-ref
+   */
   task_id: z.string().optional(),
+
+  /**
+   * Display task ref (slug or `@ULID`) preserved for human-readable surfaces
+   * (CLI targeting, logs, status) only. Never an identity key.
+   * AC: @dispatch-canonical-task-identity ac-session-and-event-payloads-separate-id-from-display-ref
+   */
+  task_ref: z.string().optional(),
 
   /** Type of agent running the session */
   agent_type: z.string(),
@@ -98,6 +141,18 @@ export const SessionMetadataSchema = z.object({
    * AC: @session-model-evolution ac-1, ac-2
    */
   trigger: SessionTriggerSchema.optional(),
+
+  /**
+   * Named runner that resolved this invocation. Present when the agent
+   * referenced a runner from the layered runner config; absent for legacy
+   * adapter-only agents.
+   *
+   * AC: @runner-resolution-and-preflight ac-session-metadata-records-runner
+   */
+  runner: z.string().optional(),
+
+  /** Crash-safe ownership used by verified hard-stop recovery. */
+  dispatch_ownership: DispatchOwnershipSchema.optional(),
 
   /** Current session status */
   status: SessionStatusSchema,

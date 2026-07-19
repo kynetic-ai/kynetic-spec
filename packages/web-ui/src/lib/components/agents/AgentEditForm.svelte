@@ -34,6 +34,13 @@
 	let name = $state('');
 	let description = $state('');
 	let adapter = $state('');
+	// AC: @runner-operator-surfaces ac-web-ui-agent-edit-supports-runner
+	// Tracks the runner value entered in the form. `initialRunner` lets the
+	// save handler detect whether the field needs to be sent as a string (set),
+	// `null` (clear), or omitted (unchanged) — the daemon PATCH treats omission
+	// and `null` differently.
+	let runner = $state('');
+	let initialRunner = $state<string | undefined>(undefined);
 	let capabilities = $state<string[]>([]);
 	let tools = $state<string[]>([]);
 	let skills = $state<string[]>([]);
@@ -59,6 +66,9 @@
 			name = agent.name;
 			description = agent.description ?? '';
 			adapter = agent.adapter ?? '';
+			// AC: @runner-operator-surfaces ac-web-ui-agent-edit-supports-runner
+			runner = agent.runner ?? '';
+			initialRunner = agent.runner;
 			capabilities = [...agent.capabilities];
 			tools = [...agent.tools];
 			skills = [...agent.skills];
@@ -105,6 +115,17 @@
 			auto_approve: autoApprove,
 			prompt_template: promptTemplate || undefined
 		};
+
+		// AC: @runner-operator-surfaces ac-web-ui-agent-edit-supports-runner
+		// PATCH semantics: a string value sets the runner, `null` clears it,
+		// omission leaves it unchanged. We send a value only when the user
+		// changed the field so unrelated fields stay untouched.
+		const trimmedRunner = runner.trim();
+		const currentRunner = trimmedRunner.length > 0 ? trimmedRunner : null;
+		const baseline = initialRunner ?? null;
+		if (currentRunner !== baseline) {
+			payload.runner = currentRunner;
+		}
 
 		try {
 			const updated = await updateAgentDefinition(agent.id, payload);
@@ -179,6 +200,39 @@
 					placeholder="e.g. claude-code"
 					data-testid="agent-edit-adapter"
 				/>
+				<p class="mt-1 text-xs text-muted-foreground">
+					Legacy adapter identity. Leave unchanged when assigning a runner.
+				</p>
+			</div>
+
+			<!-- Runner -->
+			<!-- AC: @runner-operator-surfaces ac-web-ui-agent-edit-supports-runner -->
+			<div>
+				<label for="agent-runner" class="text-sm font-medium">Runner</label>
+				<div class="flex gap-2">
+					<Input
+						id="agent-runner"
+						bind:value={runner}
+						placeholder="Named runner from runner config (optional)"
+						class="flex-1"
+						data-testid="agent-edit-runner"
+					/>
+					{#if runner.length > 0}
+						<Button
+							type="button"
+							size="sm"
+							variant="outline"
+							onclick={() => (runner = '')}
+							data-testid="agent-edit-runner-clear"
+						>
+							Clear
+						</Button>
+					{/if}
+				</div>
+				<p class="mt-1 text-xs text-muted-foreground">
+					Reference a named runner from the layered runner config. Clearing
+					the field reverts the agent to the legacy adapter shortcut.
+				</p>
 			</div>
 
 			<Separator />

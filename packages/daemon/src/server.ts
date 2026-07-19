@@ -20,7 +20,7 @@ import { ConnectionStateManager } from "./websocket/connection-state.js";
 import { getWebSocketContextId } from "./websocket/context-id.js";
 import { resolveWebSocketProject } from "./websocket/project-resolution.js";
 import type { ConnectionData, ConnectedEvent } from "./websocket/types.js";
-import { PidFileManager } from "./pid.js";
+import { PidFileManager, writeDaemonLastExitRecord } from "./pid.js";
 import {
   DEFAULT_BIND_HOST,
   formatHostForUrl,
@@ -30,7 +30,9 @@ import {
   type DaemonConnectionMetadata,
 } from "./endpoint.js";
 import { projectContextMiddleware } from "./middleware/project-context.js";
+import { formatVersionIncompatibilityResponse } from "./routes/format-version-error.js";
 import { createTasksRoutes } from "./routes/tasks.js";
+import { createTaskResourcesRoutes } from "./routes/task-resources.js";
 import { createItemsRoutes } from "./routes/items.js";
 import { createInboxRoutes } from "./routes/inbox.js";
 import { createMetaRoutes } from "./routes/meta.js";
@@ -42,15 +44,17 @@ import {
   getDispatchEngine,
   stopAllEngines,
 } from "./routes/agent-dispatch.js";
-import { createCommandRoutes } from "./routes/command.js";
+import { createCommandRoutes, getCommandDispatchHealth } from "./routes/command.js";
 import { createAutomationRoutes } from "./routes/automation.js";
 import { createDebugRoutes } from "./routes/debug.js";
 import { createSessionRoutes } from "./routes/sessions.js";
 import { createPlansRoutes } from "./routes/plans.js";
+import { createPlanResourcesRoutes } from "./routes/plan-resources.js";
 import { createAggregationRoutes } from "./routes/aggregation.js";
 import { createRefsRoutes } from "./routes/refs.js";
 import { createDiffRoutes } from "./routes/diff.js";
 import { createReviewsRoutes } from "./routes/reviews.js";
+import { createReviewResourcesRoutes } from "./routes/review-resources.js";
 import { SessionSyncScheduler } from "./session-sync.js";
 import { WatcherHealthMonitor } from "./watcher-health-monitor.js";
 import {
@@ -98,6 +102,13 @@ export interface ServerOptions {
    * Tests use this to avoid writing to the real ~/.config/kspec.
    */
   configDir?: string;
+  /**
+   * Execution time limit in milliseconds for commands dispatched through
+   * the command API. Defaults to 120 seconds when omitted.
+   *
+   * AC: @daemon-command-api ac-command-timeout
+   */
+  commandTimeoutMs?: number;
 }
 
 type ManagedServer = {
@@ -508,6 +519,29 @@ export function localhostOnly(options: LocalhostOnlyOptions = {}) {
 }
 
 /**
+ * Build the GET /api/health response body. Exported so tests exercise the
+ * production health shape without booting the full server.
+ *
+ * Top-level status stays "ok" while the process is serving requests;
+ * command-dispatch degradation is reported in the command_dispatch
+ * sub-object so existing status consumers keep working.
+ *
+ * AC: @daemon-server ac-11 — {status, uptime, connections, version, runtime}
+ * AC: @daemon-command-api ac-stuck-command-reported — degraded command
+ * dispatch reported with stuck command name and held duration
+ */
+export function buildHealthResponse(args: { connections: number; runtime: DaemonRuntime }) {
+  return {
+    status: "ok",
+    uptime: process.uptime(),
+    connections: args.connections,
+    version: "0.1.0",
+    runtime: args.runtime,
+    command_dispatch: getCommandDispatchHealth(),
+  };
+}
+
+/**
  * Creates and configures the Elysia server instance.
  *
  * AC Coverage:
@@ -527,6 +561,7 @@ export async function createServer(options: ServerOptions) {
     bindHostExplicitlyConfigured,
     connectHost,
     configDir,
+    commandTimeoutMs,
   } = options;
 
   // Determine startup project path (project root, not .kspec/)
@@ -642,7 +677,21 @@ export async function createServer(options: ServerOptions) {
       localhostOnly({
         additionalAllowedHosts: [endpoint.bindHost, endpoint.connectHost],
       }),
-    );
+    )
+
+    // AC: @data-format-forward-compatibility ac-daemon-structured-error
+    // Global mapper for format-version ceiling refusals raised by
+    // initContext inside any route handler. Registered on the parent app
+    // before route plugins so it applies to every API route; route-group
+    // onError handlers that don't match (entity/task storage mappers) fall
+    // through to this handler.
+    .onError(({ error: err, set }) => {
+      const conflict = formatVersionIncompatibilityResponse(err);
+      if (conflict) {
+        set.status = conflict.status;
+        return conflict.body;
+      }
+    });
 
   // AC: @daemon-entity-cache ac-load-on-register — lazy import entity cache module
   // The daemon build compiles packages/daemon/src plus src/daemon/entity-cache.ts
@@ -684,6 +733,7 @@ export async function createServer(options: ServerOptions) {
         );
       },
     );
+    await entityCacheModule.registerDispatchControlPublication(projectPath);
     entityCache.loadAll().catch((err: unknown) => {
       console.error(`[entity-cache] Error during initial load for ${projectPath}:`, err);
     });
@@ -704,13 +754,14 @@ export async function createServer(options: ServerOptions) {
     .use(projectMiddleware)
 
     // AC-11: Health check endpoint
-    .get("/api/health", () => ({
-      status: "ok",
-      uptime: process.uptime(),
-      connections: pubsubManager.getConnectionCount(),
-      version: "0.1.0",
-      runtime,
-    }))
+    // AC: @daemon-command-api ac-stuck-command-reported — reports degraded
+    // command dispatch with the stuck command name and held duration
+    .get("/api/health", () =>
+      buildHealthResponse({
+        connections: pubsubManager.getConnectionCount(),
+        runtime,
+      }),
+    )
 
     // AC: @api-contract ac-2 through ac-7 - Task API endpoints
     // AC: @multi-directory-daemon ac-24 - Routes use projectContext from middleware
@@ -721,6 +772,13 @@ export async function createServer(options: ServerOptions) {
         getEntityCache: entityCacheModule.getEntityCache,
       }),
     )
+
+    // AC: @task-resource-resolution-api-contract ac-task-resource-bytes-serve-present-plan-owned-ref
+    // AC: @task-resource-resolution-api-contract ac-task-resource-bytes-serve-present-task-owned-copy
+    // AC: @task-resource-resolution-api-contract ac-task-resource-bytes-refuse-drifted-or-missing-ref
+    // AC: @live-task-resource-markdown-rendering ac-drifted-task-resource-is-visible-not-silent
+    //     — task-scoped resource list/metadata/bytes routes with drift-safe byte serving
+    .use(createTaskResourcesRoutes({ getEntityCache: entityCacheModule.getEntityCache }))
 
     // AC: @api-contract ac-8 through ac-11 - Spec Item API endpoints
     // AC: @daemon-entity-cache ac-serve-from-memory — pass cache accessor
@@ -769,6 +827,10 @@ export async function createServer(options: ServerOptions) {
     // AC: @ui-plans-view ac-1 - Plans data endpoints
     // AC: @daemon-entity-cache ac-serve-from-memory — pass cache accessor
     .use(createPlansRoutes({ getEntityCache: entityCacheModule.getEntityCache }))
+    // AC: @folder-backed-plan-storage-1 ac-plan-document-sidecar-is-authoritative
+    // AC: @trait-entity-scoped-local-resources-1 ac-resource-metadata-exposes-safe-preview-fields
+    //     — plan resource API (list/metadata/bytes/upload/delete)
+    .use(createPlanResourcesRoutes({ getEntityCache: entityCacheModule.getEntityCache }))
 
     // AC: @ui-api-aggregation ac-1, ac-2, ac-3 - Aggregation endpoints
     // AC: @daemon-read-path ac-no-per-request-sync, ac-index-from-cache — pass cache accessor
@@ -790,15 +852,28 @@ export async function createServer(options: ServerOptions) {
       }),
     )
 
+    // AC: @folder-backed-review-storage-1 ac-review-screenshot-resource-loads-in-ui
+    // AC: @trait-entity-scoped-local-resources-1 ac-resource-reference-resolves-within-owner
+    // AC: @trait-entity-scoped-local-resources-1 ac-resource-metadata-exposes-safe-preview-fields
+    // AC: @trait-entity-scoped-local-resources-1 ac-resource-delete-follows-owner-delete
+    .use(
+      createReviewResourcesRoutes({
+        pubsub: pubsubManager,
+        getEntityCache: entityCacheModule.getEntityCache,
+      }),
+    )
+
     // AC: @agent-dispatch-engine ac-4 - Agent dispatch API endpoints
     // AC: @daemon-agent-dispatch ac-3, ac-4 - Pass pubsub for WebSocket broadcast on invocation events
     .use(createAgentDispatchRoutes({ pubsub: pubsubManager }))
 
     // AC: @daemon-command-api ac-command-endpoint, ac-batch-support - Command execution API
+    // AC: @daemon-command-api ac-command-timeout — configured execution limit
     .use(
       createCommandRoutes({
         pubsub: pubsubManager,
         getEntityCache: entityCacheModule.getEntityCache,
+        commandTimeoutMs,
       }),
     )
 
@@ -1066,12 +1141,17 @@ export async function createServer(options: ServerOptions) {
     },
   );
 
+  projectContextManager.setDispatchControlFileCallback((projectPath, observedHead) =>
+    entityCacheModule.handleDispatchControlFileEvent(projectPath, observedHead),
+  );
+
   // AC: @daemon-entity-cache ac-unregister-cleanup — dispose cache on any unregister path
   // (including watcher permanent failure, not just API-driven unregister)
   // AC: @config-shadow ac-15 — stop shadow sync when project is removed
   projectContextManager.setUnregisterCallback((projectPath) => {
     stopSessionSyncForProject(projectPath);
     stopShadowSyncForProject(projectPath);
+    entityCacheModule.unregisterDispatchControlPublication(projectPath);
     entityCacheModule.unregisterEntityCache(projectPath);
   });
 
@@ -1138,6 +1218,16 @@ export async function createServer(options: ServerOptions) {
   const shutdown = async (signal: string) => {
     console.log(`[daemon] Received ${signal}, shutting down gracefully...`);
 
+    // AC: @daemon-failure-observability ac-graceful-exit-recorded — record
+    // the graceful termination up front so even a teardown hang (followed
+    // by a forced SIGKILL from `kspec serve stop`) leaves an accurate
+    // record. A teardown failure overwrites this with a fatal record in
+    // the catch below. Unlike pidManager.remove(), the last-exit record is
+    // deliberately NOT removed — it must survive the process.
+    if (isDaemon) {
+      writeDaemonLastExitRecord({ kind: "graceful", reason: `Received ${signal}` });
+    }
+
     try {
       // Stop heartbeat monitoring
       heartbeatManager.stop();
@@ -1184,6 +1274,16 @@ export async function createServer(options: ServerOptions) {
       process.exit(0);
     } catch (error) {
       console.error("[daemon] Error during shutdown:", error);
+      // A failed teardown is not a graceful exit — overwrite the record
+      // written above so status reports the failure.
+      if (isDaemon) {
+        const err = error instanceof Error ? error : new Error(String(error));
+        writeDaemonLastExitRecord({
+          kind: "fatal",
+          reason: `Error during ${signal} shutdown: ${err.message}`,
+          stack: err.stack,
+        });
+      }
       process.exit(1);
     }
   };

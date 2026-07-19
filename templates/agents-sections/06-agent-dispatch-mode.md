@@ -8,22 +8,35 @@ When running as an automated agent via the dispatch engine:
 # Start background dispatch (daemon must be running)
 kspec agent dispatch start
 
+# Pause new dispatch admissions; active invocations finish naturally
+kspec agent dispatch pause
+
+# Resume paused dispatch
+kspec agent dispatch resume
+
 # Inspect active/queued work and loaded agents
 kspec agent dispatch status
 
 # Stream live text output from running invocations
 kspec agent dispatch watch
 
-# Stop dispatch gracefully
-kspec agent dispatch stop
+# Hard stop dispatch, cancelling matching active work and preserving evidence
+kspec agent dispatch stop --force
+
+# Apply the same controls to one canonical task
+kspec agent dispatch task pause <task-ref>
+kspec agent dispatch task resume <task-ref>
+kspec agent dispatch task stop <task-ref> --force
+
+# Discover current lifecycle flags and subcommands
+kspec agent dispatch --help
 ```
 
-### Built-In Agents
+Pause is the graceful admission hold. Stop is a hard stop and requires confirmation in an interactive terminal; use `--force` for non-interactive or JSON operation. Task controls accept any resolvable task reference and report the canonical task identity.
 
-`kspec setup` ensures default worker/reviewer agent definitions exist in `kynetic.meta.yaml`:
+### Configured Agents
 
-- `task-worker` — handles automation-eligible `task.ready`, `task.in_progress`, and `task.needs_work`
-- `pr-reviewer` — handles `task.pending_review` (review from detached snapshot, merge via supported helper)
+Worker and reviewer agents are defined in your project's kspec meta data. `kspec setup` seeds default worker/reviewer agent definitions for new projects; the exact agent ids and adapters are project configuration, not part of the kspec package.
 
 Inspect current definitions with:
 
@@ -31,14 +44,16 @@ Inspect current definitions with:
 kspec agent list
 ```
 
+Use `kspec agent list` to discover the agent ids configured for your project before relying on a specific handler name.
+
 ### Dispatch Rules and Trigger Events
 
-| Trigger event         | Typical handler | Notes                                                  |
-| --------------------- | --------------- | ------------------------------------------------------ |
-| `task.ready`          | `task-worker`   | Worker picks up newly ready automation-eligible tasks  |
-| `task.in_progress`    | `task-worker`   | Worker can continue existing automation-eligible tasks |
-| `task.needs_work`     | `task-worker`   | Fix-cycle tasks return to worker                       |
-| `task.pending_review` | `pr-reviewer`   | Review from detached snapshot, merge via helper        |
+| Trigger event         | Typical handler     | Notes                                                  |
+| --------------------- | ------------------- | ------------------------------------------------------ |
+| `task.ready`          | configured worker   | Worker picks up newly ready automation-eligible tasks  |
+| `task.in_progress`    | configured worker   | Worker can continue existing automation-eligible tasks |
+| `task.needs_work`     | configured worker   | Fix-cycle tasks return to worker                       |
+| `task.pending_review` | configured reviewer | Review from detached snapshot, merge via helper        |
 
 ### One-Shot Invocation
 
@@ -71,7 +86,7 @@ for each dispatched invocation:
   6. Continue
 ```
 
-**Do NOT create GitHub PRs for dispatched work.** Agent work is reviewed via kspec review records and merged to the integration branch using the supported merge helper. GitHub PRs are a human-directed activity for merging feature groups into main.
+**Dispatched work is reviewed via kspec review records and merged to the configured integration branch using the supported merge helper.** Whether external review platforms (such as GitHub PRs) are also used is a per-project policy choice — defer to your project's local context for guidance on when to open external review threads.
 
 **When you stop responding, the dispatch engine continues automatically.** Do NOT call `kspec agent end-loop` after submitting a task.
 

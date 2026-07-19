@@ -101,8 +101,16 @@ export function projectContextMiddleware(options: ProjectContextMiddlewareOption
         }
 
         try {
-          // AC: @multi-directory-daemon ac-1 - Extract X-Kspec-Dir header
-          const projectPath = request.headers.get("X-Kspec-Dir") || undefined;
+          // AC: @multi-directory-daemon ac-1 - Extract X-Kspec-Dir header.
+          // Browser-issued requests for binary/asset URLs (e.g. <img src>,
+          // <a href> "open in new tab", iframe src) cannot attach custom
+          // request headers, so we also honor a `kspec_dir` query parameter
+          // as a fallback. The header still wins when both are present so
+          // first-class fetch() calls remain authoritative.
+          // AC: @folder-backed-review-storage-1 ac-review-screenshot-resource-loads-in-ui
+          const headerPath = request.headers.get("X-Kspec-Dir") || undefined;
+          const queryPath = url.searchParams.get("kspec_dir") || undefined;
+          const projectPath = headerPath ?? queryPath;
 
           let projectContext: ProjectContext;
 

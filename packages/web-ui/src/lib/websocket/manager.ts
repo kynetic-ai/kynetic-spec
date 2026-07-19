@@ -35,6 +35,17 @@ const MAX_BACKOFF_MS = 30000; // 30s
 const CONNECTION_LOST_THRESHOLD_MS = 10000; // 10s
 const MAX_RECONNECT_ATTEMPTS = 10;
 
+// AC: @ui-production-log-hygiene ac-no-debug-output-default
+// Connection-lifecycle tracing is silent by default; flip to true locally
+// when debugging WebSocket behavior during development.
+const WS_DEBUG = false;
+
+function debugLog(...args: unknown[]): void {
+  if (WS_DEBUG) {
+    console.log(...args);
+  }
+}
+
 export interface WebSocketManagerOptions {
   url?: string;
   projectPath?: string;
@@ -157,7 +168,7 @@ export class WebSocketManager {
     this.intentionalDisconnect = false;
     this.setState("connecting");
     const url = this.getUrl();
-    console.log("[WebSocketManager] Connecting to:", url);
+    debugLog("[WebSocketManager] Connecting to:", url);
     const socket = new WebSocket(url);
     this.ws = socket;
 
@@ -165,7 +176,7 @@ export class WebSocketManager {
       if (this.ws !== socket) {
         return;
       }
-      console.log("[WebSocketManager] Connected");
+      debugLog("[WebSocketManager] Connected");
       this.setState("connected");
       this.reconnectAttempts = 0;
       this.stats.connect_count++;
@@ -196,7 +207,7 @@ export class WebSocketManager {
       if (this.ws !== socket) {
         return;
       }
-      console.log("[WebSocketManager] Disconnected:", event.code, event.reason);
+      debugLog("[WebSocketManager] Disconnected:", event.code, event.reason);
       this.setState("disconnected");
       this.stats.last_disconnected_at = new Date();
       this.ws = null;
@@ -318,7 +329,7 @@ export class WebSocketManager {
     // Handle ConnectedEvent
     if ("event" in message && message.event === "connected") {
       const connectedEvent = message as ConnectedEvent;
-      console.log("[WebSocketManager] Session ID:", connectedEvent.data.session_id);
+      debugLog("[WebSocketManager] Session ID:", connectedEvent.data.session_id);
 
       // AC: @web-dashboard ac-31 - Reset sequence on new connection
       this.lastSeqProcessed = -1;
@@ -350,7 +361,7 @@ export class WebSocketManager {
 
       // AC: @web-dashboard ac-30 - Sequence deduplication
       if (event.seq <= this.lastSeqProcessed) {
-        console.debug("[WebSocketManager] Skipping duplicate event:", event.seq);
+        debugLog("[WebSocketManager] Skipping duplicate event:", event.seq);
         return;
       }
 
@@ -405,7 +416,7 @@ export class WebSocketManager {
     // Exponential backoff: 1s, 2s, 4s, 8s, 16s, 30s (capped)
     const backoffMs = Math.min(Math.pow(2, this.reconnectAttempts - 1) * 1000, MAX_BACKOFF_MS);
 
-    console.log(
+    debugLog(
       `[WebSocketManager] Reconnecting in ${backoffMs}ms (attempt ${this.reconnectAttempts}/${MAX_RECONNECT_ATTEMPTS})`,
     );
 

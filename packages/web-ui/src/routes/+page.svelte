@@ -2,6 +2,9 @@
   AC: @ui-dashboard-overview ac-1 — Dashboard home view
   Active work section, status summary, needs-attention aggregation.
 
+  AC: @ui-dashboard-overview ac-counts-from-summary — Status counts come from
+  the pre-computed server-side summary endpoint, not the full task list.
+
   AC: @ui-data-freshness ac-1 — Renders from cache on revisit without loading state
   AC: @ui-data-freshness ac-3 — WebSocket events invalidate dashboard queries
   AC: @ui-data-freshness ac-6 — Static mode compatibility via queryFn dispatch
@@ -15,11 +18,13 @@
 	import { createQuery } from '$lib/query/createQuery.svelte.js';
 	import type { BroadcastEvent } from '@kynetic-ai/shared';
 	import {
-		fetchTasks,
+		fetchTaskStatusSummary,
 		fetchInbox,
 		fetchObservations,
 		fetchValidation,
 		fetchAgentStatus,
+		DispatchLifecycleApiError,
+		formatDispatchLifecycleError,
 		type AgentDispatchStatus
 	} from '$lib/api';
 	import {
@@ -31,6 +36,7 @@
 	import { Badge } from '$lib/components/ui/badge';
 	import { Skeleton } from '$lib/components/ui/skeleton';
 	import ReferenceLink from '$lib/components/ReferenceLink.svelte';
+	import LifecycleEvidence from '$lib/components/agents/LifecycleEvidence.svelte';
 	import { isInitialized as isProjectInitialized } from '$lib/stores/project.svelte';
 	import { subscribe, unsubscribe, on, off } from '$lib/stores/connection.svelte';
 	import { isStaticMode } from '$lib/stores/mode.svelte';
@@ -61,12 +67,13 @@
 	// --- Queries ---
 	// AC: @ui-data-freshness ac-1 — createQuery caches results; revisits render from cache
 	// AC: @ui-data-freshness ac-2 — Concurrent uses share the same in-flight request
-	// AC: @ui-data-freshness ac-6 — fetchTasks/fetchInbox/etc. already dispatch to static mode
-	// Fetch all tasks for status counting. Uses default server pagination (returns all).
-	// TODO: Replace with server-side task summary/counts aggregation endpoint.
-	const tasksQuery = createQuery(() => ({
-		queryKey: queryKeys.tasks.list({}),
-		queryFn: () => fetchTasks(),
+	// AC: @ui-data-freshness ac-6 — fetchTaskStatusSummary/fetchInbox/etc. already dispatch to static mode
+	// AC: @ui-dashboard-overview ac-counts-from-summary — pre-computed server-side
+	// summary instead of fetching the full task list. WS task events invalidate
+	// queryKeys.tasks.all, which covers this key (see ws-invalidation.ts).
+	const taskSummaryQuery = createQuery(() => ({
+		queryKey: queryKeys.tasks.summary(),
+		queryFn: () => fetchTaskStatusSummary(),
 		enabled: isProjectInitialized(),
 	}));
 
@@ -97,65 +104,34 @@
 	}));
 
 	// --- Derived state from queries ---
+	// AC: @ui-dashboard-overview ac-counts-from-summary
+	// Every card except ready maps 1:1 from summary.counts — blocked stays
+	// status 'blocked' only (blocked_by_dependencies is NOT folded in). The
+	// ready card adopts summary.ready, the server's canonical dependency-aware
+	// definition: pending OR needs_work tasks with no blockers and all
+	// dependencies met.
 	let counts = $derived.by(() => {
-		const tasks = tasksQuery.data?.items ?? [];
+		const summary = taskSummaryQuery.data;
+		const statusCounts = summary?.counts ?? {};
 		const newCounts: TaskCounts = {
-			ready: 0,
-			in_progress: 0,
-			needs_work: 0,
-			pending_review: 0,
-			blocked: 0,
-			completed: 0,
-			cancelled: 0,
+			ready: summary?.ready ?? 0,
+			in_progress: statusCounts.in_progress ?? 0,
+			needs_work: statusCounts.needs_work ?? 0,
+			pending_review: statusCounts.pending_review ?? 0,
+			blocked: statusCounts.blocked ?? 0,
+			completed: statusCounts.completed ?? 0,
+			cancelled: statusCounts.cancelled ?? 0,
 		};
-
-		const completedRefs = new Set(
-			tasks
-				.filter((t) => t.status === 'completed')
-				.flatMap((t) => [t._ulid, ...(t.slugs || [])])
-		);
-
-		for (const task of tasks) {
-			switch (task.status) {
-				case 'completed':
-					newCounts.completed++;
-					break;
-				case 'in_progress':
-					newCounts.in_progress++;
-					break;
-				case 'pending_review':
-					newCounts.pending_review++;
-					break;
-				case 'blocked':
-					newCounts.blocked++;
-					break;
-				case 'needs_work':
-					newCounts.needs_work++;
-					break;
-				case 'cancelled':
-					newCounts.cancelled++;
-					break;
-				case 'pending': {
-					const deps = task.depends_on || [];
-					const hasUnmetDeps = deps.some((dep: string) => {
-						const ref = dep.startsWith('@') ? dep.slice(1) : dep;
-						return !completedRefs.has(ref);
-					});
-					if (!hasUnmetDeps) {
-						newCounts.ready++;
-					}
-					break;
-				}
-			}
-		}
-
 		return newCounts;
 	});
 
-	let agentStatus = $derived<AgentDispatchStatus | null>(agentStatusQuery.data ?? null);
+	let agentStatus = $derived<AgentDispatchStatus | null>(
+		agentStatusQuery.data ??
+			(agentStatusQuery.error instanceof DispatchLifecycleApiError ? agentStatusQuery.error.status ?? null : null)
+	);
 
 	let hasActiveWork = $derived(
-		agentStatus?.dispatch_enabled && (agentStatus?.active_invocations?.length ?? 0) > 0
+		(agentStatus?.activeInvocations.length ?? 0) > 0
 	);
 
 	// Buffered output state per agent session (same pattern as board)
@@ -183,15 +159,16 @@
 
 	// AC: @ui-data-freshness ac-7 — Surface error with retry capability
 	let error = $derived.by(() => {
-		if (tasksQuery.error) return tasksQuery.error.message;
+		if (taskSummaryQuery.error) return taskSummaryQuery.error.message;
 		if (inboxQuery.error) return inboxQuery.error.message;
 		if (observationsQuery.error) return observationsQuery.error.message;
+		if (agentStatusQuery.error) return formatDispatchLifecycleError(agentStatusQuery.error);
 		return null;
 	});
 
 	// AC: @ui-data-freshness ac-1 — Only show loading skeleton on initial fetch (no cache)
 	let loading = $derived(
-		tasksQuery.isLoading ||
+		taskSummaryQuery.isLoading ||
 		inboxQuery.isLoading ||
 		observationsQuery.isLoading
 	);
@@ -322,7 +299,7 @@
 		// Clean up stale session states based on refreshed agent status
 		if (agentStatusQuery.data) {
 			const activeSessions = new Set(
-				agentStatusQuery.data.active_invocations.map((inv) => inv.session_id)
+				agentStatusQuery.data.activeInvocations.map((inv) => inv.sessionId)
 			);
 			for (const sessionId of Object.keys(sessionStates)) {
 				if (!activeSessions.has(sessionId)) {
@@ -407,19 +384,22 @@
 	{:else}
 		<!-- AC: @ui-dashboard-overview ac-1 — Active work section -->
 		<section data-testid="active-work-section">
+			{#if agentStatus}
+				<LifecycleEvidence status={agentStatus} />
+			{/if}
 			{#if hasActiveWork}
 				<div class="mb-4">
 					<div class="flex items-center gap-2 mb-2">
 						<Activity class="size-4 text-status-in-progress" />
 						<h2 class="text-sm font-medium">Active Fleet</h2>
 						<Badge variant="secondary" class="text-[10px]">
-							{agentStatus?.active_invocations.length} running
+							{agentStatus?.activeInvocations.length} running
 						</Badge>
 					</div>
 					<div class="flex gap-3 overflow-x-auto pb-2" data-testid="active-fleet-row">
-						{#each agentStatus?.active_invocations ?? [] as invocation (invocation.session_id)}
-							{@const title = invocation.task_title ?? undefined}
-							{@const sessionState = sessionStates[invocation.session_id]}
+						{#each agentStatus?.activeInvocations ?? [] as invocation (invocation.sessionId)}
+							{@const title = invocation.taskTitle ?? undefined}
+							{@const sessionState = sessionStates[invocation.sessionId]}
 							{@const lines = sessionState?.lines ?? []}
 							<div
 								class="flex-shrink-0 w-72 rounded-lg border bg-card p-3 ds-breathe"
@@ -427,12 +407,12 @@
 							>
 								<div class="flex items-center gap-2 mb-1.5">
 									<Bot class="size-4 text-muted-foreground" />
-									<span class="text-xs font-medium truncate">{invocation.agent_id}</span>
+									<span class="text-xs font-medium truncate">{invocation.agentId}</span>
 								</div>
 
-								{#if invocation.task_ref}
+								{#if invocation.taskRef}
 									<div class="truncate mb-1">
-										<ReferenceLink ref={invocation.task_ref} type="task" title={title} class="text-xs" />
+										<ReferenceLink ref={invocation.taskRef} type="task" title={title} class="text-xs" />
 									</div>
 								{/if}
 
@@ -447,11 +427,11 @@
 												class="relative inline-flex size-2 rounded-full bg-status-in-progress"
 											></span>
 										</span>
-										<span>{formatElapsed(invocation.elapsed_ms)}</span>
+										<span>{formatElapsed(invocation.elapsedMs)}</span>
 									</div>
 
 									<a
-										href="{base}/sessions/{invocation.session_id}"
+										href="{base}/sessions/{invocation.sessionId}"
 										class="inline-flex items-center gap-1 text-primary hover:underline"
 									>
 										Stream
@@ -464,7 +444,7 @@
 									<div
 										class="mt-1.5 rounded bg-muted/50 p-1.5 font-mono text-[10px] leading-tight text-muted-foreground overflow-hidden max-h-10"
 										aria-live="polite"
-										aria-label="Agent output for {title ?? invocation.agent_id}"
+										aria-label="Agent output for {title ?? invocation.agentId}"
 										data-testid="fleet-output"
 									>
 										{#each lines.slice(-2) as line}
@@ -475,7 +455,7 @@
 									<div
 										class="mt-1.5 flex items-center gap-1 text-[10px] text-muted-foreground/50"
 										aria-live="polite"
-										aria-label="Agent output for {title ?? invocation.agent_id}"
+										aria-label="Agent output for {title ?? invocation.agentId}"
 										data-testid="fleet-output-empty"
 									>
 										<TerminalIcon class="size-3" />

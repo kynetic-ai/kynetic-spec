@@ -4,10 +4,10 @@ import { execSync } from "node:child_process";
 import * as path from "node:path";
 import { initContext } from "../src/parser/index.js";
 import {
-  findDispatchWorkspaceByTaskRef,
   getDispatchWorkspaceRegistryPath,
   saveDispatchWorkspaceRecord,
 } from "../src/parser/dispatch-workspaces.js";
+import { findDispatchWorkspaceByCanonicalTask } from "../src/agent-runtime/workspace-identity.js";
 import {
   getDispatchWorkspaceHealth,
   provisionDispatchWorkspace,
@@ -100,7 +100,7 @@ describe("adopted branch cleanup and recoverability", () => {
 
     const ctx = await initContext(tempDir);
     const registryPath = getDispatchWorkspaceRegistryPath(ctx);
-    const existingRecord = await findDispatchWorkspaceByTaskRef(ctx, taskRef);
+    const existingRecord = await findDispatchWorkspaceByCanonicalTask(ctx, taskRef);
     const now = new Date().toISOString();
 
     await saveDispatchWorkspaceRecord(ctx, {
@@ -240,7 +240,7 @@ describe("adopted branch cleanup and recoverability", () => {
 
     const ctx = await initContext(tempDir);
     const registryPath = getDispatchWorkspaceRegistryPath(ctx);
-    const existingRecord = await findDispatchWorkspaceByTaskRef(ctx, taskRef);
+    const existingRecord = await findDispatchWorkspaceByCanonicalTask(ctx, taskRef);
     const now = new Date().toISOString();
 
     await saveDispatchWorkspaceRecord(ctx, {
@@ -308,7 +308,7 @@ describe("adopted branch cleanup and recoverability", () => {
 
     const ctx = await initContext(tempDir);
     const registryPath = getDispatchWorkspaceRegistryPath(ctx);
-    const existingRecord = await findDispatchWorkspaceByTaskRef(ctx, taskRef);
+    const existingRecord = await findDispatchWorkspaceByCanonicalTask(ctx, taskRef);
     const now = new Date().toISOString();
 
     await saveDispatchWorkspaceRecord(ctx, {
@@ -486,7 +486,7 @@ describe("adopted branch cleanup and recoverability", () => {
 
     const ctx = await initContext(tempDir);
     const registryPath = getDispatchWorkspaceRegistryPath(ctx);
-    const existingRecord = await findDispatchWorkspaceByTaskRef(ctx, taskRef);
+    const existingRecord = await findDispatchWorkspaceByCanonicalTask(ctx, taskRef);
     const now = new Date().toISOString();
 
     await saveDispatchWorkspaceRecord(ctx, {
@@ -578,7 +578,7 @@ describe("adopted branch cleanup and recoverability", () => {
 
     const ctx = await initContext(tempDir);
     const registryPath = getDispatchWorkspaceRegistryPath(ctx);
-    const existingRecord = await findDispatchWorkspaceByTaskRef(ctx, taskRef);
+    const existingRecord = await findDispatchWorkspaceByCanonicalTask(ctx, taskRef);
     const now = new Date().toISOString();
 
     await saveDispatchWorkspaceRecord(ctx, {
@@ -663,7 +663,7 @@ describe("adopted branch cleanup and recoverability", () => {
 
     const ctx = await initContext(tempDir);
     const registryPath = getDispatchWorkspaceRegistryPath(ctx);
-    const existingRecord = await findDispatchWorkspaceByTaskRef(ctx, taskRef);
+    const existingRecord = await findDispatchWorkspaceByCanonicalTask(ctx, taskRef);
     const now = new Date().toISOString();
 
     await saveDispatchWorkspaceRecord(ctx, {
@@ -744,7 +744,7 @@ describe("adopted branch cleanup and recoverability", () => {
 
     const ctx = await initContext(tempDir);
     const registryPath = getDispatchWorkspaceRegistryPath(ctx);
-    const existingRecord = await findDispatchWorkspaceByTaskRef(ctx, taskRef);
+    const existingRecord = await findDispatchWorkspaceByCanonicalTask(ctx, taskRef);
     const now = new Date().toISOString();
 
     await saveDispatchWorkspaceRecord(ctx, {

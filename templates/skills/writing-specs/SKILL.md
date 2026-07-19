@@ -119,21 +119,21 @@ kspec item ac add @bulk-delete \
 Specs are standalone behavioral contracts. They must read as timeless descriptions of what the system does, not how it's built. A spec should make sense to someone who has never seen the codebase.
 
 **ACs describe observable behavior, not implementation:**
-ACs should describe what happens from the outside — what a user or consumer observes. They should not reveal how the system achieves the behavior internally. This includes field/variable names, protocol details, internal function calls, file formats, library names, and architectural terms. Use natural language to describe the same concept.
+ACs should describe what happens from the outside — what a user or consumer observes. They should not reveal how the system achieves the behavior internally. This includes internal field/variable names, protocol details, internal function calls, file formats, library names, and architectural terms. Use natural language to describe the same concept.
 
 Examples of implementation leaking into ACs:
 
-- `session_id`, `turn_count` → "session identifier", "turn count"
-- `ACP`, `JSON-RPC`, `WebSocket` → describe the behavior these enable
-- `client.prompt()`, `closeSession()` → "the prompt is delivered", "the session closes"
-- `events.jsonl` → "the session's event history"
+- Internal field names (e.g. `record_id`, `event_count`) → "record identifier", "event count"
+- Protocol or transport names (e.g. specific RPC, message-bus, or socket protocol names) → describe the behavior they enable
+- Internal function or method calls (e.g. `client.action()`, `session.close()`) → "the action is delivered", "the session closes"
+- Internal file paths (e.g. `events.jsonl`) → "the recorded event history"
 
 **ACs contain only assertions, not rationale:**
 Each AC should state what happens, not why it happens or how it relates to other concerns. Rationale, design context, backward compatibility notes, and cross-references to other specs belong in the description or implementation notes — not in the given/when/then.
 
 Examples of commentary leaking into ACs:
 
-- "the session closes; this preserves backward compatibility" → "the session closes"
+- "the request completes; this preserves backward compatibility" → "the request completes"
 - "per @other-spec" → use `depends_on` or `relates_to` fields
 - "unlike the previous behavior" → just state the current behavior
 
@@ -142,17 +142,17 @@ Examples of commentary leaking into ACs:
 **Good:**
 
 ```
-Given: A session is in idle state
-When: No prompt arrives within the configured grace period
-Then: The session is closed
+Given: A user has an existing record
+When: The user runs the delete command
+Then: The record is removed and the deletion is confirmed
 ```
 
 **Bad:**
 
 ```
-Given: A session emits session.idle and no session_prompt actions target it within 5 seconds
-When: The grace period timer fires
-Then: closeSession() is called with the standard teardown sequence; this preserves backward compatibility
+Given: store.records[id].state === "active" and no pending writes target it
+When: deleteRecord() resolves
+Then: store.records[id] is removed via the standard teardown sequence; this preserves backward compatibility
 ```
 
 ### AC Naming Convention
@@ -178,49 +178,40 @@ kspec item ac add @feature --id ac-json-valid --given "..." --when "..." --then 
 
 Traits are reusable bundles of acceptance criteria. When a spec implements a trait, it inherits all the trait's ACs.
 
+Traits are not shipped by `kspec init` — each project defines its own trait catalog. Always start by listing the project's traits before applying or extracting one.
+
 ### When to Use Traits
 
-Apply a trait when a spec needs a standard cross-cutting behavior:
+Apply a trait when a spec needs a cross-cutting behavior that is already represented in the project's catalog:
 
 ```bash
-# Discover available traits
+# Discover the project's trait catalog
 kspec trait list
 
 # View trait details (shows ACs that will be inherited)
-kspec trait get @trait-json-output
+kspec trait get @<trait-slug>
 
 # Apply trait to spec
-kspec item trait add @my-command @trait-json-output
+kspec item trait add @my-spec @<trait-slug>
 
 # Apply multiple traits
-kspec item trait add @my-command @trait-json-output @trait-dry-run
+kspec item trait add @my-spec @<trait-slug-a> @<trait-slug-b>
 ```
 
-### Common Traits
+### Picking Traits
 
-| Trait                        | When to apply                                |
-| ---------------------------- | -------------------------------------------- |
-| `@trait-json-output`         | Command produces machine-readable output     |
-| `@trait-dry-run`             | Command supports preview before execution    |
-| `@trait-confirmation-prompt` | Command is destructive                       |
-| `@trait-filterable-list`     | Command lists items with filter options      |
-| `@trait-shadow-commit`       | Command modifies `.kspec/` data              |
-| `@trait-semantic-exit-codes` | Command exit code carries meaning            |
-| `@trait-error-guidance`      | Command gives recovery suggestions on errors |
-| `@trait-multi-ref-batch`     | Command accepts multiple references          |
-| `@trait-priority-parameter`  | Command accepts priority option              |
+Scan the catalog returned by `kspec trait list` and look for traits whose cross-cutting behavior the spec implements. Typical categories you might see in a project's catalog include things like output formatting, destructive-operation prompts, filterable lists, error guidance, batch references, or shadow-state mutation. Use whatever traits the project defines — the catalog is project-specific.
 
 ### Creating New Traits
 
-If 3+ specs need the same behavior, consider extracting a trait:
+If 3+ specs need the same cross-cutting behavior and no existing trait covers it, consider extracting a trait:
 
 ```bash
 # Create the trait
-kspec trait add "Pagination Support" --description "Commands that paginate large result sets" --slug trait-pagination
+kspec trait add "Trait Name" --description "Brief description of the cross-cutting behavior" --slug <trait-slug>
 
 # Add ACs to the trait
-kspec item ac add @trait-pagination --given "result set > page size" --when "command runs" --then "first page shown with pagination indicator"
-kspec item ac add @trait-pagination --given "user requests next page" --when "user passes --page 2" --then "second page of results shown"
+kspec item ac add @<trait-slug> --given "..." --when "..." --then "..."
 ```
 
 ### Trait AC Coverage
@@ -228,8 +219,8 @@ kspec item ac add @trait-pagination --given "user requests next page" --when "us
 When implementing specs with traits, all inherited ACs must be covered by tests:
 
 ```javascript
-// AC: @trait-json-output ac-1
-it('should output valid JSON with --json flag', () => { ... });
+// AC: @<trait-slug> ac-1
+it('exhibits the trait-defined behavior', () => { ... });
 ```
 
 Run `kspec validate` to check for uncovered trait ACs.
@@ -259,8 +250,8 @@ kspec item ac add @bulk-ops \
   --when "user runs bulk delete" \
   --then "error reported for invalid ref, valid refs still processed"
 
-# 5. Apply relevant traits
-kspec item trait add @bulk-ops @trait-confirmation-prompt @trait-dry-run
+# 5. Apply relevant traits from the project's catalog (kspec trait list)
+kspec item trait add @bulk-ops @<trait-slug-a> @<trait-slug-b>
 
 # 6. Validate
 kspec validate

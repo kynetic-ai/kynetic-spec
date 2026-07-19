@@ -60,6 +60,25 @@
 		return event.event_type === 'session.idle';
 	}
 
+	function isDispatchControlEvent(event: EventEnvelopeSummary): boolean {
+		return event.event_type.startsWith('dispatch_control.');
+	}
+
+	function sanitizedDispatchPayload(payload: Record<string, unknown>): Record<string, unknown> {
+		const allowed = [
+			'scope',
+			'action',
+			'outcome',
+			'authority',
+			'projection',
+			'task_id',
+			'task_ref',
+			'cleanup_id',
+			'error_code'
+		] as const;
+		return Object.fromEntries(allowed.filter((key) => key in payload).map((key) => [key, payload[key]]));
+	}
+
 	// Expand state for payload details
 	let expandedEventId = $state<string | null>(null);
 
@@ -133,6 +152,12 @@
 												<span class="text-muted-foreground" data-testid="session-idle-duration">{formatDuration(event.payload.turn_duration_ms)}</span>
 											{/if}
 										</span>
+									{:else if isDispatchControlEvent(event)}
+										<span class="inline-flex flex-wrap items-center gap-1.5" data-testid="dispatch-control-event-details">
+											{event.payload.scope} {event.payload.action}
+											{#if event.payload.outcome}<Badge variant="outline" class="text-xs">{event.payload.outcome}</Badge>{/if}
+											{#if event.payload.error_code}<Badge variant="outline" class="text-xs">{event.payload.error_code}</Badge>{/if}
+										</span>
 									{:else if event.causation_id}
 										<span class="font-mono" title="Causation ID">⤵ {event.causation_id.slice(0, 8)}</span>
 									{/if}
@@ -142,7 +167,7 @@
 								<tr class="border-t bg-muted/20">
 									<td colspan="4" class="px-3 py-2">
 										<div class="text-xs font-mono overflow-x-auto whitespace-pre-wrap max-h-32 overflow-y-auto">
-											{JSON.stringify(event.payload, null, 2)}
+											{JSON.stringify(isDispatchControlEvent(event) ? sanitizedDispatchPayload(event.payload) : event.payload, null, 2)}
 										</div>
 										{#if event.correlation_id}
 											<div class="mt-1 text-xs text-muted-foreground">

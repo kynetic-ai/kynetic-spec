@@ -12,11 +12,13 @@ Structured reflection at the end of a work session. Identifies learnings, fricti
 
 ### Interactive Mode
 
+If the project defines a session-reflect workflow, start it; otherwise follow the steps below directly.
+
 ```bash
 kspec workflow start @session-reflect
 ```
 
-Six steps, guided by the workflow engine:
+Six steps, guided by the workflow engine (or by reading through them manually):
 
 1. **What Worked Well** — Identify effective practices
 2. **Friction Points** — Where things were harder than needed
@@ -28,6 +30,8 @@ Six steps, guided by the workflow engine:
 Use `kspec workflow show` to see progress, `kspec workflow next --notes "..."` to advance.
 
 ### Loop Mode (Automated)
+
+If the project defines a loop variant of the session-reflect workflow, start it for autonomous reflection.
 
 ```bash
 kspec workflow start @session-reflect-loop
@@ -156,4 +160,4 @@ kspec workflow resume         # Resume
 
 - Observations created during reflection feed into `{skill:triage} observations`
 - Friction observations may be promoted to tasks via `kspec meta promote @ref`
-- Success patterns may inform AGENTS.md or convention updates
+- Success patterns may inform project-local agent guidance or kspec convention updates

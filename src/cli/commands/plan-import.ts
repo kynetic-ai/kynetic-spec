@@ -26,6 +26,13 @@ import {
   type LoadedSpecItem,
 } from "../../parser/index.js";
 import { parsePlanDocument } from "../../parser/plan-document.js";
+import {
+  PlanImportResourceError,
+  assertMarkdownLinksResolveAgainstPlan,
+  persistPlanResourcesFromSibling,
+  validatePlanImportResources,
+} from "../../parser/plan-resource-import.js";
+import { getPlanDir } from "../../parser/plan-storage-manager.js";
 import { commitIfShadow } from "../../parser/shadow.js";
 import { type Note, type PlanInput, PlanStatusSchema } from "../../schema/index.js";
 import { errors } from "../../strings/index.js";
@@ -164,6 +171,17 @@ async function importPlan(planPath: string, options: ImportOptions): Promise<voi
     process.exit(EXIT_CODES.USAGE_ERROR);
   }
 
+  // Validate sibling resources.yaml + ./resources/<rel> markdown links before
+  // any save. Persisting the plan first and then failing the resource copy
+  // would leave the plan record without its declared sidecars.
+  // AC: @plan-resource-derivation-semantics-1 ac-plan-task-resource-refs-are-structured
+  let resourceValidation: Awaited<ReturnType<typeof validatePlanImportResources>> | null = null;
+  try {
+    resourceValidation = await validatePlanImportResources(fullPath, content);
+  } catch (err) {
+    exitOnPlanImportResourceError(err);
+  }
+
   if (options.update) {
     warn(
       "--update is ignored for content-only import. Use `kspec plan derive` to materialize specs and tasks.",
@@ -240,6 +258,7 @@ async function importPlan(planPath: string, options: ImportOptions): Promise<voi
     plan,
     preview,
     emptyPlanWarnings.map((w) => w.message),
+    resourceValidation,
   );
 }
 
@@ -248,8 +267,22 @@ async function saveImportedPlan(
   plan: ReturnType<typeof createPlan>,
   preview: ImportPreview,
   warnings: string[] = [],
+  resourceValidation: Awaited<ReturnType<typeof validatePlanImportResources>> | null = null,
 ): Promise<void> {
   await savePlan(ctx, plan);
+  if (resourceValidation && resourceValidation.manifest.resources.length > 0) {
+    try {
+      // Plan directory now exists at .kspec/plans/<plan-ulid>/ — copy the
+      // declared sibling files into resources/, write the manifest, and
+      // refresh the lean index so resource_summary lands in the same
+      // logical mutation as the resource files.
+      // AC: @plan-resource-derivation-semantics-1 ac-plan-task-resource-refs-are-structured
+      // AC: @trait-folder-backed-entity-1 ac-indexed-mutation-updates-index
+      await persistPlanResourcesFromSibling(ctx, plan._ulid, resourceValidation);
+    } catch (err) {
+      exitOnPlanImportResourceError(err);
+    }
+  }
   await commitIfShadow(
     ctx.shadow,
     "plan-import",
@@ -263,6 +296,25 @@ async function saveImportedPlan(
     },
     { dryRun: false, createdAt: plan.created_at, warnings },
   );
+}
+
+/**
+ * Map a {@link PlanImportResourceError} to the existing import-with-guidance
+ * exit path so the CLI surface stays consistent. Non-typed errors propagate.
+ *
+ * AC: @plan-resource-derivation-semantics-1 ac-plan-task-resource-refs-are-structured
+ */
+function exitOnPlanImportResourceError(err: unknown): never {
+  if (err instanceof PlanImportResourceError) {
+    exitImportWithGuidance(err.message, EXIT_CODES.USAGE_ERROR, undefined, {
+      code: err.code,
+      resource_id: err.resourceId ?? null,
+      path: err.path ?? null,
+      source_file: err.sourceFile ?? null,
+      line: err.line ?? null,
+    });
+  }
+  throw err;
 }
 
 async function importIntoExistingPlan(
@@ -296,6 +348,20 @@ async function importIntoExistingPlan(
   const emptyPlanWarnings = parsed.warnings.filter((w) => w.type === "empty_plan");
   for (const w of emptyPlanWarnings) {
     warn(w.message);
+  }
+
+  // Re-imports must resolve any ./resources/<rel> markdown link against the
+  // existing plan's resources.yaml. Users attach resources via
+  // `kspec plan resource add` before pointing markdown at them.
+  // AC: @plan-resource-derivation-semantics-1 ac-plan-task-resource-refs-are-structured
+  try {
+    await assertMarkdownLinksResolveAgainstPlan(
+      getPlanDir(ctx, foundPlan._ulid),
+      content,
+      fullPath,
+    );
+  } catch (err) {
+    exitOnPlanImportResourceError(err);
   }
 
   const titleFromFile = extractOptionalPlanTitle(content);

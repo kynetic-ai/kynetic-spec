@@ -21,6 +21,7 @@
  */
 
 import * as path from "node:path";
+import * as fsPromises from "node:fs/promises";
 import { execFile } from "node:child_process";
 import { promisify } from "node:util";
 
@@ -29,7 +30,14 @@ import { fileURLToPath } from "node:url";
 import { ulid } from "ulid";
 import type { Agent, SessionMode } from "../schema/meta.js";
 import { buildPromptWithSkills } from "./prompts.js";
-import { resolveAdapter } from "../agents/adapters.js";
+import {
+  preflightRunnerInvocation,
+  resolveRunnerInvocation,
+  RunnerResolutionError,
+  type RunnerInvocation,
+} from "../agents/runners.js";
+import { resolveEffectiveRunners, type EffectiveRunnerRegistry } from "../agents/runner-config.js";
+import { diagnoseRegistryLoad, type RegistryLoadFailure } from "../agents/registry-load-failure.js";
 import { spawnAndInitialize } from "../agents/spawner.js";
 import type { SpawnedAgent } from "../agents/spawner.js";
 import type { RequestPermissionRequest, SessionUpdate } from "../acp/index.js";
@@ -40,9 +48,16 @@ import {
   injectEnvForAdapter,
   getSession,
   listSessions,
+  mutateSessionDispatchOwnership,
   removeEnvForAdapter,
+  updateSessionDispatchOwnership,
 } from "../sessions/store.js";
-import type { SessionEventInput, SessionMetadata, SessionTrigger } from "../sessions/types.js";
+import type {
+  DispatchOwnership,
+  SessionEventInput,
+  SessionMetadata,
+  SessionTrigger,
+} from "../sessions/types.js";
 import type { SessionHandle, SessionRegistry, SessionState } from "./session-registry.js";
 
 // ─── Constants ────────────────────────────────────────────────────────────────
@@ -65,6 +80,103 @@ export const DEFAULT_INITIAL_RESPONSE_TIMEOUT_SECONDS = 120;
  * AC: @multi-turn-session-lifecycle ac-17
  */
 export const DEFAULT_MAX_PROMPT_QUEUE_DEPTH = 64;
+
+const OWNERSHIP_FAILURE_TERMINATION_GRACE_MS = 1_000;
+
+interface LinuxProcEvidence {
+  pid: number;
+  pgid: number;
+  processStartTicks: string;
+}
+
+function parseLinuxProcStat(pid: number, content: string): LinuxProcEvidence {
+  const close = content.lastIndexOf(")");
+  if (close < 0) throw new Error(`Invalid /proc/${pid}/stat process identity`);
+  const fields = content
+    .slice(close + 2)
+    .trim()
+    .split(/\s+/);
+  const pgid = Number(fields[2]);
+  const processStartTicks = fields[19];
+  if (
+    !Number.isInteger(pgid) ||
+    pgid < 0 ||
+    !processStartTicks ||
+    !/^\d+$/.test(processStartTicks)
+  ) {
+    throw new Error(`Invalid /proc/${pid}/stat process identity`);
+  }
+  return { pid, pgid, processStartTicks };
+}
+
+async function readLinuxProcEvidence(pid: number): Promise<LinuxProcEvidence | null> {
+  try {
+    return parseLinuxProcStat(pid, await fsPromises.readFile(`/proc/${pid}/stat`, "utf8"));
+  } catch (error) {
+    const code = (error as NodeJS.ErrnoException).code;
+    if (code === "ENOENT" || code === "ESRCH") return null;
+    throw error;
+  }
+}
+
+async function listLinuxProcessGroup(pgid: number): Promise<LinuxProcEvidence[]> {
+  const entries = await fsPromises.readdir("/proc", { withFileTypes: true });
+  const evidence = await Promise.all(
+    entries
+      .filter((entry) => entry.isDirectory() && /^\d+$/.test(entry.name))
+      .map((entry) => readLinuxProcEvidence(Number(entry.name))),
+  );
+  return evidence.filter((entry): entry is LinuxProcEvidence => entry?.pgid === pgid);
+}
+
+async function captureSpawnOwnership(
+  handoff: InvocationCreateHandoff,
+  processHandle: SpawnedAgent["process"],
+): Promise<DispatchOwnership> {
+  const pid = processHandle.pid;
+  if (!pid) throw new Error("Spawned adapter did not expose a process id");
+  if (process.platform !== "linux") {
+    return {
+      invocation_id: handoff.invocationId,
+      session_id: handoff.sessionId,
+      task_id: handoff.taskId,
+      agent_id: handoff.agentId,
+      adapter: handoff.adapter,
+      owner_instance_id: handoff.ownerInstanceId,
+      pid,
+      pgid: pid,
+      process_start_ticks: null,
+      process_identity_platform: "unverifiable",
+      captured_at: new Date().toISOString(),
+      group_members: [],
+    };
+  }
+  const leader = await readLinuxProcEvidence(pid);
+  if (!leader || leader.pgid <= 0) {
+    throw new Error("Spawned adapter leader disappeared before ownership was persisted");
+  }
+  const members = await listLinuxProcessGroup(leader.pgid);
+  if (!members.some((member) => member.pid === pid)) {
+    throw new Error("Spawned adapter leader disappeared before ownership was persisted");
+  }
+  return {
+    invocation_id: handoff.invocationId,
+    session_id: handoff.sessionId,
+    task_id: handoff.taskId,
+    agent_id: handoff.agentId,
+    adapter: handoff.adapter,
+    owner_instance_id: handoff.ownerInstanceId,
+    pid,
+    pgid: leader.pgid,
+    process_start_ticks: leader.processStartTicks,
+    process_identity_platform: "linux_proc_stat_v1",
+    captured_at: new Date().toISOString(),
+    group_members: members.map((member) => ({
+      pid: member.pid,
+      process_start_ticks: member.processStartTicks,
+    })),
+  };
+}
 
 /**
  * Default idle grace period in milliseconds.
@@ -201,6 +313,13 @@ export class PromptQueue {
 export interface SessionIdleContext {
   sessionId: string;
   agentId: string;
+  /**
+   * Canonical full task ULID — the authoritative task identity when the session
+   * is task-scoped. Identity consumers key off this, never the display ref.
+   * AC: @dispatch-canonical-task-identity ac-session-and-event-payloads-separate-id-from-display-ref
+   */
+  taskId: string | undefined;
+  /** Display task ref for human-readable surfaces only; never an identity key. */
   taskRef: string | undefined;
   turnCount: number;
   stopReason: string | undefined;
@@ -219,6 +338,16 @@ export interface InvocationOptions {
   sessionsDir?: string;
   /** Working directory for spawned agent */
   cwd: string;
+  /**
+   * Canonical full task ULID — the authoritative task identity for this
+   * invocation. Dispatch resolves this via task-identity normalization and
+   * passes it separately from the display ref so persisted session metadata and
+   * session event history record identity (not a display alias). When omitted
+   * (legacy/manual callers that never canonicalized), the display ref is used as
+   * a best-effort identity fallback.
+   * AC: @dispatch-canonical-task-identity ac-session-and-event-payloads-separate-id-from-display-ref
+   */
+  taskId?: string;
   /** Task reference being worked on (e.g., "@01KJP277A"). Optional — omit for unbound invocations. */
   taskRef?: string;
   /** The prompt to send to the agent */
@@ -229,6 +358,31 @@ export interface InvocationOptions {
   timeoutMinutes?: number;
   /** Whether to use auto-approve (yolo) args for adapter */
   autoApprove?: boolean;
+  /**
+   * Explicit adapter override (e.g., `kspec agent run --adapter <id>`).
+   * Bypasses runner resolution and uses the override adapter directly.
+   * AC: @cli-agent-commands ac-7
+   */
+  adapterOverride?: string;
+  /**
+   * Pre-loaded effective runner registry. When omitted, runInvocation
+   * loads the layered runner config from the project root derived from
+   * `specDir`. Tests can pass `{ runners: {} }` to skip the load entirely.
+   * AC: @runner-resolution-and-preflight ac-one-shot-uses-runner-resolution
+   * AC: @runner-resolution-and-preflight ac-dispatch-uses-runner-resolution
+   */
+  runnerRegistry?: EffectiveRunnerRegistry;
+  /**
+   * Pre-computed registry-load failures (one per failing config layer).
+   * When supplied alongside `runnerRegistry`, the resolver surfaces a
+   * `runner_registry_unavailable` diagnostic before any prompt is sent.
+   * Omitted callers fall back to the internal layered loader, which
+   * derives both fields itself.
+   *
+   * AC: @runner-resolution-and-preflight ac-registry-load-failure-reports-config-error
+   * AC: @runner-resolution-and-preflight ac-registry-load-failure-blocks-runner-spawn
+   */
+  runnerRegistryLoadFailures?: readonly RegistryLoadFailure[];
   /** Extra environment variables for the spawned agent */
   env?: Record<string, string>;
   /** Shared lock file used to serialize shadow mutations across dispatch worktrees */
@@ -289,6 +443,38 @@ export interface InvocationOptions {
    * AC: @multi-turn-session-lifecycle ac-7
    */
   idleTimeoutMs?: number;
+  /**
+   * Final ordered dispatch admission boundary. Dispatch supplies this hook so
+   * committed lifecycle authority is checked after all preflight work but
+   * immediately before the first persisted session or adapter process artifact.
+   * A successful hook returns the active ownership handoff installed by the
+   * caller; a denied hook throws before either artifact exists.
+   */
+  beforeCreate?: () => Promise<InvocationCreateHandoff>;
+  /** Publish active ownership only after the process proof is durable. */
+  onOwnershipPersisted?: (ownership: DispatchOwnership) => void | Promise<void>;
+  /** Resolve an admitted handoff that failed before durable ownership publication. */
+  onOwnershipFailed?: (handoff: InvocationCreateHandoff) => void;
+}
+
+/** Identity handed from final dispatch admission to active ownership. */
+export interface InvocationCreateHandoff {
+  invocationId: string;
+  sessionId: string;
+  taskId: string | null;
+  agentId: string;
+  adapter: string;
+  ownerInstanceId: string;
+}
+
+export type InvocationCreateDenial = "held" | "discarded";
+
+/** Non-retryable final-boundary denial owned by dispatch lifecycle authority. */
+export class InvocationCreateDeniedError extends Error {
+  constructor(readonly disposition: InvocationCreateDenial) {
+    super(`Invocation creation ${disposition} by committed lifecycle authority`);
+    this.name = "InvocationCreateDeniedError";
+  }
 }
 
 /**
@@ -320,28 +506,59 @@ interface InvocationState {
   specDir: string;
   taskRef: string | undefined;
   adapterId: string;
+  runnerId: string | null;
   previousEnvValue?: string | null;
   agent: SpawnedAgent | null;
   acpSessionId: string | null;
+  /** Resolver cleanup hook to run after session close. */
+  runnerCleanup?: (() => Promise<void>) | undefined;
+  /**
+   * Runner contract redactor — scrubs resolved secret values from any
+   * diagnostic string written to session events, task notes, close reasons,
+   * block reasons, or other operator-visible surfaces.
+   *
+   * AC: @runner-environment-secret-boundaries ac-diagnostics-redact-secrets
+   */
+  redact: (text: string) => string;
 }
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
 
 /**
  * Run a kspec CLI command asynchronously.
+ *
+ * `env` is overlaid on top of the inherited host `process.env`. When
+ * `stripFromHostEnv` is supplied, those keys are removed from the host
+ * inheritance *before* the overlay — used by mutation helpers to drop
+ * runner-resolved `env.secrets` so a `user_env`-sourced binding cannot
+ * leak from the parent's process.env into kspec subprocesses.
+ *
  * AC: @agent-dispatch-engine ac-28 — async to avoid blocking the event loop
+ * AC: @runner-environment-secret-boundaries ac-secret-values-not-stored-inline
+ * AC: @runner-environment-secret-boundaries ac-diagnostics-redact-secrets
  */
 async function runKspecCli(
   args: string[],
   cwd: string,
   kspecCliPath: string,
   env?: Record<string, string>,
+  stripFromHostEnv?: readonly string[],
 ): Promise<{ stdout: string; stderr: string; status: number | null }> {
   try {
+    let spawnEnv: NodeJS.ProcessEnv;
+    if (stripFromHostEnv && stripFromHostEnv.length > 0) {
+      const sanitizedHost: NodeJS.ProcessEnv = { ...process.env };
+      for (const key of stripFromHostEnv) {
+        delete sanitizedHost[key];
+      }
+      spawnEnv = env ? { ...sanitizedHost, ...env } : sanitizedHost;
+    } else {
+      spawnEnv = env ? { ...process.env, ...env } : process.env;
+    }
     const result = await execFileAsync(process.execPath, [kspecCliPath, ...args], {
       encoding: "utf-8",
       cwd,
-      env: env ? { ...process.env, ...env } : process.env,
+      env: spawnEnv,
     });
     return {
       stdout: result.stdout ?? "",
@@ -368,8 +585,15 @@ async function addTaskNote(
   kspecCliPath: string,
   env?: Record<string, string>,
   strict = false,
+  stripFromHostEnv?: readonly string[],
 ): Promise<void> {
-  const result = await runKspecCli(["task", "note", taskRef, note], cwd, kspecCliPath, env);
+  const result = await runKspecCli(
+    ["task", "note", taskRef, note],
+    cwd,
+    kspecCliPath,
+    env,
+    stripFromHostEnv,
+  );
   if (strict && result.status !== 0) {
     throw new DispatchMutationError(
       `Dispatch mutation failed while writing task note for ${taskRef}: ${result.stderr || result.stdout || "kspec task note exited non-zero"}`,
@@ -387,12 +611,14 @@ async function blockTask(
   kspecCliPath: string,
   env?: Record<string, string>,
   strict = false,
+  stripFromHostEnv?: readonly string[],
 ): Promise<void> {
   const result = await runKspecCli(
     ["task", "block", taskRef, "--reason", reason],
     cwd,
     kspecCliPath,
     env,
+    stripFromHostEnv,
   );
   if (strict && result.status !== 0) {
     throw new DispatchMutationError(
@@ -425,7 +651,8 @@ function toInvocationOutcome(metadata: SessionMetadata): InvocationResult["outco
  */
 async function getConsecutiveFailureCount(
   sessionsDir: string,
-  taskRef: string,
+  canonicalTaskId: string,
+  displayRef: string | undefined,
   agentId: string,
 ): Promise<number> {
   const sessionIds = await listSessions(sessionsDir);
@@ -433,12 +660,21 @@ async function getConsecutiveFailureCount(
     sessionIds.map((sessionId) => getSession(sessionsDir, sessionId)),
   );
 
+  // Match by canonical task identity. Fall back to the display ref so historical
+  // sessions persisted before task_id carried the canonical ULID (task_id held a
+  // display ref) still count toward the same task's failure streak.
+  // AC: @dispatch-canonical-task-identity ac-session-and-event-payloads-separate-id-from-display-ref
   const relevantSessions = sessions
     .filter((session): session is SessionMetadata => session !== null)
-    .filter(
-      (session) =>
-        session.task_id === taskRef && (session.agent_id ?? session.agent_type) === agentId,
-    )
+    .filter((session) => {
+      const sameAgent = (session.agent_id ?? session.agent_type) === agentId;
+      if (!sameAgent) return false;
+      if (session.task_id === canonicalTaskId) return true;
+      if (displayRef !== undefined) {
+        return session.task_ref === displayRef || session.task_id === displayRef;
+      }
+      return false;
+    })
     .map((session) => ({
       ...session,
       invocationOutcome: toInvocationOutcome(session),
@@ -459,18 +695,90 @@ async function getConsecutiveFailureCount(
   return consecutiveFailures;
 }
 
-/**
- * Dispose a spawned agent, terminating the process if running.
- * AC: @agent-invocation-lifecycle ac-8
- */
-function disposeAgent(agent: SpawnedAgent | null): null {
+function disposeUnownedAgent(agent: SpawnedAgent | null): null {
   if (agent) {
     try {
       agent.kill("SIGTERM");
     } catch {
-      // Best-effort termination
+      // Invocations outside dispatch ownership retain their historical
+      // best-effort disposal contract and publish no process-exit evidence.
     }
   }
+  return null;
+}
+
+function spawnedAgentExited(agent: SpawnedAgent): boolean {
+  return agent.process.exitCode !== null || agent.process.signalCode !== null;
+}
+
+async function waitForSpawnedAgentExit(agent: SpawnedAgent, timeoutMs?: number): Promise<boolean> {
+  if (spawnedAgentExited(agent)) return true;
+
+  return new Promise<boolean>((resolve) => {
+    let settled = false;
+    let timer: NodeJS.Timeout | undefined;
+
+    const finish = (exited: boolean): void => {
+      if (settled) return;
+      settled = true;
+      if (timer) clearTimeout(timer);
+      agent.process.off("exit", onExit);
+      resolve(exited);
+    };
+    const onExit = (): void => finish(true);
+
+    agent.process.once("exit", onExit);
+    if (spawnedAgentExited(agent)) {
+      finish(true);
+      return;
+    }
+    if (timeoutMs !== undefined) {
+      timer = setTimeout(() => finish(false), timeoutMs);
+    }
+  });
+}
+
+async function waitForSpawnedAgentGroupExit(
+  agent: SpawnedAgent,
+  timeoutMs?: number,
+): Promise<boolean> {
+  const pid = agent.process.pid;
+  if (process.platform !== "linux" || !pid) return waitForSpawnedAgentExit(agent, timeoutMs);
+  const deadline = timeoutMs === undefined ? undefined : Date.now() + timeoutMs;
+  while (true) {
+    if ((await listLinuxProcessGroup(pid)).length === 0) return true;
+    if (deadline !== undefined && Date.now() > deadline) return false;
+    await new Promise((resolve) => setTimeout(resolve, 25));
+  }
+}
+
+/**
+ * Reap a spawned child before publishing or releasing its process ownership.
+ *
+ * Give the process a bounded graceful window, escalate the entire spawned
+ * process group to SIGKILL, and then wait for the unambiguous exit event. This
+ * is required both when durable publication fails (there may be no recoverable
+ * PID proof for a later stop) and during normal finalization (exited_at is
+ * authoritative recovery evidence and cannot be persisted optimistically).
+ */
+async function reapSpawnedAgent(agent: SpawnedAgent | null): Promise<null> {
+  if (!agent) return null;
+
+  try {
+    agent.kill("SIGTERM");
+  } catch {
+    // Exit observation below is authoritative; a failed graceful signal still
+    // proceeds to bounded forceful escalation.
+  }
+  if (await waitForSpawnedAgentGroupExit(agent, OWNERSHIP_FAILURE_TERMINATION_GRACE_MS))
+    return null;
+
+  try {
+    agent.kill("SIGKILL");
+  } catch {
+    // If the process raced to exit, the state/event checks below will observe it.
+  }
+  await waitForSpawnedAgentGroupExit(agent);
   return null;
 }
 
@@ -498,6 +806,7 @@ export async function runInvocation(options: InvocationOptions): Promise<Invocat
     agent,
     specDir,
     cwd,
+    taskId,
     taskRef,
     trigger,
     autoApprove = agent.auto_approve,
@@ -513,7 +822,17 @@ export async function runInvocation(options: InvocationOptions): Promise<Invocat
     idleGracePeriodMs = 0,
     sessionMode = "auto_close",
     idleTimeoutMs,
+    onOwnershipPersisted,
+    onOwnershipFailed,
   } = options;
+
+  // Canonical task identity for persisted session metadata and session event
+  // history: prefer the resolved canonical task id, falling back to the display
+  // ref only for legacy/manual callers that never canonicalized. The display
+  // ref is retained separately for human-readable surfaces and CLI command text.
+  // AC: @dispatch-canonical-task-identity ac-session-and-event-payloads-separate-id-from-display-ref
+  const canonicalTaskId = taskId ?? taskRef;
+  const displayTaskRef = taskRef;
 
   // AC: @session-storage-path-resolution ac-resolver
   // Sessions live in .kspec-sessions/ at project root, not inside .kspec/
@@ -522,12 +841,64 @@ export async function runInvocation(options: InvocationOptions): Promise<Invocat
   const startTime = Date.now();
   const sessionId = options.sessionId ?? ulid();
 
-  // Resolve adapter
-  const adapterId = agent.adapter ?? "claude-agent-acp";
-  const adapter = resolveAdapter(adapterId);
+  // ─── Resolve runner invocation contract ─────────────────────────────────
+  // AC: @runner-resolution-and-preflight ac-one-shot-uses-runner-resolution
+  // AC: @runner-resolution-and-preflight ac-dispatch-uses-runner-resolution
+  // AC: @runner-resolution-and-preflight ac-invalid-runner-blocks-before-prompt
+  //
+  // The resolver runs BEFORE any prompt is built or sent — failures here
+  // surface as exceptions without spawning the adapter process. The resolver
+  // synthesizes the kspec-required invocation variables
+  // (KSPEC_NO_DAEMON, KSPEC_SESSION_ID, KSPEC_SHADOW_MUTATION_LOCK_FILE) so
+  // they are part of the resolved contract for both runner-backed and
+  // implicit/legacy paths.
+  // AC: @runner-invocation-semantics ac-session-env-injected-through-runner
+  let runnerRegistry: EffectiveRunnerRegistry;
+  let runnerRegistryLoadFailures: readonly RegistryLoadFailure[];
+  if (options.runnerRegistry !== undefined) {
+    runnerRegistry = options.runnerRegistry;
+    runnerRegistryLoadFailures = options.runnerRegistryLoadFailures ?? [];
+  } else {
+    // AC: @runner-resolution-and-preflight ac-registry-load-failure-reports-config-error
+    // AC: @runner-resolution-and-preflight ac-registry-load-failure-blocks-runner-spawn
+    // Load layer state ourselves so the resolver sees both the registry
+    // and any registry-load failures. A runner-backed agent that cannot
+    // resolve because the registry is unloadable surfaces as
+    // `runner_registry_unavailable` rather than `unknown_runner`.
+    const loaded = await loadRunnerRegistrySafely(specDir);
+    runnerRegistry = loaded.registry;
+    runnerRegistryLoadFailures = loaded.failures;
+  }
 
-  // Build extra args for auto-approve
-  const extraArgs = autoApprove ? (adapter.autoApproveArgs ?? []) : [];
+  const contract: RunnerInvocation = resolveRunnerInvocation({
+    agent,
+    registry: runnerRegistry,
+    cwd,
+    sessionId,
+    autoApprove,
+    env,
+    mutationLockFile,
+    adapterOverride: options.adapterOverride,
+    registryLoadFailures: runnerRegistryLoadFailures,
+  });
+
+  // Preflight runner-configured executables before any prompt is built.
+  // Surfaces unspawnable commands as typed diagnostics (RunnerResolutionError
+  // with reason "unspawnable_command") so failures are visible in the same
+  // shape as other runner-resolution errors and never leak as anonymous spawn
+  // ENOENTs.
+  //
+  // AC: @runner-process-invocation-inputs ac-existing-executable-reference-resolves
+  await preflightRunnerInvocation(contract);
+
+  const adapterId = contract.adapterId;
+  const adapter = contract.adapter;
+  const extraArgs = contract.extraArgs;
+  // Capture the runner contract's redactor so every diagnostic write below
+  // (session events, close reasons, task notes, block reasons, adapter
+  // stderr) scrubs any resolved secret value before persisting.
+  // AC: @runner-environment-secret-boundaries ac-diagnostics-redact-secrets
+  const redact = contract.redact;
 
   // Resolve timeout: option overrides agent budget (applies to total session duration)
   const timeoutMinutes = options.timeoutMinutes ?? agent.budget?.timeout_minutes ?? 30;
@@ -538,6 +909,7 @@ export async function runInvocation(options: InvocationOptions): Promise<Invocat
 
   // Resolve skill content for prompt
   // AC: @agent-invocation-lifecycle ac-7
+  // AC: @runner-invocation-semantics ac-skill-formatting-uses-resolved-adapter
   const fullPrompt = await buildPromptWithSkills({
     basePrompt: options.prompt,
     skillIds: agent.skills ?? [],
@@ -550,16 +922,34 @@ export async function runInvocation(options: InvocationOptions): Promise<Invocat
     specDir,
     taskRef,
     adapterId,
+    runnerId: contract.runnerId,
     previousEnvValue: undefined,
     agent: null,
     acpSessionId: null,
+    runnerCleanup: contract.cleanup,
+    redact,
   };
 
-  const invocationEnv: Record<string, string> = {
-    ...env,
-    KSPEC_NO_DAEMON: "1",
-    ...(mutationLockFile ? { KSPEC_SHADOW_MUTATION_LOCK_FILE: mutationLockFile } : {}),
-  };
+  const invocationEnv: Record<string, string> = contract.env;
+  // Sanitized env passed to internal kspec mutation subprocesses
+  // (`kspec task note`, `kspec task block`). Resolved env.secrets and
+  // runner env.set/env.pass/env.inherit values live in `contract.env` and
+  // are intended for the adapter spawn only; they must NEVER reach kspec
+  // subprocesses whose only need is the dispatch contract (KSPEC_NO_DAEMON,
+  // KSPEC_SESSION_ID, KSPEC_SHADOW_MUTATION_LOCK_FILE).
+  //
+  // Two defenses run together below:
+  //   - `mutationEnv` contains only kspec-required vars, so the overlay
+  //     itself can never inject a secret.
+  //   - `mutationSecretStripKeys` lists the env var names that were
+  //     resolved from `env.secrets`, so the spawner strips them from
+  //     `process.env` before overlay — closing the `user_env` leak path
+  //     where the parent's process.env already mirrors the secret.
+  //
+  // AC: @runner-environment-secret-boundaries ac-secret-values-not-stored-inline
+  // AC: @runner-environment-secret-boundaries ac-diagnostics-redact-secrets
+  const mutationEnv: Record<string, string> = contract.mutationEnv;
+  const mutationSecretStripKeys: readonly string[] = contract.secretEnvKeys;
 
   // ─── Prompt queue for multi-turn ─────────────────────────────────────────
   // AC: @multi-turn-session-lifecycle ac-8, ac-9, ac-17
@@ -631,59 +1021,181 @@ export async function runInvocation(options: InvocationOptions): Promise<Invocat
     },
   };
 
+  // This is the common, final pre-artifact boundary. Keep it adjacent to
+  // createSession: everything above is pure/preflight work, while everything
+  // below may create durable session state or an adapter process.
+  const createHandoff = await options.beforeCreate?.();
+  let ownershipPublished = false;
+  let durableOwnership: DispatchOwnership | null = null;
+  const refreshDurableGroupMembers = async (): Promise<void> => {
+    const owned = durableOwnership;
+    if (
+      !owned ||
+      owned.exited_at ||
+      owned.process_identity_platform !== "linux_proc_stat_v1" ||
+      owned.pid === null ||
+      owned.pgid === null ||
+      owned.process_start_ticks === null
+    ) {
+      return;
+    }
+    const leader = await readLinuxProcEvidence(owned.pid);
+    if (
+      !leader ||
+      leader.pgid !== owned.pgid ||
+      leader.processStartTicks !== owned.process_start_ticks
+    )
+      return;
+    const members = await listLinuxProcessGroup(owned.pgid);
+    const updated = await mutateSessionDispatchOwnership(sessionsDir, sessionId, (current) => {
+      if (
+        !current ||
+        current.exited_at ||
+        current.invocation_id !== owned.invocation_id ||
+        current.owner_instance_id !== owned.owner_instance_id ||
+        current.pid !== owned.pid ||
+        current.pgid !== owned.pgid ||
+        current.process_start_ticks !== owned.process_start_ticks
+      ) {
+        return null;
+      }
+      const known = new Map(current.group_members.map((member) => [member.pid, member]));
+      for (const member of members) {
+        if (!known.has(member.pid)) {
+          known.set(member.pid, {
+            pid: member.pid,
+            process_start_ticks: member.processStartTicks,
+          });
+        }
+      }
+      if (known.size === current.group_members.length) return null;
+      return { ...current, group_members: [...known.values()] };
+    });
+    if (updated?.dispatch_ownership) durableOwnership = updated.dispatch_ownership;
+  };
+
   // ─── Create session ───────────────────────────────────────────────────────
   // AC: @agent-invocation-lifecycle ac-1
-  const session = await createSession(sessionsDir, {
-    id: sessionId,
-    agent_type: adapterId,
-    agent_id: agent.id,
-    trigger,
-    task_id: taskRef,
-  });
-
-  // ─── Log agent.dispatched event ───────────────────────────────────────────
-  await appendSessionEvent({
-    type: "agent.dispatched",
-    data: {
-      task_id: taskRef,
+  // AC: @runner-resolution-and-preflight ac-session-metadata-records-runner
+  let session: SessionMetadata;
+  try {
+    session = await createSession(sessionsDir, {
+      id: sessionId,
+      agent_type: adapterId,
       agent_id: agent.id,
-      adapter: adapterId,
       trigger,
-    },
-  });
+      // Canonical task identity is the persisted task_id; the display ref is kept
+      // separate. AC: @dispatch-canonical-task-identity ac-session-and-event-payloads-separate-id-from-display-ref
+      task_id: canonicalTaskId,
+      task_ref: displayTaskRef,
+      // Conditionally include runner so legacy invocations omit the field.
+      ...(contract.runnerId ? { runner: contract.runnerId } : {}),
+      ...(createHandoff
+        ? {
+            dispatch_ownership: {
+              invocation_id: createHandoff.invocationId,
+              session_id: createHandoff.sessionId,
+              task_id: createHandoff.taskId,
+              agent_id: createHandoff.agentId,
+              adapter: createHandoff.adapter,
+              owner_instance_id: createHandoff.ownerInstanceId,
+              pid: null,
+              pgid: null,
+              process_start_ticks: null,
+              process_identity_platform: "unverifiable" as const,
+              captured_at: new Date().toISOString(),
+              group_members: [],
+            },
+          }
+        : {}),
+    });
+  } catch (error) {
+    if (createHandoff) onOwnershipFailed?.(createHandoff);
+    throw error;
+  }
 
   try {
+    // ─── Log agent.dispatched event ───────────────────────────────────────────
+    // AC: @runner-resolution-and-preflight ac-dispatched-event-records-runner
+    await appendSessionEvent({
+      type: "agent.dispatched",
+      data: {
+        task_id: canonicalTaskId,
+        task_ref: displayTaskRef,
+        agent_id: agent.id,
+        adapter: adapterId,
+        trigger,
+        // runner is present only when a named runner resolved the invocation.
+        ...(contract.runnerId ? { runner: contract.runnerId } : {}),
+      },
+    });
+
     // ─── Inject KSPEC_SESSION_ID ──────────────────────────────────────────
     // AC: @agent-invocation-lifecycle ac-2
     const injectionResult = await injectEnvForAdapter(adapterId, sessionId);
     state.previousEnvValue = injectionResult?.previousValue;
 
     // ─── Spawn agent ──────────────────────────────────────────────────────
-    state.agent = await spawnAndInitialize(adapter, {
-      cwd,
-      env: {
-        ...invocationEnv,
-        KSPEC_SESSION_ID: sessionId,
-      },
-      extraArgs,
-      clientOptions: {
-        methodTimeouts: {
-          "session/prompt": promptRequestTimeoutMs,
+    // The contract env already contains KSPEC_SESSION_ID + KSPEC_NO_DAEMON
+    // (synthesized by the resolver), so the spawner consumes it verbatim
+    // without re-overlaying session-id mid-flight.
+    // AC: @runner-invocation-semantics ac-session-env-injected-through-runner
+    const publishSpawnedOwnership = async (spawned: SpawnedAgent): Promise<void> => {
+      state.agent = spawned;
+      if (!createHandoff || ownershipPublished) return;
+      const ownership = await captureSpawnOwnership(createHandoff, spawned.process);
+      const persisted = await updateSessionDispatchOwnership(sessionsDir, sessionId, ownership);
+      if (!persisted) throw new Error("Spawned session ownership could not be persisted");
+      durableOwnership = ownership;
+      await onOwnershipPersisted?.(ownership);
+      ownershipPublished = true;
+    };
+    try {
+      const initializedAgent = await spawnAndInitialize(adapter, {
+        cwd: contract.cwd,
+        env: invocationEnv,
+        extraArgs: [...extraArgs],
+        // Runner-backed invocations turn off host process.env inheritance so
+        // the runner's env.inherit/pass/set policy is the only source of host
+        // env in the child.
+        // AC: @runner-environment-secret-boundaries ac-env-inheritance-policy-applied
+        inheritParentEnv: contract.inheritParentEnv,
+        // Pass the resolved redactor so adapter stderr cannot leak resolved
+        // secret values to operator-visible output.
+        // AC: @runner-environment-secret-boundaries ac-diagnostics-redact-secrets
+        redact,
+        onSpawn: publishSpawnedOwnership,
+        initializationSignal: abortSignal,
+        clientOptions: {
+          methodTimeouts: {
+            "session/prompt": promptRequestTimeoutMs,
+          },
         },
-      },
-    });
+      });
+      state.agent = initializedAgent;
+      // Test doubles and third-party wrappers may not yet invoke onSpawn.
+      await publishSpawnedOwnership(initializedAgent);
+    } catch (error) {
+      if (createHandoff && state.agent) {
+        state.agent = await reapSpawnedAgent(state.agent);
+      }
+      throw error;
+    }
 
     // ─── Create ACP session ───────────────────────────────────────────────
+    // AC: @runner-process-invocation-inputs ac-runner-cwd-is-invocation-only
     state.acpSessionId = await state.agent.client.newSession({
-      cwd,
+      cwd: contract.cwd,
       mcpServers: [],
     });
+    await refreshDurableGroupMembers().catch(() => undefined);
 
     // ─── Log agent.started event ──────────────────────────────────────────
     await appendSessionEvent({
       type: "agent.started",
       data: {
-        task_id: taskRef,
+        task_id: canonicalTaskId,
+        task_ref: displayTaskRef,
         agent_id: agent.id,
         acp_session_id: state.acpSessionId,
       },
@@ -695,7 +1207,10 @@ export async function runInvocation(options: InvocationOptions): Promise<Invocat
     // guaranteed to run for cleanup.
     // AC: @active-session-registry ac-1, ac-2
     if (sessionRegistry) {
-      sessionRegistry.register(sessionId, sessionHandle);
+      sessionRegistry.register(sessionId, sessionHandle, {
+        taskId: canonicalTaskId ?? null,
+        invocationId: createHandoff?.invocationId ?? null,
+      });
     }
 
     // ─── Stall watchdog state ──────────────────────────────────────────────
@@ -831,6 +1346,7 @@ export async function runInvocation(options: InvocationOptions): Promise<Invocat
         }
 
         turnCount++;
+        await refreshDurableGroupMembers().catch(() => undefined);
         lastStopReason = promptResult.stopReason;
         const turnDurationMs = Date.now() - turnStartTime;
 
@@ -839,7 +1355,8 @@ export async function runInvocation(options: InvocationOptions): Promise<Invocat
         await appendSessionEvent({
           type: "agent.turn_completed",
           data: {
-            task_id: taskRef,
+            task_id: canonicalTaskId,
+            task_ref: displayTaskRef,
             turn_count: turnCount,
             stop_reason: promptResult.stopReason,
             turn_duration_ms: turnDurationMs,
@@ -862,7 +1379,8 @@ export async function runInvocation(options: InvocationOptions): Promise<Invocat
         onIdle?.({
           sessionId,
           agentId: agent.id,
-          taskRef,
+          taskId: canonicalTaskId,
+          taskRef: displayTaskRef,
           turnCount,
           stopReason: promptResult.stopReason,
           turnDurationMs,
@@ -985,7 +1503,8 @@ export async function runInvocation(options: InvocationOptions): Promise<Invocat
     await appendSessionEvent({
       type: "agent.completed",
       data: {
-        task_id: taskRef,
+        task_id: canonicalTaskId,
+        task_ref: displayTaskRef,
         outcome: "success",
         stop_reason: lastStopReason,
         duration_ms: durationMs,
@@ -1010,6 +1529,18 @@ export async function runInvocation(options: InvocationOptions): Promise<Invocat
       turnCount,
     };
   } catch (err) {
+    if (createHandoff && !ownershipPublished) {
+      // Close the null-identity reservation before releasing its admission.
+      // A concurrent hard stop that was awaiting the reservation must never
+      // mistake this never-published session for a signalable process owner.
+      await closeSession(
+        sessionsDir,
+        sessionId,
+        "failed",
+        "Invocation failed before process ownership publication",
+      ).catch(() => null);
+      onOwnershipFailed?.(createHandoff);
+    }
     const durationMs = Date.now() - startTime;
 
     // AC: @multi-turn-session-lifecycle ac-15, ac-16
@@ -1017,12 +1548,13 @@ export async function runInvocation(options: InvocationOptions): Promise<Invocat
     const discardedPrompts = promptQueue.close();
     if (discardedPrompts.length > 0) {
       // AC: @multi-turn-session-lifecycle ac-16 — log discarded prompts
+      // AC: @runner-environment-secret-boundaries ac-diagnostics-redact-secrets
       await appendSessionEvent({
         type: "session.prompts_discarded",
         data: {
           session_id: sessionId,
           discarded_count: discardedPrompts.length,
-          reason: err instanceof Error ? err.message : String(err),
+          reason: redact(err instanceof Error ? err.message : String(err)),
         },
       });
     }
@@ -1041,7 +1573,8 @@ export async function runInvocation(options: InvocationOptions): Promise<Invocat
       await appendSessionEvent({
         type: "agent.timeout",
         data: {
-          task_id: taskRef,
+          task_id: canonicalTaskId,
+          task_ref: displayTaskRef,
           timeout_minutes: timeoutMinutes,
           duration_ms: durationMs,
           turn_count: turnCount,
@@ -1062,15 +1595,16 @@ export async function runInvocation(options: InvocationOptions): Promise<Invocat
           `[AGENT-TIMEOUT] Invocation timed out after ${timeoutMinutes} minutes`,
           cwd,
           kspecCliPath,
-          invocationEnv,
+          mutationEnv,
           Boolean(mutationLockFile),
+          mutationSecretStripKeys,
         );
       }
 
       return {
         session: finalSession ?? session,
         outcome: "timed_out",
-        error: err.message,
+        error: redact(err.message),
         durationMs,
         turnCount,
       };
@@ -1097,7 +1631,7 @@ export async function runInvocation(options: InvocationOptions): Promise<Invocat
       return {
         session: finalSession ?? session,
         outcome: "failed",
-        error: err.message,
+        error: redact(err.message),
         durationMs,
         turnCount,
       };
@@ -1118,7 +1652,8 @@ export async function runInvocation(options: InvocationOptions): Promise<Invocat
         type: "session.idle_timeout",
         data: {
           session_id: sessionId,
-          task_id: taskRef,
+          task_id: canonicalTaskId,
+          task_ref: displayTaskRef,
           idle_timeout_ms: err.idleTimeoutMs,
           duration_ms: durationMs,
           turn_count: turnCount,
@@ -1135,7 +1670,7 @@ export async function runInvocation(options: InvocationOptions): Promise<Invocat
       return {
         session: finalSession ?? session,
         outcome: "timed_out",
-        error: err.message,
+        error: redact(err.message),
         durationMs,
         turnCount,
       };
@@ -1155,7 +1690,8 @@ export async function runInvocation(options: InvocationOptions): Promise<Invocat
       await appendSessionEvent({
         type: "agent.stalled",
         data: {
-          task_id: taskRef,
+          task_id: canonicalTaskId,
+          task_ref: displayTaskRef,
           stall_timeout_seconds: err.stallTimeoutSeconds,
           duration_ms: durationMs,
         },
@@ -1175,7 +1711,7 @@ export async function runInvocation(options: InvocationOptions): Promise<Invocat
       return {
         session: finalSession ?? session,
         outcome: "stalled",
-        error: err.message,
+        error: redact(err.message),
         durationMs,
         turnCount,
       };
@@ -1184,12 +1720,22 @@ export async function runInvocation(options: InvocationOptions): Promise<Invocat
     // ─── Handle failure ──────────────────────────────────────────────────
     // AC: @agent-invocation-lifecycle ac-5
     // AC: @multi-turn-session-lifecycle ac-15
-    const errorMessage = err instanceof Error ? err.message : String(err);
+    //
+    // Scrub the raw error message through the runner contract's redactor
+    // before it touches any operator-visible surface (session event, session
+    // close reason, task note, block reason, returned InvocationResult).
+    // Spawn errors and ACP RPC errors can include adapter-side text that
+    // happens to contain a resolved secret literal — redaction at the
+    // boundary blocks the leak regardless of the failure origin.
+    // AC: @runner-environment-secret-boundaries ac-diagnostics-redact-secrets
+    const rawErrorMessage = err instanceof Error ? err.message : String(err);
+    const errorMessage = redact(rawErrorMessage);
 
     await appendSessionEvent({
       type: "agent.failed",
       data: {
-        task_id: taskRef,
+        task_id: canonicalTaskId,
+        task_ref: displayTaskRef,
         outcome: "failed",
         error: errorMessage,
         reason: errorMessage,
@@ -1212,14 +1758,20 @@ export async function runInvocation(options: InvocationOptions): Promise<Invocat
         `[AGENT-FAIL] Invocation failed: ${errorMessage}`,
         cwd,
         kspecCliPath,
-        invocationEnv,
+        mutationEnv,
         Boolean(mutationLockFile),
+        mutationSecretStripKeys,
       );
 
       // ─── Check retry threshold ────────────────────────────────────────────
       // AC: @agent-invocation-lifecycle ac-9
       const retryLimit = agent.budget?.max_retries ?? 3;
-      const consecutiveFailures = await getConsecutiveFailureCount(sessionsDir, taskRef, agent.id);
+      const consecutiveFailures = await getConsecutiveFailureCount(
+        sessionsDir,
+        canonicalTaskId ?? taskRef,
+        displayTaskRef,
+        agent.id,
+      );
 
       if (consecutiveFailures >= retryLimit) {
         await blockTask(
@@ -1227,8 +1779,9 @@ export async function runInvocation(options: InvocationOptions): Promise<Invocat
           `Agent ${agent.id} failed ${consecutiveFailures} consecutive times: ${errorMessage}`,
           cwd,
           kspecCliPath,
-          invocationEnv,
+          mutationEnv,
           Boolean(mutationLockFile),
+          mutationSecretStripKeys,
         );
       }
     }
@@ -1266,11 +1819,34 @@ export async function runInvocation(options: InvocationOptions): Promise<Invocat
       }
     }
 
-    // Terminate agent process
-    state.agent = disposeAgent(state.agent);
+    if (durableOwnership) {
+      // Terminate and observe dispatch-owned process exit before publishing exited_at.
+      // AC: @dispatch-lifecycle-control-authority ac-stop-cancels-active-work
+      // AC: @dispatch-lifecycle-control-authority ac-live-group-prevents-cleanup-completion
+      state.agent = await reapSpawnedAgent(state.agent);
+    } else {
+      state.agent = disposeUnownedAgent(state.agent);
+    }
+
+    if (durableOwnership) {
+      const ownershipAtExit = durableOwnership;
+      await mutateSessionDispatchOwnership(sessionsDir, sessionId, (current) => ({
+        ...(current ?? ownershipAtExit),
+        exited_at: new Date().toISOString(),
+      })).catch(() => null);
+    }
 
     // Restore env injection
     await removeEnvForAdapter(adapterId, state.previousEnvValue);
+
+    // Run resolver cleanup hook (no-op for runner kinds without temp state).
+    if (state.runnerCleanup) {
+      try {
+        await state.runnerCleanup();
+      } catch {
+        // Best-effort: cleanup must never propagate failures.
+      }
+    }
   }
 }
 
@@ -1339,3 +1915,36 @@ export class PromptQueueFullError extends Error {
     this.name = "PromptQueueFullError";
   }
 }
+
+// ─── Helpers ──────────────────────────────────────────────────────────────────
+
+/**
+ * Load the effective runner registry from the project derived from `specDir`.
+ *
+ * Returns an empty registry on I/O failure so legacy invocations (no project
+ * or system runner config on disk) behave identically to the pre-runner code
+ * path. Parse / validation failures are captured as `failures` so the
+ * resolver can surface them as `runner_registry_unavailable` for runner-backed
+ * agents instead of collapsing them into `unknown_runner`.
+ */
+async function loadRunnerRegistrySafely(specDir: string): Promise<{
+  registry: EffectiveRunnerRegistry;
+  failures: readonly RegistryLoadFailure[];
+}> {
+  try {
+    const projectRoot = path.dirname(specDir);
+    const result = await resolveEffectiveRunners({
+      projectRoot,
+      shadowWorktreeDir: specDir,
+    });
+    return {
+      registry: result.registry,
+      failures: diagnoseRegistryLoad(result),
+    };
+  } catch {
+    return { registry: { runners: {} }, failures: [] };
+  }
+}
+
+// Surface RunnerResolutionError to callers without re-importing from agents.
+export { RunnerResolutionError };

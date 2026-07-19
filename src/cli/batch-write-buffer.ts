@@ -100,6 +100,17 @@ export class WriteBuffer {
   /** directories to recursively remove during flush (after file operations) */
   private readonly pendingDirRemovals = new Set<string>();
 
+  /**
+   * Empty directories to materialize during flush. File writes auto-create
+   * their parent chain in phase 1, so this set only needs to carry
+   * directories that are intentionally empty at flush time (e.g. an
+   * entity-scoped `resources/` sidecar created by a migration that has
+   * no resource files to ship). The flush walks this set after renames
+   * and before removals so a paired create+remove of the same directory
+   * resolves to "removed", matching pendingDirRemovals' precedence.
+   */
+  private readonly pendingDirCreations = new Set<string>();
+
   constructor(specDir: string) {
     this.specDir = path.resolve(specDir);
   }
@@ -134,6 +145,23 @@ export class WriteBuffer {
    */
   deleteDirectory(dirPath: string): void {
     this.pendingDirRemovals.add(path.resolve(dirPath));
+  }
+
+  /**
+   * Mark an empty directory for materialization during flush. Repeated
+   * calls coalesce. File writes already auto-create their parent chain,
+   * so this is only needed for directories that must exist on disk even
+   * though no file inside them is being written (e.g. an entity's empty
+   * `resources/` sidecar). The buffer's discard contract still applies:
+   * if the buffer aborts, no directory is created.
+   */
+  createDirectory(dirPath: string): void {
+    this.pendingDirCreations.add(path.resolve(dirPath));
+  }
+
+  /** Snapshot of pending empty-directory creations (tests/diagnostics). */
+  getPendingDirCreations(): string[] {
+    return [...this.pendingDirCreations];
   }
 
   /**
@@ -231,6 +259,19 @@ export class WriteBuffer {
       const parts = relative.split(path.sep).filter(Boolean);
       if (parts.length === 1) {
         directWrites.set(parts[0], "deleted");
+      }
+    }
+
+    // Pending empty-directory creations show up as inferred directories so
+    // readdir during the buffer scope sees them before flush.
+    for (const dirPath of this.pendingDirCreations) {
+      const relative = path.relative(resolvedDir, dirPath);
+      if (!relative || relative.startsWith("..") || path.isAbsolute(relative)) {
+        continue;
+      }
+      const parts = relative.split(path.sep).filter(Boolean);
+      if (parts.length >= 1) {
+        inferredDirectories.add(parts[0]);
       }
     }
 
@@ -334,7 +375,13 @@ export class WriteBuffer {
    * AC: @batch-write-buffer ac-7 — flush failure reported; .kspec/ not silently corrupted
    */
   async flush(): Promise<void> {
-    if (this.entries.size === 0 && this.pendingDirRemovals.size === 0) return;
+    if (
+      this.entries.size === 0 &&
+      this.pendingDirRemovals.size === 0 &&
+      this.pendingDirCreations.size === 0
+    ) {
+      return;
+    }
 
     const stagingMap = new Map<string, string>(); // real path → staging path
 
@@ -378,7 +425,9 @@ export class WriteBuffer {
       } catch (err) {
         // Rename/delete failed — track uncommitted
         uncommitted.push(filePath);
-        // Clean up remaining staging files
+        // Clean up remaining staging files. Best-effort: the commit error
+        // below is the primary failure, and a leftover staging file is inert
+        // (never read as real content), so a failed rm is safe to ignore.
         for (const [remainingPath, remainingStagingPath] of stagingMap) {
           if (!committed.includes(remainingPath) && remainingStagingPath) {
             await fs.rm(remainingStagingPath, { force: true }).catch(() => {});
@@ -393,7 +442,17 @@ export class WriteBuffer {
       }
     }
 
-    // Phase 3: Remove pending directories (after all file operations)
+    // Phase 3a: Materialize intentionally-empty directories. Done after
+    // file renames so any directory that would also be implicitly created
+    // by a file write is a harmless no-op, and before pendingDirRemovals
+    // so a paired create+remove resolves to "removed" (matching the
+    // overlay precedence: deletes win).
+    for (const dirPath of this.pendingDirCreations) {
+      if (this.pendingDirRemovals.has(dirPath)) continue;
+      await fs.mkdir(dirPath, { recursive: true });
+    }
+
+    // Phase 3b: Remove pending directories (after all file operations)
     for (const dirPath of this.pendingDirRemovals) {
       await fs.rm(dirPath, { recursive: true, force: true });
     }
@@ -406,11 +465,14 @@ export class WriteBuffer {
   discard(): void {
     this.entries.clear();
     this.pendingDirRemovals.clear();
+    this.pendingDirCreations.clear();
   }
 
   private async _cleanupStaging(stagingMap: Map<string, string>): Promise<void> {
     for (const [, stagingPath] of stagingMap) {
       if (stagingPath) {
+        // Best-effort: the caller is already throwing the staging failure,
+        // and an orphaned staging file is inert (never read as real content).
         await fs.rm(stagingPath, { force: true }).catch(() => {});
       }
     }
@@ -598,6 +660,13 @@ export async function writeFileBufferAware(
 export async function mkdirBufferAware(directoryPath: string): Promise<void> {
   const buffer = getActiveBatchBuffer();
   if (buffer?.isInScope(directoryPath)) {
+    // Record the directory so it materializes on flush even when no file
+    // is written under it (the file-write phase already creates parents
+    // implicitly, so this is only load-bearing for intentionally-empty
+    // directories like an entity's resources/ sidecar). Tracking the
+    // creation also keeps the buffer's discard contract intact — an
+    // aborted flush never leaves the directory behind.
+    buffer.createDirectory(directoryPath);
     return;
   }
 

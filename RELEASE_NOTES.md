@@ -12,11 +12,142 @@ release workflow before tagging.
 
 ### New or changed configuration
 
-- No new configuration keys.
+- **`kynetic: "1.2"` storage format.** Project manifests now declare
+  `kynetic: "1.2"`, `task_storage.format: split`, `plan_storage.format: folder`,
+  `review_storage.format: folder`, and `resource_storage.format: entity_scoped`.
+  `kspec init` writes these fields on new projects; `kspec upgrade` migrates
+  existing projects.
 
 ### Breaking changes
 
-- None.
+- **Folder-backed plan and review storage.** Plans now live in
+  `.kspec/plans/<plan-ulid>/` directories with `plan.md`, `plan.yaml`, optional
+  `notes.yaml`, `resources.yaml`, and `resources/`. Reviews live in
+  `.kspec/reviews/<review-ulid>/` directories with cohesive `review.yaml`,
+  `resources.yaml`, and `resources/`. The project-wide
+  `.kspec/project.plans.yaml` and `.kspec/project.reviews.yaml` files remain as
+  lean indexes (identity, lifecycle, summary fields, resource summaries) but no
+  longer inline plan markdown, review records, or resource bytes. Existing
+  projects must run `kspec upgrade` to migrate; commands and daemon routes that
+  need folder-backed plan, review, or resource data on an unmigrated project
+  fail with `entity_storage_incompatible`. See
+  [Upgrading kspec to a New Version](docs/guides/upgrading-kspec.md) and
+  [`entity_storage_incompatible` troubleshooting](docs/troubleshooting/entity-storage-incompatible.md).
+
+### Features & Additions
+
+- **Entity-scoped local resources.** Plans and reviews can own local files —
+  screenshots, PDFs, evidence logs — declared in a per-entity `resources.yaml`
+  with the fixed `ResourceMetadata` shape (`id`, `label`, `path`,
+  `content_type`, `bytes`, `sha256`, `git_commit`, `git_path`, `description`).
+  Authoring references use the `./resources/<relative-path>` form. Resource ids
+  match `[a-z0-9][a-z0-9._-]{0,127}`; paths must be POSIX-relative under the
+  entity's `resources/` directory.
+- **Plan resource CLI** — `kspec plan resource add/list/get/remove` attach,
+  inspect, and remove plan-owned local resources. `add` requires `--id` and
+  `--path`; replacement is opt-in via `--replace`. `remove` requires `--force`
+  in non-interactive contexts.
+- **Review resource CLI** — `kspec review resource add/list/get/remove` mirror
+  the plan resource commands for review-owned evidence files.
+- **Plan import with resources** — `kspec plan import` copies declared
+  resources from a sibling `resources.yaml` and `resources/` directory into the
+  plan's folder, and validates that `./resources/<rel>` markdown links resolve.
+  `kspec plan set --content-file` enforces the same resolution against the
+  existing plan's manifest.
+- **Plan derive resource references** — derived tasks receive versioned
+  `TaskResourceRef` entries pointing back at plan-owned resources by default,
+  carrying the content hash and git commit captured at derivation time. Use
+  `kspec plan derive --materialize-resources` to copy plan resource bytes into
+  each derived task's `.kspec/tasks/<task-ulid>/resources/plan/<plan-ulid>/`
+  tree with the id `plan-<resource-id>`.
+- **Daemon resource API** — `GET/POST/DELETE /api/plans/:ref/resources[/:id[/bytes]]`
+  and `GET/POST/DELETE /api/reviews/:ref/resources[/:id[/bytes]]` serve
+  resource metadata and bytes. `POST` accepts `multipart/form-data` with
+  `file`, `id`, `path`, optional `label`/`description`/`content_type`, and an
+  optional `replace` field accepting `"true"`/`"1"` or `"false"`/`"0"`. The
+  `/bytes` route sets `Content-Type`, `Content-Length`, and the resource's
+  `sha256` via an `X-Kspec-Resource-Sha256` response header.
+- **Static export resource layout** — exported plans, tasks, and reviews copy
+  resource files to `assets/resources/plan/<plan-ulid>/<relative-path>`,
+  `assets/resources/task/<task-ulid>/<relative-path>`, and
+  `assets/resources/review/<review-ulid>/<relative-path>`. Plan and task
+  markdown links are rewritten to point at the exported asset path so the
+  offline UI works without the daemon. Only `present` task resources are copied;
+  drifted, missing, or unresolved task references are not exported as bytes.
+- **Live UI and task-markdown resource resolution.** Task descriptions can
+  reference resources with `./resources/<relative-path>`, resolved through a
+  task-scoped projection on the daemon task detail API. The response exposes
+  `resolved_resources` (with `owner_type`, `owner_ref`, `id`, `path`,
+  `content_type`, `byte_size`, `status`, recorded/current `sha256` and
+  `git_commit`, and a human-readable `message`) plus a `resources_base_url`, and
+  task-scoped bytes routes (`GET /api/tasks/:ref/resources[/:id[/bytes]]`) serve
+  both plan-owned references and `--materialize-resources` task-owned copies. The
+  task detail UI rewrites those references to task-scoped resource URLs for both
+  cases. Task resources are derived from plans — there is no task resource upload
+  command. (Plan-only `kspec plan resource add` and review-only
+  `kspec review resource add` remain the only resource upload surfaces.)
+- **Resource drift is surfaced, never silently substituted.** Drifted, missing,
+  or unresolved task resource references resolve to a `status`
+  (`drift`/`missing`/`unresolved`) and `message` instead of replacement bytes.
+  The bytes routes refuse to stream bytes that differ from the hash recorded at
+  task derivation, the live UI shows the status message rather than rewriting the
+  target, and an authoring reference that matches no resolved resource stays
+  visible as raw text with actionable guidance.
+- **Browser resource URLs preserve selected-project context.** In live
+  multi-project mode, rendered `<img>` and `<a>` resource URLs carry the selected
+  project as a URL-level `kspec_dir` query parameter because element fetches
+  cannot send the `X-Kspec-Dir` header. The daemon project-context middleware
+  reads the header when present and otherwise the query parameter, so plan,
+  task, and review resource elements resolve to the selected project's bytes
+  while still rejecting undeclared, absolute, traversal, and symlink-escape
+  paths.
+- **Plan and review index rebuild** — `kspec plan rebuild-index` and
+  `kspec review rebuild-index` validate or repair the project-wide index
+  against the on-disk entity folders. `--dry-run` previews drift; `--repair`
+  rewrites the index from folders; `--repair --force` drops stale index
+  entries whose folders are missing. Exit codes are 0 (clean/repaired), 1
+  (drift detected), 2 (blocked by conflicts).
+- **`entity_storage_incompatible` daemon responses** — plan, review, and
+  resource routes return HTTP 409 with a structured envelope (top-level
+  `entity_storage_incompatible` discriminator plus domain-specific codes:
+  `legacy_plan_storage_removed`, `legacy_review_storage_removed`,
+  `missing_plan_folder_storage`, `missing_review_folder_storage`,
+  `partial_entity_storage_layout`) when the project is not on folder-backed
+  storage. The response body includes a `suggestion`, `domain`, and
+  `cache_domain` so clients can surface targeted recovery guidance.
+- **Upgrade rollback reference** — `kspec upgrade` and `kspec upgrade --dry-run`
+  now report the previous shadow commit (short SHA captured before any
+  mutation) so operators have a deterministic rollback point.
+
+### Documentation
+
+- New concept page: [Local Resources for Plans and Reviews](docs/concepts/local-resources.md).
+- New guide: [Working With Local Resources](docs/guides/working-with-local-resources.md).
+- New troubleshooting pages: [`entity_storage_incompatible`](docs/troubleshooting/entity-storage-incompatible.md)
+  and [Plan or Review Index Has Drifted](docs/troubleshooting/plan-or-review-index-drift.md).
+- Updated [Upgrading kspec to a New Version](docs/guides/upgrading-kspec.md)
+  with the 1.2 manifest fields, folder layout, and rollback procedure.
+- Updated [Importing and Approving a Plan](docs/guides/importing-and-approving-a-plan.md)
+  with `--materialize-resources` derivation guidance.
+- Updated [Local Resources for Plans and Reviews](docs/concepts/local-resources.md)
+  and [Working With Local Resources](docs/guides/working-with-local-resources.md)
+  with task-markdown resource resolution, drift status semantics, browser
+  `kspec_dir` project-context routing, the task static-export asset layout, and an
+  end-to-end temp-project verification walkthrough that runs against a single
+  continuously-running daemon.
+- **Project-neutral package guidance.** Package-shipped agent sections
+  (`templates/agents-sections/`) and core skills (`templates/skills/`) now
+  describe universal kspec mechanics only. Hard-coded branch names (`dev`,
+  `main`), toolchain commands (`npm test`, `oxlint`, Vitest), GitHub PR policy,
+  fixed agent ids (`task-worker`, `pr-reviewer`), and `kynetic.meta.yaml`
+  references have been replaced with project-defined wording or pointers to
+  `kspec agent list`, project meta, and project-local skill sources. Consumer
+  projects can adopt their own branch policy, toolchain, and external review
+  process without inheriting the Kynetic self-hosting repository's defaults.
+  Self-hosting policy now lives in local project context (`AGENTS.md`,
+  project-local `.kspec/skills/`, project meta conventions). A new project-local
+  `shared-guidance-neutrality` reviewer skill encodes the semantic checklist
+  reviewers apply to future changes to these shared surfaces.
 
 ## v0.14.0
 
@@ -224,9 +355,9 @@ and web UI modernization.
 
 ### New or changed configuration
 
-- `kspec.config.yaml` now accepts a `dispatch.publication_mode` key
-  (`manual_merge` or `pull_request`) controlling how dispatched work is
-  published. Defaults preserve prior behavior.
+- `kspec.config.yaml` accepted a `dispatch.publication_mode` key with
+  `manual_merge`, `pull_request`, and `auto` publication modes controlling
+  how dispatched work was published. The default preserved prior behavior.
 - `kspec.config.yaml` gained a `hooks` section for configuring project
   hooks directly during setup.
 - `dispatch.base_branch` in `kspec.config.yaml` now doubles as the

@@ -158,6 +158,17 @@ export const DispatchWorkspaceTimestampsSchema = z.object({
 
 export const DispatchWorkspaceRecordSchema = z.object({
   workspace_id: z.string().min(1, "Workspace ID is required"),
+  /**
+   * Canonical full task ULID — the authoritative identity for this workspace.
+   * Optional for backward compatibility with historical records persisted
+   * before canonical task identity was recorded separately from `task_ref`;
+   * such records are backfilled (resolvable) or classified stale (unresolvable)
+   * on load. New records always populate it.
+   * AC: @dispatch-canonical-task-identity ac-workspace-registry-canonical-task-identity
+   * AC: @dispatch-canonical-task-identity ac-historical-workspace-records-normalize-or-stale
+   */
+  task_id: z.string().min(1, "Task ID must be a non-empty ULID").optional(),
+  /** Display task ref (slug or @ULID); never an identity key. */
   task_ref: RefSchema,
   task_slug: SlugSchema,
   worktree_root: z.string().min(1, "Worktree root is required"),

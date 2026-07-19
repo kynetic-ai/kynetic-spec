@@ -5,7 +5,7 @@
 
 import type { Command } from "commander";
 import { spawn, execSync } from "child_process";
-import { existsSync, readdirSync, statSync } from "fs";
+import { closeSync, existsSync, openSync, readdirSync, readFileSync, readSync, statSync } from "fs";
 import { join, dirname } from "path";
 import { fileURLToPath } from "url";
 import { error, info, output, success, warn, isJsonMode } from "../output.js";
@@ -15,6 +15,11 @@ import {
   resolveDaemonClientEndpoint,
   isExternallyReachable,
 } from "../pid-utils.js";
+import {
+  getDaemonLogPath,
+  readDaemonLastExitRecord,
+  type DaemonLastExitRecord,
+} from "../../daemon-shared/endpoint.js";
 import { loadProjectConfig } from "../../parser/config.js";
 import { initContext } from "../../parser/yaml.js";
 
@@ -123,6 +128,63 @@ function parseUptimeSeconds(raw: unknown): number | null {
   }
 
   return null;
+}
+
+/**
+ * Command-dispatch health as reported by GET /api/health. Mirrors the
+ * CommandDispatchHealth shape built in packages/daemon/src/routes/command.ts
+ * (the daemon package depends on src/, not the reverse, so the shape is
+ * re-declared structurally here).
+ *
+ * AC: @daemon-command-api ac-stuck-command-reported
+ */
+type CommandDispatchStatus =
+  | { status: "ok" }
+  | { status: "degraded"; stuck_command: string; running_for_ms: number; limit_ms: number };
+
+function parseCommandDispatchHealth(raw: unknown): CommandDispatchStatus | null {
+  if (!raw || typeof raw !== "object") {
+    return null;
+  }
+  const candidate = raw as {
+    status?: unknown;
+    stuck_command?: unknown;
+    running_for_ms?: unknown;
+    limit_ms?: unknown;
+  };
+  if (candidate.status === "ok") {
+    return { status: "ok" };
+  }
+  if (
+    candidate.status === "degraded" &&
+    typeof candidate.stuck_command === "string" &&
+    typeof candidate.running_for_ms === "number" &&
+    Number.isFinite(candidate.running_for_ms) &&
+    typeof candidate.limit_ms === "number" &&
+    Number.isFinite(candidate.limit_ms)
+  ) {
+    return {
+      status: "degraded",
+      stuck_command: candidate.stuck_command,
+      running_for_ms: candidate.running_for_ms,
+      limit_ms: candidate.limit_ms,
+    };
+  }
+  return null;
+}
+
+function formatMsDuration(ms: number): string {
+  const totalSeconds = Math.floor(ms / 1000);
+  const hours = Math.floor(totalSeconds / 3600);
+  const minutes = Math.floor((totalSeconds % 3600) / 60);
+  const seconds = totalSeconds % 60;
+  if (hours > 0) {
+    return `${hours}h ${minutes}m ${seconds}s`;
+  }
+  if (minutes > 0) {
+    return `${minutes}m ${seconds}s`;
+  }
+  return `${seconds}s`;
 }
 
 function getProjectRootFromKspecDir(kspecDir: string): string {
@@ -269,6 +331,26 @@ export function registerServeCommands(program: Command): void {
           output({ error: err instanceof Error ? err.message : String(err) });
         } else {
           error(`Failed to check status: ${err instanceof Error ? err.message : String(err)}`);
+        }
+        process.exit(EXIT_CODES.ERROR);
+      }
+    });
+
+  // AC: @cli-serve-commands ac-8, ac-9
+  serve
+    .command("logs")
+    .description("Show the daemon log file (last 50 lines by default)")
+    .option("-n, --lines <n>", "Number of lines to show (default: 50)")
+    .option("-f, --follow", "Stream appended log lines until Ctrl+C")
+    .option("--json", "Output as JSON")
+    .action(async (opts) => {
+      try {
+        await logsServer(opts);
+      } catch (err) {
+        if (isJsonMode()) {
+          output({ error: err instanceof Error ? err.message : String(err) });
+        } else {
+          error(`Failed to read daemon log: ${err instanceof Error ? err.message : String(err)}`);
         }
         process.exit(EXIT_CODES.ERROR);
       }
@@ -421,6 +503,12 @@ async function startServer(opts: {
   if (connectHost) {
     daemonArgs.push("--connect-host", connectHost);
   }
+  // AC: @daemon-log-capture ac-bounded-rotation — forward the configured
+  // rotation cap so the daemon's in-process log tee applies it at startup.
+  daemonArgs.push("--log-max-size", String(config.daemon.log_max_size_bytes));
+  // AC: @daemon-command-api ac-command-timeout — forward the configured
+  // command execution limit so the command API bounds caller waits.
+  daemonArgs.push("--command-timeout", String(config.daemon.command_timeout_ms));
 
   // AC: @daemon-network-endpoint-contract ac-external-binding-warning
   // AC: @trait-localhost-security ac-external-warning
@@ -436,12 +524,27 @@ async function startServer(opts: {
     );
   }
 
+  // AC: @daemon-network-endpoint-contract ac-external-connect-host-warning
+  // A configured non-loopback connect host is added to the daemon's
+  // accepted Host-header values and advertised to every client, so a
+  // wrong value silently weakens DNS-rebinding protection and misroutes
+  // clients — surface it as loudly as the bind-host warning.
+  if (connectHost && isExternallyReachable(connectHost)) {
+    warn(
+      `WARNING: daemon connect host is ${connectHost}, a non-loopback host value; the daemon will accept requests addressed to ${connectHost} and advertise it to clients. Verify connect_host is intended.`,
+    );
+  }
+
   // AC: @cli-serve-commands ac-2 - background mode
   if (opts.detach) {
     // Spawn detached process
     const child = spawn(getDaemonRuntimeCommand(runtime), daemonArgs, {
       detached: true,
-      stdio: "ignore", // TODO: redirect to log file when logging implemented
+      // AC: @daemon-log-capture ac-detached-output-captured — stdio stays
+      // ignored; the daemon tees its console output into the daemon log
+      // in-process (packages/daemon/src/logger.ts), which works identically
+      // for detached and foreground modes without parent-held file handles.
+      stdio: "ignore",
       cwd: process.cwd(),
       env: buildDaemonChildEnv(runtime),
     });
@@ -636,9 +739,19 @@ async function statusServer(_opts: { kspecDir?: string; json?: boolean }): Promi
     );
   }
 
+  // AC: @daemon-network-endpoint-contract ac-external-connect-host-warning
+  // Mirror the connect-host warning whenever a lifecycle command reports
+  // the endpoint and the advertised connect host is non-loopback.
+  if (running && connectHost && isExternallyReachable(connectHost)) {
+    warn(
+      `WARNING: daemon connect host is ${connectHost}, a non-loopback host value; the daemon will accept requests addressed to ${connectHost} and advertise it to clients. Verify connect_host is intended.`,
+    );
+  }
+
   // AC: @multi-directory-daemon ac-12 - Fetch list of registered projects and uptime
   let projects: Array<{ path: string; registeredAt: string; watcherStatus: string }> = [];
   let uptime: number | null = null;
+  let commandDispatch: CommandDispatchStatus | null = null;
   if (running && apiUrl) {
     try {
       const response = await fetch(`${apiUrl}/api/projects`);
@@ -659,7 +772,15 @@ async function statusServer(_opts: { kspecDir?: string; json?: boolean }): Promi
       try {
         const healthResponse = await fetch(`${apiUrl}/api/health`);
         if (healthResponse.ok) {
-          const healthData = (await healthResponse.json()) as { status: string; uptime?: unknown };
+          const healthData = (await healthResponse.json()) as {
+            status: string;
+            uptime?: unknown;
+            command_dispatch?: unknown;
+          };
+          // AC: @daemon-command-api ac-stuck-command-reported — the timeout
+          // error directs operators here, so status must surface the
+          // command_dispatch health payload, not just uptime.
+          commandDispatch = parseCommandDispatchHealth(healthData.command_dispatch);
           const parsed = parseUptimeSeconds(healthData.uptime);
           if (parsed !== null) {
             uptime = parsed;
@@ -676,6 +797,18 @@ async function statusServer(_opts: { kspecDir?: string; json?: boolean }): Promi
     }
   }
 
+  // AC: @daemon-log-capture ac-log-location-discoverable — lifecycle status
+  // reports the daemon log file location.
+  const logPath = getDaemonLogPath();
+
+  // AC: @daemon-failure-observability ac-status-surfaces-last-exit — when
+  // no daemon is running, surface the most recent termination so a user
+  // investigating a disappeared daemon can see why it stopped.
+  let lastExit: DaemonLastExitRecord | null = null;
+  if (!running) {
+    lastExit = readDaemonLastExitRecord();
+  }
+
   // AC: @cli-serve-commands ac-6 — status JSON returns the same fields
   //     as human-readable mode, including bind_host, connect_host, runtime.
   const status = {
@@ -686,6 +819,11 @@ async function statusServer(_opts: { kspecDir?: string; json?: boolean }): Promi
     connect_host: connectHost,
     runtime,
     uptime,
+    // AC: @daemon-command-api ac-stuck-command-reported — surface wedged
+    // command dispatch where the timeout error directs operators.
+    command_dispatch: commandDispatch,
+    log_path: logPath,
+    last_exit: lastExit,
     projects,
   };
 
@@ -706,6 +844,8 @@ async function statusServer(_opts: { kspecDir?: string; json?: boolean }): Promi
       if (runtime) {
         output(`  Runtime: ${runtime}`);
       }
+      // AC: @daemon-log-capture ac-log-location-discoverable
+      output(`  Log file: ${logPath}`);
       // AC: @multi-directory-daemon ac-12 - Show uptime
       if (uptime !== null) {
         const hours = Math.floor(uptime / 3600);
@@ -719,6 +859,18 @@ async function statusServer(_opts: { kspecDir?: string; json?: boolean }): Promi
           output(`  Uptime: ${seconds}s`);
         }
       }
+      // AC: @daemon-command-api ac-stuck-command-reported — the command
+      // timeout error suggests `kspec serve status`, so a wedged dispatch
+      // must be visible here with the stuck command name and held duration.
+      if (commandDispatch) {
+        if (commandDispatch.status === "degraded") {
+          output(
+            `  Command dispatch: DEGRADED — '${commandDispatch.stuck_command}' has been running for ${formatMsDuration(commandDispatch.running_for_ms)} (limit ${formatMsDuration(commandDispatch.limit_ms)}). Restart the daemon if it stays wedged.`,
+          );
+        } else {
+          output(`  Command dispatch: ok`);
+        }
+      }
       // AC: @multi-directory-daemon ac-12 - Show registered projects
       if (projects.length > 0) {
         output(`\nRegistered projects (${projects.length}):`);
@@ -730,6 +882,183 @@ async function statusServer(_opts: { kspecDir?: string; json?: boolean }): Promi
       }
     } else {
       output("Daemon not running");
+      // AC: @daemon-failure-observability ac-status-surfaces-last-exit —
+      // report the most recent termination kind, reason, and timestamp.
+      if (lastExit) {
+        output(`  Last exit: ${lastExit.kind} at ${lastExit.timestamp}`);
+        output(`  Reason: ${lastExit.reason}`);
+      }
+      // AC: @daemon-log-capture ac-log-location-discoverable — point at the
+      // log from a previous run so a disappeared daemon stays diagnosable.
+      if (existsSync(logPath)) {
+        output(`  Log file: ${logPath}`);
+      }
+    }
+  }
+}
+
+/** Default number of lines printed by `kspec serve logs`. */
+const DEFAULT_LOG_TAIL_LINES = 50;
+
+/**
+ * Poll interval for `kspec serve logs --follow`. A stat/read polling loop
+ * (rather than fs.watch) is rotation-safe: every tick re-stats the active
+ * path, so a rotated or truncated file is detected by inode change or size
+ * shrink and streaming continues from the start of the new active file.
+ */
+const FOLLOW_POLL_INTERVAL_MS = 500;
+
+/**
+ * Read the byte range [start, end) from a file. Returns null when the file
+ * cannot be opened or read (e.g. it was rotated away between the caller's
+ * stat and this read) so follow mode can retry on the next poll tick.
+ */
+function readLogRange(
+  path: string,
+  start: number,
+  end: number,
+): { text: string; bytes: number } | null {
+  let fd: number;
+  try {
+    fd = openSync(path, "r");
+  } catch {
+    return null;
+  }
+  try {
+    const buffer = Buffer.alloc(end - start);
+    const bytesRead = readSync(fd, buffer, 0, buffer.length, start);
+    return { text: buffer.toString("utf8", 0, bytesRead), bytes: bytesRead };
+  } catch {
+    return null;
+  } finally {
+    closeSync(fd);
+  }
+}
+
+/**
+ * Tail or follow the daemon log file
+ * AC: @cli-serve-commands ac-8 (tail), ac-9 (follow until Ctrl+C)
+ *
+ * Works whether or not the daemon is currently running — the log file
+ * persists across daemon restarts. Tail mode reads the active log file
+ * only; older output may live in the rotated generation at <log>.1.
+ */
+async function logsServer(opts: {
+  lines?: string;
+  follow?: boolean;
+  json?: boolean;
+}): Promise<void> {
+  const jsonMode = isJsonMode();
+  const logPath = getDaemonLogPath();
+
+  // JSON output is a structured snapshot of the tail; it cannot represent
+  // an unbounded stream, so the combination is rejected explicitly rather
+  // than silently dropping one of the flags.
+  if (opts.follow && jsonMode) {
+    const message = "--json is not supported with --follow.";
+    const suggestion =
+      "Use kspec serve logs --json for a structured tail, or --follow without --json to stream.";
+    output({ error: message, suggestion });
+    process.exit(EXIT_CODES.VALIDATION_FAILED);
+  }
+
+  let tailCount = DEFAULT_LOG_TAIL_LINES;
+  if (opts.lines !== undefined) {
+    const parsed = Number(opts.lines);
+    if (!Number.isInteger(parsed) || parsed < 1) {
+      // AC: @trait-error-guidance ac-5 — name the failing flag and value
+      const message = `Invalid --lines value: ${opts.lines}. Must be a positive integer.`;
+      const suggestion = "Try: kspec serve logs --lines 100";
+      if (jsonMode) {
+        output({ error: message, suggestion });
+      } else {
+        error(message, { suggestion });
+      }
+      process.exit(EXIT_CODES.VALIDATION_FAILED);
+    }
+    tailCount = parsed;
+  }
+
+  // AC: @trait-error-guidance ac-1, ac-2 — say what is missing and how to
+  // create it. The log file appears the first time a daemon emits output.
+  if (!existsSync(logPath)) {
+    const message = `No daemon log file found at ${logPath}`;
+    const suggestion =
+      "The log file is created the first time the daemon writes output. Start the daemon with: kspec serve start --detach";
+    if (jsonMode) {
+      output({ error: message, suggestion });
+    } else {
+      error(message, { suggestion });
+    }
+    process.exit(EXIT_CODES.NOT_FOUND);
+  }
+
+  const content = readFileSync(logPath, "utf-8");
+  const allLines = content.split("\n");
+  if (allLines.length > 0 && allLines[allLines.length - 1] === "") {
+    allLines.pop();
+  }
+  const tail = allLines.slice(-tailCount);
+
+  if (!opts.follow) {
+    // AC: @cli-serve-commands ac-8
+    if (jsonMode) {
+      // AC: @trait-json-output ac-2 — same data as human mode (lines array
+      // plus the resolved log path).
+      output({ log_path: logPath, lines: tail });
+    } else {
+      for (const line of tail) {
+        output(line);
+      }
+    }
+    return;
+  }
+
+  // AC: @cli-serve-commands ac-9 — print the tail, then stream appended
+  // lines until Ctrl+C.
+  for (const line of tail) {
+    output(line);
+  }
+
+  let position = Buffer.byteLength(content, "utf8");
+  let inode: bigint | number | null = null;
+  try {
+    inode = statSync(logPath).ino;
+  } catch {
+    inode = null;
+  }
+
+  process.on("SIGINT", () => {
+    process.exit(EXIT_CODES.SUCCESS);
+  });
+
+  for (;;) {
+    await new Promise((resolve) => setTimeout(resolve, FOLLOW_POLL_INTERVAL_MS));
+
+    let stat;
+    try {
+      stat = statSync(logPath);
+    } catch {
+      // Active file briefly absent mid-rotation (renamed away, next line
+      // not yet appended). Keep polling — the writer recreates it on the
+      // next append.
+      continue;
+    }
+
+    if ((inode !== null && stat.ino !== inode) || stat.size < position) {
+      // Rotated, replaced, or truncated: continue from the start of the
+      // new active file rather than a stale byte offset.
+      position = 0;
+    }
+    inode = stat.ino;
+
+    if (stat.size > position) {
+      const chunk = readLogRange(logPath, position, stat.size);
+      if (chunk === null) {
+        continue;
+      }
+      process.stdout.write(chunk.text);
+      position += chunk.bytes;
     }
   }
 }

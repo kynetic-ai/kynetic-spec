@@ -38,11 +38,19 @@ Before rendering any verdict, complete both deterministic and analytical checks:
 
 ```bash
 kspec item get @spec-ref                    # Own ACs + inherited trait ACs
-kspec validate                              # Trait coverage warnings
-# Run the project's test suite
-grep -rn "AC: @spec-ref" tests/             # Own AC annotations (adapt path/syntax)
-grep -rn "AC: @trait-" tests/               # Trait AC annotations
+kspec validate --refs --warnings-ok         # Reference/schema sanity
+kspec validate --alignment --warnings-ok    # Spec/task alignment baseline
+kspec validate --completeness --warnings-ok # AC coverage baseline
+
+# Run the project-defined quality gates (format / lint / type / test, plus any
+# focused changed-file gates). The concrete commands are named in your
+# project's quality-gate guidance — do not assume a toolchain.
+
+# Confirm AC annotations exist for the spec and any inherited traits using
+# whatever search tool fits the project's test layout.
 ```
+
+Project-defined gate failures are review blockers. Request changes rather than approving when these gates are red or missing without a documented reason. If repo-wide lint has a warning baseline, changed-file lint warnings are still review findings unless you verify they are pre-existing outside the submitted diff.
 
 **Analytical checks** (require reading and judgment):
 
@@ -68,8 +76,8 @@ Every acceptance criterion on the spec MUST have at least one annotated test.
 # Get all ACs (own + inherited from traits)
 kspec item get @spec-ref
 
-# Search for annotations in test files (adapt to your language/paths)
-grep -rn "AC: @spec-ref" tests/
+# Search for annotations in test files using whatever search tool fits
+# the project's language and test layout.
 ```
 
 Annotations use language-appropriate comment syntax:
@@ -152,7 +160,7 @@ draft → open → closed
 
 ### Per-Cycle Review Model
 
-Each review cycle produces its own review record. This is analogous to individual PR reviews on GitHub — each review is a discrete artifact with its own verdict, and the collection of reviews across cycles comprises the full review history for the task.
+Each review cycle produces its own review record. Each review is a discrete artifact with its own verdict, and the collection of reviews across cycles comprises the full review history for the task.
 
 **How it works:**
 
@@ -183,7 +191,7 @@ kspec review add --title "Review task-add-auth" \
 # Review committed code (requires base/head commits)
 kspec review add --title "Review feature branch" \
   --subject-type code --base abc1234 --head def5678 \
-  --base-branch main --head-branch feat/auth \
+  --base-branch <project-integration-branch> --head-branch <feature-branch> \
   --related-ref @task-add-auth
 
 # Review a plan or spec
@@ -221,7 +229,7 @@ Only blocker threads affect disposition. Unresolved nits and questions do not bl
 
 ```bash
 kspec review comment @review-ref --body "Off-by-one error" --kind blocker \
-  --path src/parser/validate.ts --side head --line-start 42 --line-end 42 \
+  --path path/to/file.ext --side head --line-start 42 --line-end 42 \
   --commit def5678
 ```
 
@@ -247,7 +255,7 @@ Anchored comments are machine-parseable and enable richer tooling: the UI can re
 ```bash
 # Finding describes location in body text — not machine-parseable
 kspec review comment @review-ref \
-  --body "In src/parser/validate.ts around line 42, there's an off-by-one error" \
+  --body "In path/to/file.ext around line 42, there's an off-by-one error" \
   --kind blocker
 ```
 
@@ -257,7 +265,7 @@ kspec review comment @review-ref \
 # Finding anchored to exact file and lines — UI renders inline, agents can match
 kspec review comment @review-ref \
   --body "Off-by-one error: loop should use < instead of <=" --kind blocker \
-  --path src/parser/validate.ts --side head --line-start 42 --line-end 42 \
+  --path path/to/file.ext --side head --line-start 42 --line-end 42 \
   --commit def5678
 ```
 
@@ -282,14 +290,16 @@ kspec review comment @review-ref \
 
 Checks record verification evidence bound to the reviewed state. The `applies_to_version` is auto-derived from the review's subject — `code_compare` for code subjects, `entity_version` for task/plan/spec subjects — so callers do not provide version information.
 
+The `--name` and `--runner` values are free-form labels — pick names that match the project's quality-gate vocabulary.
+
 ```bash
 # Passing test run
-kspec review check @review-ref --name "vitest" --status pass \
-  --runner vitest --evidence "All 342 tests passed"
+kspec review check @review-ref --name "tests" --status pass \
+  --runner <project-test-runner> --evidence "All 342 tests passed"
 
 # Failing check
 kspec review check @review-ref --name "lint" --status fail \
-  --runner oxlint --evidence "3 errors found"
+  --runner <project-linter> --evidence "3 errors found"
 
 # Informational (non-required) check
 kspec review check @review-ref --name "coverage" --status pass \
@@ -407,10 +417,10 @@ Every finding must include:
 2. **Create review** — `kspec review add --subject-type task --subject-ref @ref` (creates a new record each cycle)
 3. **Open review** — `kspec review open @review-ref`
 4. **Investigate** — deterministic checks, then analytical checks
-5. **Record ALL findings** — `kspec review comment` for each finding with appropriate kind. **Always use anchors:**
+5. **Record required checks** — `kspec review check` for each project-defined quality gate (format, lint, type, test, focused changed-file checks where the project defines them) plus the relevant `kspec validate` results. A clean approval needs passing evidence for every required gate named in your project's quality-gate guidance, or an explicit explanation for any skipped check.
+6. **Record ALL findings** — `kspec review comment` for each finding with appropriate kind. **Always use anchors:**
    - Code reviews: `--path`, `--line-start`, `--line-end`, `--commit` to pin findings to exact source locations
    - Plan/spec reviews: `--section`, `--field`, `--anchor-ref` to pin findings to specific ACs or fields
-6. **Record checks** — `kspec review check` for test/lint results
 7. **Verify completeness** — Before submitting a verdict, confirm you have searched all categories, recorded every finding, and verified each finding with evidence. A review with one blocker and an immediate verdict is almost always incomplete. Each fix cycle costs time — find everything in one pass. Equally, do not invent findings — every issue must be backed by evidence you ran or read, not just suspicion.
 8. **Submit verdict** — `kspec review verdict` (approve or request_changes — auto-closes the review)
 

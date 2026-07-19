@@ -7,6 +7,205 @@
 
 import { z } from "zod";
 
+// ─── Dispatch Lifecycle Wire Contract ──────────────────────────────────────
+
+const CanonicalDispatchUlidSchema = z
+  .string()
+  .regex(/^[0-9A-HJKMNP-TV-Z]{26}$/, "Expected canonical uppercase Crockford ULID");
+
+export const DispatchCleanupErrorCodeSchema = z.enum([
+  "cancellation_timeout",
+  "cancellation_failed",
+  "session_closure_failed",
+  "cleanup_ownership_mismatch",
+  "cleanup_process_birth_mismatch",
+  "cleanup_leader_missing_group_alive",
+  "cleanup_identity_unverifiable",
+  "cleanup_group_unverifiable",
+  "internal_error",
+]);
+
+export const DispatchControlErrorCodeSchema = z.enum([
+  "validation_failed",
+  "task_not_found",
+  "task_identity_ambiguous",
+  "task_identity_mismatch",
+  "invalid_transition",
+  "control_store_unavailable",
+  "control_store_corrupt",
+  "control_commit_failed",
+  ...DispatchCleanupErrorCodeSchema.options,
+]);
+
+export const DispatchCleanupEntryStatusSchema = z
+  .object({
+    cleanup_id: CanonicalDispatchUlidSchema,
+    scope: z.enum(["global", "task"]),
+    task_id: CanonicalDispatchUlidSchema.optional(),
+    status: z.enum(["pending", "failed"]),
+    phase: z.enum(["owned", "signals_sent", "sessions_closed"]),
+    error_code: DispatchCleanupErrorCodeSchema.optional(),
+  })
+  .strict()
+  .superRefine((entry, ctx) => {
+    if ((entry.scope === "task") !== (entry.task_id !== undefined)) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        path: ["task_id"],
+        message: "task_id is required exactly for task scope",
+      });
+    }
+    if ((entry.status === "failed") !== (entry.error_code !== undefined)) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        path: ["error_code"],
+        message: "error_code is required exactly for failed cleanup",
+      });
+    }
+  });
+
+export const DispatchCleanupStateSchema = z
+  .object({
+    status: z.enum(["idle", "pending", "failed"]),
+    entries: z.array(DispatchCleanupEntryStatusSchema),
+  })
+  .strict()
+  .superRefine((state, ctx) => {
+    const expected =
+      state.entries.length === 0
+        ? "idle"
+        : state.entries.some((entry) => entry.status === "failed")
+          ? "failed"
+          : "pending";
+    if (state.status !== expected) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        path: ["status"],
+        message: `Expected ${expected} status`,
+      });
+    }
+    const cleanupIds = new Set<string>();
+    const owners = new Set<string>();
+    let previousKey: string | undefined;
+    state.entries.forEach((entry, index) => {
+      const owner = entry.scope === "global" ? "global" : `task:${entry.task_id}`;
+      const key = `${entry.scope === "global" ? "0" : `1:${entry.task_id}`}:${entry.cleanup_id}`;
+      if (cleanupIds.has(entry.cleanup_id) || owners.has(owner)) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          path: ["entries", index],
+          message: "Cleanup entries must have unique cleanup and owner identities",
+        });
+      }
+      if (previousKey !== undefined && previousKey.localeCompare(key) > 0) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          path: ["entries", index],
+          message: "Cleanup entries must be sorted",
+        });
+      }
+      cleanupIds.add(entry.cleanup_id);
+      owners.add(owner);
+      previousKey = key;
+    });
+  });
+
+const DispatchControlMetadataSchema = z.object({
+  reason: z.string(),
+  actor: z.string(),
+  source: z.enum(["cli", "api", "ui", "daemon_startup", "daemon_shutdown", "recovery"]),
+  controlled_at: z.string().datetime({ offset: true }),
+  updated_at: z.string().datetime({ offset: true }),
+});
+
+export const DispatchHeldTaskSchema = DispatchControlMetadataSchema.extend({
+  task_id: CanonicalDispatchUlidSchema,
+  task_ref: z.string().nullable(),
+  title: z.string().nullable(),
+  scope: z.enum(["global", "task"]),
+  mode: z.enum(["paused", "stopped"]),
+}).strict();
+
+export const DispatchTaskControlStatusSchema = DispatchControlMetadataSchema.extend({
+  task_id: CanonicalDispatchUlidSchema,
+  task_ref: z.string().nullable(),
+  title: z.string().nullable(),
+  mode: z.enum(["paused", "stopped"]),
+  cleanup_state: DispatchCleanupStateSchema,
+})
+  .strict()
+  .superRefine((control, ctx) => {
+    if (
+      control.cleanup_state.entries.some(
+        (entry) => entry.scope !== "task" || entry.task_id !== control.task_id,
+      )
+    ) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        path: ["cleanup_state", "entries"],
+        message: "Task cleanup entries must match the task control identity",
+      });
+    }
+  });
+
+const DispatchDegradedTargetSchema = z
+  .object({
+    branch: z.string(),
+    reason: z.string(),
+    enteredAt: z.string(),
+    kind: z.string(),
+  })
+  .strict();
+
+function addSortedUniqueTaskIssues(
+  rows: ReadonlyArray<{ task_id: string }>,
+  path: string,
+  ctx: z.RefinementCtx,
+): void {
+  rows.forEach((row, index) => {
+    if (index > 0 && rows[index - 1]!.task_id >= row.task_id) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        path: [path, index, "task_id"],
+        message: "Task rows must be strictly sorted with no duplicates",
+      });
+    }
+  });
+}
+
+export const DispatchLifecycleStatusSchema = z
+  .object({
+    global_authority: z.enum(["stopped", "running", "paused"]),
+    projection: z.enum(["running", "paused", "draining", "stopped"]),
+    cleanup_state: DispatchCleanupStateSchema,
+    active_count: z.number().int().nonnegative(),
+    queue_depth: z.number().int().nonnegative(),
+    held_count: z.number().int().nonnegative(),
+    held_tasks: z.array(DispatchHeldTaskSchema),
+    task_controls: z.array(DispatchTaskControlStatusSchema),
+    degraded_targets: z.array(DispatchDegradedTargetSchema),
+  })
+  .strict()
+  .superRefine((status, ctx) => {
+    if (status.held_count !== status.held_tasks.length) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        path: ["held_count"],
+        message: "held_count must equal held_tasks length",
+      });
+    }
+    addSortedUniqueTaskIssues(status.held_tasks, "held_tasks", ctx);
+    addSortedUniqueTaskIssues(status.task_controls, "task_controls", ctx);
+  });
+
+export type DispatchCleanupErrorCode = z.infer<typeof DispatchCleanupErrorCodeSchema>;
+export type DispatchLifecycleControlErrorCode = z.infer<typeof DispatchControlErrorCodeSchema>;
+export type DispatchCleanupEntryStatus = z.infer<typeof DispatchCleanupEntryStatusSchema>;
+export type DispatchCleanupState = z.infer<typeof DispatchCleanupStateSchema>;
+export type DispatchHeldTask = z.infer<typeof DispatchHeldTaskSchema>;
+export type DispatchTaskControlStatus = z.infer<typeof DispatchTaskControlStatusSchema>;
+export type DispatchLifecycleStatus = z.infer<typeof DispatchLifecycleStatusSchema>;
+
 // ─── Unified Response Envelope ──────────────────────────────────────────────
 // AC: @api-contract ac-envelope
 // AC: @api-contract ac-cache-status-field
@@ -122,6 +321,29 @@ export interface ErrorResponse {
    * envelope `meta.cache_status`, which only exposes "ready" | "loading".
    */
   cache_domain_state?: string;
+  /**
+   * Logical entity domain for storage-incompatibility responses
+   * ("plans" | "reviews" | "resources"). Set on entity-storage 409
+   * responses so clients can present domain-specific recovery UI.
+   *
+   * AC: @entity-folder-migration-and-compatibility-1 ac-daemon-returns-structured-conflict
+   */
+  domain?: string;
+  /**
+   * The project manifest's literal declared format version, set on
+   * format-version incompatibility responses (project data written by a
+   * newer kspec than this daemon supports).
+   *
+   * AC: @data-format-forward-compatibility ac-daemon-structured-error
+   */
+  declared_version?: string;
+  /**
+   * The running daemon's maximum supported format version, paired with
+   * `declared_version` on format-version incompatibility responses.
+   *
+   * AC: @data-format-forward-compatibility ac-daemon-structured-error
+   */
+  max_supported_version?: string;
 }
 
 /**
@@ -159,6 +381,38 @@ export interface TaskSummary {
 }
 
 /**
+ * Resolved task resource projection for task detail responses.
+ *
+ * One entry per derived `resource_refs` entry, re-resolved against the owning
+ * entity's current manifest so drift is visible on every consumer surface
+ * (CLI `--json`, agent context, daemon task detail). Mirrors the structured
+ * output of `projectResolvedTaskResources` in
+ * `src/parser/task-resource-resolver.ts` — never embeds resource bytes.
+ * `content_type`/`byte_size`/`current_sha256`/`current_git_commit` come from
+ * the owner's current manifest entry and are null when the reference is
+ * `missing` (path no longer declared) or `unresolved` (owner not found).
+ * Browser-fetchable bytes are addressed via `TaskDetail.resources_base_url`
+ * (`${base}/${encodeURIComponent(id)}/bytes`), not a per-entry URL.
+ *
+ * AC: @task-resource-resolution-api-contract ac-task-detail-exposes-resolved-resources
+ * AC: @plan-resource-derivation-semantics-1 ac-resource-drift-is-visible
+ */
+export interface ResolvedTaskResourceSummary {
+  owner_type: "plan" | "task";
+  owner_ref: string;
+  id: string;
+  path: string;
+  content_type: string | null;
+  byte_size: number | null;
+  status: "present" | "drift" | "missing" | "unresolved";
+  recorded_sha256: string;
+  current_sha256: string | null;
+  recorded_git_commit: string | null;
+  current_git_commit: string | null;
+  message: string;
+}
+
+/**
  * Full task with notes and todos
  * AC: @api-contract ac-5
  * AC: @ui-task-board ac-3 — description, plan_ref, session_ref for detail modal
@@ -185,6 +439,24 @@ export interface TaskDetail extends TaskSummary {
   todos?: Todo[];
   notes_count: number;
   todos_count?: number;
+  /**
+   * Resolved task resource references with drift status. Present only on
+   * detail responses when the task has one or more derived `resource_refs`;
+   * omitted entirely otherwise. Index-tier surfaces (task list, dashboard)
+   * never carry this field so resource bytes/manifests stay off the index.
+   *
+   * AC: @task-resource-resolution-api-contract ac-task-detail-exposes-resolved-resources
+   */
+  resolved_resources?: ResolvedTaskResourceSummary[];
+  /**
+   * Task-scoped base URL clients use to fetch resolved-resource bytes via
+   * `${resources_base_url}/${encodeURIComponent(id)}/bytes` without guessing
+   * whether the resource is plan-owned or task-owned. Present alongside
+   * `resolved_resources` (i.e. only when the task has derived resources).
+   *
+   * AC: @task-resource-resolution-api-contract ac-task-detail-exposes-resource-base-url
+   */
+  resources_base_url?: string;
 }
 
 /**
@@ -330,6 +602,44 @@ export interface Observation {
 }
 
 /**
+ * Plan-owned resource metadata returned by the daemon API.
+ *
+ * Exact mirror of `ResourceMetadata` from `src/schema/resources.ts` — strict
+ * 9-field shape with no embedded URLs. Safe fetch URLs are exposed outside
+ * the metadata object via `PlanDetail.resources_base_url` (consumers
+ * construct `${base}/${encodeURIComponent(id)}/bytes`), keeping the
+ * resource metadata shape identical across CLI, API, and static export
+ * surfaces.
+ *
+ * AC: @trait-entity-scoped-local-resources-1 ac-resource-metadata-exposes-safe-preview-fields
+ */
+export interface PlanResourceMetadata {
+  id: string;
+  label: string | null;
+  path: string;
+  content_type: string;
+  bytes: number;
+  sha256: string;
+  git_commit: string | null;
+  git_path: string | null;
+  description: string | null;
+}
+
+/**
+ * Bounded resource summary projected through the plan index — counts only,
+ * never resource bytes. Surfaced on list responses (including the cache-ready
+ * fast path) so resource-bearing plans are visible without loading the full
+ * per-plan resource manifest.
+ *
+ * AC: @folder-backed-plan-storage-1 ac-plan-index-has-bounded-projection
+ * AC: @trait-entity-scoped-local-resources-1 ac-resource-metadata-exposes-safe-preview-fields
+ */
+export interface PlanResourceSummary {
+  count: number;
+  total_bytes: number;
+}
+
+/**
  * Plan summary for list endpoints
  * AC: @ui-plans-view ac-1
  */
@@ -352,6 +662,16 @@ export interface PlanSummary {
     pending: number;
     blocked: number;
   };
+  /**
+   * Bounded resource summary from the plan index. Always populated on list
+   * responses — `{ count: 0, total_bytes: 0 }` when the plan has no
+   * declared resources — so list/dashboard views can show resource presence
+   * without loading the per-plan manifest.
+   *
+   * AC: @folder-backed-plan-storage-1 ac-plan-index-has-bounded-projection
+   * AC: @trait-entity-scoped-local-resources-1 ac-resource-metadata-exposes-safe-preview-fields
+   */
+  resource_summary?: PlanResourceSummary;
 }
 
 /**
@@ -360,7 +680,78 @@ export interface PlanSummary {
  */
 export interface PlanDetail extends PlanSummary {
   content: string;
+  /** Declared plan-owned resources. Always populated for detail responses. */
+  resources: PlanResourceMetadata[];
+  /**
+   * Base URL prefix for per-resource fetches. Clients construct
+   * `${resources_base_url}/${encodeURIComponent(id)}/bytes` to retrieve a
+   * specific resource. Always populated for detail responses; static
+   * exports populate it with the asset-prefix equivalent so consumers can
+   * keep building URLs uniformly.
+   *
+   * AC: @trait-entity-scoped-local-resources-1 ac-resource-metadata-exposes-safe-preview-fields
+   */
+  resources_base_url: string;
 }
+
+/**
+ * Byte-free plan resource context attached to markdown sections of
+ * `GET /api/reviews/:id/content` for plan review subjects.
+ *
+ * Carries exactly what a client needs to rewrite author-style
+ * `./resources/<relative-path>` markdown targets in the embedded plan content:
+ * the owning plan ref, the plan-scoped bytes base URL (clients construct
+ * `${resources_base_url}/${encodeURIComponent(id)}/bytes`, appending
+ * selected-project routing context browser-side), and the declared resource
+ * metadata (same strict byte-free shape as `PlanDetail.resources`). Only
+ * declared resources appear, so undeclared/unsafe paths cannot be rewritten.
+ *
+ * AC: @review-content-diff-api ac-5
+ */
+export interface ReviewContentPlanResourceContext {
+  owner_type: "plan";
+  /** The owning plan ref (the review subject ref). */
+  owner_ref: string;
+  /** Plan-scoped bytes base URL, e.g. `/api/plans/<ulid>/resources`. */
+  resources_base_url: string;
+  /** Bounded declared-resource metadata from the plan manifest — never bytes. */
+  resources: PlanResourceMetadata[];
+}
+
+/**
+ * Byte-free task resource context attached to the task-description markdown
+ * section of `GET /api/reviews/:id/content` for task review subjects.
+ *
+ * Mirrors the task detail contract (`TaskDetail.resolved_resources` +
+ * `TaskDetail.resources_base_url`): the resolved projection reports drift
+ * status per reference (plan-owned refs and materialized task-owned copies
+ * alike), so clients rewrite only `present` resources and surface actionable
+ * status for drifted/missing/unresolved/unmatched references instead of
+ * silently serving replacement bytes.
+ *
+ * AC: @review-content-diff-api ac-6
+ */
+export interface ReviewContentTaskResourceContext {
+  owner_type: "task";
+  /** The owning task ref (the review subject ref). */
+  owner_ref: string;
+  /** Task-scoped bytes base URL, e.g. `/api/tasks/<ulid>/resources`. */
+  resources_base_url: string;
+  /** Bounded resolved-resource status projection — never bytes. */
+  resources: ResolvedTaskResourceSummary[];
+}
+
+/**
+ * Resource context a review-content markdown section may carry so embedded
+ * plan content / task descriptions can resolve `./resources/<relative-path>`
+ * markdown targets exactly like the plan/task detail views.
+ *
+ * AC: @review-content-diff-api ac-5
+ * AC: @review-content-diff-api ac-6
+ */
+export type ReviewContentResourceContext =
+  | ReviewContentPlanResourceContext
+  | ReviewContentTaskResourceContext;
 
 /**
  * Review summary for list endpoints and task detail integration
@@ -491,6 +882,35 @@ export type ReviewSubject =
   | { type: "external"; url: string; external_id?: string; provider?: string };
 
 /**
+ * Metadata for one declared review resource. Mirrors the on-disk
+ * `ResourceMetadata` shape so the same envelope can be returned by every
+ * surface (CLI JSON, daemon JSON, static export).
+ *
+ * AC: @trait-entity-scoped-local-resources-1 ac-resource-metadata-exposes-safe-preview-fields
+ */
+export interface ReviewResource {
+  id: string;
+  label: string | null;
+  path: string;
+  content_type: string;
+  bytes: number;
+  sha256: string;
+  git_commit: string | null;
+  git_path: string | null;
+  description: string | null;
+  /**
+   * Snapshot-relative path used by static exports
+   * (`assets/resources/review/<ulid>/<relative-path>`). Present only on
+   * responses that come from the static export; absent on live daemon
+   * responses since the daemon serves resource bytes via the
+   * `/api/reviews/:ref/resources/:id/bytes` endpoint.
+   *
+   * AC: @trait-entity-scoped-local-resources-1 ac-static-export-copies-resource-assets
+   */
+  exported_path?: string;
+}
+
+/**
  * Full review detail for the detail endpoint
  * AC: @review-records-daemon-api ac-2
  * AC: @review-records-web-ui ac-2
@@ -528,6 +948,16 @@ export interface ReviewDetail {
   examined_commit: string | null;
   created_at: string;
   updated_at?: string | null;
+  /**
+   * Declared local resources for this review. Always present on responses
+   * returned by the daemon and static export. The order matches the
+   * on-disk `resources.yaml` manifest order so consumers can render a
+   * stable list without re-sorting.
+   *
+   * AC: @folder-backed-review-storage-1 ac-review-screenshot-resource-loads-in-ui
+   * AC: @trait-entity-scoped-local-resources-1 ac-resource-metadata-exposes-safe-preview-fields
+   */
+  resources?: ReviewResource[];
 }
 
 export interface BatchSpecItemSummary {
@@ -827,6 +1257,32 @@ export interface RefIndexResponse {
 }
 
 /**
+ * Bounded review projection included in the static export. Mirrors the
+ * lean index entry the daemon stores (subject summary, related refs,
+ * disposition, timestamps) plus the per-review resources array with
+ * `exported_path` pointers so the static UI can render evidence without
+ * a live daemon.
+ *
+ * AC: @folder-backed-review-storage-1 ac-review-screenshot-resource-loads-in-ui
+ * AC: @folder-backed-review-storage-1 ac-review-index-has-bounded-projection
+ */
+export interface ExportedReview {
+  _ulid: string;
+  slugs: string[];
+  title: string;
+  lifecycle_state: ReviewSummary["lifecycle_state"];
+  author: string;
+  subject: ReviewSubject;
+  related_refs: string[];
+  external_links: ReviewDetail["external_links"];
+  created_at: string;
+  updated_at: string | null;
+  examined_commit: string | null;
+  disposition: string;
+  resources: ReviewResource[];
+}
+
+/**
  * Full kspec snapshot structure
  */
 export interface KspecSnapshot {
@@ -837,6 +1293,14 @@ export interface KspecSnapshot {
   items: ExportedItem[];
   inbox: InboxItem[];
   plans?: PlanDetail[];
+  /**
+   * Reviews exported as a bounded projection with linked resource metadata
+   * pointing at copied asset paths.
+   *
+   * AC: @folder-backed-review-storage-1 ac-review-screenshot-resource-loads-in-ui
+   * AC: @trait-entity-scoped-local-resources-1 ac-static-export-copies-resource-assets
+   */
+  reviews?: ExportedReview[];
   triage?: TriageRecord[];
   session: SessionContext | null;
   observations: Observation[];

@@ -22,10 +22,8 @@
 	}>();
 
 	function selectTask(task: TaskSummary) {
-		console.log('[TaskList] selectTask called for:', task._ulid, task.title);
 		// Try callback first (Svelte 5 pattern), then dispatch (Svelte 4 pattern)
 		if (onSelectTask) {
-			console.log('[TaskList] Calling onSelectTask callback');
 			onSelectTask(task._ulid);
 		}
 		dispatch('select', task._ulid);

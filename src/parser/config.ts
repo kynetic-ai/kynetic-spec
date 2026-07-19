@@ -13,6 +13,10 @@ import * as fs from "node:fs/promises";
 import * as path from "node:path";
 import * as YAML from "yaml";
 import { z } from "zod";
+import {
+  DEFAULT_DAEMON_COMMAND_TIMEOUT_MS,
+  DEFAULT_DAEMON_LOG_MAX_SIZE_BYTES,
+} from "../daemon-shared/endpoint.js";
 import { getGitRoot } from "./shadow.js";
 
 // ── Schema ──────────────────────────────────────────────────────────────
@@ -115,6 +119,18 @@ const DaemonConfigSchema = z
      * AC: @config-daemon ac-3 — auto_start configurable
      */
     auto_start: z.boolean().optional(),
+    /**
+     * Maximum size in bytes of the active daemon log file before
+     * rotation (default: 5 MiB).
+     * AC: @daemon-log-capture ac-bounded-rotation
+     */
+    log_max_size_bytes: z.number().int().positive().optional(),
+    /**
+     * Execution time limit in milliseconds for commands dispatched
+     * through the daemon command API (default: 120000).
+     * AC: @daemon-command-api ac-command-timeout
+     */
+    command_timeout_ms: z.number().int().positive().optional(),
   })
   .strict()
   .optional();
@@ -411,6 +427,17 @@ export interface ResolvedKspecConfig {
      * AC: @config-daemon ac-3
      */
     auto_start: boolean;
+    /**
+     * Maximum size in bytes of the active daemon log file before rotation.
+     * AC: @daemon-log-capture ac-bounded-rotation
+     */
+    log_max_size_bytes: number;
+    /**
+     * Execution time limit in milliseconds for commands dispatched through
+     * the daemon command API.
+     * AC: @daemon-command-api ac-command-timeout
+     */
+    command_timeout_ms: number;
   };
   dispatch: {
     /**
@@ -528,6 +555,10 @@ const DEFAULT_CONFIG: ResolvedKspecConfig = {
     connect_host: null,
     runtime: "node",
     auto_start: true, // AC: @config-daemon — default auto-start enabled
+    // AC: @daemon-log-capture ac-bounded-rotation — default 5 MiB rotation cap
+    log_max_size_bytes: DEFAULT_DAEMON_LOG_MAX_SIZE_BYTES,
+    // AC: @daemon-command-api ac-command-timeout — default 120s command limit
+    command_timeout_ms: DEFAULT_DAEMON_COMMAND_TIMEOUT_MS,
   },
   dispatch: {
     base_branch: null,
@@ -753,6 +784,12 @@ export function resolveConfig(fileConfig: KspecConfig | null): ResolvedKspecConf
       runtime: file.daemon?.runtime ?? DEFAULT_CONFIG.daemon.runtime,
       // AC: @config-daemon ac-3 — auto_start from config
       auto_start: file.daemon?.auto_start ?? DEFAULT_CONFIG.daemon.auto_start,
+      // AC: @daemon-log-capture ac-bounded-rotation — rotation cap from config or 5 MiB default
+      log_max_size_bytes:
+        file.daemon?.log_max_size_bytes ?? DEFAULT_CONFIG.daemon.log_max_size_bytes,
+      // AC: @daemon-command-api ac-command-timeout — command limit from config or 120s default
+      command_timeout_ms:
+        file.daemon?.command_timeout_ms ?? DEFAULT_CONFIG.daemon.command_timeout_ms,
     },
     dispatch: {
       base_branch: file.dispatch?.base_branch ?? DEFAULT_CONFIG.dispatch.base_branch,
@@ -844,6 +881,8 @@ export function getDefaultConfig(): ResolvedKspecConfig {
       connect_host: DEFAULT_CONFIG.daemon.connect_host,
       runtime: DEFAULT_CONFIG.daemon.runtime,
       auto_start: DEFAULT_CONFIG.daemon.auto_start,
+      log_max_size_bytes: DEFAULT_CONFIG.daemon.log_max_size_bytes,
+      command_timeout_ms: DEFAULT_CONFIG.daemon.command_timeout_ms,
     },
     dispatch: {
       base_branch: DEFAULT_CONFIG.dispatch.base_branch,

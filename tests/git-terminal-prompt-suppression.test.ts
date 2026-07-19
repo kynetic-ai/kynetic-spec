@@ -13,7 +13,10 @@
  */
 
 import { describe, it, expect, beforeEach, afterEach } from "vitest";
-import { execSync, spawnSync } from "node:child_process";
+import { execSync, spawn, spawnSync } from "node:child_process";
+import type { ChildProcessWithoutNullStreams } from "node:child_process";
+import { writeFileSync } from "node:fs";
+import { join } from "node:path";
 import { buildDispatchGitEnv } from "../src/agent-runtime/workspace.js";
 import { createTempDir, initGitRepo, cleanupTempDir } from "./helpers/cli.js";
 
@@ -54,6 +57,8 @@ describe("git subprocess interactive prompt suppression", () => {
   // AC: @dispatch-remote-branch-sync ac-transient-no-degrade
   describe("shadow git operations inherit prompt suppression", () => {
     let tempDir: string;
+    let authServer: ChildProcessWithoutNullStreams | null;
+    let authRemoteUrl: string;
 
     beforeEach(async () => {
       tempDir = await createTempDir("kspec-git-prompt-test-");
@@ -62,23 +67,22 @@ describe("git subprocess interactive prompt suppression", () => {
         cwd: tempDir,
         stdio: "pipe",
       });
+      authServer = null;
+      authRemoteUrl = await startAuthChallengeServer(tempDir, (server) => {
+        authServer = server;
+      });
     });
 
     afterEach(async () => {
+      await stopAuthChallengeServer(authServer);
       await cleanupTempDir(tempDir);
     });
 
-    it("git fetch to unreachable HTTPS remote fails fast instead of prompting", async () => {
-      // Add a remote that requires auth but has no credential helper.
-      // With GIT_TERMINAL_PROMPT=0, git should fail immediately rather than
-      // prompting for credentials.
-      execSync(
-        "git remote add origin https://github.com/nonexistent-org-12345/nonexistent-repo-67890.git",
-        {
-          cwd: tempDir,
-          stdio: "pipe",
-        },
-      );
+    it("git fetch to authenticated HTTP remote fails fast instead of prompting", async () => {
+      execSync(`git remote add origin ${authRemoteUrl}`, {
+        cwd: tempDir,
+        stdio: "pipe",
+      });
 
       // Use the same env that dispatch/shadow operations use
       const env = buildDispatchGitEnv();
@@ -94,16 +98,14 @@ describe("git subprocess interactive prompt suppression", () => {
       expect(result.status).not.toBe(0);
       // Should complete within the timeout (if it hung, spawnSync would throw)
       expect(result.error).toBeUndefined();
+      expect(result.stderr).toContain("terminal prompts disabled");
     });
 
-    it("git push to unreachable HTTPS remote fails fast instead of prompting", async () => {
-      execSync(
-        "git remote add origin https://github.com/nonexistent-org-12345/nonexistent-repo-67890.git",
-        {
-          cwd: tempDir,
-          stdio: "pipe",
-        },
-      );
+    it("git push to authenticated HTTP remote fails fast instead of prompting", async () => {
+      execSync(`git remote add origin ${authRemoteUrl}`, {
+        cwd: tempDir,
+        stdio: "pipe",
+      });
 
       const env = buildDispatchGitEnv();
       const result = spawnSync("git", ["push", "origin", "main"], {
@@ -116,28 +118,22 @@ describe("git subprocess interactive prompt suppression", () => {
 
       expect(result.status).not.toBe(0);
       expect(result.error).toBeUndefined();
+      expect(result.stderr).toContain("terminal prompts disabled");
     });
 
-    it("git ls-remote to unreachable HTTPS remote fails fast instead of prompting", async () => {
+    it("git ls-remote to authenticated HTTP remote fails fast instead of prompting", async () => {
       const env = buildDispatchGitEnv();
-      const result = spawnSync(
-        "git",
-        [
-          "ls-remote",
-          "--heads",
-          "https://github.com/nonexistent-org-12345/nonexistent-repo-67890.git",
-        ],
-        {
-          cwd: tempDir,
-          env,
-          encoding: "utf-8",
-          stdio: "pipe",
-          timeout: 10_000,
-        },
-      );
+      const result = spawnSync("git", ["ls-remote", "--heads", authRemoteUrl], {
+        cwd: tempDir,
+        env,
+        encoding: "utf-8",
+        stdio: "pipe",
+        timeout: 10_000,
+      });
 
       expect(result.status).not.toBe(0);
       expect(result.error).toBeUndefined();
+      expect(result.stderr).toContain("terminal prompts disabled");
     });
   });
 
@@ -148,3 +144,82 @@ describe("git subprocess interactive prompt suppression", () => {
   // AC: @trait-error-guidance ac-5 — N/A: this fix is about git subprocess env, not validation errors
   // AC: @trait-error-guidance ac-6 — N/A: this fix is about git subprocess env, not JSON mode
 });
+
+async function startAuthChallengeServer(
+  tempDir: string,
+  captureServer: (server: ChildProcessWithoutNullStreams) => void,
+): Promise<string> {
+  const serverScript = join(tempDir, "auth-challenge-server.cjs");
+  writeFileSync(
+    serverScript,
+    `
+const http = require("node:http");
+
+const server = http.createServer((_req, res) => {
+  res.writeHead(401, { "WWW-Authenticate": "Basic realm=\\"kspec-test\\"" });
+  res.end("auth required\\n");
+});
+
+server.listen(0, "127.0.0.1", () => {
+  console.log(server.address().port);
+});
+
+process.on("SIGTERM", () => {
+  server.close(() => process.exit(0));
+});
+`,
+  );
+
+  const server = spawn(process.execPath, [serverScript], {
+    cwd: tempDir,
+    stdio: ["ignore", "pipe", "pipe"],
+  });
+  captureServer(server);
+
+  const port = await new Promise<number>((resolve, reject) => {
+    let stdout = "";
+    let stderr = "";
+    const timeout = setTimeout(() => {
+      reject(new Error(`auth challenge server did not start. stderr: ${stderr}`));
+    }, 5_000);
+
+    server.stdout.on("data", (chunk: Buffer) => {
+      stdout += chunk.toString();
+      const line = stdout.split("\n")[0]?.trim();
+      if (!line) return;
+      clearTimeout(timeout);
+      resolve(Number(line));
+    });
+
+    server.stderr.on("data", (chunk: Buffer) => {
+      stderr += chunk.toString();
+    });
+
+    server.on("error", (error) => {
+      clearTimeout(timeout);
+      reject(error);
+    });
+
+    server.on("exit", (code, signal) => {
+      clearTimeout(timeout);
+      reject(new Error(`auth challenge server exited early: code=${code} signal=${signal}`));
+    });
+  });
+
+  return `http://127.0.0.1:${port}/repo.git`;
+}
+
+async function stopAuthChallengeServer(
+  server: ChildProcessWithoutNullStreams | null,
+): Promise<void> {
+  if (!server || server.exitCode !== null || server.signalCode !== null) return;
+
+  await new Promise<void>((resolve) => {
+    const timeout = setTimeout(resolve, 1_000);
+    server.once("exit", () => {
+      clearTimeout(timeout);
+      resolve();
+    });
+    server.kill("SIGTERM");
+  });
+}

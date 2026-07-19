@@ -90,6 +90,43 @@ Use existing helpers — don't reinvent:
 npm test  # Always run full suite — never just new tests
 ```
 
+## Kynetic Quality Gate Commands
+
+The shared `/kspec:task-work` skill defers to "project-defined" quality gates. In this repository those gates are:
+
+| Gate                          | Command                                |
+| ----------------------------- | -------------------------------------- |
+| Formatting                    | `npm run format:check`                 |
+| Repo-wide lint (hard gate)    | `npm run lint -- --quiet`              |
+| Focused changed-file lint     | `npx oxlint <changed-ts-or-test-files>` |
+| Typecheck                     | `npm run typecheck`                    |
+| Test suite                    | `npm test` (or `npm run test:shard1/2/3` for faster dev runs) |
+| kspec reference validation    | `kspec validate --refs --warnings-ok`  |
+| kspec alignment validation    | `kspec validate --alignment --warnings-ok` |
+| kspec completeness validation | `kspec validate --completeness --warnings-ok` |
+
+Run every applicable gate before `kspec task submit`. Treat any red gate as in-scope task work — do not leave hygiene cleanup for plan closure.
+
+Gate semantics:
+
+- `npm run format:check` — if it fails, run `npm run format`, commit the formatting changes, and rerun the check.
+- `npm run lint -- --quiet` — must report 0 errors. Repo-wide lint has a pre-existing warning baseline; that baseline is not your responsibility, but new warnings in your changed files are.
+- `npx oxlint <changed files>` — inspect warnings as well as errors in changed TypeScript/test files. New warnings in your diff are review findings even when the repo-wide gate passes.
+- `npm run typecheck` — required for any code change.
+- `npm test` — run the full suite for changes with broad or closure-risk impact; new tests alone are not sufficient evidence.
+
+## Generated Artifact Maintenance
+
+Several directories in this repository are regenerated outputs, not hand-edited sources. After modifying their inputs, regenerate and commit the output alongside the source change:
+
+| Input you changed                                                           | Regenerate with         | Output directory                                  |
+| --------------------------------------------------------------------------- | ----------------------- | ------------------------------------------------- |
+| `templates/skills/` (core skill sources) or `.kspec/skills/` (local skills) | `kspec skill render`    | `.agents/skills/` (codex/claude), `.factory/skills/` (droid) |
+| `templates/agents-sections/`, conventions, workflows, agents, or meta       | `kspec agents generate` | `kspec-agents.md`                                 |
+| `templates/skills/` core skill sources (rendered into the npm plugin)       | `npm run build:plugin`  | `plugin/plugins/kspec/skills/`                    |
+
+`plugin/` is gitignored by default; rebuild locally when verifying that core skill changes still render correctly into the plugin output. Rendered `.agents/skills/` and `.factory/skills/` outputs ARE committed and must stay in sync with their sources — `kspec skill verify` should report no drift for the skills you touched.
+
 ## Code Quality
 
 - **Search for existing utilities** before creating new ones — kspec has extensive shared helpers

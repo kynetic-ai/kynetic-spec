@@ -476,6 +476,7 @@ export function registerMetaCommands(program: Command): void {
 
         // AC-agent-2: JSON output includes full agent details
         // AC: @agent-definition-schema ac-1 through ac-8 - include new dispatch/runtime fields
+        // AC: @agent-definition-schema ac-runner-field-accepted — runner surfaced in JSON
         output(
           agents.map((agent) => ({
             id: agent.id,
@@ -486,6 +487,7 @@ export function registerMetaCommands(program: Command): void {
             session_protocol: agent.session_protocol,
             conventions: agent.conventions,
             adapter: agent.adapter,
+            runner: agent.runner,
             dispatch: agent.dispatch ?? [],
             skills: agent.skills ?? [],
             budget: agent.budget,
@@ -1208,6 +1210,10 @@ Examples:
     .option("--tool <tool...>", "Tools (for agents)")
     .option("--convention <conv...>", "Convention references (for agents)")
     .option("--adapter <adapter>", "Adapter reference or npx package name (for agents)")
+    .option(
+      "--runner <name>",
+      "Named runner reference from layered runner config (for agents; takes precedence over --adapter at invocation time)",
+    )
     .option("--skill <skill...>", "Skill slugs (for agents)")
     .option(
       "--add-dispatch-rule <json>",
@@ -1232,6 +1238,7 @@ Examples:
       `
 Examples:
   $ kspec meta add agent --id my-agent --name "My Agent" --capability search code
+  $ kspec meta add agent --id worker --name "Worker" --runner claude-code-default
   $ kspec meta add convention --domain testing --rule "Always test" --rule "Use mocks"
   $ kspec meta add workflow --id my-flow --trigger manual --tag automation ci`,
     )
@@ -1289,6 +1296,9 @@ Examples:
             conventions: options.convention || [],
             // AC: @agent-definition-schema ac-1 through ac-8
             ...(options.adapter && { adapter: options.adapter }),
+            // AC: @agent-definition-schema ac-runner-field-accepted
+            // AC: @agent-runner-configuration ac-agent-runner-reference
+            ...(options.runner && { runner: options.runner }),
             // AC: @agent-definition-schema ac-12
             dispatch: dispatchRules,
             skills: options.skill || [],
@@ -1424,6 +1434,8 @@ Examples:
       [],
     )
     .option("--adapter <adapter>", "Set adapter reference or npx package (for agents)")
+    .option("--runner <name>", "Set named runner reference from layered runner config (for agents)")
+    .option("--clear-runner", "Clear the runner reference (for agents)")
     .option("--add-skill <skill>", "Add skill slug (for agents)", collectRepeatedOptionValues, [])
     .option(
       "--add-dispatch-rule <json>",
@@ -1545,6 +1557,15 @@ Examples:
           }
           // AC: @agent-definition-schema ac-10 - new fields preserved during set
           if (options.adapter !== undefined) item.adapter = options.adapter;
+          // AC: @agent-definition-schema ac-runner-field-accepted
+          // AC: @agent-definition-schema ac-meta-set-runner-preserves-fields
+          // AC: @agent-runner-configuration ac-agent-runner-reference
+          // AC: @runner-operator-surfaces ac-agent-set-updates-runner
+          if (options.clearRunner) {
+            delete (item as Record<string, unknown>).runner;
+          } else if (options.runner !== undefined) {
+            item.runner = options.runner;
+          }
           if (
             options.clearDispatchRules ||
             options.removeDispatchRule ||

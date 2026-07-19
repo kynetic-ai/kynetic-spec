@@ -27,6 +27,7 @@ const fs = require("fs");
 const os = require("os");
 const path = require("path");
 const { checkProjectDependencies } = require("./dependency-health.cjs");
+const { acquireBuildTestLock, HELD_ENV_VAR, HELD_LABEL_ENV_VAR } = require("./build-test-lock.cjs");
 
 // ANSI colors (zero dependencies)
 const c = {
@@ -63,7 +64,12 @@ const BUILD_INPUT_PATHS = [
   "packages/web-ui/svelte.config.js",
 ];
 
-// Paths that affect test outcomes — used for cache key computation
+// Paths that affect test outcomes — used for cache key computation.
+// scripts/ is included wholesale: the runner itself, its requires
+// (build-test-lock.cjs, dependency-health.cjs, test-progress-reporter.cjs),
+// and scripts exercised by tests (build.cjs, build-daemon.cjs) all live
+// there, and a stale cached result hiding an edit to any of them is far
+// worse than the occasional extra invalidation.
 const TEST_INPUT_PATHS = [
   "src/",
   "tests/",
@@ -74,12 +80,28 @@ const TEST_INPUT_PATHS = [
   "package-lock.json",
   "vitest.config.ts",
   "tsconfig.json",
-  "scripts/test.cjs",
-  "scripts/test-progress-reporter.cjs",
-  "scripts/dependency-health.cjs",
+  "scripts/",
 ];
 
 const CACHE_ROOT = path.join(os.tmpdir(), "kspec-test-cache");
+
+// Environment variables that affect test behavior — included in the cache key
+// so runs under different env conditions cannot serve each other's results
+// (e.g. CI=true skips file-watcher tests). Curated allowlist rather than the
+// full environment: hashing everything would invalidate the cache on
+// irrelevant churn (PWD, SHLVL, terminal vars).
+const ENV_KEY_VARS = ["CI", "TZ", "NODE_ENV", "NODE_OPTIONS"];
+// KSPEC_SESSION_ID already scopes the cache directory (getCacheDir);
+// KSPEC_TEST_PROGRESS affects only progress rendering, not test outcomes.
+// The build/test lock vars coordinate scheduling, not test behavior.
+const ENV_KEY_EXCLUDED = new Set([
+  "KSPEC_SESSION_ID",
+  "KSPEC_TEST_PROGRESS",
+  "KSPEC_BUILD_TEST_LOCK_HELD",
+  "KSPEC_BUILD_TEST_LOCK_HELD_LABEL",
+  "KSPEC_BUILD_TEST_LOCK_PATH",
+  "KSPEC_BUILD_TEST_LOCK_TIMEOUT_MS",
+]);
 
 // ─── Output helpers ────────────────────────────────────────────────
 
@@ -102,7 +124,29 @@ function logErr(msg) {
 // ─── Cache key computation ────────────────────────────────────────
 
 /**
- * Compute a deterministic cache key from repo content state + vitest args.
+ * Compute the env component of the cache key: behavior-affecting variables
+ * (allowlist + KSPEC_* prefix, minus exclusions) as JSON-encoded sorted
+ * [name, value] pairs. Absent vars are excluded entirely, so unset and
+ * empty-string values produce different components. JSON encoding keeps
+ * pair boundaries unambiguous even when values contain separators.
+ */
+function computeEnvCacheComponent(env) {
+  const names = new Set(ENV_KEY_VARS);
+  for (const name of Object.keys(env)) {
+    if (name.startsWith("KSPEC_") && !ENV_KEY_EXCLUDED.has(name)) {
+      names.add(name);
+    }
+  }
+  const pairs = [...names]
+    .filter((name) => env[name] !== undefined)
+    .toSorted()
+    .map((name) => [name, env[name]]);
+  return JSON.stringify(pairs);
+}
+
+/**
+ * Compute a deterministic cache key from repo content state + vitest args
+ * + behavior-affecting environment variables.
  * Uses git blob SHAs (content-addressed) so commits/rebases don't invalidate.
  */
 function computeCacheKey(vitestArgs) {
@@ -162,6 +206,9 @@ function computeCacheKey(vitestArgs) {
 
   // 5. Vitest args (different filters = different cache entries)
   hash.update(vitestArgs.join(" "));
+
+  // 6. Behavior-affecting environment variables
+  hash.update(computeEnvCacheComponent(process.env));
 
   return hash.digest("hex").slice(0, 16);
 }
@@ -401,7 +448,16 @@ function installDependencies() {
 function runBuild() {
   logSetup("Building project (npm run build)...");
   try {
-    execSync("npm run build", { cwd: projectRoot, stdio: "pipe" });
+    // This is the one build that may legitimately run while this process
+    // holds the test lock: vitest has not started yet, so nothing is loading
+    // dist/. Re-label the held marker as "build" for the child so the nested
+    // scripts/build.cjs sees a same-kind ancestor and stays reentrant instead
+    // of tripping the cross-kind fail-fast.
+    execSync("npm run build", {
+      cwd: projectRoot,
+      stdio: "pipe",
+      env: { ...process.env, [HELD_LABEL_ENV_VAR]: "build" },
+    });
   } catch (err) {
     logErr("npm run build failed:");
     if (err.stderr) process.stderr.write(err.stderr);
@@ -550,6 +606,31 @@ async function main() {
   const ownFlags = ["--dry-run", "--fresh", "--verbose"];
   const vitestArgs = args.filter((a) => !ownFlags.includes(a));
 
+  // ── Serialize against concurrent builds ──
+  // npm run build rewrites dist/ non-atomically; a CLI subprocess spawned by
+  // a test mid-emit can load mixed old/new modules and crash. Hold the
+  // per-worktree lock for the whole run (readiness fixes + vitest). The HELD
+  // marker + "test" label are exported so nested test-runner invocations
+  // spawned by this run skip the lock instead of deadlocking against their
+  // ancestor, while a nested BUILD spawned from inside the suite fails fast
+  // instead of rewriting dist/ under live tests.
+  // AC: @test-suite-perf-reliability ac-7
+  const buildTestLock = await acquireBuildTestLock({
+    rootDir: projectRoot,
+    label: "test",
+    onWait: logSetup,
+  });
+  if (buildTestLock.reentrant) {
+    // We are inside an ancestor test run's exclusion (a test spawned this
+    // runner). The ancestor already verified dist/ — and rebuilding it here
+    // would rewrite dist/ while the ancestor's vitest is executing.
+    process.env.SKIP_BUILD = "1";
+  } else {
+    process.env[HELD_ENV_VAR] = buildTestLock.lockPath;
+    process.env[HELD_LABEL_ENV_VAR] = "test";
+    process.on("exit", () => buildTestLock.release());
+  }
+
   // ── Ensure environment ──
   const fixedCount = ensureEnvironment();
 
@@ -580,7 +661,7 @@ async function main() {
         // Verbose mode: stream the full cached log to terminal
         process.stdout.write(fs.readFileSync(cached.logFile));
       } else {
-        process.stderr.write(formatCondensedOutput(cached.json, cached.logFile) + "\n");
+        process.stderr.write(`${formatCondensedOutput(cached.json, cached.logFile)}\n`);
       }
 
       process.stderr.write("\n");
@@ -642,7 +723,7 @@ async function main() {
     if (!verbose) {
       process.stderr.write("\n");
       const displayLogPath = fs.existsSync(cachedLogPath) ? cachedLogPath : null;
-      process.stderr.write(formatCondensedOutput(jsonResults, displayLogPath) + "\n");
+      process.stderr.write(`${formatCondensedOutput(jsonResults, displayLogPath)}\n`);
     }
   }
 
@@ -683,9 +764,11 @@ module.exports = {
   checkBuild,
   ensureEnvironment,
   computeCacheKey,
+  computeEnvCacheComponent,
   getCacheDir,
   getCachedResults,
   formatCondensedOutput,
   preTestHooks,
   postTestHooks,
+  TEST_INPUT_PATHS,
 };

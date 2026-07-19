@@ -8,6 +8,7 @@ import {
   createTestApp,
   initGitRepo,
   makeRequest,
+  materializeFolderBackedPlanShells,
   setupFixtures,
 } from "./helpers.js";
 import { seedSplitTask } from "../helpers/cli.js";
@@ -31,7 +32,6 @@ function request(urlPath: string, init?: RequestInit) {
 }
 
 describe("Plans API", () => {
-  // AC: @ui-plans-view ac-2
   it("GET /api/plans/:ref returns 404 for non-existent plan references", async () => {
     const response = await request("/api/plans/non-existent-plan");
 
@@ -66,6 +66,19 @@ plans:
     notes: []
 `,
     );
+
+    // setupFixtures materialised `.kspec/plans/<ulid>/` sidecars from the
+    // original fixture. We just overwrote the monolithic file with one new
+    // entry, so rewrite the folder layout from the new index. This drops
+    // stale shells and writes the new authoritative plan.yaml / plan.md
+    // sidecars the folder-backed storage manager reads from.
+    // AC: @entity-folder-migration-and-compatibility-1 ac-partial-folder-layouts-are-blocked
+    // AC: @folder-backed-plan-storage-1 ac-plan-document-sidecar-is-authoritative
+    const plansFolder = path.join(kspecDir, "plans");
+    for (const ulid of ["01KG0RRRCA45ZT43W2T6HJMVP2", "01KG0RRSCA45ZT43W2T6HJMVP3"]) {
+      rmSync(path.join(plansFolder, ulid), { recursive: true, force: true });
+    }
+    materializeFolderBackedPlanShells(kspecDir);
 
     rmSync(path.join(kspecDir, "tasks"), { recursive: true, force: true });
     writeFileSync(path.join(kspecDir, "project.tasks.yaml"), "");

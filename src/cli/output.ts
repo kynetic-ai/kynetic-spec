@@ -201,6 +201,29 @@ export function success(message: string, data?: Record<string, unknown>): void {
 }
 
 /**
+ * Render a `details` value for text-mode error output.
+ *
+ * Returns the textual portion to print under the main error line. Plain
+ * structured objects (e.g. `{ message, suggestion }`) surface their `message`
+ * field so the caller's underlying failure text is preserved instead of
+ * collapsing to `[object Object]`. Returns `null` when there is nothing
+ * meaningful to render so the caller can suppress the secondary line entirely.
+ */
+function formatErrorDetailsForText(details: unknown): string | null {
+  if (details === null || details === undefined) return null;
+  if (typeof details === "string") return details;
+  if (details instanceof Error) return String(details);
+  if (typeof details === "object") {
+    const message = (details as { message?: unknown }).message;
+    if (typeof message === "string" && message.length > 0) {
+      return message;
+    }
+    return null;
+  }
+  return String(details);
+}
+
+/**
  * Output error message
  * AC: @output-format-option ac-format-json, ac-format-yaml
  */
@@ -213,9 +236,12 @@ export function error(message: string, details?: unknown): void {
   } else {
     console.error(chalk.red("✗"), message);
     if (details) {
-      console.error(chalk.gray(String(details)));
+      const detailText = formatErrorDetailsForText(details);
+      if (detailText !== null) {
+        console.error(chalk.gray(detailText));
+      }
       // Show suggestion if it's a ShadowError with a suggestion
-      if (details && typeof details === "object" && "suggestion" in details) {
+      if (typeof details === "object" && "suggestion" in details) {
         const suggestion = (details as { suggestion?: string }).suggestion;
         if (suggestion) {
           console.error(chalk.yellow("  Suggestion:"), suggestion);
@@ -223,6 +249,21 @@ export function error(message: string, details?: unknown): void {
       }
     }
   }
+}
+
+/**
+ * Emit the closed lifecycle-command failure envelope without decorating or
+ * interpolating daemon-provided details. Lifecycle controls deliberately use
+ * this narrower surface because paths and raw recovery errors must not cross
+ * the CLI boundary.
+ */
+export function lifecycleError(code: string, message: string, suggestion: string): void {
+  if (isJsonMode()) {
+    console.error(JSON.stringify({ ok: false, data: null, error: { code, message, suggestion } }));
+    return;
+  }
+  console.error(`Error: ${message}`);
+  console.error(`Suggestion: ${suggestion}`);
 }
 
 /**
@@ -569,6 +610,23 @@ export interface FormatTaskDetailsOptions {
   activity?: ActivityEntry[];
   /** Show full activity timeline (default: last 10 entries) */
   showFullActivity?: boolean;
+  /**
+   * Resolved task resource references with drift status for the Resources
+   * section. Caller supplies them so the formatter never reaches into the
+   * filesystem to load owning manifests.
+   *
+   * AC: @plan-resource-derivation-semantics-1 ac-resource-drift-is-visible
+   */
+  resourceRefs?: Array<{
+    owner_type: "plan" | "task";
+    owner_ref: string;
+    id: string;
+    path: string;
+    status: "present" | "drift" | "missing" | "unresolved";
+    recorded_sha256: string;
+    current_sha256: string | null;
+    message: string;
+  }>;
 }
 
 /**
@@ -715,6 +773,30 @@ export function formatTaskDetails(
   }
   if (task.completed_at) {
     console.log(`${fieldLabels.completed} ${task.completed_at}`);
+  }
+
+  // Resources section — drift status comes from the resolved refs the caller
+  // computed against each owning entity's current manifest.
+  // AC: @plan-resource-derivation-semantics-1 ac-derived-task-keeps-plan-resource-reference
+  // AC: @plan-resource-derivation-semantics-1 ac-resource-drift-is-visible
+  if (options.resourceRefs && options.resourceRefs.length > 0) {
+    console.log(`\n${chalk.bold("─── Resources ───")}`);
+    for (const entry of options.resourceRefs) {
+      const statusLabel =
+        entry.status === "present"
+          ? chalk.green("OK")
+          : entry.status === "drift"
+            ? chalk.yellow("DRIFT")
+            : entry.status === "missing"
+              ? chalk.red("MISSING")
+              : chalk.red("UNRESOLVED");
+      console.log(
+        `  [${statusLabel}] ${entry.id}  (${entry.owner_type} ${entry.owner_ref}, ${entry.path})`,
+      );
+      if (entry.status !== "present") {
+        console.log(chalk.gray(`    ${entry.message}`));
+      }
+    }
   }
 
   // Show resolved spec information

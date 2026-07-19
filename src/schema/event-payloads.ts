@@ -65,8 +65,32 @@ export const InvocationStartedPayloadSchema = z.object({
   agent_id: z.string(),
   /** The dispatch event that triggered this invocation */
   trigger: z.string(),
-  /** Task reference when the invocation is task-scoped */
+  /**
+   * Canonical full task ULID — the authoritative task identity. Downstream
+   * dispatch consumers key identity off this, never the display ref.
+   * AC: @dispatch-canonical-task-identity ac-session-and-event-payloads-separate-id-from-display-ref
+   */
+  task_id: z.string().nullable().optional(),
+  /** Display task ref for human-readable surfaces only; never an identity key. */
   task_ref: z.string().nullable().optional(),
+  /**
+   * Adapter id requested by the agent (or the override that was applied).
+   * AC: @dispatch-event-payload ac-2
+   */
+  adapter_id: z.string().optional(),
+  /**
+   * Adapter id that actually resolved for the spawn. Equal to `adapter_id`
+   * on the legacy path; equal to the runner's adapter on the runner path.
+   * AC: @dispatch-event-payload ac-2
+   */
+  resolved_adapter: z.string().optional(),
+  /**
+   * Named runner that resolved this invocation. Present when a named
+   * runner was configured; absent otherwise.
+   * AC: @dispatch-event-payload ac-2
+   * AC: @runner-resolution-and-preflight ac-dispatched-event-records-runner
+   */
+  runner: z.string().optional(),
 });
 
 /**
@@ -81,7 +105,13 @@ export const InvocationTerminalPayloadSchema = z.object({
   agent_id: z.string(),
   /** The dispatch event that triggered this invocation */
   trigger: z.string(),
-  /** Task reference when the invocation is task-scoped */
+  /**
+   * Canonical full task ULID — the authoritative task identity. Downstream
+   * dispatch consumers key identity off this, never the display ref.
+   * AC: @dispatch-canonical-task-identity ac-session-and-event-payloads-separate-id-from-display-ref
+   */
+  task_id: z.string().nullable().optional(),
+  /** Display task ref for human-readable surfaces only; never an identity key. */
   task_ref: z.string().nullable().optional(),
   /** Duration of the invocation in milliseconds */
   duration_ms: z.number().nonnegative(),
@@ -90,6 +120,23 @@ export const InvocationTerminalPayloadSchema = z.object({
    * AC: @multi-turn-session-lifecycle ac-14
    */
   turn_count: z.number().int().positive(),
+  /**
+   * Adapter id requested by the agent (or the override that was applied).
+   * AC: @dispatch-event-payload ac-2
+   */
+  adapter_id: z.string().optional(),
+  /**
+   * Adapter id that actually resolved for the spawn.
+   * AC: @dispatch-event-payload ac-2
+   */
+  resolved_adapter: z.string().optional(),
+  /**
+   * Named runner that resolved this invocation. Present when a named
+   * runner was configured; absent otherwise.
+   * AC: @dispatch-event-payload ac-2
+   * AC: @runner-resolution-and-preflight ac-dispatched-event-records-runner
+   */
+  runner: z.string().optional(),
 });
 
 export type InvocationStartedPayload = z.infer<typeof InvocationStartedPayloadSchema>;
@@ -138,7 +185,14 @@ export const SessionEventPayloadSchema = z.object({
   session_id: z.string(),
   /** The agent definition that ran the session */
   agent_id: z.string(),
-  /** Task reference if the session was task-scoped */
+  /**
+   * Canonical full task ULID — the authoritative task identity when the
+   * session is task-scoped. Consumers key identity off this, never the
+   * display ref.
+   * AC: @dispatch-canonical-task-identity ac-session-and-event-payloads-separate-id-from-display-ref
+   */
+  task_id: z.string().nullable().optional(),
+  /** Display task ref for human-readable surfaces only; never an identity key. */
   task_ref: z.string().nullable().optional(),
   /** Duration of the session in milliseconds */
   duration_ms: z.number().nonnegative(),
@@ -172,7 +226,13 @@ export const SessionIdlePayloadSchema = z.object({
   session_id: z.string(),
   /** The agent definition running the session */
   agent_id: z.string(),
-  /** Task reference if the session is task-scoped */
+  /**
+   * Canonical full task ULID — the authoritative task identity when the session
+   * is task-scoped. Consumers key identity off this, never the display ref.
+   * AC: @dispatch-canonical-task-identity ac-session-and-event-payloads-separate-id-from-display-ref
+   */
+  task_id: z.string().nullable().optional(),
+  /** Display task ref for human-readable surfaces only; never an identity key. */
   task_ref: z.string().nullable().optional(),
   /** Number of turns completed so far (including the turn that just ended) */
   turn_count: z.number().int().positive(),
@@ -277,6 +337,110 @@ export const ACTION_TERMINAL_PAYLOAD_FIELDS = Object.keys(
   ActionTerminalPayloadSchema.shape,
 ) as readonly string[];
 
+// ─── Dispatch Control Event Payloads ───────────────────────────────────────
+
+export const DispatchControlErrorCodeSchema = z.enum([
+  "validation_failed",
+  "task_not_found",
+  "task_identity_ambiguous",
+  "task_identity_mismatch",
+  "invalid_transition",
+  "control_store_unavailable",
+  "control_store_corrupt",
+  "control_commit_failed",
+  "cancellation_timeout",
+  "cancellation_failed",
+  "session_closure_failed",
+  "cleanup_ownership_mismatch",
+  "cleanup_process_birth_mismatch",
+  "cleanup_leader_missing_group_alive",
+  "cleanup_identity_unverifiable",
+  "cleanup_group_unverifiable",
+  "internal_error",
+]);
+
+export type DispatchControlErrorCode = z.infer<typeof DispatchControlErrorCodeSchema>;
+
+export const DispatchControlEventSourceSchema = z.enum([
+  "cli",
+  "api",
+  "ui",
+  "daemon_startup",
+  "daemon_shutdown",
+  "recovery",
+]);
+
+const DispatchControlTextSchema = (maxCodePoints: number) =>
+  z.string().refine((value) => Array.from(value).length <= maxCodePoints, {
+    message: `Must contain at most ${maxCodePoints} Unicode code points`,
+  });
+
+const CANONICAL_ULID_PATTERN = /^[0-9A-HJKMNP-TV-Z]{26}$/;
+
+export const DispatchControlEventPayloadSchema = z
+  .object({
+    scope: z.enum(["global", "task"]),
+    action: z.enum(["start", "pause", "resume", "stop"]),
+    authority: z.enum(["stopped", "running", "paused"]),
+    projection: z.enum(["stopped", "running", "paused", "draining"]),
+    outcome: z.enum(["applied", "noop", "failed"]),
+    reason: DispatchControlTextSchema(240),
+    actor: DispatchControlTextSchema(120),
+    source: DispatchControlEventSourceSchema,
+    timestamp: z.string().datetime({ offset: true }),
+    task_id: z.string().regex(CANONICAL_ULID_PATTERN).optional(),
+    task_ref: DispatchControlTextSchema(200).optional(),
+    error_code: DispatchControlErrorCodeSchema.optional(),
+  })
+  .strict()
+  .superRefine((payload, ctx) => {
+    if (payload.scope === "task" && payload.task_id === undefined) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        path: ["task_id"],
+        message: "Task-scoped dispatch control events require canonical task_id",
+      });
+    }
+    if (payload.scope === "global" && payload.task_id !== undefined) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        path: ["task_id"],
+        message: "Global dispatch control events forbid task_id",
+      });
+    }
+    if (payload.scope === "global" && payload.task_ref !== undefined) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        path: ["task_ref"],
+        message: "Global dispatch control events forbid task_ref",
+      });
+    }
+    if ((payload.outcome === "failed") !== (payload.error_code !== undefined)) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        path: ["error_code"],
+        message: "error_code is required exactly for failed dispatch control outcomes",
+      });
+    }
+  });
+
+export type DispatchControlEventPayload = z.infer<typeof DispatchControlEventPayloadSchema>;
+
+export const DISPATCH_CONTROL_PAYLOAD_FIELDS = [
+  "scope",
+  "action",
+  "authority",
+  "projection",
+  "outcome",
+  "reason",
+  "actor",
+  "source",
+  "timestamp",
+  "task_id",
+  "task_ref",
+  "error_code",
+] as const;
+
 // ─── Payload Schema Lookup ──────────────────────────────────────────────────
 
 /**
@@ -300,6 +464,12 @@ export const EVENT_PAYLOAD_SCHEMAS: Record<string, z.ZodType> = {
   "action.started": ActionStartedPayloadSchema,
   "action.completed": ActionTerminalPayloadSchema,
   "action.failed": ActionTerminalPayloadSchema,
+  "dispatch_control.start_applied": DispatchControlEventPayloadSchema,
+  "dispatch_control.pause_applied": DispatchControlEventPayloadSchema,
+  "dispatch_control.resume_applied": DispatchControlEventPayloadSchema,
+  "dispatch_control.stop_applied": DispatchControlEventPayloadSchema,
+  "dispatch_control.noop": DispatchControlEventPayloadSchema,
+  "dispatch_control.failed": DispatchControlEventPayloadSchema,
 };
 
 /**

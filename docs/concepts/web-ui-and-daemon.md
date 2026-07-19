@@ -34,7 +34,7 @@ The web UI is a local browser application that gives you a visual overview of yo
 - **Documentation.** Project docs are bundled at build time and rendered with navigation, a table of contents, and syntax highlighting. This works even without the daemon — the content is embedded in the build.
 - **Activity.** See recent changes across specs and tasks.
 
-The web UI does not replace the CLI for making changes. It's a read-mostly surface — useful for orientation and review, while the CLI handles mutations.
+When connected to the daemon, the web UI supports both reading and changing project state. Its controls cover task lifecycle and notes, dispatch lifecycle, agent definitions, triage, reviews, and other supported workflows. The CLI remains available for terminal and scripted use; both surfaces operate on the same project state.
 
 ## How They Surface in Use
 
@@ -44,6 +44,6 @@ The web UI does not replace the CLI for making changes. It's a read-mostly surfa
 
 **During development.** If you're developing kspec itself, the web UI dev server supports hot module replacement. For users of kspec, the web UI is pre-built and served by the daemon.
 
-**When the daemon is down.** Everything still works through the CLI. The web UI's documentation pages render from bundled content, so docs are available even without a running daemon. Live project state requires the daemon.
+**When the daemon is down.** Everything still works through the CLI. The web UI's documentation pages render from bundled content, so docs are available even without a running daemon. Live project state and mutation controls require the daemon.
 
-The key distinction: the CLI is the source of truth and the mutation interface. The daemon and web UI are read surfaces that make the same information more accessible in different contexts.
+The key distinction is between runtime modes: a daemon-connected web UI can read and change live project state, while a static export is a read-only documentation surface. The CLI continues to work independently of either mode.

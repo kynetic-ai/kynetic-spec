@@ -1,4 +1,4 @@
-kynetic: "1.0"
+kynetic: "1.2"
 
 project:
   name: "E2E Test Project"
@@ -15,3 +15,12 @@ meta_file: kynetic.meta.yaml
 
 task_storage:
   format: split
+
+plan_storage:
+  format: folder
+
+review_storage:
+  format: folder
+
+resource_storage:
+  format: entity_scoped

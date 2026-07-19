@@ -401,9 +401,12 @@ describe("ws-invalidation agents topic scoping", () => {
       expect(mockQueryClient.invalidateQueries).not.toHaveBeenCalledWith({
         queryKey: queryKeys.sessions.all,
       });
+      expect(mockQueryClient.invalidateQueries).toHaveBeenCalledWith({
+        queryKey: queryKeys.automation.events(),
+      });
     });
 
-    it("unknown non-stream agents events conservatively invalidate agents.all only", () => {
+    it("unknown non-stream agents events refresh agent status and the automation log", () => {
       setupWsInvalidation(mockQueryClient);
       const event = makeBroadcastEvent("agents", "some_future_status_event", {
         dispatch_enabled: false,
@@ -416,6 +419,9 @@ describe("ws-invalidation agents topic scoping", () => {
       });
       expect(mockQueryClient.invalidateQueries).not.toHaveBeenCalledWith({
         queryKey: queryKeys.sessions.all,
+      });
+      expect(mockQueryClient.invalidateQueries).toHaveBeenCalledWith({
+        queryKey: queryKeys.automation.events(),
       });
     });
   });
@@ -442,6 +448,9 @@ describe("ws-invalidation agents topic scoping", () => {
         });
         expect(mockQueryClient.invalidateQueries).toHaveBeenCalledWith({
           queryKey: queryKeys.sessions.all,
+        });
+        expect(mockQueryClient.invalidateQueries).toHaveBeenCalledWith({
+          queryKey: queryKeys.automation.events(),
         });
       });
     }

@@ -1,0 +1,21 @@
+_ulid: 01KKTX9CA45ZT43W2T6HJMVA10
+slugs:
+  - test-review-draft
+title: Draft review
+author: reviewer@test.com
+checks: []
+events: []
+examined_commit: null
+external_links: []
+lifecycle_state: draft
+related_refs: []
+subject:
+  type: task
+  content_hash: hash456
+  ref: "@test-task-ready"
+  shadow_commit: def5678
+threads: []
+verdicts: []
+created_at: 2026-03-15T08:00:00Z
+updated_at: null
+notes: []

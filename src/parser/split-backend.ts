@@ -18,14 +18,12 @@
  */
 
 import * as fs from "node:fs/promises";
-import * as path from "node:path";
 import type { Task } from "../schema/task.js";
 import { TaskSchema } from "../schema/task.js";
 import {
   getActiveBatchBuffer,
   runWithBuffer,
   mkdirBufferAware,
-  readdirBufferAware,
   writeFileBufferAware,
 } from "../cli/batch-write-buffer.js";
 import type { MutationMetadata, TaskStorageBackend, TaskSummary } from "./task-data-manager.js";
@@ -42,13 +40,62 @@ import {
   findTaskByRef,
   getAuthor,
   getDefaultTaskFilePath,
-  mergeTaskPreservingRawShape,
   readYamlFile,
   stripRuntimeMetadata,
+  TASK_SCHEMA_KEYS,
   toYaml,
-  writeYamlFile,
 } from "./yaml.js";
 import { rawToSummary } from "./task-data-manager.js";
+import {
+  type FolderBackedEntityLayout,
+  getEntityDir as getFolderBackedEntityDir,
+  getEntityFilePath as getFolderBackedEntityFilePath,
+  getStorageRoot as getFolderBackedStorageRoot,
+  indexEntriesEqualForFields,
+  isValidUlidDirName,
+  listEntityDirs,
+  mergePreservingRawShape,
+  readIndexEntries,
+  rebuildEntityIndex,
+  writeIndexEntries,
+} from "./folder-backed-entity.js";
+
+/**
+ * Task-specific wrapper around the shared unknown-field preservation
+ * helper. Tasks use the canonical task schema key set so mutations
+ * round-trip extension fields without polluting YAML with vacuous defaults.
+ *
+ * AC: @task-core-data-file ac-4 — preserve unknown fields through mutation
+ * AC: @trait-folder-backed-entity-1 ac-unknown-files-preserved
+ */
+export function mergeTaskPreservingRawShape(
+  rawTask: Record<string, unknown>,
+  normalizedTask: Record<string, unknown>,
+): Record<string, unknown> {
+  return mergePreservingRawShape(rawTask, normalizedTask, TASK_SCHEMA_KEYS);
+}
+
+// ── Folder-Backed Entity Layout ──────────────────────────────────────────────
+
+/**
+ * Storage layout for the task entity. Tasks adopt the folder-backed entity
+ * trait: each task owns a ULID directory under `<specDir>/tasks/`, and a
+ * lean index lives at `<specDir>/project.tasks.yaml`.
+ *
+ * Spec: @trait-folder-backed-entity-1
+ */
+const TASK_LAYOUT: FolderBackedEntityLayout = {
+  entityType: "task",
+  storageRoot: "tasks",
+  // indexFile is derived from getDefaultTaskFilePath(); we override the
+  // shared getEntityIndexPath helper at call sites so the index path
+  // remains consistent with legacy callers. Use the bare file name here
+  // for diagnostic completeness.
+  indexFile: "project.tasks.yaml",
+  // Tasks support both bare-array and { tasks: [...] } wrapper formats on
+  // disk for backward compatibility with hand-edited project.tasks.yaml.
+  indexWrapperKey: "tasks",
+};
 
 // ── History Helpers ──────────────────────────────────────────────────────────
 
@@ -104,6 +151,10 @@ function createHistoryEntry(
 }
 
 // ── Directory Layout ─────────────────────────────────────────────────────────
+//
+// Task-specific thin wrappers around the shared folder-backed entity helpers.
+// The trait foundation (src/parser/folder-backed-entity.ts) owns the storage
+// shape; this module owns the task-specific schema and mutation semantics.
 
 /**
  * Get the tasks directory path for a given context.
@@ -112,9 +163,10 @@ function createHistoryEntry(
  * Layout: <specDir>/tasks/
  *
  * AC: @task-directory-storage ac-1 — directory named by full ULID
+ * AC: @trait-folder-backed-entity-1 ac-entity-has-ulid-directory
  */
 export function getTasksDir(ctx: KspecContext): string {
-  return path.join(ctx.specDir, "tasks");
+  return getFolderBackedStorageRoot(ctx, TASK_LAYOUT);
 }
 
 /**
@@ -123,9 +175,10 @@ export function getTasksDir(ctx: KspecContext): string {
  * Layout: <specDir>/tasks/<full-ulid>/
  *
  * AC: @task-directory-storage ac-1 — task has its own directory named by full ULID
+ * AC: @trait-folder-backed-entity-1 ac-entity-has-ulid-directory
  */
 export function getTaskDir(ctx: KspecContext, ulid: string): string {
-  return path.join(getTasksDir(ctx), ulid);
+  return getFolderBackedEntityDir(ctx, TASK_LAYOUT, ulid);
 }
 
 /**
@@ -136,7 +189,7 @@ export function getTaskDir(ctx: KspecContext, ulid: string): string {
  * AC: @task-directory-storage ac-2 — core data in separate file
  */
 export function getTaskFilePath(ctx: KspecContext, ulid: string): string {
-  return path.join(getTaskDir(ctx, ulid), "task.yaml");
+  return getFolderBackedEntityFilePath(ctx, TASK_LAYOUT, ulid, "task.yaml");
 }
 
 /**
@@ -147,13 +200,17 @@ export function getTaskFilePath(ctx: KspecContext, ulid: string): string {
  * AC: @task-directory-storage ac-2 — notes in separate file
  */
 export function getNotesFilePath(ctx: KspecContext, ulid: string): string {
-  return path.join(getTaskDir(ctx, ulid), "notes.yaml");
+  return getFolderBackedEntityFilePath(ctx, TASK_LAYOUT, ulid, "notes.yaml");
 }
 
 /**
  * Get the index file path (same as default task file for now).
  *
  * Layout: <specDir>/project.tasks.yaml (lean index with filterable fields only)
+ *
+ * Resolved via getDefaultTaskFilePath() rather than the layout's `indexFile`
+ * field so the path stays consistent with legacy callers that derive the
+ * task index from yaml.ts.
  */
 export function getIndexFilePath(ctx: KspecContext): string {
   return getDefaultTaskFilePath(ctx);
@@ -175,9 +232,7 @@ export async function detectSplitFormat(ctx: KspecContext): Promise<boolean> {
   try {
     const entries = await fs.readdir(tasksDir, { withFileTypes: true });
     // Look for at least one ULID-named directory (26-char Crockford base32)
-    return entries.some(
-      (entry) => entry.isDirectory() && /^[0-9A-HJKMNP-TV-Z]{26}$/.test(entry.name),
-    );
+    return entries.some((entry) => entry.isDirectory() && isValidUlidDirName(entry.name));
   } catch {
     return false;
   }
@@ -187,23 +242,17 @@ export async function detectSplitFormat(ctx: KspecContext): Promise<boolean> {
  * List all task ULID directories in the tasks/ directory.
  *
  * Returns the ULID directory names (not full paths).
- * Only includes entries that are directories with valid ULID names.
+ * Only includes entries that are directories with valid ULID names —
+ * unknown files and non-ULID subdirectories are ignored by task semantics
+ * and preserved on disk via the trait foundation.
  *
  * AC: @task-directory-storage ac-1 — directories named by full ULID
  * AC: @task-directory-storage ac-3 — unknown files/dirs are ignored
+ * AC: @trait-folder-backed-entity-1 ac-entity-has-ulid-directory
+ * AC: @trait-folder-backed-entity-1 ac-unknown-files-preserved
  */
 export async function listTaskDirs(ctx: KspecContext): Promise<string[]> {
-  const tasksDir = getTasksDir(ctx);
-  try {
-    const entries = (await readdirBufferAware(tasksDir, {
-      withFileTypes: true,
-    })) as import("node:fs").Dirent[];
-    return entries
-      .filter((entry) => entry.isDirectory() && /^[0-9A-HJKMNP-TV-Z]{26}$/.test(entry.name))
-      .map((entry) => entry.name);
-  } catch {
-    return [];
-  }
+  return listEntityDirs(ctx, TASK_LAYOUT);
 }
 
 // ── Routing Logic ────────────────────────────────────────────────────────────
@@ -371,30 +420,14 @@ export function toIndexEntry(task: Task): Record<string, unknown> {
  * field that changes — triggering an index write per AC-2 (filterable field
  * changes are persisted to both index and per-task file atomically).
  *
+ * Delegates to the shared trait foundation so all folder-backed entities
+ * compare bounded index projections with identical semantics.
+ *
  * AC: @task-index-file ac-2 — index updated when any indexed field changes
+ * AC: @trait-folder-backed-entity-1 ac-index-excludes-heavy-detail-bytes
  */
 export function indexEntriesEqual(a: Record<string, unknown>, b: Record<string, unknown>): boolean {
-  for (const field of INDEXED_FIELDS) {
-    const va = a[field];
-    const vb = b[field];
-
-    if (va === vb) continue;
-
-    // Handle undefined vs missing consistently
-    if (va === undefined && vb === undefined) continue;
-
-    // Deep comparison for arrays (slugs, tags, depends_on, blocked_by)
-    if (Array.isArray(va) && Array.isArray(vb)) {
-      if (va.length !== vb.length) return false;
-      for (let i = 0; i < va.length; i++) {
-        if (va[i] !== vb[i]) return false;
-      }
-      continue;
-    }
-
-    return false;
-  }
-  return true;
+  return indexEntriesEqualForFields(a, b, INDEXED_FIELDS);
 }
 
 // ── Split Storage Backend ────────────────────────────────────────────────────
@@ -1207,119 +1240,64 @@ class SplitBackend implements TaskStorageBackend {
   /**
    * Add a new entry to the index file.
    *
+   * Preserves the on-disk wrapper shape via the shared trait foundation.
+   *
    * AC: @task-index-file ac-5 — index entry added atomically with directory
+   * AC: @trait-folder-backed-entity-1 ac-unknown-files-preserved
    */
   private async addToIndex(ctx: KspecContext, task: Task): Promise<void> {
     const indexPath = getIndexFilePath(ctx);
     const indexEntry = toIndexEntry(task);
 
-    // Read current index
-    let rawTasks: unknown[] = [];
-    let useWrapper = false;
-    let wrapperObj: Record<string, unknown> | undefined;
-
-    try {
-      const raw = await readYamlFile<unknown>(indexPath);
-      if (Array.isArray(raw)) {
-        rawTasks = raw;
-      } else if (raw && typeof raw === "object" && "tasks" in raw) {
-        wrapperObj = raw as Record<string, unknown>;
-        rawTasks = Array.isArray(wrapperObj.tasks) ? [...(wrapperObj.tasks as unknown[])] : [];
-        useWrapper = true;
-      }
-    } catch {
-      // Index doesn't exist yet
-    }
-
-    rawTasks.push(indexEntry);
-
-    if (useWrapper && wrapperObj) {
-      await writeYamlFile(indexPath, { ...wrapperObj, tasks: rawTasks });
-    } else {
-      await writeYamlFile(indexPath, rawTasks);
-    }
+    const shape = await readIndexEntries(indexPath, TASK_LAYOUT.indexWrapperKey);
+    const updated = [...shape.entries, indexEntry];
+    await writeIndexEntries(indexPath, updated, shape, TASK_LAYOUT.indexWrapperKey);
   }
 
   /**
    * Update an existing index entry.
    *
    * AC: @task-index-file ac-2 — index and per-task file updated atomically
+   * AC: @trait-folder-backed-entity-1 ac-unknown-files-preserved
    */
   private async updateIndexEntry(ctx: KspecContext, task: Task): Promise<void> {
     const indexPath = getIndexFilePath(ctx);
     const indexEntry = toIndexEntry(task);
 
-    const raw = await readYamlFile<unknown>(indexPath);
-    let rawTasks: unknown[];
-    let useWrapper = false;
-    let wrapperObj: Record<string, unknown> | undefined;
-
-    if (Array.isArray(raw)) {
-      rawTasks = raw;
-    } else if (raw && typeof raw === "object" && "tasks" in raw) {
-      wrapperObj = raw as Record<string, unknown>;
-      rawTasks = Array.isArray(wrapperObj.tasks) ? [...(wrapperObj.tasks as unknown[])] : [];
-      useWrapper = true;
-    } else {
-      rawTasks = [];
-    }
-
-    // Find and replace the matching entry
-    const existingIdx = rawTasks.findIndex(
+    const shape = await readIndexEntries(indexPath, TASK_LAYOUT.indexWrapperKey);
+    const updated = [...shape.entries];
+    const existingIdx = updated.findIndex(
       (entry) =>
         entry &&
         typeof entry === "object" &&
         (entry as Record<string, unknown>)._ulid === task._ulid,
     );
-
     if (existingIdx >= 0) {
-      rawTasks[existingIdx] = indexEntry;
+      updated[existingIdx] = indexEntry;
     } else {
       // Entry not found — add it (recovery path)
-      rawTasks.push(indexEntry);
+      updated.push(indexEntry);
     }
-
-    if (useWrapper && wrapperObj) {
-      await writeYamlFile(indexPath, { ...wrapperObj, tasks: rawTasks });
-    } else {
-      await writeYamlFile(indexPath, rawTasks);
-    }
+    await writeIndexEntries(indexPath, updated, shape, TASK_LAYOUT.indexWrapperKey);
   }
 
   /**
    * Remove an entry from the index file.
    *
    * AC: @task-directory-storage ac-5 — index entry removed atomically with directory
+   * AC: @trait-folder-backed-entity-1 ac-unknown-files-preserved
    */
   private async removeFromIndex(ctx: KspecContext, ulid: string): Promise<void> {
     const indexPath = getIndexFilePath(ctx);
-
-    const raw = await readYamlFile<unknown>(indexPath);
-    let rawTasks: unknown[];
-    let useWrapper = false;
-    let wrapperObj: Record<string, unknown> | undefined;
-
-    if (Array.isArray(raw)) {
-      rawTasks = raw;
-    } else if (raw && typeof raw === "object" && "tasks" in raw) {
-      wrapperObj = raw as Record<string, unknown>;
-      rawTasks = Array.isArray(wrapperObj.tasks) ? [...(wrapperObj.tasks as unknown[])] : [];
-      useWrapper = true;
-    } else {
+    const shape = await readIndexEntries(indexPath, TASK_LAYOUT.indexWrapperKey);
+    if (shape.entries.length === 0 && !shape.useWrapper) {
       return; // No index to remove from
     }
-
-    // Filter out the matching entry
-    rawTasks = rawTasks.filter(
+    const filtered = shape.entries.filter(
       (entry) =>
         !(entry && typeof entry === "object" && (entry as Record<string, unknown>)._ulid === ulid),
     );
-
-    if (useWrapper && wrapperObj) {
-      await writeYamlFile(indexPath, { ...wrapperObj, tasks: rawTasks });
-    } else {
-      await writeYamlFile(indexPath, rawTasks);
-    }
+    await writeIndexEntries(indexPath, filtered, shape, TASK_LAYOUT.indexWrapperKey);
   }
 
   /**
@@ -1329,51 +1307,29 @@ class SplitBackend implements TaskStorageBackend {
    * the entire index file. This is the recovery path when the index
    * has drifted from per-task files.
    *
+   * Delegates the iteration / projection / wrapper-shape preservation to
+   * the shared trait foundation; the SplitBackend supplies the
+   * task-specific load and projection callbacks plus the indexMutex
+   * serialization that protects against concurrent mutation races.
+   *
    * AC: @task-index-file ac-7 — index fully regenerated from per-task files alone
+   * AC: @trait-folder-backed-entity-1 ac-index-rebuilds-from-folders
    */
   async rebuildIndex(ctx: KspecContext): Promise<{ count: number }> {
     // AC: @task-storage-activation ac-3 — refuse on unmigrated data
     await this.ensureMigrated(ctx);
 
-    const ulids = await listTaskDirs(ctx);
-    const entries: Record<string, unknown>[] = [];
-
-    for (const ulid of ulids) {
-      const task = await this.loadTaskFromDir(ctx, ulid);
-      if (task) {
-        entries.push(toIndexEntry(task));
-      }
-    }
-
     // Serialize index write with indexMutex to prevent races with
-    // concurrent mutations updating the same index file
+    // concurrent mutations updating the same index file.
     const releaseIndex = await this.indexMutex.acquire();
     try {
-      const indexPath = getIndexFilePath(ctx);
-
-      // Detect current format (wrapper vs bare array) to preserve it
-      let useWrapper = false;
-      let wrapperObj: Record<string, unknown> | undefined;
-      try {
-        const raw = await readYamlFile<unknown>(indexPath);
-        if (raw && typeof raw === "object" && !Array.isArray(raw) && "tasks" in raw) {
-          wrapperObj = raw as Record<string, unknown>;
-          useWrapper = true;
-        }
-      } catch {
-        // Index doesn't exist — use bare array
-      }
-
-      if (useWrapper && wrapperObj) {
-        await writeYamlFile(indexPath, { ...wrapperObj, tasks: entries });
-      } else {
-        await writeYamlFile(indexPath, entries);
-      }
+      return await rebuildEntityIndex<LoadedTask>(ctx, TASK_LAYOUT, {
+        loadEntity: (rebuildCtx, ulid) => this.loadTaskFromDir(rebuildCtx, ulid),
+        projectToIndexEntry: (task) => toIndexEntry(task),
+      });
     } finally {
       releaseIndex();
     }
-
-    return { count: entries.length };
   }
 }
 

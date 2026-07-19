@@ -11,10 +11,7 @@
 // Trait N/A annotations
 // AC: @daemon-agent-dispatch ac-1 — N/A: file watcher integration is tested implicitly via the dispatch engine; isolated watcher+diffing behavior is covered in unit tests
 // AC: @daemon-agent-dispatch ac-3, ac-4 — N/A: actual invocation broadcasts require a real agent adapter (claude-agent-acp) which cannot run in vitest; event callback wiring is verified by unit tests
-// AC: @trait-api-endpoint ac-2 — N/A: agent dispatch endpoints use project context, not item refs
 // AC: @trait-api-endpoint ac-4 — N/A: agent dispatch endpoints do not support pagination
-// AC: @trait-api-endpoint ac-5 — N/A: agent dispatch endpoints operate on daemon state, not shadow branch
-// AC: @trait-api-endpoint ac-6 — N/A: X-Request-Id header is infrastructure concern; not tested in domain E2E tests
 
 import type { Elysia } from "elysia";
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
@@ -112,6 +109,7 @@ describe("GET /api/agent/status", () => {
         branch: "plan/alpha",
         reason: 'integration target "plan/alpha" diverged',
         enteredAt: expect.any(String),
+        kind: "other",
       },
     ]);
   });
@@ -286,6 +284,7 @@ describe("GET /api/agent/dispatch/status (internal)", () => {
         branch: "plan/alpha",
         reason: 'integration target "plan/alpha" diverged',
         enteredAt: expect.any(String),
+        kind: "other",
       },
     ]);
   });

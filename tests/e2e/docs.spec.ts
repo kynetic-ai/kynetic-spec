@@ -7,6 +7,153 @@
  */
 
 import { test, expect } from "./fixtures/test-base";
+import { cpSync, existsSync, mkdirSync, mkdtempSync, rmSync, symlinkSync } from "node:fs";
+import { execFileSync } from "node:child_process";
+import { dirname, resolve, sep } from "node:path";
+import { tmpdir } from "node:os";
+import { fileURLToPath } from "node:url";
+
+const PROJECT_ROOT = resolve(dirname(fileURLToPath(import.meta.url)), "../..");
+const WEB_UI_BUILD = resolve(PROJECT_ROOT, "dist/web-ui");
+
+function buildPagefindVariant(basePath: string): { root: string; pagefindDir: string } {
+  const root = mkdtempSync(resolve(tmpdir(), "kspec-docs-e2e-search-"));
+  try {
+    mkdirSync(resolve(root, "scripts"), { recursive: true });
+    mkdirSync(resolve(root, "packages/web-ui/build"), { recursive: true });
+    symlinkSync(resolve(PROJECT_ROOT, "node_modules"), resolve(root, "node_modules"), "dir");
+    cpSync(resolve(PROJECT_ROOT, "docs"), resolve(root, "docs"), { recursive: true });
+    cpSync(resolve(PROJECT_ROOT, "RELEASE_NOTES.md"), resolve(root, "RELEASE_NOTES.md"));
+    cpSync(
+      resolve(PROJECT_ROOT, "scripts/build-docs-search.cjs"),
+      resolve(root, "scripts/build-docs-search.cjs"),
+    );
+    execFileSync(
+      process.execPath,
+      [resolve(root, "scripts/build-docs-search.cjs"), "--base-path", basePath],
+      { cwd: root, stdio: "pipe" },
+    );
+    return { root, pagefindDir: resolve(root, "packages/web-ui/build/pagefind") };
+  } catch (error) {
+    rmSync(root, { recursive: true, force: true });
+    throw error;
+  }
+}
+
+async function queryPagefindVariant(
+  page: import("@playwright/test").Page,
+  variant: string,
+  pagefindDir: string,
+  queries: readonly string[],
+): Promise<string[][]> {
+  await page.route(`http://search.local/${variant}/pagefind/**`, async (route) => {
+    const prefix = `/${variant}/pagefind/`;
+    const relativePath = decodeURIComponent(new URL(route.request().url()).pathname).slice(
+      prefix.length,
+    );
+    const assetPath = resolve(pagefindDir, relativePath);
+    if (assetPath !== pagefindDir && !assetPath.startsWith(`${pagefindDir}${sep}`)) {
+      await route.abort("blockedbyclient");
+      return;
+    }
+    await route.fulfill({ path: assetPath });
+  });
+  await page.route("http://search.local/", (route) =>
+    route.fulfill({
+      contentType: "text/html",
+      body: "<!doctype html><title>Search fixture</title>",
+    }),
+  );
+  await page.goto("http://search.local/");
+
+  return page.evaluate(
+    async ({ selectedVariant, selectedQueries }) => {
+      const bundlePath = `${location.origin}/${selectedVariant}/pagefind/`;
+      const pagefind = (await import(/* @vite-ignore */ `${bundlePath}pagefind.js`)) as {
+        options: (options: { bundlePath: string }) => Promise<void>;
+        init: () => Promise<void>;
+        search: (query: string) => Promise<{
+          results: Array<{ data: () => Promise<{ url: string }> }>;
+        }>;
+        destroy: () => Promise<void>;
+      };
+      await pagefind.options({ bundlePath });
+      await pagefind.init();
+      const resultSets: string[][] = [];
+      for (const query of selectedQueries) {
+        const search = await pagefind.search(query);
+        const results = await Promise.all(search.results.map((result) => result.data()));
+        resultSets.push(
+          results
+            .map(({ url }) => url.replace(/^\/(?:local|public)(?:\/kynetic-spec)?\/docs\//, ""))
+            .toSorted(),
+        );
+      }
+      await pagefind.destroy();
+      return resultSets;
+    },
+    { selectedVariant: variant, selectedQueries: queries },
+  );
+}
+
+async function serveStaticWebUi(
+  page: import("@playwright/test").Page,
+  baseUrl: string,
+): Promise<void> {
+  const origin = new URL(baseUrl).origin;
+  await page.route("**/*", async (route) => {
+    const requestUrl = new URL(route.request().url());
+    if (requestUrl.origin !== origin || requestUrl.pathname.startsWith("/api/")) {
+      await route.abort("blockedbyclient");
+      return;
+    }
+
+    const relativePath = decodeURIComponent(requestUrl.pathname).replace(/^\/+/, "");
+    const assetPath = resolve(WEB_UI_BUILD, relativePath);
+    if (relativePath && assetPath.startsWith(`${WEB_UI_BUILD}${sep}`) && existsSync(assetPath)) {
+      await route.fulfill({ path: assetPath });
+      return;
+    }
+    if (route.request().resourceType() === "document") {
+      await route.fulfill({ path: resolve(WEB_UI_BUILD, "index.html") });
+      return;
+    }
+    await route.abort("blockedbyclient");
+  });
+}
+
+const DISPATCH_DOCS = [
+  {
+    query: "Configuring Dispatch Workspaces",
+    title: "Configuring Dispatch Workspaces",
+    slug: "guides/configuring-dispatch-workspaces",
+  },
+  {
+    query: "Controlling the Dispatch Lifecycle",
+    title: "Controlling the Dispatch Lifecycle",
+    slug: "guides/controlling-dispatch-lifecycle",
+  },
+  {
+    query: "Dispatch Workspaces",
+    title: "Dispatch Workspaces",
+    slug: "concepts/dispatch-workspaces",
+  },
+  {
+    query: "Dispatch Bootstrap Fails",
+    title: "Dispatch Bootstrap Fails Before the Agent Starts",
+    slug: "troubleshooting/dispatch-bootstrap-failures",
+  },
+  {
+    query: "Workspace Cannot Sync",
+    title: "A Dispatch Workspace Cannot Sync or Clean Up",
+    slug: "troubleshooting/dispatch-workspace-sync-and-cleanup",
+  },
+  {
+    query: "Lifecycle Status Rejects",
+    title: "Dispatch Lifecycle Status Rejects an Action or Shows Cleanup",
+    slug: "troubleshooting/dispatch-lifecycle-control-failures",
+  },
+] as const;
 
 test.describe("Docs", () => {
   // AC: @docs-reachability ac-1 — Docs entry is present in primary navigation and navigates to docs
@@ -261,5 +408,147 @@ test.describe("Docs", () => {
         }
       }
     }
+  });
+
+  for (const viewport of [
+    { name: "wide", width: 1280, height: 900 },
+    { name: "narrow", width: 375, height: 667 },
+  ] as const) {
+    // AC: @docs-search ac-1 — Real daemon search returns navigable links to every dispatch page
+    // AC: @docs-search ac-2 — Pagefind loads only successful same-origin packaged assets
+    test(`${viewport.name} docs search reaches all dispatch workspace and recovery pages`, async ({
+      page,
+      daemon,
+    }) => {
+      await page.setViewportSize(viewport);
+      const daemonOrigin = new URL(daemon.baseUrl).origin;
+      const pagefindRequests: string[] = [];
+      const pagefindTransportFailures: string[] = [];
+      const pagefindHttpFailures: string[] = [];
+      const nonLocalRequests: string[] = [];
+      const consoleErrors: string[] = [];
+      const pageErrors: string[] = [];
+
+      page.on("request", (request) => {
+        const requestUrl = new URL(request.url());
+        if (requestUrl.pathname.startsWith("/pagefind/")) {
+          pagefindRequests.push(request.url());
+        }
+        if (requestUrl.origin !== daemonOrigin) {
+          nonLocalRequests.push(request.url());
+        }
+      });
+      page.on("requestfailed", (request) => {
+        if (new URL(request.url()).pathname.startsWith("/pagefind/")) {
+          pagefindTransportFailures.push(request.url());
+        }
+      });
+      page.on("response", (response) => {
+        if (
+          new URL(response.url()).pathname.startsWith("/pagefind/") &&
+          (response.status() < 200 || response.status() >= 300)
+        ) {
+          pagefindHttpFailures.push(`${response.status()} ${response.url()}`);
+        }
+      });
+      page.on("console", (message) => {
+        if (message.type() === "error") consoleErrors.push(message.text());
+      });
+      page.on("pageerror", (error) => pageErrors.push(error.message));
+
+      for (const doc of DISPATCH_DOCS) {
+        await page.goto("/docs");
+        const search = page.getByTestId("docs-search-input");
+        await search.fill(doc.query);
+        const results = page.getByTestId("docs-search-results");
+        const result = results.getByText(doc.title, { exact: true }).locator("..");
+        await expect(result, `${viewport.name} search result for ${doc.title}`).toBeVisible();
+        await result.click();
+        await expect(page).toHaveURL(new RegExp(`/docs/${doc.slug}$`));
+        await expect(page.getByRole("heading", { level: 1, name: doc.title })).toBeVisible();
+      }
+
+      expect(pagefindRequests.length).toBeGreaterThan(0);
+      expect(pagefindRequests.every((url) => new URL(url).origin === daemonOrigin)).toBe(true);
+      expect(pagefindTransportFailures).toEqual([]);
+      expect(pagefindHttpFailures).toEqual([]);
+      expect(nonLocalRequests).toEqual([]);
+      expect(consoleErrors).toEqual([]);
+      expect(pageErrors).toEqual([]);
+    });
+  }
+
+  // AC: @docs-search ac-3 — Public and local deployment indexes return the same pages
+  test("public and local docs searches return identical canonical result sets", async ({
+    page,
+  }) => {
+    test.slow();
+    let local: ReturnType<typeof buildPagefindVariant> | undefined;
+    let publicDeployment: ReturnType<typeof buildPagefindVariant> | undefined;
+    try {
+      local = buildPagefindVariant("");
+      publicDeployment = buildPagefindVariant("/kynetic-spec");
+      const queries = DISPATCH_DOCS.map((doc) => doc.query);
+      const localResults = await queryPagefindVariant(page, "local", local.pagefindDir, queries);
+      const publicResults = await queryPagefindVariant(
+        page,
+        "public",
+        publicDeployment.pagefindDir,
+        queries,
+      );
+      expect(publicResults).toEqual(localResults);
+      for (let index = 0; index < DISPATCH_DOCS.length; index++) {
+        expect(localResults[index], DISPATCH_DOCS[index]!.query).toContain(
+          DISPATCH_DOCS[index]!.slug,
+        );
+      }
+    } finally {
+      if (local) rmSync(local.root, { recursive: true, force: true });
+      if (publicDeployment) rmSync(publicDeployment.root, { recursive: true, force: true });
+    }
+  });
+
+  // AC: @docs-reachability ac-2 — Bundled docs remain readable without daemon API access
+  // AC: @docs-reachability ac-3 — Static docs navigation requires no server rendering
+  test("dispatch docs render statically without API mutation or raw Markdown links", async ({
+    page,
+    daemon,
+  }) => {
+    test.slow();
+    const externalRequests: string[] = [];
+    page.on("request", (request) => {
+      if (new URL(request.url()).origin !== new URL(daemon.baseUrl).origin) {
+        externalRequests.push(request.url());
+      }
+    });
+    await page.routeWebSocket("**/*", (webSocket) => webSocket.close());
+    await daemon.stop();
+    await serveStaticWebUi(page, daemon.baseUrl);
+
+    for (const doc of DISPATCH_DOCS) {
+      await page.goto(`${daemon.baseUrl}/docs/${doc.slug}`);
+      const article = page.locator("article");
+      await expect(article.getByRole("heading", { level: 1, name: doc.title })).toBeVisible();
+      const links = article.locator("a");
+      for (let index = 0; index < (await links.count()); index++) {
+        expect(await links.nth(index).getAttribute("href"), doc.slug).not.toMatch(/\.md(?:#|$)/);
+      }
+    }
+
+    expect(externalRequests).toEqual([]);
+  });
+
+  test("lifecycle guide exposes an accessible route to the agents UI", async ({
+    page,
+    daemon: _daemon,
+  }) => {
+    await page.goto("/docs/guides/controlling-dispatch-lifecycle");
+    const agentsLink = page
+      .locator("article")
+      .getByRole("link", { name: "agents view", exact: true });
+    await expect(agentsLink).toBeVisible();
+    await agentsLink.click();
+    await expect(page).toHaveURL(/\/agents$/);
+    await expect(page.getByRole("heading", { name: "Agents" })).toBeVisible();
   });
 });

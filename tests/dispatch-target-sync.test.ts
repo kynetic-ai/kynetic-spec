@@ -114,18 +114,21 @@ function createWorkspaceRecord(
     targetBranch,
     lifecycleState = "ready",
     workspaceId = testUlid("WS"),
+    taskId,
   }: {
     taskRef: string;
     taskSlug: string;
     targetBranch: string;
     lifecycleState?: LoadedDispatchWorkspaceRecord["lifecycle_state"];
     workspaceId?: string;
+    taskId?: string;
   },
 ): LoadedDispatchWorkspaceRecord {
   const timestamp = new Date().toISOString();
   const branchHead = git(projectDir, "rev-parse HEAD");
   return {
     workspace_id: workspaceId,
+    task_id: taskId,
     task_ref: taskRef,
     task_slug: taskSlug,
     worktree_root: projectDir,
@@ -223,6 +226,7 @@ async function saveWorkspaceRecord(
     targetBranch: string;
     lifecycleState?: LoadedDispatchWorkspaceRecord["lifecycle_state"];
     workspaceId?: string;
+    taskId?: string;
   },
 ): Promise<void> {
   const ctx = await initContext(projectDir);
@@ -967,6 +971,7 @@ describe("dispatch target branch sync", () => {
         integrationBranch: branch,
         currentBranch: "dev",
         targetBranchCheckedOut: false,
+        mutationCwd: null,
       }),
     );
     vi.spyOn(workspaceModule, "pushIntegrationTarget").mockImplementation(
@@ -1036,6 +1041,7 @@ describe("dispatch target branch sync", () => {
         integrationBranch: branch,
         currentBranch: "dev",
         targetBranchCheckedOut: false,
+        mutationCwd: null,
       }),
     );
     vi.spyOn(workspaceModule, "pushIntegrationTarget").mockImplementation(
@@ -1104,6 +1110,7 @@ describe("dispatch target branch sync", () => {
         integrationBranch: branch,
         currentBranch: "dev",
         targetBranchCheckedOut: false,
+        mutationCwd: null,
       }),
     );
     vi.spyOn(workspaceModule, "pushIntegrationTarget").mockImplementation(
@@ -1421,29 +1428,38 @@ describe("dispatch target branch sync", () => {
   // AC: @dispatch-integration-mutation-scope ac-1
   // AC: @dispatch-integration-mutation-scope ac-2
   // AC: @dispatch-integration-mutation-scope ac-4
-  it("refuses non-checked-out sync when another worktree has the integration branch checked out", async () => {
+  // AC: @dispatch-integration-mutation-scope ac-auxiliary-target-checkout-refusal-identifies-blocker
+  it("refuses non-checked-out sync when an auxiliary worktree has the integration branch checked out", async () => {
     ({ projectDir, remoteDir } = await setupProjectWithRemote());
     await setupProjectFiles(projectDir);
     git(projectDir, "checkout -b human-feature");
 
-    const foreignWorktreeDir = `${projectDir}-integration-owner`;
-    execSync(`git worktree add "${foreignWorktreeDir}" dev`, {
+    const auxiliaryWorktreeDir = `${projectDir}-integration-owner`;
+    execSync(`git worktree add "${auxiliaryWorktreeDir}" dev`, {
       cwd: projectDir,
       stdio: "pipe",
       env: workspaceModule.buildDispatchGitEnv(),
     });
+    // Mark the worktree as a dispatch auxiliary worktree by writing the
+    // workspace metadata marker file. This is the canonical auxiliary
+    // classification signal.
+    await fs.writeFile(
+      path.join(auxiliaryWorktreeDir, ".kspec-dispatch-workspace.json"),
+      `${JSON.stringify({ role: "helper", purpose: "test" })}\n`,
+      "utf-8",
+    );
 
     try {
       const humanHeadBefore = git(projectDir, "rev-parse human-feature");
       const localDevBefore = git(projectDir, "rev-parse dev");
-      const foreignHeadBefore = git(foreignWorktreeDir, "rev-parse HEAD");
+      const auxiliaryHeadBefore = git(auxiliaryWorktreeDir, "rev-parse HEAD");
 
       await pushRemoteCommit(
         remoteDir,
         "dev",
         "remote-blocked.txt",
         "blocked\n",
-        "blocked by foreign worktree",
+        "blocked by aux worktree",
       );
 
       const engine = new DispatchEngine({
@@ -1454,16 +1470,509 @@ describe("dispatch target branch sync", () => {
       await engine.start();
 
       expect(engine.getDegradedState()).toHaveLength(1);
-      expect(engine.getDegradedState()[0].reason).toContain("currently checked out");
+      expect(engine.getDegradedState()[0].kind).toBe("occupied-checkout");
+      expect(engine.getDegradedState()[0].reason.toLowerCase()).toContain("auxiliary");
+      expect(engine.getDegradedState()[0].reason).toContain(auxiliaryWorktreeDir);
       expect(git(projectDir, "branch --show-current")).toBe("human-feature");
       expect(git(projectDir, "rev-parse human-feature")).toBe(humanHeadBefore);
       expect(git(projectDir, "rev-parse dev")).toBe(localDevBefore);
-      expect(git(foreignWorktreeDir, "rev-parse HEAD")).toBe(foreignHeadBefore);
+      expect(git(auxiliaryWorktreeDir, "rev-parse HEAD")).toBe(auxiliaryHeadBefore);
       expect(await engine._syncTarget()).toBe("unsafe_target");
 
       await engine.stop();
     } finally {
-      git(projectDir, `worktree remove --force "${foreignWorktreeDir}"`);
+      git(projectDir, `worktree remove --force "${auxiliaryWorktreeDir}"`);
+    }
+  });
+
+  // AC: @dispatch-integration-mutation-scope ac-clean-occupied-target-checkout-is-valid-mutation-surface
+  // AC: @dispatch-remote-branch-sync ac-clean-occupied-target-sync-and-push
+  it("syncs through a clean eligible non-auxiliary occupied target checkout without entering degraded state", async () => {
+    ({ projectDir, remoteDir } = await setupProjectWithRemote());
+    await setupProjectFiles(projectDir);
+    git(projectDir, "checkout -b human-feature");
+
+    // A plain, user/project-owned worktree that happens to have the
+    // integration target branch checked out. No dispatch metadata, not
+    // under the dispatch worktree root.
+    const eligibleOccupied = `${projectDir}-user-dev-checkout`;
+    execSync(`git worktree add "${eligibleOccupied}" dev`, {
+      cwd: projectDir,
+      stdio: "pipe",
+      env: workspaceModule.buildDispatchGitEnv(),
+    });
+
+    try {
+      const humanHeadBefore = git(projectDir, "rev-parse human-feature");
+
+      const remoteTip = await pushRemoteCommit(
+        remoteDir,
+        "dev",
+        "eligible-occupied-sync.txt",
+        "eligible\n",
+        "advance remote during clean occupancy",
+      );
+
+      const engine = new DispatchEngine({
+        projectDir,
+        reconcileIntervalMs: 0,
+        coalesceWindowMs: 0,
+      });
+      await engine.start();
+
+      // Sync should not degrade the engine: the occupied checkout is an
+      // eligible mutation surface and the sync flows through it.
+      const result = await engine._syncTarget();
+      expect(["synced", "up_to_date"]).toContain(result);
+      expect(engine.getDegradedState()).toEqual([]);
+
+      // Dispatch root stays on its current branch — sync did not move it.
+      expect(git(projectDir, "branch --show-current")).toBe("human-feature");
+      expect(git(projectDir, "rev-parse human-feature")).toBe(humanHeadBefore);
+
+      // The eligible occupied worktree advanced to the remote tip and the
+      // local dev ref matches it (branch-coherent merge).
+      expect(git(projectDir, "rev-parse dev")).toBe(remoteTip);
+      expect(git(eligibleOccupied, "rev-parse HEAD")).toBe(remoteTip);
+      expect(git(eligibleOccupied, "branch --show-current")).toBe("dev");
+
+      // No tracked drift in the occupied checkout after the merge.
+      const status = execSync("git status --porcelain --untracked-files=no", {
+        cwd: eligibleOccupied,
+        encoding: "utf-8",
+        stdio: ["pipe", "pipe", "pipe"],
+      });
+      expect(status).toBe("");
+
+      await engine.stop();
+    } finally {
+      git(projectDir, `worktree remove --force "${eligibleOccupied}"`);
+    }
+  });
+
+  // AC: @dispatch-remote-branch-sync ac-clean-occupied-target-sync-and-push
+  // AC: @dispatch-integration-mutation-scope ac-clean-occupied-target-checkout-is-valid-mutation-surface
+  it("does not degrade a clean eligible occupied target during start-time sync", async () => {
+    ({ projectDir, remoteDir } = await setupProjectWithRemote());
+    await setupProjectFiles(projectDir);
+    git(projectDir, "checkout -b human-feature");
+
+    const eligibleOccupied = `${projectDir}-user-dev-start`;
+    execSync(`git worktree add "${eligibleOccupied}" dev`, {
+      cwd: projectDir,
+      stdio: "pipe",
+      env: workspaceModule.buildDispatchGitEnv(),
+    });
+
+    try {
+      const engine = new DispatchEngine({
+        projectDir,
+        reconcileIntervalMs: 0,
+        coalesceWindowMs: 0,
+      });
+      await engine.start();
+
+      // Start-time target sync ran without entering degraded state because the
+      // occupied checkout is an eligible mutation surface.
+      expect(engine.getDegradedState()).toEqual([]);
+      expect(engine.getTargetSyncStatus().degraded.active).toBe(false);
+
+      await engine.stop();
+    } finally {
+      git(projectDir, `worktree remove --force "${eligibleOccupied}"`);
+    }
+  });
+
+  // AC: @dispatch-integration-mutation-scope ac-dirty-occupied-target-refusal-identifies-blocker
+  it("refuses a sync when the eligible occupied target checkout has tracked modifications", async () => {
+    ({ projectDir, remoteDir } = await setupProjectWithRemote());
+    await setupProjectFiles(projectDir);
+    git(projectDir, "checkout -b human-feature");
+
+    const dirtyOccupied = `${projectDir}-user-dev-dirty`;
+    execSync(`git worktree add "${dirtyOccupied}" dev`, {
+      cwd: projectDir,
+      stdio: "pipe",
+      env: workspaceModule.buildDispatchGitEnv(),
+    });
+    // Add tracked modifications to make the eligible occupied checkout
+    // unsafe to mutate.
+    await fs.writeFile(path.join(dirtyOccupied, "dev.txt"), "dev\nuser tracked drift\n", "utf-8");
+
+    try {
+      const engine = new DispatchEngine({
+        projectDir,
+        reconcileIntervalMs: 0,
+        coalesceWindowMs: 0,
+      });
+      await engine.start();
+
+      expect(engine.getDegradedState()).toHaveLength(1);
+      const degraded = engine.getDegradedState()[0];
+      expect(degraded.kind).toBe("occupied-checkout");
+      expect(degraded.reason.toLowerCase()).toMatch(/tracked modifications|uncommitted/);
+      expect(degraded.reason).toContain(dirtyOccupied);
+      expect(degraded.reason.toLowerCase()).toMatch(/commit|stash|discard|detach/);
+
+      // The dirty tracked drift in the occupant remains untouched.
+      const occupiedStatus = execSync("git status --porcelain -- dev.txt", {
+        cwd: dirtyOccupied,
+        encoding: "utf-8",
+        stdio: ["pipe", "pipe", "pipe"],
+      });
+      expect(occupiedStatus).toBe(" M dev.txt\n");
+
+      await engine.stop();
+    } finally {
+      // Clean up tracked drift before removal.
+      execSync(`git -C "${dirtyOccupied}" checkout -- dev.txt`, { stdio: "pipe" });
+      git(projectDir, `worktree remove --force "${dirtyOccupied}"`);
+    }
+  });
+
+  // AC: @dispatch-integration-mutation-scope ac-dirty-occupied-target-refusal-identifies-blocker
+  // AC: @dispatch-remote-branch-sync ac-unsafe-occupied-checkout-degraded-recovery
+  it("refuses a sync when the occupied target checkout has an untracked file at a path the incoming remote commit writes", async () => {
+    ({ projectDir, remoteDir } = await setupProjectWithRemote());
+    await setupProjectFiles(projectDir);
+    git(projectDir, "checkout -b human-feature");
+
+    const hazardOccupied = `${projectDir}-user-dev-overwrite`;
+    execSync(`git worktree add "${hazardOccupied}" dev`, {
+      cwd: projectDir,
+      stdio: "pipe",
+      env: workspaceModule.buildDispatchGitEnv(),
+    });
+
+    // Push a new file on remote, then drop an untracked file at the same path
+    // in the eligible occupied checkout. The fast-forward sync would have to
+    // overwrite that untracked file — Git refuses such a checkout, and dispatch
+    // must classify this as an occupied-checkout blocker instead of divergence
+    // so the operator gets cleanup guidance rather than a remote-reset hint.
+    const hazardFile = "remote-only-overwrite.txt";
+    await pushRemoteCommit(remoteDir, "dev", hazardFile, "remote\n", "remote adds overwrite file");
+    await fs.writeFile(path.join(hazardOccupied, hazardFile), "local untracked content\n", "utf-8");
+
+    const localDevBefore = git(projectDir, "rev-parse dev");
+    const hazardHeadBefore = git(hazardOccupied, "rev-parse HEAD");
+
+    try {
+      const engine = new DispatchEngine({
+        projectDir,
+        reconcileIntervalMs: 0,
+        coalesceWindowMs: 0,
+      });
+      await engine.start();
+
+      expect(engine.getDegradedState()).toHaveLength(1);
+      const degraded = engine.getDegradedState()[0];
+      expect(degraded.kind).toBe("occupied-checkout");
+      expect(degraded.reason).toContain(hazardOccupied);
+      expect(degraded.reason).toContain(hazardFile);
+      // Recovery guidance must name a cleanup action against the occupied
+      // checkout, not a remote-reset action against the branch.
+      expect(degraded.reason.toLowerCase()).toMatch(/remove|stash|commit|detach/);
+      expect(degraded.reason.toLowerCase()).not.toMatch(/rewritten|reset --hard/);
+
+      expect(await engine._syncTarget()).toBe("unsafe_target");
+
+      // Refs and worktree state are untouched: no merge was attempted because
+      // the hazard is detected before ref movement.
+      expect(git(projectDir, "rev-parse dev")).toBe(localDevBefore);
+      expect(git(hazardOccupied, "rev-parse HEAD")).toBe(hazardHeadBefore);
+      // The untracked hazard file is still present in the occupied checkout.
+      const occupiedHazardStatus = execSync(`git status --porcelain -- "${hazardFile}"`, {
+        cwd: hazardOccupied,
+        encoding: "utf-8",
+        stdio: ["pipe", "pipe", "pipe"],
+      });
+      expect(occupiedHazardStatus).toBe(`?? ${hazardFile}\n`);
+
+      await engine.stop();
+    } finally {
+      await fs.rm(path.join(hazardOccupied, hazardFile), { force: true });
+      git(projectDir, `worktree remove --force "${hazardOccupied}"`);
+    }
+  });
+
+  // AC: @dispatch-remote-branch-sync ac-unsafe-occupied-checkout-degraded-recovery
+  it("recovers from untracked-overwrite-hazard degraded state after the blocking file is removed", async () => {
+    ({ projectDir, remoteDir } = await setupProjectWithRemote());
+    await setupProjectFiles(projectDir);
+    git(projectDir, "checkout -b human-feature");
+
+    const hazardOccupied = `${projectDir}-user-dev-overwrite-recover`;
+    execSync(`git worktree add "${hazardOccupied}" dev`, {
+      cwd: projectDir,
+      stdio: "pipe",
+      env: workspaceModule.buildDispatchGitEnv(),
+    });
+
+    const hazardFile = "recovery-target.txt";
+    const remoteTip = await pushRemoteCommit(
+      remoteDir,
+      "dev",
+      hazardFile,
+      "remote\n",
+      "remote adds recovery target file",
+    );
+    await fs.writeFile(path.join(hazardOccupied, hazardFile), "local untracked content\n", "utf-8");
+
+    try {
+      const engine = new DispatchEngine({
+        projectDir,
+        reconcileIntervalMs: 0,
+        coalesceWindowMs: 0,
+      });
+      await engine.start();
+
+      expect(engine.getDegradedState()).toHaveLength(1);
+      expect(engine.getDegradedState()[0].kind).toBe("occupied-checkout");
+
+      // Operator follows the guidance: remove the blocking untracked file.
+      await fs.rm(path.join(hazardOccupied, hazardFile));
+
+      // Subsequent sync clears degraded state and advances both the eligible
+      // checkout and the local dev ref to the remote tip.
+      const result = await engine._syncTarget();
+      expect(["synced", "up_to_date"]).toContain(result);
+      expect(engine.getDegradedState()).toEqual([]);
+      expect(git(projectDir, "rev-parse dev")).toBe(remoteTip);
+      expect(git(hazardOccupied, "rev-parse HEAD")).toBe(remoteTip);
+
+      await engine.stop();
+    } finally {
+      git(projectDir, `worktree remove --force "${hazardOccupied}"`);
+    }
+  });
+
+  // AC: @dispatch-integration-mutation-scope ac-dirty-occupied-target-refusal-identifies-blocker
+  // AC: @dispatch-remote-branch-sync ac-unsafe-occupied-checkout-degraded-recovery
+  //
+  // Directory/file hazard direction 1: remote adds a path under a directory
+  // that does not yet exist locally, but the occupied checkout has an
+  // untracked FILE at the same name. Git refuses the fast-forward with
+  // "untracked working tree files would be overwritten by merge: <dir>".
+  // Dispatch must detect this before attempting the merge so degraded state
+  // is occupied-checkout (with cleanup guidance) and not divergence.
+  it("refuses a sync when the occupied checkout has an untracked file blocking a directory the incoming commit creates", async () => {
+    ({ projectDir, remoteDir } = await setupProjectWithRemote());
+    await setupProjectFiles(projectDir);
+    git(projectDir, "checkout -b human-feature");
+
+    const hazardOccupied = `${projectDir}-user-dev-dirfile`;
+    execSync(`git worktree add "${hazardOccupied}" dev`, {
+      cwd: projectDir,
+      stdio: "pipe",
+      env: workspaceModule.buildDispatchGitEnv(),
+    });
+
+    // Push a remote commit that adds a file under conflict-dir/, then drop
+    // an untracked FILE named conflict-dir in the occupied checkout. The
+    // merge cannot create the directory because the name is taken.
+    const hazardName = "conflict-dir";
+    const cloneDir = await createTempDir("kspec-target-sync-dirfile-clone-");
+    try {
+      git(cloneDir, `clone "${remoteDir}" .`);
+      git(cloneDir, 'config user.email "test@example.com"');
+      git(cloneDir, 'config user.name "Test User"');
+      git(cloneDir, "checkout dev");
+      await fs.mkdir(path.join(cloneDir, hazardName), { recursive: true });
+      await fs.writeFile(path.join(cloneDir, hazardName, "remote.txt"), "remote\n", "utf-8");
+      git(cloneDir, `add ${hazardName}/remote.txt`);
+      git(cloneDir, 'commit -m "remote adds file under conflict-dir"');
+      git(cloneDir, "push origin dev");
+    } finally {
+      await cleanupTempDir(cloneDir);
+    }
+
+    await fs.writeFile(path.join(hazardOccupied, hazardName), "local untracked\n", "utf-8");
+
+    const localDevBefore = git(projectDir, "rev-parse dev");
+    const hazardHeadBefore = git(hazardOccupied, "rev-parse HEAD");
+
+    try {
+      const engine = new DispatchEngine({
+        projectDir,
+        reconcileIntervalMs: 0,
+        coalesceWindowMs: 0,
+      });
+      await engine.start();
+
+      expect(engine.getDegradedState()).toHaveLength(1);
+      const degraded = engine.getDegradedState()[0];
+      expect(degraded.kind).toBe("occupied-checkout");
+      expect(degraded.reason).toContain(hazardOccupied);
+      expect(degraded.reason).toContain(hazardName);
+      expect(degraded.reason.toLowerCase()).toMatch(/remove|stash|commit|detach/);
+      expect(degraded.reason.toLowerCase()).not.toMatch(/rewritten|reset --hard/);
+
+      expect(await engine._syncTarget()).toBe("unsafe_target");
+
+      // Refs and worktree state untouched.
+      expect(git(projectDir, "rev-parse dev")).toBe(localDevBefore);
+      expect(git(hazardOccupied, "rev-parse HEAD")).toBe(hazardHeadBefore);
+
+      await engine.stop();
+    } finally {
+      await fs.rm(path.join(hazardOccupied, hazardName), { force: true });
+      git(projectDir, `worktree remove --force "${hazardOccupied}"`);
+    }
+  });
+
+  // AC: @dispatch-integration-mutation-scope ac-dirty-occupied-target-refusal-identifies-blocker
+  // AC: @dispatch-remote-branch-sync ac-unsafe-occupied-checkout-degraded-recovery
+  //
+  // Directory/file hazard direction 2: remote adds a FILE at a name that the
+  // occupied checkout already holds as a directory of untracked content. Git
+  // refuses with "Updating the following directories would lose untracked
+  // files in them". Same dispatch contract: this is an occupied-checkout
+  // blocker, not divergence.
+  it("refuses a sync when the occupied checkout has an untracked directory blocking a file the incoming commit creates", async () => {
+    ({ projectDir, remoteDir } = await setupProjectWithRemote());
+    await setupProjectFiles(projectDir);
+    git(projectDir, "checkout -b human-feature");
+
+    const hazardOccupied = `${projectDir}-user-dev-filedir`;
+    execSync(`git worktree add "${hazardOccupied}" dev`, {
+      cwd: projectDir,
+      stdio: "pipe",
+      env: workspaceModule.buildDispatchGitEnv(),
+    });
+
+    // Remote commits a file at path "config-blob". The occupied checkout
+    // has an untracked directory of the same name with files inside.
+    const hazardName = "config-blob";
+    await pushRemoteCommit(
+      remoteDir,
+      "dev",
+      hazardName,
+      "remote file content\n",
+      "remote adds config-blob as a file",
+    );
+
+    await fs.mkdir(path.join(hazardOccupied, hazardName), { recursive: true });
+    await fs.writeFile(
+      path.join(hazardOccupied, hazardName, "user-notes.txt"),
+      "local untracked\n",
+      "utf-8",
+    );
+
+    const localDevBefore = git(projectDir, "rev-parse dev");
+    const hazardHeadBefore = git(hazardOccupied, "rev-parse HEAD");
+
+    try {
+      const engine = new DispatchEngine({
+        projectDir,
+        reconcileIntervalMs: 0,
+        coalesceWindowMs: 0,
+      });
+      await engine.start();
+
+      expect(engine.getDegradedState()).toHaveLength(1);
+      const degraded = engine.getDegradedState()[0];
+      expect(degraded.kind).toBe("occupied-checkout");
+      expect(degraded.reason).toContain(hazardOccupied);
+      // The untracked path Git would name is the file inside the directory.
+      expect(degraded.reason).toContain(hazardName);
+      expect(degraded.reason.toLowerCase()).toMatch(/remove|stash|commit|detach/);
+      expect(degraded.reason.toLowerCase()).not.toMatch(/rewritten|reset --hard/);
+
+      expect(await engine._syncTarget()).toBe("unsafe_target");
+
+      expect(git(projectDir, "rev-parse dev")).toBe(localDevBefore);
+      expect(git(hazardOccupied, "rev-parse HEAD")).toBe(hazardHeadBefore);
+
+      await engine.stop();
+    } finally {
+      await fs.rm(path.join(hazardOccupied, hazardName), { recursive: true, force: true });
+      git(projectDir, `worktree remove --force "${hazardOccupied}"`);
+    }
+  });
+
+  // AC: @dispatch-integration-mutation-scope ac-clean-occupied-target-checkout-is-valid-mutation-surface
+  //
+  // Path-prefix tightness: an untracked file whose name shares a leading
+  // string with a changed path but is not a directory-segment prefix (e.g.,
+  // "config" vs "config.yaml") must NOT be flagged as a hazard. Otherwise
+  // the hazard check would over-refuse clean eligible checkouts.
+  it("does not refuse a sync when an untracked file is only a string prefix of a changed path (not a path-segment prefix)", async () => {
+    ({ projectDir, remoteDir } = await setupProjectWithRemote());
+    await setupProjectFiles(projectDir);
+    git(projectDir, "checkout -b human-feature");
+
+    const cleanOccupied = `${projectDir}-user-dev-prefix`;
+    execSync(`git worktree add "${cleanOccupied}" dev`, {
+      cwd: projectDir,
+      stdio: "pipe",
+      env: workspaceModule.buildDispatchGitEnv(),
+    });
+
+    // Remote adds "config.yaml"; occupied checkout has unrelated untracked
+    // file "config". These are sibling entries — Git is fine with both.
+    const remotePath = "config.yaml";
+    const remoteTip = await pushRemoteCommit(
+      remoteDir,
+      "dev",
+      remotePath,
+      "yaml: true\n",
+      "remote adds config.yaml",
+    );
+    await fs.writeFile(path.join(cleanOccupied, "config"), "unrelated\n", "utf-8");
+
+    try {
+      const engine = new DispatchEngine({
+        projectDir,
+        reconcileIntervalMs: 0,
+        coalesceWindowMs: 0,
+      });
+      await engine.start();
+
+      expect(engine.getDegradedState()).toEqual([]);
+      const result = await engine._syncTarget();
+      expect(["synced", "up_to_date"]).toContain(result);
+      expect(git(projectDir, "rev-parse dev")).toBe(remoteTip);
+      expect(git(cleanOccupied, "rev-parse HEAD")).toBe(remoteTip);
+
+      await engine.stop();
+    } finally {
+      git(projectDir, `worktree remove --force "${cleanOccupied}"`);
+    }
+  });
+
+  // AC: @dispatch-integration-mutation-scope ac-auxiliary-target-checkout-refusal-identifies-blocker
+  it("refuses to use a worker-style auxiliary worktree under the dispatch worktree root as a mutation surface", async () => {
+    ({ projectDir, remoteDir } = await setupProjectWithRemote());
+    await setupProjectFiles(projectDir);
+    git(projectDir, "checkout -b human-feature");
+
+    // Place the occupied worktree under the project's .kspec-worktrees/
+    // directory, which is the configured dispatch worktree root by default.
+    const dispatchRoot = path.join(projectDir, ".kspec-worktrees");
+    await fs.mkdir(dispatchRoot, { recursive: true });
+    const auxOccupied = path.join(dispatchRoot, "leaked-dev");
+    execSync(`git worktree add "${auxOccupied}" dev`, {
+      cwd: projectDir,
+      stdio: "pipe",
+      env: workspaceModule.buildDispatchGitEnv(),
+    });
+
+    try {
+      const engine = new DispatchEngine({
+        projectDir,
+        reconcileIntervalMs: 0,
+        coalesceWindowMs: 0,
+      });
+      await engine.start();
+
+      expect(engine.getDegradedState()).toHaveLength(1);
+      expect(engine.getDegradedState()[0].kind).toBe("occupied-checkout");
+      expect(engine.getDegradedState()[0].reason.toLowerCase()).toContain("auxiliary");
+      expect(engine.getDegradedState()[0].reason).toContain(auxOccupied);
+
+      await engine.stop();
+    } finally {
+      git(projectDir, `worktree remove --force "${auxOccupied}"`);
     }
   });
 
@@ -1762,6 +2271,72 @@ describe("dispatch target branch sync", () => {
     await engine.stop();
   });
 
+  // AC: @dispatch-canonical-task-identity ac-cross-agent-exclusivity-uses-canonical-task
+  it("matches the active reviewer target by canonical task id when the registry record keeps a stale display ref", async () => {
+    ({ projectDir, remoteDir } = await setupProjectWithRemote());
+    await setupProjectFiles(projectDir);
+    await createTrackedBranch(
+      projectDir,
+      "plan/alpha",
+      "plan-alpha.txt",
+      "alpha\n",
+      "create plan alpha",
+    );
+
+    // The persisted workspace record carries the canonical task_id but a STALE
+    // display ref (@old-slug) — e.g. the task's primary slug changed after the
+    // record was written.
+    const canonicalTaskUlid = testUlid("RVTASK", 1);
+    await saveWorkspaceRecord(projectDir, {
+      taskId: canonicalTaskUlid,
+      taskRef: "@old-slug",
+      taskSlug: "old-slug",
+      targetBranch: "plan/alpha",
+    });
+    git(projectDir, "checkout dev");
+
+    const engine = new DispatchEngine({
+      projectDir,
+      reconcileIntervalMs: 0,
+      coalesceWindowMs: 0,
+    });
+    await engine.start();
+
+    // The reviewer was started under a DIFFERENT display alias (@new-slug) but
+    // carries the same canonical taskId. Identity must match by canonical id, not
+    // the display ref, so the reviewer's integration target is still collected.
+    const invocationDetails = (engine as any).activeInvocationDetails as Map<string, any>;
+    invocationDetails.set("reviewer-canonical-session", {
+      invocationId: "rev-inv",
+      sessionId: "rev-session",
+      agentId: "pr-reviewer",
+      agentName: "PR Reviewer",
+      taskId: canonicalTaskUlid,
+      taskRef: "@new-slug",
+      role: "reviewer",
+      startedAtMs: Date.now(),
+    });
+
+    expect(await (engine as any)._activeReviewerTargets()).toEqual(new Set(["plan/alpha"]));
+
+    // And the periodic sync defers that reviewer target: a remote advance on
+    // plan/alpha is not pulled while the canonical-matched reviewer is active.
+    const alphaBefore = git(projectDir, "rev-parse plan/alpha");
+    await pushRemoteCommit(
+      remoteDir,
+      "plan/alpha",
+      "plan-alpha.txt",
+      "alpha\nadvanced\n",
+      "advance alpha",
+    );
+    (engine as any)._targetSyncTimestamps.set("plan/alpha", Date.now() - 120_000);
+    await (engine as any)._reconcile();
+    expect(git(projectDir, "rev-parse plan/alpha")).toBe(alphaBefore);
+
+    invocationDetails.delete("reviewer-canonical-session");
+    await engine.stop();
+  });
+
   // AC: @dispatch-remote-branch-sync ac-pull-target-before-provision
   it("evaluates pre-provision sync staleness per target branch", async () => {
     ({ projectDir, remoteDir } = await setupProjectWithRemote());
@@ -1961,6 +2536,7 @@ describe("dispatch target branch sync", () => {
     await engine.start();
 
     const targetGitSpy = vi.spyOn(workspaceModule, "runDispatchIntegrationTargetGit");
+    const mutationSurfaceSpy = vi.spyOn(workspaceModule, "runGitInMutationSurface");
 
     await pushRemoteCommit(remoteDir, "dev", "timeout-check.txt", "timeout\n", "timeout check");
 
@@ -1970,10 +2546,14 @@ describe("dispatch target branch sync", () => {
     expect(targetGitSpy).toHaveBeenNthCalledWith(1, projectDir, "dev", ["fetch", "origin", "dev"], {
       timeout: 30_000,
     });
-    expect(targetGitSpy).toHaveBeenNthCalledWith(
-      2,
-      projectDir,
-      "dev",
+    // The working-tree merge now runs through runGitInMutationSurface so the
+    // command can target an eligible occupied checkout when one exists. The
+    // ff-only merge must still preserve its 10s timeout.
+    expect(mutationSurfaceSpy).toHaveBeenCalledWith(
+      expect.objectContaining({
+        integrationBranch: "dev",
+        mutationCwd: projectDir,
+      }),
       ["merge", "--ff-only", "origin/dev"],
       { timeout: 10_000 },
     );

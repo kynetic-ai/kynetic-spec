@@ -1335,6 +1335,7 @@ async function generateConfigContent(projectDir: string): Promise<string> {
   return `# kspec project configuration
 # This file was scaffolded by kspec setup. Review and customize for your project.
 # Documentation: https://github.com/lepahc/kynetic-spec
+# Lifecycle controls: kspec agent dispatch --help
 
 dispatch:
   # How dispatched agents publish completed work.

@@ -10,9 +10,9 @@ gitdir: .git/worktrees/-kspec
 Shadow branch (kspec-meta): orphan branch with spec/task files
 ```
 
-**Why:** Spec/task changes don't clutter main branch history. Code PRs and spec changes tracked independently.
+**Why:** Spec/task changes live on their own shadow branch so they don't mix with your code branches' history. Code-branch reviews and spec changes stay independently tracked.
 
-**How it works:** Every `kspec` command auto-commits to `kspec-meta`. Auto-pushes to remote if tracking configured. Main branch gitignores `.kspec/`.
+**How it works:** Every `kspec` command auto-commits to `kspec-meta`. Auto-pushes to remote if tracking configured. Your project's code branches gitignore `.kspec/`.
 
 **CRITICAL: Always run kspec from project root, never from inside `.kspec/`.** If you see "Cannot run kspec from inside .kspec/ directory", check `pwd`.
 

@@ -1362,6 +1362,9 @@ describe("kspec upgrade", () => {
       const configStep = result.steps.find((s) => s.name === "Scaffold project config");
       expect(configStep).toBeDefined();
       expect(configStep!.status).toBe("done");
+
+      const config = await fs.readFile(path.join(tempDir, "kspec.config.yaml"), "utf-8");
+      expect(config).toContain("Lifecycle controls: kspec agent dispatch --help");
     });
 
     it("skips project config when it already exists", async () => {

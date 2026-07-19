@@ -42,6 +42,11 @@ import {
 import { ensureSplitBackendRegistered } from "../src/parser/split-backend";
 import * as yamlModule from "../src/parser/yaml";
 import * as sessionStoreModule from "../src/sessions/store";
+import {
+  getCachedTestCoverage,
+  getTestCoverageCacheStats,
+  invalidateTestCoverageCache,
+} from "../src/parser/coverage-cache";
 
 ensureSplitBackendRegistered();
 
@@ -67,6 +72,7 @@ describe("ProjectEntityCache", () => {
     vi.doUnmock("fs/promises");
     vi.resetModules();
     clearAllEntityCaches();
+    invalidateTestCoverageCache();
     await cleanupTempDir(fixturesRoot);
   });
 
@@ -81,7 +87,9 @@ describe("ProjectEntityCache", () => {
     let opendirMock!: ReturnType<typeof vi.fn>;
     vi.doMock("fs/promises", async (importOriginal) => {
       const actual = await importOriginal<typeof import("fs/promises")>();
-      opendirMock = vi.fn().mockResolvedValue(directoryHandle);
+      opendirMock = vi
+        .fn<() => Promise<typeof directoryHandle>>()
+        .mockResolvedValue(directoryHandle);
       return {
         ...actual,
         opendir: opendirMock,
@@ -163,6 +171,46 @@ describe("ProjectEntityCache", () => {
 
     it("should map reviews file to reviews domain", () => {
       expect(fileToDomain("project.reviews.yaml")).toEqual(["reviews"]);
+    });
+
+    // AC: @daemon-entity-cache ac-folder-backed-entity-directory-invalidation
+    // AC: @daemon-entity-cache ac-granular-reload
+    it("should map folder-backed plan files (plans/<ulid>/...) to plans domain only", () => {
+      const ulid = "01PNXA00000000000000000000";
+      // Core sidecars
+      expect(fileToDomain(`plans/${ulid}/plan.md`)).toEqual(["plans"]);
+      expect(fileToDomain(`plans/${ulid}/plan.yaml`)).toEqual(["plans"]);
+      expect(fileToDomain(`plans/${ulid}/notes.yaml`)).toEqual(["plans"]);
+      expect(fileToDomain(`plans/${ulid}/resources.yaml`)).toEqual(["plans"]);
+      // Local resources subtree (binary and nested paths)
+      expect(fileToDomain(`plans/${ulid}/resources/ux.png`)).toEqual(["plans"]);
+      expect(fileToDomain(`plans/${ulid}/resources/diagrams/flow.svg`)).toEqual(["plans"]);
+    });
+
+    // AC: @daemon-entity-cache ac-folder-backed-entity-directory-invalidation
+    // AC: @daemon-entity-cache ac-granular-reload
+    it("should map folder-backed review files (reviews/<ulid>/...) to reviews domain only", () => {
+      const ulid = "01REVA00000000000000000000";
+      expect(fileToDomain(`reviews/${ulid}/review.yaml`)).toEqual(["reviews"]);
+      expect(fileToDomain(`reviews/${ulid}/resources.yaml`)).toEqual(["reviews"]);
+      expect(fileToDomain(`reviews/${ulid}/resources/screenshot.png`)).toEqual(["reviews"]);
+      expect(fileToDomain(`reviews/${ulid}/resources/logs/run.log`)).toEqual(["reviews"]);
+    });
+
+    // Guards that the folder match requires a valid ULID segment, not just any
+    // path starting with the word "plans" or "reviews". Without this, the
+    // fall-through catch-all that maps *.yaml to items+meta would still cover
+    // them, but ad-hoc filenames like "plans-archive/foo.yaml" must NOT be
+    // claimed as a folder-backed plan/review change.
+    it("should NOT map paths that share the prefix but are not folder-backed roots", () => {
+      // No ULID after plans/ — falls through to the .yaml catch-all
+      expect(fileToDomain("plans/notes.yaml")).toEqual(["items", "meta"]);
+      // Look-alike sibling directories must not be matched as plans/reviews
+      expect(fileToDomain("plans-archive/foo.yaml")).toEqual(["items", "meta"]);
+      expect(fileToDomain("reviews-archive/foo.yaml")).toEqual(["items", "meta"]);
+      // Filename containing the word but at the top level is not a folder root
+      expect(fileToDomain("plansreport.yaml")).toEqual(["items", "meta"]);
+      expect(fileToDomain("reviewsreport.yaml")).toEqual(["items", "meta"]);
     });
 
     it("should map triage file to triage domain", () => {
@@ -454,24 +502,70 @@ describe("ProjectEntityCache", () => {
     });
 
     it("should not eagerly preload plan details during index load", async () => {
-      // Seed plans file in .kspec/ (specDir resolves to .kspec/ via shadow detection)
+      // Cache plan warm-up runs `requirePlanFolderStorage` before `loadPlans`
+      // (AC: @entity-folder-migration-and-compatibility-1
+      // ac-unmigrated-projects-are-blocked-with-guidance), so the project must
+      // declare folder-backed plan storage AND have a consistent folder/index
+      // layout for the domain to reach "ready" state. Override the multi-dir
+      // fixture's 1.1 manifest with a 1.2 folder-declared manifest and seed a
+      // folder-backed plan with its lean index entry — anything else would
+      // degrade the plans domain and the detail-on-demand contract could not
+      // be exercised.
       // Note: Crockford base32 excludes I, L, O, U
       const planUlid = "01PPAN00000000000000000000";
       await fs.writeFile(
+        join(projectA, ".kspec", "kynetic.yaml"),
+        yamlStringify({
+          kynetic: "1.2",
+          project: {
+            name: "Plans Detail-on-Demand Project",
+            version: "0.1.0",
+            status: "draft",
+          },
+          includes: ["modules/test.yaml"],
+          task_storage: { format: "split" },
+          plan_storage: { format: "folder" },
+          review_storage: { format: "folder" },
+          resource_storage: { format: "entity_scoped" },
+        }),
+        "utf-8",
+      );
+      // Folder-backed plan sidecar — proves the strict gate's drift detector
+      // can match the index entry to an entity folder.
+      const planDir = join(projectA, ".kspec", "plans", planUlid);
+      await fs.mkdir(planDir, { recursive: true });
+      await fs.writeFile(join(planDir, "plan.md"), "# Test Plan\n", "utf-8");
+      await fs.writeFile(
+        join(planDir, "plan.yaml"),
+        yamlStringify({
+          _ulid: planUlid,
+          slugs: ["plan-test"],
+          title: "Test Plan",
+          status: "draft",
+          created_at: "2026-01-01T00:00:00.000Z",
+          derived_tasks: [],
+          derived_specs: [],
+          notes: [],
+        }),
+        "utf-8",
+      );
+      // Lean index entry — populated by the (currently monolithic) loadPlans
+      // path. Once folder-backed loadPlans lands, the same lean shape is read
+      // directly from `plans/<ulid>/plan.yaml`; the projection through
+      // toPlanIndexSummary is identical either way.
+      await fs.writeFile(
         join(projectA, ".kspec", "project.plans.yaml"),
         yamlStringify({
-          kynetic_plans: "1.0",
+          kynetic_plans: "1.2",
           plans: [
             {
               _ulid: planUlid,
               slugs: ["plan-test"],
               title: "Test Plan",
               status: "draft",
-              content: "Heavy content that should not be in the index tier",
               created_at: "2026-01-01T00:00:00.000Z",
               derived_tasks: [],
               derived_specs: [],
-              notes: [],
             },
           ],
         }),
@@ -491,12 +585,60 @@ describe("ProjectEntityCache", () => {
     });
 
     it("should not eagerly preload review details during index load", async () => {
-      // Seed reviews file in .kspec/ (specDir resolves to .kspec/ via shadow detection)
+      // Cache review warm-up runs `requireReviewFolderStorage` before
+      // `loadReviewRecords` (AC: @entity-folder-migration-and-compatibility-1
+      // ac-unmigrated-projects-are-blocked-with-guidance), so the project
+      // must declare folder-backed review storage AND have a consistent
+      // folder/index layout for the domain to reach "ready" state. See the
+      // sibling plans test for the full rationale.
       const reviewUlid = "01REVW00000000000000000000";
+      await fs.writeFile(
+        join(projectA, ".kspec", "kynetic.yaml"),
+        yamlStringify({
+          kynetic: "1.2",
+          project: {
+            name: "Reviews Detail-on-Demand Project",
+            version: "0.1.0",
+            status: "draft",
+          },
+          includes: ["modules/test.yaml"],
+          task_storage: { format: "split" },
+          plan_storage: { format: "folder" },
+          review_storage: { format: "folder" },
+          resource_storage: { format: "entity_scoped" },
+        }),
+        "utf-8",
+      );
+      const reviewDir = join(projectA, ".kspec", "reviews", reviewUlid);
+      await fs.mkdir(reviewDir, { recursive: true });
+      await fs.writeFile(
+        join(reviewDir, "review.yaml"),
+        yamlStringify({
+          _ulid: reviewUlid,
+          slugs: ["review-test"],
+          title: "Test Review",
+          lifecycle_state: "open",
+          author: "@test",
+          subject: {
+            type: "task",
+            ref: "@task-test",
+            shadow_commit: "abc123",
+            content_hash: "def456",
+          },
+          related_refs: [],
+          created_at: "2026-01-01T00:00:00.000Z",
+          threads: [],
+          checks: [],
+          verdicts: [],
+          events: [],
+          external_links: [],
+        }),
+        "utf-8",
+      );
       await fs.writeFile(
         join(projectA, ".kspec", "project.reviews.yaml"),
         yamlStringify({
-          kynetic_reviews: "1.0",
+          kynetic_reviews: "1.2",
           reviews: [
             {
               _ulid: reviewUlid,
@@ -657,6 +799,44 @@ describe("ProjectEntityCache", () => {
       const after = cache.getTaskIndex();
       expect(after).not.toBeNull();
       expect(after![0].title).toBe("Sample Task A Updated");
+    });
+
+    // AC: @coverage-state-api-cache ac-cache-invalidation
+    it("refreshes cached coverage when a watched source file changes", async () => {
+      const cache = new ProjectEntityCache(projectA);
+      const testsDir = join(projectA, "tests");
+      const sourcePath = join(testsDir, "coverage-source.test.ts");
+      await fs.mkdir(testsDir, { recursive: true });
+      await fs.writeFile(sourcePath, '// AC: @old-spec ac-1\nit("old", () => {});\n', "utf-8");
+
+      const before = await getCachedTestCoverage(projectA, ["tests"]);
+      expect(before.has("@old-spec ac-1")).toBe(true);
+
+      await fs.writeFile(sourcePath, '// AC: @new-spec ac-1\nit("new", () => {});\n', "utf-8");
+      await cache.handleFileChange(projectA, sourcePath);
+
+      const after = await getCachedTestCoverage(projectA, ["tests"]);
+      expect(after.has("@new-spec ac-1")).toBe(true);
+      expect(after.has("@old-spec ac-1")).toBe(false);
+      expect(after).not.toBe(before);
+    });
+
+    // AC: @coverage-state-api-cache ac-cache-invalidation
+    it("clears cached coverage variants when coverage config changes", async () => {
+      const cache = new ProjectEntityCache(projectA);
+      await fs.mkdir(join(projectA, "tests"), { recursive: true });
+      await fs.writeFile(
+        join(projectA, "tests", "coverage-source.test.ts"),
+        '// AC: @configured-spec ac-1\nit("configured", () => {});\n',
+        "utf-8",
+      );
+
+      await getCachedTestCoverage(projectA, ["tests"]);
+      expect(getTestCoverageCacheStats().entries).toBe(1);
+
+      await cache.handleFileChange(projectA, join(projectA, "kspec.config.yaml"));
+
+      expect(getTestCoverageCacheStats().entries).toBe(0);
     });
 
     // AC: @daemon-incremental-cache ac-batch-coalescing
@@ -2303,6 +2483,199 @@ describe("ProjectEntityCache", () => {
     });
   });
 
+  // ─── AC: ac-folder-backed-entity-directory-invalidation ────────────────
+  //
+  // Folder-backed plans (`.kspec/plans/<ulid>/...`) and reviews
+  // (`.kspec/reviews/<ulid>/...`) must route through the same
+  // domain-level debounce/reload path as the legacy index files
+  // `project.plans.yaml` / `project.reviews.yaml`. These tests exercise
+  // handleFileChange end-to-end (path classification + domain
+  // invalidation + dedup) so we don't get stale plan/review detail
+  // after a sidecar or resource file change.
+
+  // AC: @daemon-entity-cache ac-folder-backed-entity-directory-invalidation
+  // AC: @daemon-entity-cache ac-watcher-invalidation
+  describe("ac-folder-backed-entity-directory-invalidation: plan/review folder changes invalidate the right domain", () => {
+    const PLAN_ULID = "01PNXA00000000000000000000";
+    const REVIEW_ULID = "01REVA00000000000000000000";
+
+    function expectOnlyDomainsInvoked(
+      spy: ReturnType<typeof vi.spyOn>,
+      expectedDomains: CacheDomain[],
+    ): void {
+      const invokedDomains = spy.mock.calls.map((call) => call[0] as CacheDomain);
+      expect(new Set(invokedDomains)).toEqual(new Set(expectedDomains));
+    }
+
+    // AC: @daemon-entity-cache ac-folder-backed-entity-directory-invalidation
+    // AC: @daemon-entity-cache ac-granular-reload
+    it("routes plans/<ulid>/plan.md, plan.yaml, notes.yaml, resources.yaml, and resources/<file> to plans only", async () => {
+      vi.useFakeTimers();
+      try {
+        const cache = new ProjectEntityCache(projectA);
+        (cache as any).domainDebounceMs = 50;
+        const processChangesSpy = vi
+          .spyOn(cache as any, "processDomainChanges")
+          .mockResolvedValue(undefined);
+
+        const kspecDir = join(projectA, ".kspec");
+        const planDir = join(kspecDir, "plans", PLAN_ULID);
+        const paths = [
+          join(planDir, "plan.md"),
+          join(planDir, "plan.yaml"),
+          join(planDir, "notes.yaml"),
+          join(planDir, "resources.yaml"),
+          join(planDir, "resources", "ux.png"),
+          join(planDir, "resources", "nested", "diagram.svg"),
+        ];
+
+        // Each path fires its own debounce window so we can check
+        // domain classification per-path. Coalescing is covered separately.
+        for (const p of paths) {
+          const invalidation = cache.handleFileChange(kspecDir, p);
+          await vi.advanceTimersByTimeAsync(50);
+          await invalidation;
+        }
+
+        expectOnlyDomainsInvoked(processChangesSpy, ["plans"]);
+        expect(processChangesSpy).toHaveBeenCalledTimes(paths.length);
+      } finally {
+        vi.useRealTimers();
+      }
+    });
+
+    // AC: @daemon-entity-cache ac-folder-backed-entity-directory-invalidation
+    // AC: @daemon-entity-cache ac-granular-reload
+    it("routes reviews/<ulid>/review.yaml, resources.yaml, and resources/<file> to reviews only", async () => {
+      vi.useFakeTimers();
+      try {
+        const cache = new ProjectEntityCache(projectA);
+        (cache as any).domainDebounceMs = 50;
+        const processChangesSpy = vi
+          .spyOn(cache as any, "processDomainChanges")
+          .mockResolvedValue(undefined);
+
+        const kspecDir = join(projectA, ".kspec");
+        const reviewDir = join(kspecDir, "reviews", REVIEW_ULID);
+        const paths = [
+          join(reviewDir, "review.yaml"),
+          join(reviewDir, "resources.yaml"),
+          join(reviewDir, "resources", "screenshot.png"),
+          join(reviewDir, "resources", "logs", "run.log"),
+        ];
+
+        for (const p of paths) {
+          const invalidation = cache.handleFileChange(kspecDir, p);
+          await vi.advanceTimersByTimeAsync(50);
+          await invalidation;
+        }
+
+        expectOnlyDomainsInvoked(processChangesSpy, ["reviews"]);
+        expect(processChangesSpy).toHaveBeenCalledTimes(paths.length);
+      } finally {
+        vi.useRealTimers();
+      }
+    });
+
+    // AC: @daemon-entity-cache ac-reload-dedup
+    it("coalesces multiple plan-folder file events into a single plans reload", async () => {
+      vi.useFakeTimers();
+      try {
+        const cache = new ProjectEntityCache(projectA);
+        (cache as any).domainDebounceMs = 50;
+        const processChangesSpy = vi
+          .spyOn(cache as any, "processDomainChanges")
+          .mockResolvedValue(undefined);
+
+        const kspecDir = join(projectA, ".kspec");
+        const planDir = join(kspecDir, "plans", PLAN_ULID);
+        const planMd = join(planDir, "plan.md");
+        const planYaml = join(planDir, "plan.yaml");
+        const planResource = join(planDir, "resources", "ux.png");
+
+        const a = cache.handleFileChange(kspecDir, planMd, "# updated body");
+        const b = cache.handleFileChange(kspecDir, planYaml, "title: New title");
+        const c = cache.handleFileChange(kspecDir, planResource);
+
+        await vi.advanceTimersByTimeAsync(50);
+        await Promise.all([a, b, c]);
+
+        expect(processChangesSpy).toHaveBeenCalledTimes(1);
+        expect(processChangesSpy).toHaveBeenCalledWith(
+          "plans",
+          expect.any(Array),
+          expect.anything(),
+        );
+      } finally {
+        vi.useRealTimers();
+      }
+    });
+
+    // AC: @daemon-entity-cache ac-reload-dedup
+    it("coalesces multiple review-folder file events into a single reviews reload", async () => {
+      vi.useFakeTimers();
+      try {
+        const cache = new ProjectEntityCache(projectA);
+        (cache as any).domainDebounceMs = 50;
+        const processChangesSpy = vi
+          .spyOn(cache as any, "processDomainChanges")
+          .mockResolvedValue(undefined);
+
+        const kspecDir = join(projectA, ".kspec");
+        const reviewDir = join(kspecDir, "reviews", REVIEW_ULID);
+        const reviewYaml = join(reviewDir, "review.yaml");
+        const reviewResources = join(reviewDir, "resources.yaml");
+        const reviewScreenshot = join(reviewDir, "resources", "screenshot.png");
+
+        const a = cache.handleFileChange(kspecDir, reviewYaml, "lifecycle_state: open");
+        const b = cache.handleFileChange(kspecDir, reviewResources, "resources: []");
+        const c = cache.handleFileChange(kspecDir, reviewScreenshot);
+
+        await vi.advanceTimersByTimeAsync(50);
+        await Promise.all([a, b, c]);
+
+        expect(processChangesSpy).toHaveBeenCalledTimes(1);
+        expect(processChangesSpy).toHaveBeenCalledWith(
+          "reviews",
+          expect.any(Array),
+          expect.anything(),
+        );
+      } finally {
+        vi.useRealTimers();
+      }
+    });
+
+    // Regression: parent-index files still drive their respective domains so
+    // legacy index-only writes and migration writes continue to work.
+    // AC: @daemon-entity-cache ac-watcher-invalidation
+    it("still invalidates plans on project.plans.yaml and reviews on project.reviews.yaml", async () => {
+      vi.useFakeTimers();
+      try {
+        const cache = new ProjectEntityCache(projectA);
+        (cache as any).domainDebounceMs = 50;
+        const processChangesSpy = vi
+          .spyOn(cache as any, "processDomainChanges")
+          .mockResolvedValue(undefined);
+
+        const kspecDir = join(projectA, ".kspec");
+        const plansIndex = join(kspecDir, "project.plans.yaml");
+        const reviewsIndex = join(kspecDir, "project.reviews.yaml");
+
+        const a = cache.handleFileChange(kspecDir, plansIndex);
+        await vi.advanceTimersByTimeAsync(50);
+        await a;
+
+        const b = cache.handleFileChange(kspecDir, reviewsIndex);
+        await vi.advanceTimersByTimeAsync(50);
+        await b;
+
+        expectOnlyDomainsInvoked(processChangesSpy, ["plans", "reviews"]);
+      } finally {
+        vi.useRealTimers();
+      }
+    });
+  });
+
   // ─── AC: ac-graceful-degradation ───────────────────────────────────────
 
   // AC: @daemon-entity-cache ac-graceful-degradation
@@ -2551,9 +2924,9 @@ describe("ProjectEntityCache", () => {
         "utf-8",
       );
 
-      const close = vi.fn().mockResolvedValue(undefined);
-      const read = vi
-        .fn()
+      const close = vi.fn<() => Promise<void>>().mockResolvedValue(undefined);
+      const read = vi.fn<() => Promise<{ name: string; isDirectory: () => boolean } | null>>();
+      read
         .mockResolvedValueOnce({
           name: sessionId,
           isDirectory: () => true,
@@ -2576,8 +2949,10 @@ describe("ProjectEntityCache", () => {
 
     it("closes the session directory handle when enumeration fails", async () => {
       const sessionsDir = join(projectA, ".kspec-sessions");
-      const close = vi.fn().mockResolvedValue(undefined);
-      const read = vi.fn().mockRejectedValue(new Error("enumeration failed"));
+      const close = vi.fn<() => Promise<void>>().mockResolvedValue(undefined);
+      const read = vi
+        .fn<() => Promise<{ name: string; isDirectory: () => boolean } | null>>()
+        .mockRejectedValue(new Error("enumeration failed"));
 
       const { ProjectEntityCacheCtor, opendirMock } = await importEntityCacheWithMockedOpendir({
         read,
@@ -3406,6 +3781,30 @@ describe("ProjectEntityCache", () => {
   // AC: @daemon-entity-cache ac-warming-availability
   describe("ac-warming-availability: refs endpoint loading contract", () => {
     it("should report loading state for domains not yet ready", async () => {
+      // Cache plans warm-up enforces the strict folder-storage gate (AC:
+      // @entity-folder-migration-and-compatibility-1
+      // ac-unmigrated-projects-are-blocked-with-guidance), so the project
+      // manifest must declare folder-backed plan/review storage for the
+      // plans domain to reach "ready". The multi-dir fixture is kynetic
+      // 1.1 — rewrite the manifest before warming so this test exercises
+      // the loading→ready transition rather than degrade-on-load.
+      await fs.writeFile(
+        join(projectA, ".kspec", "kynetic.yaml"),
+        yamlStringify({
+          kynetic: "1.2",
+          project: {
+            name: "Refs Endpoint Loading Contract Project",
+            version: "0.1.0",
+            status: "draft",
+          },
+          includes: ["modules/test.yaml"],
+          task_storage: { format: "split" },
+          plan_storage: { format: "folder" },
+          review_storage: { format: "folder" },
+          resource_storage: { format: "entity_scoped" },
+        }),
+        "utf-8",
+      );
       // Simulates the refs endpoint check: if any required domain is loading,
       // return a loading response instead of falling through to disk reads
       const cache = registerEntityCache(projectA);
@@ -3427,6 +3826,162 @@ describe("ProjectEntityCache", () => {
       for (const domain of domainsForRefs) {
         expect(cache.getDomainState(domain)).toBe("ready");
       }
+    });
+  });
+
+  // ─── Entity Storage Compatibility — plans/reviews strict gate ────────────
+  //
+  // Cycle 3 blocker 1 & 2 fix: cache warm-up runs the strict folder-storage
+  // gate before loadPlans() / loadReviewRecords(), so a legacy project
+  // (kynetic < 1.2 without folder declarations) cannot enter "ready" with
+  // monolithic data and the route's cache-warm fast path cannot leak that
+  // data with a 200. These tests pin the cache-loader contract: an
+  // incompatible project produces a "degraded" plans/reviews domain whose
+  // stored error is the EntityStorageCompatibilityError that the daemon
+  // route translates into the 409 entity_storage_incompatible response.
+
+  describe("plans/reviews cache warm-up enforces strict folder-storage gate", () => {
+    // AC: @entity-folder-migration-and-compatibility-1 ac-unmigrated-projects-are-blocked-with-guidance
+    // AC: @entity-folder-migration-and-compatibility-1 ac-daemon-returns-structured-conflict
+    it("transitions plans domain to degraded with legacy_plan_storage_removed on a kynetic 1.1 project (no plan_storage declaration)", async () => {
+      // The multi-dir fixture is kynetic 1.1 with no plan_storage. The
+      // strict gate must fire before loadPlans so the cache cannot serve
+      // monolithic data through the ready fast path.
+      await fs.writeFile(
+        join(projectA, ".kspec", "project.plans.yaml"),
+        yamlStringify({
+          kynetic_plans: "1.0",
+          plans: [
+            {
+              _ulid: "01LEGCYPLAN0000000000000A",
+              slugs: ["legacy"],
+              title: "Legacy monolithic plan",
+              status: "draft",
+              content: "Heavy content",
+              created_at: "2026-01-01T00:00:00Z",
+              derived_tasks: [],
+              derived_specs: [],
+              notes: [],
+            },
+          ],
+        }),
+        "utf-8",
+      );
+
+      const cache = new ProjectEntityCache(projectA);
+      await cache.loadDomain("plans");
+
+      expect(cache.getDomainState("plans")).toBe("degraded");
+      expect(cache.getPlansIndex()).toBeNull();
+      const diagnostics = cache.getCacheDiagnostics();
+      expect(diagnostics.domains.plans.errorReason).toBe("legacy_plan_storage_removed");
+    });
+
+    // AC: @entity-folder-migration-and-compatibility-1 ac-unmigrated-projects-are-blocked-with-guidance
+    it("transitions plans domain to degraded with missing_plan_folder_storage on a kynetic 1.2 project without plan_storage declaration", async () => {
+      await fs.writeFile(
+        join(projectA, ".kspec", "kynetic.yaml"),
+        yamlStringify({
+          kynetic: "1.2",
+          project: { name: "Missing Decl", version: "0.1.0", status: "draft" },
+          includes: ["modules/test.yaml"],
+          task_storage: { format: "split" },
+        }),
+        "utf-8",
+      );
+
+      const cache = new ProjectEntityCache(projectA);
+      await cache.loadDomain("plans");
+
+      expect(cache.getDomainState("plans")).toBe("degraded");
+      expect(cache.getPlansIndex()).toBeNull();
+      const diagnostics = cache.getCacheDiagnostics();
+      expect(diagnostics.domains.plans.errorReason).toBe("missing_plan_folder_storage");
+    });
+
+    // AC: @entity-folder-migration-and-compatibility-1 ac-unmigrated-projects-are-blocked-with-guidance
+    it("transitions reviews domain to degraded with legacy_review_storage_removed on a kynetic 1.1 project", async () => {
+      await fs.writeFile(
+        join(projectA, ".kspec", "project.reviews.yaml"),
+        yamlStringify({
+          kynetic_reviews: "1.0",
+          reviews: [
+            {
+              _ulid: "01LEGCYREVIEW00000000000A",
+              slugs: ["legacy-review"],
+              title: "Legacy monolithic review",
+              lifecycle_state: "open",
+              author: "@test",
+              subject: {
+                type: "task",
+                ref: "@task-test",
+                shadow_commit: "abc",
+                content_hash: "def",
+              },
+              related_refs: [],
+              created_at: "2026-01-01T00:00:00Z",
+              threads: [],
+              checks: [],
+              verdicts: [],
+              events: [],
+              external_links: [],
+            },
+          ],
+        }),
+        "utf-8",
+      );
+
+      const cache = new ProjectEntityCache(projectA);
+      await cache.loadDomain("reviews");
+
+      expect(cache.getDomainState("reviews")).toBe("degraded");
+      expect(cache.getReviewsIndex()).toBeNull();
+      const diagnostics = cache.getCacheDiagnostics();
+      expect(diagnostics.domains.reviews.errorReason).toBe("legacy_review_storage_removed");
+    });
+
+    // AC: @entity-folder-migration-and-compatibility-1 ac-partial-folder-layouts-are-blocked
+    it("transitions plans domain to degraded with partial_entity_storage_layout when folder declared but a plan index entry has no matching folder", async () => {
+      await fs.writeFile(
+        join(projectA, ".kspec", "kynetic.yaml"),
+        yamlStringify({
+          kynetic: "1.2",
+          project: { name: "Partial Layout", version: "0.1.0", status: "draft" },
+          includes: ["modules/test.yaml"],
+          task_storage: { format: "split" },
+          plan_storage: { format: "folder" },
+          review_storage: { format: "folder" },
+          resource_storage: { format: "entity_scoped" },
+        }),
+        "utf-8",
+      );
+      // Index entry without matching `plans/<ulid>/` folder → partial layout
+      await fs.writeFile(
+        join(projectA, ".kspec", "project.plans.yaml"),
+        yamlStringify({
+          kynetic_plans: "1.2",
+          plans: [
+            {
+              _ulid: "01STRANDED00000000000000A",
+              slugs: [],
+              title: "Stranded index entry",
+              status: "draft",
+              created_at: "2026-01-01T00:00:00Z",
+              derived_tasks: [],
+              derived_specs: [],
+            },
+          ],
+        }),
+        "utf-8",
+      );
+
+      const cache = new ProjectEntityCache(projectA);
+      await cache.loadDomain("plans");
+
+      expect(cache.getDomainState("plans")).toBe("degraded");
+      expect(cache.getPlansIndex()).toBeNull();
+      const diagnostics = cache.getCacheDiagnostics();
+      expect(diagnostics.domains.plans.errorReason).toBe("partial_entity_storage_layout");
     });
   });
 
@@ -3618,10 +4173,10 @@ describe("ProjectEntityCache", () => {
           lastPong: Date.now(),
           projectPath: projectA,
         },
-        send: vi.fn((msg: string) => sentMessages.push(msg)),
-        close: vi.fn(),
-        subscribe: vi.fn(),
-        unsubscribe: vi.fn(),
+        send: vi.fn<(msg: string) => void>((msg: string) => sentMessages.push(msg)),
+        close: vi.fn<() => void>(),
+        subscribe: vi.fn<() => void>(),
+        unsubscribe: vi.fn<() => void>(),
       } as any;
 
       pubsub.addConnection("test-conn", mockWs);
@@ -3748,10 +4303,10 @@ describe("ProjectEntityCache", () => {
           lastPong: Date.now(),
           projectPath: projectA,
         },
-        send: vi.fn((msg: string) => sentMessages.push(msg)),
-        close: vi.fn(),
-        subscribe: vi.fn(),
-        unsubscribe: vi.fn(),
+        send: vi.fn<(msg: string) => void>((msg: string) => sentMessages.push(msg)),
+        close: vi.fn<() => void>(),
+        subscribe: vi.fn<() => void>(),
+        unsubscribe: vi.fn<() => void>(),
       } as any;
       pubsub.addConnection("test-conn", mockWs);
 
@@ -4178,6 +4733,23 @@ describe("ProjectEntityCache", () => {
         consoleErrSpy.mockRestore();
         await fs.rm(legacyDir, { recursive: true, force: true });
       }
+    });
+  });
+
+  describe("dispatch control committed publication", () => {
+    it("invalidates dispatch-control and agent-status views together", () => {
+      const cache = new ProjectEntityCache(projectA);
+      expect(cache.getDispatchControlPublicationVersions()).toEqual({
+        dispatchControl: 0,
+        agentStatus: 0,
+      });
+
+      cache.invalidateDispatchControlPublication();
+
+      expect(cache.getDispatchControlPublicationVersions()).toEqual({
+        dispatchControl: 1,
+        agentStatus: 1,
+      });
     });
   });
 });

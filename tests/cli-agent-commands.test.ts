@@ -20,8 +20,10 @@ import {
   waitForStartup,
   testUlid,
   initGitRepo,
+  seedSplitTask,
 } from "./helpers/cli.js";
 import { runInvocation } from "../src/agent-runtime/invocation.js";
+import * as invocationModule from "../src/agent-runtime/invocation.js";
 import { registerAdapter } from "../src/agents/adapters.js";
 import { setJsonMode, isJsonMode } from "../src/cli/output.js";
 import type { SessionUpdate } from "../src/acp/index.js";
@@ -56,6 +58,43 @@ function createTestProgram(): Command {
   program.exitOverride(); // Don't call process.exit in tests
   registerAgentCommands(program);
   return program;
+}
+
+function lifecycleStatus(overrides: Record<string, unknown> = {}) {
+  return {
+    running: false,
+    activeInvocations: 0,
+    queuedInvocations: 0,
+    invocations: [],
+    queued: [],
+    globalAuthority: "stopped",
+    projection: "stopped",
+    cleanupState: { status: "idle", entries: [] },
+    heldCount: 0,
+    heldTasks: [],
+    taskControls: [],
+    ...overrides,
+  };
+}
+
+function lifecycleControl(action: "start" | "stop") {
+  const authority = action === "start" ? "running" : "stopped";
+  return {
+    ok: true,
+    data: {
+      global_authority: authority,
+      projection: authority,
+      cleanup_state: { status: "idle", entries: [] },
+      active_count: 0,
+      queue_depth: 0,
+      held_count: 0,
+      held_tasks: [],
+      task_controls: [],
+      degraded_targets: [],
+      outcome: "applied",
+    },
+    error: null,
+  };
 }
 
 // ─── Fixtures ────────────────────────────────────────────────────────────────
@@ -1116,6 +1155,107 @@ describe("agent run --task respects prompt_template", () => {
   });
 });
 
+// ─── Canonical task identity for one-shot --task ─────────────────────────────
+
+// AC: @dispatch-canonical-task-identity ac-project-invocation-callers-supply-canonical-task-id
+describe("agent run --task canonical task identity", () => {
+  let testDir: string;
+  const TASK_ULID = testUlid("CANON");
+
+  function setupProjectWithTask(): void {
+    initGitRepo(testDir);
+    fsSync.writeFileSync(
+      path.join(testDir, "kynetic.yaml"),
+      YAML.stringify({ kynetic: "1.1", title: "Test", task_storage: { format: "split" } }),
+    );
+    fsSync.writeFileSync(
+      path.join(testDir, "kynetic.meta.yaml"),
+      YAML.stringify({
+        kynetic_meta: "1.0",
+        agents: [
+          {
+            _ulid: testUlid("AGNT"),
+            id: "canon-worker",
+            name: "Canon Worker",
+            dispatch: [],
+            concurrency: { max_concurrent: 1 },
+            adapter: "claude-agent-acp",
+            auto_approve: false,
+          },
+        ],
+      }),
+    );
+    seedSplitTask(testDir, {
+      _ulid: TASK_ULID,
+      slugs: ["task-canon"],
+      type: "task",
+      title: "Canonical Task",
+      status: "pending",
+      priority: 3,
+    });
+  }
+
+  beforeEach(async () => {
+    // In-process task loading needs the split storage backend registered (the
+    // subprocess CLI does this during bootstrap).
+    const { ensureSplitBackendRegistered } = await import("../src/parser/split-backend.js");
+    ensureSplitBackendRegistered();
+    testDir = await createTempDir("kspec-agent-run-canon-");
+    setupProjectWithTask();
+  });
+
+  afterEach(async () => {
+    vi.restoreAllMocks();
+    await cleanupTempDir(testDir);
+  });
+
+  // AC: @dispatch-canonical-task-identity ac-project-invocation-callers-supply-canonical-task-id
+  // AC: @dispatch-canonical-task-identity ac-session-and-event-payloads-separate-id-from-display-ref
+  it("passes the canonical full ULID as task_id and the display slug as task_ref", async () => {
+    const runSpy = vi.spyOn(invocationModule, "runInvocation").mockResolvedValue({
+      outcome: "success",
+      session: { id: "session-canon-001" },
+      durationMs: 5,
+      stopReason: "end_turn",
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } as any);
+
+    const program = createTestProgram();
+    const origCwd = process.cwd();
+    process.chdir(testDir);
+    let caught: unknown;
+    try {
+      await program.parseAsync(["agent", "run", "canon-worker", "--task", "@task-canon"], {
+        from: "user",
+      });
+    } catch (err) {
+      caught = err;
+    } finally {
+      process.chdir(origCwd);
+    }
+    if (!runSpy.mock.calls.length && caught) throw caught;
+
+    expect(runSpy).toHaveBeenCalledOnce();
+    const opts = runSpy.mock.calls[0][0];
+    expect(opts.taskId).toBe(TASK_ULID);
+    expect(opts.taskRef).toBe("@task-canon");
+  });
+
+  // AC: @dispatch-canonical-task-identity ac-project-invocation-callers-supply-canonical-task-id
+  // AC: @dispatch-canonical-task-identity ac-invalid-or-mismatched-task-ref-rejected
+  it("fails before creating a session when --task cannot be resolved", () => {
+    const result = kspec("agent run canon-worker --task @task-ghost", testDir, {
+      expectFail: true,
+    });
+
+    expect(result.exitCode).not.toBe(0);
+    const combined = `${result.stdout}\n${result.stderr}`;
+    expect(combined).toMatch(/Cannot target task/i);
+    // The invocation never started, so no task-scoped session directory exists.
+    expect(fsSync.existsSync(path.join(testDir, ".kspec-sessions"))).toBe(false);
+  });
+});
+
 // ─── AC-2: One-shot invocation with task binding ─────────────────────────────
 
 // AC: @cli-agent-commands ac-2
@@ -1223,12 +1363,9 @@ describe("AC-4: kspec agent dispatch start with running daemon", () => {
     vi.spyOn(PidFileManager.prototype, "readPort").mockReturnValue(9999);
 
     // Mock fetch to return a successful response
-    const fetchMock = vi.fn().mockResolvedValue({
+    const fetchMock = vi.fn<typeof fetch>().mockResolvedValue({
       ok: true,
-      json: async () => ({
-        started: true,
-        status: { running: true, activeInvocations: 0, queuedInvocations: 0 },
-      }),
+      json: async () => lifecycleControl("start"),
     } as Response);
     vi.stubGlobal("fetch", fetchMock);
 
@@ -1257,7 +1394,7 @@ describe("AC-4: kspec agent dispatch start with running daemon", () => {
 
     // AC: @cli-agent-commands ac-4 - dispatch engine started
     expect(fetchMock).toHaveBeenCalledWith(
-      expect.stringContaining("/api/agent/dispatch/start"),
+      expect.stringContaining("/api/agent/dispatch/control"),
       expect.objectContaining({
         method: "POST",
         headers: expect.not.objectContaining({
@@ -1300,12 +1437,9 @@ describe("AC-4: kspec agent dispatch start with running daemon", () => {
     vi.spyOn(PidFileManager.prototype, "isDaemonRunning").mockReturnValue(true);
     vi.spyOn(PidFileManager.prototype, "readPort").mockReturnValue(9999);
 
-    const fetchMock = vi.fn().mockResolvedValue({
+    const fetchMock = vi.fn<typeof fetch>().mockResolvedValue({
       ok: true,
-      json: async () => ({
-        started: true,
-        status: { running: true, activeInvocations: 0, queuedInvocations: 0 },
-      }),
+      json: async () => lifecycleControl("start"),
     } as Response);
     vi.stubGlobal("fetch", fetchMock);
 
@@ -1317,7 +1451,7 @@ describe("AC-4: kspec agent dispatch start with running daemon", () => {
     }
 
     expect(fetchMock).toHaveBeenCalledWith(
-      expect.stringContaining("/api/agent/dispatch/start"),
+      expect.stringContaining("/api/agent/dispatch/control"),
       expect.objectContaining({
         method: "POST",
         headers: expect.objectContaining({
@@ -1358,11 +1492,14 @@ describe("AC-4: kspec agent dispatch start with running daemon", () => {
     vi.spyOn(PidFileManager.prototype, "isDaemonRunning").mockReturnValue(true);
     vi.spyOn(PidFileManager.prototype, "readPort").mockReturnValue(9999);
 
-    const fetchMock = vi.fn().mockResolvedValue({
+    const fetchMock = vi.fn<typeof fetch>().mockResolvedValue({
       ok: false,
       status: 409,
-      text: async () =>
-        "Dispatch engine already running for /tmp/main-project with cwd /tmp/worktrees/a",
+      json: async () => ({
+        ok: false,
+        data: null,
+        error: { code: "invalid_transition", message: "raw", suggestion: "raw" },
+      }),
     } as Response);
     vi.stubGlobal("fetch", fetchMock);
 
@@ -1381,8 +1518,8 @@ describe("AC-4: kspec agent dispatch start with running daemon", () => {
       console.error = origError;
     }
 
-    expect(errors.join("\n")).toContain("409");
-    expect(errors.join("\n")).toContain("/tmp/worktrees/a");
+    expect(errors.join("\n")).toContain("Dispatch lifecycle transition is not valid");
+    expect(errors.join("\n")).not.toContain("/tmp/worktrees/a");
   });
 });
 
@@ -1412,13 +1549,15 @@ describe("AC-5: kspec agent dispatch stop graceful shutdown", () => {
   });
 
   it("should call daemon dispatch/stop and report success when daemon is running", async () => {
+    const dispatchSession = process.env.KSPEC_SESSION_ID;
+    delete process.env.KSPEC_SESSION_ID;
     const { PidFileManager } = await import("../src/cli/pid-utils.js");
     vi.spyOn(PidFileManager.prototype, "isDaemonRunning").mockReturnValue(true);
     vi.spyOn(PidFileManager.prototype, "readPort").mockReturnValue(9999);
 
-    const fetchMock = vi.fn().mockResolvedValue({
+    const fetchMock = vi.fn<typeof fetch>().mockResolvedValue({
       ok: true,
-      json: async () => ({ stopped: true }),
+      json: async () => lifecycleControl("stop"),
     } as Response);
     vi.stubGlobal("fetch", fetchMock);
 
@@ -1433,7 +1572,7 @@ describe("AC-5: kspec agent dispatch stop graceful shutdown", () => {
       const origCwd = process.cwd();
       process.chdir(testDir);
       try {
-        await program.parseAsync(["agent", "dispatch", "stop"], { from: "user" });
+        await program.parseAsync(["agent", "dispatch", "stop", "--force"], { from: "user" });
       } finally {
         process.chdir(origCwd);
       }
@@ -1441,11 +1580,12 @@ describe("AC-5: kspec agent dispatch stop graceful shutdown", () => {
       // suppress exitOverride
     } finally {
       console.log = origLog;
+      if (dispatchSession) process.env.KSPEC_SESSION_ID = dispatchSession;
     }
 
     // AC: @cli-agent-commands ac-5 - dispatch engine stopped gracefully
     expect(fetchMock).toHaveBeenCalledWith(
-      expect.stringContaining("/api/agent/dispatch/stop"),
+      expect.stringContaining("/api/agent/dispatch/control"),
       expect.objectContaining({ method: "POST" }),
     );
     expect(logs.some((l) => /stop|stopped/i.test(l))).toBe(true);
@@ -1486,23 +1626,24 @@ describe("AC-6: kspec agent status with running daemon", () => {
     const testSessionId = "01JTEST000SESSION0000001";
     const testInvocationId = "01JTEST000INVOC00000001";
 
-    const fetchMock = vi.fn().mockResolvedValue({
+    const fetchMock = vi.fn<typeof fetch>().mockResolvedValue({
       ok: true,
-      json: async () => ({
-        running: true,
-        activeInvocations: 1,
-        queuedInvocations: 0,
-        invocations: [
-          {
-            invocationId: testInvocationId,
-            sessionId: testSessionId,
-            agentId: "worker",
-            agentName: "Worker Agent",
-            taskRef: "@01JTASK001",
-            elapsedMs: 45000,
-          },
-        ],
-      }),
+      json: async () =>
+        lifecycleStatus({
+          running: true,
+          activeInvocations: 1,
+          queuedInvocations: 0,
+          invocations: [
+            {
+              invocationId: testInvocationId,
+              sessionId: testSessionId,
+              agentId: "worker",
+              agentName: "Worker Agent",
+              taskRef: "@01JTASK001",
+              elapsedMs: 45000,
+            },
+          ],
+        }),
     } as Response);
     vi.stubGlobal("fetch", fetchMock);
 
@@ -1552,28 +1693,29 @@ describe("AC-6: kspec agent status with running daemon", () => {
     vi.spyOn(PidFileManager.prototype, "isDaemonRunning").mockReturnValue(true);
     vi.spyOn(PidFileManager.prototype, "readPort").mockReturnValue(9999);
 
-    const fetchMock = vi.fn().mockResolvedValue({
+    const fetchMock = vi.fn<typeof fetch>().mockResolvedValue({
       ok: true,
-      json: async () => ({
-        running: true,
-        activeInvocations: 0,
-        queuedInvocations: 2,
-        invocations: [],
-        queued: [
-          {
-            agentId: "worker",
-            agentName: "Worker Agent",
-            taskRef: "@01QTASK002",
-            waitMs: 12000,
-          },
-          {
-            agentId: "reviewer",
-            agentName: "Reviewer Agent",
-            taskRef: "@01QTASK003",
-            waitMs: 3000,
-          },
-        ],
-      }),
+      json: async () =>
+        lifecycleStatus({
+          running: true,
+          activeInvocations: 0,
+          queuedInvocations: 2,
+          invocations: [],
+          queued: [
+            {
+              agentId: "worker",
+              agentName: "Worker Agent",
+              taskRef: "@01QTASK002",
+              waitMs: 12000,
+            },
+            {
+              agentId: "reviewer",
+              agentName: "Reviewer Agent",
+              taskRef: "@01QTASK003",
+              waitMs: 3000,
+            },
+          ],
+        }),
     } as Response);
     vi.stubGlobal("fetch", fetchMock);
 

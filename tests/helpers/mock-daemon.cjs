@@ -10,7 +10,8 @@
  *   node tests/helpers/mock-daemon.cjs \
  *     [--bind-host 127.0.0.1] \
  *     [--mode normal|error|hang] \
- *     [--record /path/to/requests.jsonl]
+ *     [--record /path/to/requests.jsonl] \
+ *     [--health-command-dispatch '{"status":"degraded",...}']
  *
  * On `listening`, writes one JSON line `{"port":<n>,"bindHost":"<host>"}` to
  * stdout so the parent can build daemon.connection.json pointing at the
@@ -44,6 +45,30 @@ function getArg(name, fallback) {
 const bindHost = getArg("bind-host", "127.0.0.1");
 const mode = getArg("mode", "normal");
 const recordFile = getArg("record", null);
+
+// Optional command_dispatch payload merged into the /api/health body so
+// CLI tests can simulate a daemon reporting a wedged command dispatch.
+const healthCommandDispatchRaw = getArg("health-command-dispatch", null);
+let healthCommandDispatch = null;
+if (healthCommandDispatchRaw !== null) {
+  try {
+    healthCommandDispatch = JSON.parse(healthCommandDispatchRaw);
+  } catch {
+    process.stderr.write("mock daemon: invalid --health-command-dispatch JSON\n");
+    process.exit(2);
+  }
+}
+
+const agentDispatchStatusRaw = getArg("agent-dispatch-status", null);
+let agentDispatchStatus = null;
+if (agentDispatchStatusRaw !== null) {
+  try {
+    agentDispatchStatus = JSON.parse(agentDispatchStatusRaw);
+  } catch {
+    process.stderr.write("mock daemon: invalid --agent-dispatch-status JSON\n");
+    process.exit(2);
+  }
+}
 
 // ── Test-only failure-injection seams ─────────────────────────────────
 // These flags exist to drive the failure-path contract tests in
@@ -162,7 +187,12 @@ const server = http.createServer(async (req, res) => {
   const method = req.method;
 
   if (path === "/api/health") {
-    return ok(res, { status: "ok", uptime: 1, runtime: "node" });
+    return ok(res, {
+      status: "ok",
+      uptime: 1,
+      runtime: "node",
+      ...(healthCommandDispatch ? { command_dispatch: healthCommandDispatch } : {}),
+    });
   }
   if (path === "/api/projects") {
     return ok(res, { status: "ok" });
@@ -184,12 +214,51 @@ const server = http.createServer(async (req, res) => {
     return ok(res, { outcome: "executed", accepted: true, reason: null });
   }
   if (path === "/api/agent/dispatch/status") {
+    return ok(
+      res,
+      agentDispatchStatus ?? {
+        running: false,
+        activeInvocations: 0,
+        queuedInvocations: 0,
+        invocations: [],
+        queued: [],
+        globalAuthority: "stopped",
+        projection: "stopped",
+        cleanupState: { status: "idle", entries: [] },
+        heldCount: 0,
+        heldTasks: [],
+        taskControls: [],
+      },
+    );
+  }
+  if (path === "/api/agent/dispatch/control" && method === "POST") {
+    let request = {};
+    try {
+      request = JSON.parse(body || "{}");
+    } catch {}
+    const authority =
+      request.action === "pause" ? "paused" : request.action === "stop" ? "stopped" : "running";
     return ok(res, {
-      running: false,
-      activeInvocations: 0,
-      queuedInvocations: 0,
-      invocations: [],
-      queued: [],
+      ok: true,
+      data: {
+        global_authority: authority,
+        projection: authority,
+        cleanup_state: { status: "idle", entries: [] },
+        active_count: 0,
+        queue_depth: 0,
+        held_count: 0,
+        held_tasks: [],
+        task_controls: [],
+        degraded_targets: [],
+        outcome: "applied",
+        ...(request.scope === "task"
+          ? {
+              task_id: "01KXH2PT5BATGSN8TNY7W7NE55",
+              task_ref: request.task_ref ?? null,
+            }
+          : {}),
+      },
+      error: null,
     });
   }
   if (path === "/api/agent/dispatch/start" && method === "POST") {

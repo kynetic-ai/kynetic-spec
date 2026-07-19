@@ -4,7 +4,7 @@ This guide covers installing and setting up kspec in your own projects. For deve
 
 ## Prerequisites
 
-- **Node.js** v18 or later
+- **Node.js** v20 or later
 - **npm** (or pnpm/yarn)
 - **Git** - Your project must be a git repository for shadow branch mode (the default)
 - **Bun** (optional) - Required only for the daemon/web UI (`kspec serve`). Not needed for CLI-only usage. Install from [bun.sh](https://bun.sh/docs/installation)
@@ -99,7 +99,7 @@ kspec setup --dry-run    # Preview what would be configured
 kspec setup --no-hooks   # Skip hook installation
 ```
 
-For broader setup context and the spec-first workflow after install, see [README.md](README.md#how-it-works) and [docs/getting-started.md](docs/getting-started.md).
+For broader setup context and the spec-first workflow after install, see [README.md](README.md) and [docs/getting-started/index.md](docs/getting-started/index.md).
 
 ## Verification
 
@@ -138,7 +138,7 @@ kspec task note @task-slug "..." # Document what you're doing
 kspec inbox add "..."            # Capture ideas for later
 ```
 
-See [docs/getting-started.md](docs/getting-started.md) for the full first-task walkthrough.
+See [docs/getting-started/index.md](docs/getting-started/index.md) for the full first-task walkthrough.
 
 ## Troubleshooting
 
@@ -163,6 +163,6 @@ kspec init --force     # Reinitialize completely (use as last resort)
 
 ## Next Steps
 
-- [docs/getting-started.md](docs/getting-started.md) - End-to-end tutorial from install to first completed task
+- [docs/getting-started/index.md](docs/getting-started/index.md) - End-to-end tutorial from install to first completed task
 - [AGENTS.md](AGENTS.md) - Detailed workflows for AI agents
 - [README.md](README.md) - Package overview and workflow summary

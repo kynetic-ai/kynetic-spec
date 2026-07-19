@@ -23,7 +23,7 @@ kspec organizes your project around three ideas:
 These pieces work together in a loop:
 
 ```
-Define spec → Derive task → Agent works → Review → Complete → Next spec
+Define spec → Derive task → Agent works → Review → Merge → Complete → Next spec
 ```
 
 Each iteration produces commits linked back to the governing spec and task, giving you a traceable history from intention through delivery.
@@ -34,9 +34,9 @@ kspec is a CLI tool that runs alongside your existing tools. It does not replace
 
 - **Before coding**: Define what you want in a spec with acceptance criteria
 - **During coding**: Your agent reads the spec and works within the task lifecycle
-- **After coding**: Reviews verify work against the spec's acceptance criteria, and completed tasks close the loop
+- **After coding**: Reviews verify work against the spec's acceptance criteria, the approved work is merged through the project's integration process, and then the task is completed
 
-Your specs and tasks live on a separate Git branch (the "shadow branch") so they never clutter your main branch history. The CLI handles all shadow branch operations automatically.
+Your specs and tasks live on a separate Git branch (the "shadow branch") so they never clutter your source-code branch history. The CLI handles all shadow branch operations automatically.
 
 ## What you will build in this guide
 

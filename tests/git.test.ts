@@ -2,8 +2,16 @@ import { describe, it, expect, beforeEach, afterEach } from "vitest";
 import * as fs from "node:fs/promises";
 import * as path from "node:path";
 import * as os from "node:os";
-import { execSync } from "node:child_process";
-import { getDiffSince, getRecentCommits, isGitRepo, getCurrentBranch } from "../src/utils/git.js";
+import { execSync, execFileSync } from "node:child_process";
+import {
+  getDiffSince,
+  getRecentCommits,
+  isGitRepo,
+  getCurrentBranch,
+  getHeadCommit,
+  getBranchRemote,
+  getWorkingTreeStatus,
+} from "../src/utils/git.js";
 
 describe("Git utilities", () => {
   let tmpDir: string;
@@ -190,6 +198,139 @@ describe("Git utilities", () => {
 
       const commits = getRecentCommits({ cwd: tmpDir, limit: 3 });
       expect(commits.length).toBe(3);
+    });
+
+    // AC: @subprocess-argument-literalness ac-dynamic-values-treated-literally
+    it("should filter commits by since timestamp without shell-interpreting it", async () => {
+      await fs.writeFile(path.join(tmpDir, "old.txt"), "old");
+      execSync("git add old.txt", { cwd: tmpDir, stdio: "ignore" });
+      execSync('git commit -m "Old commit"', { cwd: tmpDir, stdio: "ignore" });
+
+      // git --since has second precision
+      await new Promise((resolve) => setTimeout(resolve, 2000));
+      const between = new Date();
+      await new Promise((resolve) => setTimeout(resolve, 2000));
+
+      await fs.writeFile(path.join(tmpDir, "new.txt"), "new");
+      execSync("git add new.txt", { cwd: tmpDir, stdio: "ignore" });
+      execSync('git commit -m "New commit"', { cwd: tmpDir, stdio: "ignore" });
+
+      const commits = getRecentCommits({ cwd: tmpDir, since: between });
+      expect(commits.length).toBe(1);
+      expect(commits[0].message).toBe("New commit");
+    });
+  });
+
+  describe("shell metacharacter literalness", () => {
+    // Branch names may legally contain $, parens, semicolons, quotes, and backticks
+    // (but not spaces — hence the redirect-based payloads). This exact string is a
+    // valid git refname; under the old shell-string invocation both command
+    // substitutions (`$(...)` and backticks) execute and create canary-* files.
+    // The args-array invocation must pass it as one literal argument so nothing runs.
+    const metaBranch = "feat;$(date>canary-dollar);`date>canary-bt`;'q';dq\"\"";
+
+    async function canaryExists(): Promise<boolean> {
+      const entries = await fs.readdir(tmpDir);
+      return entries.some((e) => e.startsWith("canary-"));
+    }
+
+    beforeEach(() => {
+      execSync('git commit --allow-empty -m "Initial commit"', { cwd: tmpDir, stdio: "ignore" });
+      execFileSync("git", ["checkout", "-b", metaBranch], { cwd: tmpDir, stdio: "ignore" });
+    });
+
+    // AC: @subprocess-argument-literalness ac-metacharacter-branch-literal
+    it("getCurrentBranch returns the literal branch name without executing embedded commands", async () => {
+      expect(getCurrentBranch(tmpDir)).toBe(metaBranch);
+      expect(await canaryExists()).toBe(false);
+    });
+
+    // AC: @subprocess-argument-literalness ac-metacharacter-branch-literal
+    it("getBranchRemote returns literal upstream metadata without executing embedded commands", async () => {
+      execFileSync("git", ["remote", "add", "origin", "https://example.com/repo.git"], {
+        cwd: tmpDir,
+        stdio: "ignore",
+      });
+      execFileSync("git", ["config", `branch.${metaBranch}.remote`, "origin"], {
+        cwd: tmpDir,
+        stdio: "ignore",
+      });
+      execFileSync("git", ["config", `branch.${metaBranch}.merge`, `refs/heads/${metaBranch}`], {
+        cwd: tmpDir,
+        stdio: "ignore",
+      });
+
+      const info = getBranchRemote(metaBranch, tmpDir);
+      expect(info).toEqual({
+        remote: "origin",
+        url: "https://example.com/repo.git",
+        upstream_ref: `refs/heads/${metaBranch}`,
+      });
+      expect(await canaryExists()).toBe(false);
+    });
+
+    // AC: @subprocess-argument-literalness ac-dynamic-values-treated-literally
+    it("getBranchRemote treats a metacharacter remote name as literal data", async () => {
+      // The remote name read from config is itself dynamic data and flows into a
+      // second `git remote get-url <remote>` call. A remote with an embedded
+      // command must fail the lookup literally, not execute it.
+      const metaRemote = "origin;$(date>canary-remote)";
+      execFileSync("git", ["config", `branch.${metaBranch}.remote`, metaRemote], {
+        cwd: tmpDir,
+        stdio: "ignore",
+      });
+
+      const info = getBranchRemote(metaBranch, tmpDir);
+      expect(info).toBeNull();
+      expect(await canaryExists()).toBe(false);
+    });
+
+    // AC: @subprocess-argument-literalness ac-dynamic-values-treated-literally
+    it("getDiffSince operates literally on revision identifiers and timestamps", async () => {
+      await fs.writeFile(path.join(tmpDir, "tracked.txt"), "content");
+      execSync("git add tracked.txt", { cwd: tmpDir, stdio: "ignore" });
+      execSync('git commit -m "Add tracked file"', { cwd: tmpDir, stdio: "ignore" });
+
+      const result = getDiffSince(new Date("2000-01-01"), tmpDir);
+      expect(result).toBeTruthy();
+      expect(result).toContain("tracked.txt");
+      expect(await canaryExists()).toBe(false);
+    });
+  });
+
+  describe("failure results outside a git repository", () => {
+    let nonGitDir: string;
+
+    beforeEach(async () => {
+      nonGitDir = await fs.mkdtemp(path.join(os.tmpdir(), "kspec-non-git-"));
+    });
+
+    afterEach(async () => {
+      await fs.rm(nonGitDir, { recursive: true, force: true });
+    });
+
+    // AC: @subprocess-argument-literalness ac-failure-results-preserved
+    it("helpers return their documented null/empty/default results without throwing", () => {
+      expect(isGitRepo(nonGitDir)).toBe(false);
+      expect(getCurrentBranch(nonGitDir)).toBeNull();
+      expect(getHeadCommit(nonGitDir)).toBeNull();
+      expect(getRecentCommits({ cwd: nonGitDir })).toEqual([]);
+      expect(getDiffSince(new Date(), nonGitDir)).toBeNull();
+      expect(getBranchRemote("main", nonGitDir)).toBeNull();
+      expect(getWorkingTreeStatus(nonGitDir)).toEqual({
+        clean: true,
+        staged: [],
+        unstaged: [],
+        untracked: [],
+      });
+    });
+
+    // AC: @subprocess-argument-literalness ac-failure-results-preserved
+    it("getBranchRemote returns null when no upstream is configured", () => {
+      execSync('git commit --allow-empty -m "Initial commit"', { cwd: tmpDir, stdio: "ignore" });
+      const branch = getCurrentBranch(tmpDir);
+      expect(branch).toBeTruthy();
+      expect(getBranchRemote(branch!, tmpDir)).toBeNull();
     });
   });
 });

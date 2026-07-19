@@ -28,7 +28,7 @@
  * - @daemon-entity-cache ac-domain-ready-event
  */
 
-import { dirname, join, relative } from "path";
+import { dirname, join, normalize, relative } from "path";
 import {
   expandIncludePattern,
   getTaskFilePath,
@@ -57,6 +57,12 @@ import { loadReviewRecords, type LoadedReviewRecord } from "../parser/reviews.js
 import { type LoadedPlan } from "../parser/plans.js";
 import { computeDisposition } from "../parser/review-operations.js";
 import { getUnresolvedBlockers } from "../parser/review-threads.js";
+import { invalidateTestCoverageCache } from "../parser/coverage-cache.js";
+import {
+  EntityStorageCompatibilityError,
+  requirePlanFolderStorage,
+  requireReviewFolderStorage,
+} from "../parser/entity-storage-compatibility.js";
 import { getShadowStatus, hasRemoteTracking } from "../parser/shadow.js";
 import {
   type SessionLogSummary,
@@ -67,6 +73,10 @@ import {
 } from "../sessions/store.js";
 import type { Dir } from "fs";
 import * as fs from "fs/promises";
+import {
+  getOrCreateDispatchControlStore,
+  unregisterDispatchControlStore,
+} from "../agent-runtime/dispatch-control-store.js";
 
 async function closeDirectoryHandle(dir: Dir): Promise<void> {
   try {
@@ -157,6 +167,20 @@ function sortSessionSummaries(summaries: SessionLogSummary[]): void {
   });
 }
 
+/**
+ * Bounded resource summary mirrored from the plan index — counts only,
+ * never resource bytes. Keeping the shape inside `PlanIndexSummary` lets
+ * cache-ready list responses surface resource presence without loading any
+ * per-plan sidecar manifests.
+ *
+ * AC: @folder-backed-plan-storage-1 ac-plan-index-has-bounded-projection
+ * AC: @trait-entity-scoped-local-resources-1 ac-resource-metadata-exposes-safe-preview-fields
+ */
+export interface PlanIndexResourceSummary {
+  count: number;
+  total_bytes: number;
+}
+
 /** Summary type for plans (index tier — excludes content and notes). */
 export interface PlanIndexSummary {
   _ulid: string;
@@ -170,11 +194,19 @@ export interface PlanIndexSummary {
   module_ref: string | null;
   derived_tasks: string[];
   derived_specs: string[];
+  /**
+   * Bounded resource summary carried through the cache index. `undefined`
+   * when the plan has no `resources.yaml` sidecar; route consumers project
+   * `{ count: 0, total_bytes: 0 }` in that case.
+   *
+   * AC: @folder-backed-plan-storage-1 ac-plan-index-has-bounded-projection
+   */
+  resource_summary?: PlanIndexResourceSummary;
 }
 
 /** Project a LoadedPlan to its index-tier summary (strip content and notes). */
 function toPlanIndexSummary(plan: LoadedPlan): PlanIndexSummary {
-  return {
+  const summary: PlanIndexSummary = {
     _ulid: plan._ulid,
     slugs: plan.slugs,
     title: plan.title,
@@ -187,6 +219,15 @@ function toPlanIndexSummary(plan: LoadedPlan): PlanIndexSummary {
     derived_tasks: plan.derived_tasks,
     derived_specs: plan.derived_specs,
   };
+  // `LoadedPlan` may carry an attached `resource_summary` populated by the
+  // folder-backed loader (read from the plan's `resources.yaml` sidecar at
+  // load time). When present, project it through so the cache-ready list
+  // path can surface bounded counts without a sidecar re-read.
+  const attached = (plan as { resource_summary?: PlanIndexResourceSummary }).resource_summary;
+  if (attached && typeof attached.count === "number" && typeof attached.total_bytes === "number") {
+    summary.resource_summary = { count: attached.count, total_bytes: attached.total_bytes };
+  }
+  return summary;
 }
 
 /** Summary type for review records (index tier — excludes threads, checks, verdicts, events, notes). */
@@ -471,6 +512,23 @@ interface TaskDomainStore extends DomainStore<TaskSummary[], CachedTaskDetail> {
 
 // ─── File → Domain Mapping ───────────────────────────────────────────────────
 
+/** Crockford-base32 ULID shape used to validate folder-backed entity roots. */
+const ENTITY_ULID_SEGMENT = /^[0-9A-HJKMNP-TV-Z]{26}$/i;
+
+/**
+ * Whether `relativePath` (relative to `.kspec/`) is a file inside a
+ * folder-backed entity directory of the given storage root, i.e.
+ * `<storageRoot>/<ULID>/<...>`. Requires the second segment to be a
+ * Crockford-base32 ULID so look-alike prefixes like `plans-archive/...`
+ * or top-level filenames like `plansreport.yaml` are not claimed.
+ */
+function isFolderBackedEntityChild(storageRoot: string, relativePath: string): boolean {
+  const segments = relativePath.split("/");
+  return (
+    segments.length >= 3 && segments[0] === storageRoot && ENTITY_ULID_SEGMENT.test(segments[1])
+  );
+}
+
 /**
  * Map a changed file path (relative to .kspec/) to its data domain(s).
  * Returns an array of affected domains, or null if the file doesn't
@@ -515,13 +573,27 @@ export function fileToDomain(
     domains.push("inbox");
   }
 
-  // Plans
+  // Plans — both the lean parent index (project.plans.yaml) and folder-backed
+  // per-plan directories (plans/<ulid>/plan.md, plan.yaml, notes.yaml,
+  // resources.yaml, resources/<file>). The folder match requires a valid
+  // ULID-shaped segment after `plans/` so sibling paths like
+  // `plans-archive/foo.yaml` or top-level `plansreport.yaml` do not collide.
+  // AC: @daemon-entity-cache ac-folder-backed-entity-directory-invalidation
   if (relativePath === "project.plans.yaml") {
     domains.push("plans");
   }
+  if (isFolderBackedEntityChild("plans", relativePath)) {
+    domains.push("plans");
+  }
 
-  // Reviews
+  // Reviews — both the lean parent index (project.reviews.yaml) and
+  // folder-backed per-review directories (reviews/<ulid>/review.yaml,
+  // resources.yaml, resources/<file>). Same ULID-segment guard as plans.
+  // AC: @daemon-entity-cache ac-folder-backed-entity-directory-invalidation
   if (relativePath === "project.reviews.yaml") {
+    domains.push("reviews");
+  }
+  if (isFolderBackedEntityChild("reviews", relativePath)) {
     domains.push("reviews");
   }
 
@@ -593,6 +665,8 @@ export function fileToDomain(
 export class ProjectEntityCache {
   private projectPath: string;
   private sessionConfig: SessionCacheConfig;
+  private dispatchControlPublicationVersion = 0;
+  private agentStatusPublicationVersion = 0;
 
   // Per-domain stores
   private tasks: TaskDomainStore = {
@@ -1026,7 +1100,10 @@ export class ProjectEntityCache {
       // AC: @daemon-server ac-cache-diagnostics-recovery-readiness
       // Tasks domain surfaces deterministic task-storage incompatibility
       // diagnostics so clients can distinguish "stuck on user action" from
-      // "transient failure". Other domains report nulls/false.
+      // "transient failure". Plans and reviews domains surface deterministic
+      // entity-storage incompatibility codes from any
+      // EntityStorageCompatibilityError that landed in lastError during
+      // cache warm-up. Other domains report nulls/false.
       let errorReason: string | null = null;
       let recoveryGuidance: string | null = null;
       let recoveryWaitingOnProjectState = false;
@@ -1034,6 +1111,16 @@ export class ProjectEntityCache {
         errorReason = this.tasks.storageIncompatibility.code;
         recoveryGuidance = this.tasks.storageIncompatibility.suggestion;
         recoveryWaitingOnProjectState = !this.tasks.needsTaskStorageRecheck;
+      } else if (
+        (domain === "plans" || domain === "reviews") &&
+        store.lastError instanceof EntityStorageCompatibilityError
+      ) {
+        errorReason = store.lastError.code;
+        recoveryGuidance = store.lastError.suggestion ?? null;
+        // The cache loader cannot recover without a project-state change
+        // (manifest upgrade, migration, or layout fix). The next watcher-
+        // driven reload after such a change will retry.
+        recoveryWaitingOnProjectState = true;
       }
 
       domains[domain] = {
@@ -1184,6 +1271,19 @@ export class ProjectEntityCache {
         break;
       }
       case "plans": {
+        // AC: @entity-folder-migration-and-compatibility-1 ac-unmigrated-projects-are-blocked-with-guidance
+        // AC: @daemon-read-path ac-no-per-request-sync
+        //     — run the strict folder-storage gate BEFORE loadPlans() so the
+        //     cache cannot enter "ready" with monolithic data warmed via the
+        //     lenient gate. Without this, the daemon plan routes' cache-ready
+        //     fast path would serve legacy data with 200 instead of the
+        //     required structured 409. When this throws, the catch block in
+        //     runNonMetaDomainReload marks the plans domain "degraded" with
+        //     the stored EntityStorageCompatibilityError; route handlers
+        //     observe a non-"ready" state and run the gate at request entry,
+        //     where the deterministic incompatibility is translated into 409.
+        await requirePlanFolderStorage(ctx);
+        if (this.disposed) return;
         const loadedPlans = await loadPlans(ctx);
         if (this.disposed) return;
         // AC: @daemon-entity-cache ac-stale-during-reload — atomic swap
@@ -1204,6 +1304,14 @@ export class ProjectEntityCache {
         break;
       }
       case "reviews": {
+        // AC: @entity-folder-migration-and-compatibility-1 ac-unmigrated-projects-are-blocked-with-guidance
+        // AC: @daemon-read-path ac-no-per-request-sync
+        //     — run the strict folder-storage gate BEFORE loadReviewRecords()
+        //     so the cache cannot enter "ready" with monolithic data warmed
+        //     via the lenient gate (see the "plans" case for the full
+        //     rationale).
+        await requireReviewFolderStorage(ctx);
+        if (this.disposed) return;
         const reviewRecords = await loadReviewRecords(ctx);
         if (this.disposed) return;
         // AC: @daemon-entity-cache ac-stale-during-reload — atomic swap
@@ -1414,6 +1522,11 @@ export class ProjectEntityCache {
   async handleFileChange(kspecDir: string, filePath: string, _content?: string): Promise<void> {
     if (this.disposed) return;
 
+    if (normalize(kspecDir) === normalize(this.projectPath)) {
+      invalidateTestCoverageCache(this.projectPath);
+      return;
+    }
+
     const relativePath = relative(kspecDir, filePath);
     // Detect whether this change came from the sessions directory (.kspec-sessions/)
     // or the spec directory (.kspec/). Session IDs can be arbitrary strings (not just
@@ -1428,6 +1541,23 @@ export class ProjectEntityCache {
       }
       await Promise.all(domains.map((d) => this.invalidateDomain(d)));
     }
+  }
+
+  /** Invalidate lifecycle-derived views only after committed control publication. */
+  invalidateDispatchControlPublication(): void {
+    if (this.disposed) return;
+    this.dispatchControlPublicationVersion += 1;
+    this.agentStatusPublicationVersion += 1;
+  }
+
+  getDispatchControlPublicationVersions(): {
+    dispatchControl: number;
+    agentStatus: number;
+  } {
+    return {
+      dispatchControl: this.dispatchControlPublicationVersion,
+      agentStatus: this.agentStatusPublicationVersion,
+    };
   }
 
   /**
@@ -2513,6 +2643,26 @@ const cacheRegistry = new Map<string, ProjectEntityCache>();
  */
 export function getEntityCache(projectPath: string): ProjectEntityCache | null {
   return cacheRegistry.get(projectPath) ?? null;
+}
+
+export async function registerDispatchControlPublication(projectPath: string): Promise<void> {
+  const store = getOrCreateDispatchControlStore(projectPath);
+  store.setPublicationListener("entity-cache", () => {
+    getEntityCache(projectPath)?.invalidateDispatchControlPublication();
+  });
+  await store.loadCommitted();
+}
+
+export async function handleDispatchControlFileEvent(
+  projectPath: string,
+  observedHead: string | null,
+): Promise<void> {
+  const store = getOrCreateDispatchControlStore(projectPath);
+  await store.observeWorktreeEvent(observedHead);
+}
+
+export function unregisterDispatchControlPublication(projectPath: string): void {
+  unregisterDispatchControlStore(projectPath);
 }
 
 /**

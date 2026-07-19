@@ -12,7 +12,7 @@
  */
 
 import { existsSync, readFileSync } from "node:fs";
-import { extname, resolve } from "node:path";
+import { extname, isAbsolute, relative, resolve } from "node:path";
 import type { Elysia } from "elysia";
 
 const STATIC_ASSET_CONTENT_TYPES: Record<string, string> = {
@@ -67,15 +67,49 @@ export function isRootWebUiAssetPath(requestPath: string): boolean {
 }
 
 /**
+ * Serve one generated Pagefind asset without granting access to other nested
+ * paths in the web UI bundle.
+ */
+export function serveWebUiPagefindAsset(webUiPath: string, requestPath: string): Response {
+  let decodedPath: string;
+  try {
+    decodedPath = decodeURIComponent(requestPath);
+  } catch {
+    return new Response("Not found", { status: 404 });
+  }
+
+  const pagefindPrefix = "/pagefind/";
+  if (!decodedPath.startsWith(pagefindPrefix)) {
+    return new Response("Not found", { status: 404 });
+  }
+
+  const pagefindRoot = resolve(webUiPath, "pagefind");
+  const assetPath = resolve(pagefindRoot, decodedPath.slice(pagefindPrefix.length));
+  const relativeAssetPath = relative(pagefindRoot, assetPath);
+  if (
+    relativeAssetPath.length === 0 ||
+    relativeAssetPath.startsWith("..") ||
+    isAbsolute(relativeAssetPath)
+  ) {
+    return new Response("Not found", { status: 404 });
+  }
+
+  return serveWebUiStaticAsset(webUiPath, decodedPath);
+}
+
+/**
  * Register the node-runtime web UI static asset routes on the given Elysia app.
  *
  * The Bun runtime relies on @elysiajs/static (mounted directly in
  * server.ts); node has no equivalent, so this helper installs the manual
- * `/ _app/*` and `/:asset` routes the daemon uses on node.
+ * `/_app/*`, `/pagefind/*`, and `/:asset` routes the daemon uses on node.
  */
 export function registerWebUiNodeStaticRoutes(app: Elysia, webUiPath: string): void {
   app.get("/_app/*", ({ request }) =>
     serveWebUiStaticAsset(webUiPath, new URL(request.url).pathname),
+  );
+  app.get("/pagefind/*", ({ request }) =>
+    serveWebUiPagefindAsset(webUiPath, new URL(request.url).pathname),
   );
   app.get("/:asset", ({ request }) => {
     const requestPath = new URL(request.url).pathname;

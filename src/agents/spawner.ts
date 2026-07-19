@@ -21,6 +21,33 @@ export interface SpawnAgentOptions {
   extraArgs?: string[];
   /** ACP client options */
   clientOptions?: Omit<ACPClientOptions, "stdin" | "stdout">;
+  /**
+   * Whether to merge the host process env under `env` when building the child
+   * environment.
+   *
+   * - `true` (default): preserves pre-runner-config behavior. The legacy
+   *   adapter invocation path relies on inheriting PATH/HOME and other host
+   *   vars implicitly.
+   * - `false`: the spawner uses `env` verbatim (after adapter.env merge but
+   *   without `process.env`). Runner-backed invocations set this to enforce
+   *   the runner's `env.inherit` policy.
+   *
+   * AC: @runner-environment-secret-boundaries ac-env-inheritance-policy-applied
+   */
+  inheritParentEnv?: boolean;
+  /**
+   * Optional redactor applied to adapter stderr lines before they are
+   * forwarded to `process.stderr`. Runner-backed invocations pass the
+   * resolved runner contract's redactor so any secret value that leaks into
+   * adapter diagnostics is scrubbed before reaching operator-visible output.
+   *
+   * AC: @runner-environment-secret-boundaries ac-diagnostics-redact-secrets
+   */
+  redact?: (text: string) => string;
+  /** Called immediately after spawn, before ACP initialization begins. */
+  onSpawn?: (agent: SpawnedAgent) => void | Promise<void>;
+  /** Cancels an in-flight ACP initialization without losing the child handle. */
+  initializationSignal?: AbortSignal;
 }
 
 /**
@@ -63,15 +90,23 @@ function isNonActionableAdapterStderrLine(line: string): boolean {
   }
 }
 
-function forwardFilteredAdapterStderr(child: ChildProcess): void {
+function forwardFilteredAdapterStderr(
+  child: ChildProcess,
+  redact?: (text: string) => string,
+): void {
   if (!child.stderr) return;
 
   child.stderr.setEncoding("utf-8");
   let pending = "";
 
+  // Redact each line before forwarding so resolved secret values cannot leak
+  // through adapter stderr into operator-visible output. The redactor is a
+  // no-op when the runner contract had no resolved secrets.
+  // AC: @runner-environment-secret-boundaries ac-diagnostics-redact-secrets
   const forward = (line: string, withNewline: boolean): void => {
     if (isNonActionableAdapterStderrLine(line)) return;
-    process.stderr.write(withNewline ? `${line}\n` : line);
+    const scrubbed = redact ? redact(line) : line;
+    process.stderr.write(withNewline ? `${scrubbed}\n` : scrubbed);
   };
 
   child.stderr.on("data", (chunk: string | Buffer) => {
@@ -104,24 +139,43 @@ function forwardFilteredAdapterStderr(child: ChildProcess): void {
  * @returns SpawnedAgent with client, process, and kill function
  */
 export function spawnAgent(adapter: AgentAdapter, options: SpawnAgentOptions): SpawnedAgent {
-  const { cwd, env = {}, extraArgs, clientOptions = {} } = options;
+  const { cwd, env = {}, extraArgs, clientOptions = {}, inheritParentEnv = true, redact } = options;
 
   // Strip host-environment variables that interfere with agent startup
   // (e.g. CLAUDECODE=1 causes nested-session detection in Claude Code)
-  const cleanProcessEnv = { ...process.env };
-  for (const key of SANITIZED_ENV_VARS) {
-    delete cleanProcessEnv[key];
+  // Only inherited when inheritParentEnv is true — runner-backed invocations
+  // pass an already-composed env per the runner's inherit policy.
+  // AC: @runner-environment-secret-boundaries ac-env-inheritance-policy-applied
+  const inheritedHostEnv: NodeJS.ProcessEnv = {};
+  if (inheritParentEnv) {
+    Object.assign(inheritedHostEnv, process.env);
+    for (const key of SANITIZED_ENV_VARS) {
+      delete inheritedHostEnv[key];
+    }
   }
 
   // Merge environment variables
   const processEnv = {
-    ...cleanProcessEnv,
+    ...inheritedHostEnv,
     ...adapter.env,
     ...env,
   };
 
   // Build args from fresh copy to prevent cross-call leakage
   const args = [...adapter.args, ...(extraArgs || [])];
+
+  // Defensive guard: an adapter without a resolved command must never reach
+  // spawn. The runner resolver replaces a generic adapter's absent command
+  // with the runner-supplied executable, and rejects generic invocations that
+  // lack one (`missing_process_executable`) before this point — so a missing
+  // command here means a resolver bug, not an operator-fixable condition.
+  // Throwing keeps us from spawning a placeholder generic command.
+  if (adapter.command === undefined) {
+    throw new Error(
+      "Adapter has no command to spawn. A generic ACP process adapter must be " +
+        "resolved through a runner that supplies process.executable.",
+    );
+  }
 
   // Spawn the agent process. On POSIX, create a dedicated process group so
   // package runners such as npx cannot orphan the real adapter binary during
@@ -146,7 +200,10 @@ export function spawnAgent(adapter: AgentAdapter, options: SpawnAgentOptions): S
   spawnError.catch(() => {});
 
   // Keep actionable adapter stderr visible while dropping known non-actionable noise.
-  forwardFilteredAdapterStderr(child);
+  // Apply the runner contract's redactor so any secret value that surfaces in
+  // adapter diagnostics is scrubbed before reaching operator-visible output.
+  // AC: @runner-environment-secret-boundaries ac-diagnostics-redact-secrets
+  forwardFilteredAdapterStderr(child, redact);
 
   // Ensure stdin/stdout are available
   if (!child.stdin || !child.stdout) {
@@ -158,10 +215,17 @@ export function spawnAgent(adapter: AgentAdapter, options: SpawnAgentOptions): S
   // Note: From the client's perspective:
   // - stdin is where we READ from (child's stdout)
   // - stdout is where we WRITE to (child's stdin)
+  //
+  // Forward the runner contract redactor into ACP framing so JSON-RPC error
+  // logs (`JSON-RPC error: <message>`) cannot leak resolved secret values to
+  // parent stderr when an adapter rejects a request with secret-containing
+  // text.
+  // AC: @runner-environment-secret-boundaries ac-diagnostics-redact-secrets
   const client = new ACPClient({
     ...clientOptions,
     stdin: child.stdout, // We read from child's stdout
     stdout: child.stdin as NodeJS.WritableStream, // We write to child's stdin
+    redact,
   });
 
   // Forward process exit to client close, surfacing exit code/signal
@@ -189,6 +253,8 @@ export function spawnAgent(adapter: AgentAdapter, options: SpawnAgentOptions): S
       try {
         process.kill(-child.pid, signal);
       } catch {
+        // Group kill fails (ESRCH) when the process group is already gone —
+        // fall back to signaling the child directly instead of surfacing it.
         if (!child.killed) {
           child.kill(signal);
         }
@@ -221,9 +287,31 @@ export async function spawnAndInitialize(
   const agent = spawnAgent(adapter, options);
 
   try {
+    await options.onSpawn?.(agent);
+    let removeAbortListener: (() => void) | undefined;
+    const initializationAborted = options.initializationSignal
+      ? new Promise<never>((_, reject) => {
+          const signal = options.initializationSignal!;
+          const abort = () => reject(new Error("Agent initialization aborted"));
+          if (signal.aborted) {
+            abort();
+            return;
+          }
+          signal.addEventListener("abort", abort, { once: true });
+          removeAbortListener = () => signal.removeEventListener("abort", abort);
+        })
+      : null;
     // Race initialization against spawn errors — if the command doesn't exist,
     // the 'error' event fires before initialize() can complete.
-    await Promise.race([agent.client.initialize(), agent.spawnError]);
+    try {
+      await Promise.race([
+        agent.client.initialize(),
+        agent.spawnError,
+        ...(initializationAborted ? [initializationAborted] : []),
+      ]);
+    } finally {
+      removeAbortListener?.();
+    }
     return agent;
   } catch (err) {
     // Clean up on initialization failure

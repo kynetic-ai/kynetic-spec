@@ -15,8 +15,8 @@ import {
   cleanupTempDir,
   createTempDir,
   createTestApp,
+  FOLDER_BACKED_INLINE_MANIFEST,
   initGitRepo,
-  LEGACY_INLINE_MANIFEST,
   requestJson,
   setupInlineFixtures,
   testUlid,
@@ -38,17 +38,18 @@ let app: Elysia;
 let pubsub: PubSubManager;
 let broadcastSpy: ReturnType<typeof captureBroadcasts>;
 
-const REVIEW_FIXTURES_TASK = `tasks:
-  - _ulid: "${TASK_ULID}"
-    slugs:
-      - task-test
-    title: "Test Task"
-    description: "A test task"
-    status: pending_review
-    spec_ref: "@test-feature"
-    review_ref: "@review-open"
-    created_at: "2026-01-01T00:00:00Z"
-`;
+// Split-storage task seed used by setupInlineFixtures({ splitTasks: [...] })
+// under the folder-backed manifest (which declares task_storage.format: split).
+const REVIEW_FIXTURES_SPLIT_TASK = {
+  _ulid: TASK_ULID,
+  slugs: ["task-test"],
+  title: "Test Task",
+  description: "A test task",
+  status: "pending_review",
+  spec_ref: "@test-feature",
+  review_ref: "@review-open",
+  created_at: "2026-01-01T00:00:00Z",
+};
 
 function reviewFixturesYaml(): string {
   return `kynetic_reviews: "1.0"
@@ -139,9 +140,9 @@ describe("Review WebSocket Broadcasts", () => {
     tempDir = await createTempDir("kspec-review-ws-");
     initGitRepo(tempDir);
     setupInlineFixtures(tempDir, {
-      manifest: LEGACY_INLINE_MANIFEST,
+      manifest: FOLDER_BACKED_INLINE_MANIFEST,
       modules: REVIEW_FIXTURE_MODULES,
-      tasksFile: REVIEW_FIXTURES_TASK,
+      splitTasks: [REVIEW_FIXTURES_SPLIT_TASK],
       reviews: reviewFixturesYaml(),
     });
 
@@ -426,9 +427,9 @@ describe("Review WebSocket Event Data Shape", () => {
     initGitRepo(localTempDir);
 
     setupInlineFixtures(localTempDir, {
-      manifest: LEGACY_INLINE_MANIFEST,
+      manifest: FOLDER_BACKED_INLINE_MANIFEST,
       modules: REVIEW_FIXTURE_MODULES,
-      tasksFile: "tasks: []\n",
+      splitTasks: [],
       reviews: `kynetic_reviews: "1.0"
 reviews:
   - _ulid: "${testUlid("RVSH", 1)}"

@@ -13,38 +13,36 @@ This guide walks you through creating a structured plan document, importing it i
 
 A plan document is a markdown file with YAML code blocks that define specs and tasks. Create a file (for example, `plans/my-feature.md`) with this structure:
 
-````markdown
+````markdown kspec-plan
 # My Feature Plan
 
 ## Specs
 
-\```yaml
-
+```yaml
 - title: Feature Name
   slug: feature-name
   type: feature
   parent: "@main"
   description: |
-  What this feature does and why it matters.
-  acceptance_criteria: - id: ac-1
-  given: |
-  A user is on the dashboard
-  when: |
-  They click the export button
-  then: |
-  A CSV file downloads with the current data
-  \```
+    What this feature does and why it matters.
+  acceptance_criteria:
+    - id: ac-1
+      given: |
+        A user is on the dashboard
+      when: |
+        They click the export button
+      then: |
+        A CSV file downloads with the current data
+```
 
 ## Tasks
 
-\```yaml
-
+```yaml
 - title: Implement export feature
   slug: task-implement-export
   spec_ref: "@feature-name"
-  plan_ref: "@plan-my-feature"
   tags: [mvp, feature]
-  \```
+```
 ````
 
 Each spec defines what to build with acceptance criteria. Each task references the spec it implements.
@@ -107,6 +105,14 @@ Preview what will be created before committing:
 kspec plan derive @plan-my-feature --dry-run
 ```
 
+If the plan owns local resources (screenshots, research PDFs, evidence files) and any derived task declares `resource_refs`, derivation records versioned references back to the plan's resources by default. Pass `--materialize-resources` when a task needs an immutable snapshot of the plan resource bytes copied into its own directory:
+
+```bash
+kspec plan derive @plan-my-feature --materialize-resources
+```
+
+See [Working With Local Resources](./working-with-local-resources.md) for the full resource workflow, including how to import a plan with sibling resources, attach files to an existing plan, and the difference between referenced and materialized resources.
+
 After derivation, tasks appear in the ready queue:
 
 ```bash
@@ -121,7 +127,7 @@ Run the following to confirm your plan is imported and approved:
 kspec plan get @plan-my-feature
 ```
 
-The output should show `Status: approved` and list the derived specs and tasks. Then verify tasks are ready:
+After derivation, the output should show `Status: active` and list the derived specs and tasks. Then verify tasks are ready:
 
 ```bash
 kspec tasks ready

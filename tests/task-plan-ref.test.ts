@@ -4,6 +4,9 @@
  */
 
 import { describe, it, expect, beforeEach, afterEach } from "vitest";
+import { promises as fs } from "fs";
+import { join } from "path";
+import { parse, stringify } from "yaml";
 import {
   setupTempFixtures,
   cleanupTempDir,
@@ -144,34 +147,71 @@ describe("Integration: task plan_ref field", () => {
       expect(output).not.toContain('"@valid-plan" not found');
     });
 
-    // TODO: kspec validate doesn't load per-task detail files in split format, so can't detect dangling plan_ref
-    it.skip("should warn when plan_ref points to non-existent plan", async () => {
-      // Create a task with plan_ref that doesn't exist
-      // We'll manually edit the task YAML to bypass CLI validation
-      kspec('task add --title "Test Task" --slug test-dangling', tempDir);
-
-      // Manually add plan_ref to per-task file (split format)
-      const { promises: fs } = await import("fs");
-      const { join } = await import("path");
-      const { parse, stringify } = await import("yaml");
-
+    // Inject a dangling reference directly into the per-task detail file
+    // (split storage), bypassing CLI-time ref validation. The finding can only
+    // surface if validate() loads the persisted split-storage record.
+    async function injectIntoTaskDetailFile(
+      slug: string,
+      mutate: (taskData: Record<string, unknown>) => void,
+    ): Promise<void> {
       // Find the task's ULID from the index
       const tasksFile = join(tempDir, "project.tasks.yaml");
       const content = await readTestOutput(tasksFile);
       const entries = parse(content) as Array<{ _ulid: string; slugs: string[] }>;
-      const entry = entries.find((t) => t.slugs.includes("test-dangling"));
+      const entry = entries.find((t) => t.slugs.includes(slug));
       expect(entry).toBeDefined();
 
-      // Add plan_ref to the per-task file
       const taskFile = join(tempDir, "tasks", entry!._ulid, "task.yaml");
-      const taskContent = await readTestOutput(taskFile);
-      const taskData = parse(taskContent);
-      taskData.plan_ref = "@nonexistent-plan";
+      const taskData = parse(await readTestOutput(taskFile)) as Record<string, unknown>;
+      mutate(taskData);
       await fs.writeFile(taskFile, stringify(taskData));
+    }
 
-      // Validation should warn about dangling reference
-      const output = kspec("validate", tempDir);
+    // AC: @plan-validation ac-10
+    // AC: @validation-task-data-source ac-task-references-checked
+    // AC: @validation-task-data-source ac-all-persisted-tasks-included
+    it("should report dangling plan_ref in a split-storage task file as a validation error", async () => {
+      kspec('task add --title "Test Task" --slug test-dangling', tempDir);
+      await injectIntoTaskDetailFile("test-dangling", (taskData) => {
+        taskData.plan_ref = "@nonexistent-plan";
+      });
+
+      // strict_refs defaults to true, so the dangling ref is an error and
+      // validate exits non-zero
+      const result = kspecRun("validate", tempDir, { expectFail: true });
+      const output = result.stdout + result.stderr;
+      expect(result.exitCode).not.toBe(0);
       expect(output).toContain("@nonexistent-plan");
+      expect(output).toMatch(/not found/i);
+    });
+
+    // AC: @validation-task-data-source ac-task-references-checked
+    // AC: @validation-task-data-source ac-all-persisted-tasks-included
+    it("should report dangling spec_ref in a split-storage task file as a validation error", async () => {
+      kspec('task add --title "Test Task" --slug test-dangling-spec', tempDir);
+      await injectIntoTaskDetailFile("test-dangling-spec", (taskData) => {
+        taskData.spec_ref = "@nonexistent-spec-item";
+      });
+
+      const result = kspecRun("validate", tempDir, { expectFail: true });
+      const output = result.stdout + result.stderr;
+      expect(result.exitCode).not.toBe(0);
+      expect(output).toContain("@nonexistent-spec-item");
+      expect(output).toMatch(/not found/i);
+    });
+
+    // AC: @validation-task-data-source ac-task-references-checked
+    // AC: @validation-task-data-source ac-all-persisted-tasks-included
+    it("should report dangling depends_on entry in a split-storage task file as a validation error", async () => {
+      kspec('task add --title "Test Task" --slug test-dangling-dep', tempDir);
+      await injectIntoTaskDetailFile("test-dangling-dep", (taskData) => {
+        taskData.depends_on = ["@nonexistent-dependency"];
+      });
+
+      const result = kspecRun("validate", tempDir, { expectFail: true });
+      const output = result.stdout + result.stderr;
+      expect(result.exitCode).not.toBe(0);
+      expect(output).toContain("@nonexistent-dependency");
       expect(output).toMatch(/not found/i);
     });
   });

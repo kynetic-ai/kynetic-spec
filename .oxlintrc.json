@@ -29,7 +29,8 @@
       "jsPlugins": [
         "./tools/eslint-rules/no-source-scanning.js",
         "./tools/eslint-rules/no-daemon-ts-imports.js",
-        "./tools/eslint-rules/no-leaky-test-daemon.js"
+        "./tools/eslint-rules/no-leaky-test-daemon.js",
+        "./tools/eslint-rules/no-unguarded-npm-pack.js"
       ],
       "rules": {
         "vitest/no-focused-tests": "error",
@@ -42,7 +43,8 @@
         "no-source-scanning/no-source-file-reads": "error",
         "no-daemon-ts-imports/no-daemon-ts-imports": "error",
         "no-leaky-test-daemon/no-leaky-test-daemon": "error",
-        "no-leaky-test-daemon/localized-disable": "error"
+        "no-leaky-test-daemon/localized-disable": "error",
+        "no-unguarded-npm-pack/no-unguarded-npm-pack": "error"
       }
     }
   ]

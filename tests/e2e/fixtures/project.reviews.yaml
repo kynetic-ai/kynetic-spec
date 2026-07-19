@@ -3,226 +3,116 @@ reviews:
   - _ulid: 01KKTX0CA45ZT43W2T6HJMVA01
     slugs:
       - test-review-open
-    title: "Review of test task"
+    title: Review of test task
+    disposition: changes_requested
+    author: reviewer@test.com
+    check_count: 3
     lifecycle_state: open
+    related_refs: []
     subject:
       type: task
+      content_hash: hash123
       ref: "@test-task-pending-review"
-      shadow_commit: "abc1234"
-      content_hash: "hash123"
-    author: "reviewer@test.com"
-    related_refs: []
-    threads:
-      - _ulid: 01KKTX1CA45ZT43W2T6HJMVA02
-        kind: blocker
-        entries:
-          - _ulid: 01KKTX2CA45ZT43W2T6HJMVA03
-            author: "reviewer@test.com"
-            body: "Missing error handling for edge case"
-            created_at: "2026-03-15T10:00:00Z"
-      - _ulid: 01KKTX3CA45ZT43W2T6HJMVA04
-        kind: nit
-        entries:
-          - _ulid: 01KKTX4CA45ZT43W2T6HJMVA05
-            author: "reviewer@test.com"
-            body: "Consider renaming this variable"
-            created_at: "2026-03-15T10:05:00Z"
-      - _ulid: 01KKTX5CA45ZT43W2T6HJMVA06
-        kind: question
-        resolved_at: "2026-03-15T11:00:00Z"
-        resolved_by: "worker@test.com"
-        entries:
-          - _ulid: 01KKTX6CA45ZT43W2T6HJMVA07
-            author: "reviewer@test.com"
-            body: "Why was this approach chosen?"
-            created_at: "2026-03-15T10:10:00Z"
-          - _ulid: 01KKTX7CA45ZT43W2T6HJMVA08
-            author: "worker@test.com"
-            body: "Because it handles concurrent writes better"
-            created_at: "2026-03-15T10:30:00Z"
-      - _ulid: 01KKV0RCA45ZT43W2T6HJMVB01
-        kind: blocker
-        entries:
-          - _ulid: 01KKV0SCA45ZT43W2T6HJMVB02
-            author: "reviewer@test.com"
-            body: |
-              Found a **critical bug** in `validateInput()`:
-
-              ```typescript
-              if (input.length > MAX_LENGTH) {
-                return null; // should throw Error
-              }
-              ```
-
-              This silently returns `null` instead of throwing.
-              See [OWASP guidelines](https://example.com) for more.
-            created_at: "2026-03-15T10:15:00Z"
-    checks:
-      - name: "vitest"
-        status: pass
-        required: true
-        runner: "vitest"
-        evidence: "All 342 tests passed"
-        applies_to_version:
-          type: entity_version
-          content_hash: "hash123"
-        created_at: "2026-03-15T10:30:00Z"
-      - name: "lint"
-        status: fail
-        required: true
-        runner: "eslint"
-        evidence: "3 errors found"
-        applies_to_version:
-          type: entity_version
-          content_hash: "hash123"
-        created_at: "2026-03-15T10:31:00Z"
-      - name: "coverage"
-        status: pass
-        required: false
-        runner: "vitest"
-        evidence: "87% coverage"
-        applies_to_version:
-          type: entity_version
-          content_hash: "stale-hash"
-        created_at: "2026-03-15T09:00:00Z"
-    verdicts:
-      - reviewer: "reviewer@test.com"
-        role: "reviewer"
-        decision: request_changes
-        applies_to_version:
-          type: entity_version
-          content_hash: "hash123"
-        created_at: "2026-03-15T11:00:00Z"
-    events:
-      - _ulid: 01KKTX8CA45ZT43W2T6HJMVA09
-        event_type: lifecycle_change
-        actor: "reviewer@test.com"
-        timestamp: "2026-03-15T09:00:00Z"
-        payload:
-          from: draft
-          to: open
-    notes: []
-    external_links: []
-    examined_commit: null
-    created_at: "2026-03-15T09:00:00Z"
-    updated_at: "2026-03-15T11:00:00Z"
-
+      shadow_commit: abc1234
+    thread_count: 4
+    unresolved_blocker_count: 2
+    verdict_count: 1
+    created_at: 2026-03-15T09:00:00Z
+    updated_at: 2026-03-15T11:00:00Z
   - _ulid: 01KKTX9CA45ZT43W2T6HJMVA10
     slugs:
       - test-review-draft
-    title: "Draft review"
+    title: Draft review
+    disposition: pending
+    author: reviewer@test.com
+    check_count: 0
     lifecycle_state: draft
+    related_refs: []
     subject:
       type: task
+      content_hash: hash456
       ref: "@test-task-ready"
-      shadow_commit: "def5678"
-      content_hash: "hash456"
-    author: "reviewer@test.com"
-    related_refs: []
-    threads: []
-    checks: []
-    verdicts: []
-    events: []
-    notes: []
-    external_links: []
-    examined_commit: null
-    created_at: "2026-03-15T08:00:00Z"
-    updated_at: null
-
+      shadow_commit: def5678
+    thread_count: 0
+    unresolved_blocker_count: 0
+    verdict_count: 0
+    created_at: 2026-03-15T08:00:00Z
   - _ulid: 01KKV0TCA45ZT43W2T6HJMVB03
     slugs:
       - test-review-sibling
-    title: "Review of test task (cycle 2)"
+    title: Review of test task (cycle 2)
+    disposition: approved
+    author: reviewer@test.com
+    check_count: 0
     lifecycle_state: closed
+    related_refs: []
     subject:
       type: task
+      content_hash: hash789
       ref: "@test-task-pending-review"
-      shadow_commit: "ghi9012"
-      content_hash: "hash789"
-    author: "reviewer@test.com"
-    related_refs: []
-    threads: []
-    checks: []
-    verdicts:
-      - reviewer: "reviewer@test.com"
-        role: "reviewer"
-        decision: approve
-        applies_to_version:
-          type: entity_version
-          content_hash: "hash789"
-        created_at: "2026-03-16T14:00:00Z"
-    events: []
-    notes: []
-    external_links: []
-    examined_commit: null
-    created_at: "2026-03-16T12:00:00Z"
-    updated_at: "2026-03-16T14:00:00Z"
-
+      shadow_commit: ghi9012
+    thread_count: 0
+    unresolved_blocker_count: 0
+    verdict_count: 1
+    created_at: 2026-03-16T12:00:00Z
+    updated_at: 2026-03-16T14:00:00Z
   - _ulid: 01KKV1ACA45ZT43W2T6HJMVB10
     slugs:
       - test-code-review-main-1
-    title: "Code review for feat/review-detail"
+    title: Code review for feat/review-detail
+    disposition: pending
+    author: reviewer@test.com
+    check_count: 0
+    examined_commit: bbb22222
     lifecycle_state: open
+    related_refs: []
     subject:
       type: code
-      base_commit: "aaa11111"
-      head_commit: "bbb22222"
-      base_branch: "dev"
-      head_branch: "feat/review-detail"
-    author: "reviewer@test.com"
-    related_refs: []
-    threads: []
-    checks: []
-    verdicts: []
-    events: []
-    notes: []
-    external_links: []
-    examined_commit: "bbb22222"
-    created_at: "2026-03-14T08:00:00Z"
-    updated_at: null
-
+      base_branch: dev
+      base_commit: aaa11111
+      head_branch: feat/review-detail
+      head_commit: bbb22222
+    thread_count: 0
+    unresolved_blocker_count: 0
+    verdict_count: 0
+    created_at: 2026-03-14T08:00:00Z
   - _ulid: 01KKV1BCA45ZT43W2T6HJMVB11
     slugs:
       - test-code-review-main-2
-    title: "Code review for feat/review-detail (cycle 2)"
+    title: Code review for feat/review-detail (cycle 2)
+    disposition: pending
+    author: reviewer@test.com
+    check_count: 0
+    examined_commit: ccc33333
     lifecycle_state: closed
+    related_refs: []
     subject:
       type: code
-      base_commit: "bbb22222"
-      head_commit: "ccc33333"
-      base_branch: "dev"
-      head_branch: "feat/review-detail"
-    author: "reviewer@test.com"
-    related_refs: []
-    threads: []
-    checks: []
-    verdicts: []
-    events: []
-    notes: []
-    external_links: []
-    examined_commit: "ccc33333"
-    created_at: "2026-03-15T08:00:00Z"
-    updated_at: null
-
+      base_branch: dev
+      base_commit: bbb22222
+      head_branch: feat/review-detail
+      head_commit: ccc33333
+    thread_count: 0
+    unresolved_blocker_count: 0
+    verdict_count: 0
+    created_at: 2026-03-15T08:00:00Z
   - _ulid: 01KKV1CCA45ZT43W2T6HJMVB12
     slugs:
       - test-code-review-other
-    title: "Code review for feat/other-work"
+    title: Code review for feat/other-work
+    disposition: pending
+    author: reviewer@test.com
+    check_count: 0
+    examined_commit: eee55555
     lifecycle_state: open
+    related_refs: []
     subject:
       type: code
-      base_commit: "ddd44444"
-      head_commit: "eee55555"
-      base_branch: "dev"
-      head_branch: "feat/other-work"
-    author: "reviewer@test.com"
-    related_refs: []
-    threads: []
-    checks: []
-    verdicts: []
-    events: []
-    notes: []
-    external_links: []
-    examined_commit: "eee55555"
-    created_at: "2026-03-16T08:00:00Z"
-    updated_at: null
+      base_branch: dev
+      base_commit: ddd44444
+      head_branch: feat/other-work
+      head_commit: eee55555
+    thread_count: 0
+    unresolved_blocker_count: 0
+    verdict_count: 0
+    created_at: 2026-03-16T08:00:00Z

@@ -135,6 +135,9 @@ export async function acquireFileLock(
       } catch (writeErr) {
         // Roll back the lockDir so future acquirers aren't blocked by a
         // lock with no pid file (which the ENOENT path treats as notStale).
+        // Best-effort: writeErr below is the primary failure; if the rollback
+        // also fails, waiters hit the acquire timeout with its manual-removal
+        // hint rather than deadlocking silently.
         await fs.rm(lockDir, { recursive: true, force: true }).catch(() => {});
         throw writeErr;
       }

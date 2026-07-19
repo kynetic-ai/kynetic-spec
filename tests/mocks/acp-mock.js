@@ -20,16 +20,28 @@
  * - MOCK_ACP_PROJECT_DIR: Working directory for kspec commands
  * - MOCK_ACP_CLI_PATH: Path to kspec CLI entry point (required in CI where kspec isn't global)
  * - MOCK_ACP_VERIFY_ARGS_FILE: Write process.argv to this file for verifying command-line args
+ * - MOCK_ACP_VERIFY_PROMPT_FILE: Write each session/prompt params payload to this file as JSON (newline-delimited)
  * - MOCK_ACP_EMIT_RATE_LIMIT_EVENT: If true, emit a simulated non-actionable rate_limit_event stderr line
  * - MOCK_ACP_EMIT_ACTIONABLE_STDERR: Emit this stderr line during prompt handling
  * - MOCK_ACP_SUPPRESS_UPDATES: If true, send no session updates before response
  * - MOCK_ACP_SEND_NON_MEANINGFUL_ONLY: If true, send only available_commands_update (not meaningful)
  * - MOCK_ACP_CUSTOM_UPDATE_TYPE: Send a specific sessionUpdate type (e.g., "tool_call", "plan")
+ * - MOCK_ACP_FAIL_TEMPLATE: When the mock fails, use this string as the JSON-RPC error
+ *     message. The literal "{VAR}" is substituted with the value of the env var
+ *     named in MOCK_ACP_FAIL_VAR. Used by redaction tests to inject a resolved
+ *     secret value into the failure path.
+ * - MOCK_ACP_FAIL_VAR: Env var name whose value substitutes for "{VAR}" in
+ *     MOCK_ACP_FAIL_TEMPLATE.
+ * - MOCK_ACP_RESIST_TERMINATION: If true, ignore SIGTERM and keep the process
+ *     alive after stdin closes so process-reap escalation can be tested.
+ * - MOCK_ACP_PID_FILE: Write this mock process's PID to the given file.
+ * - MOCK_ACP_INITIALIZE_MODE: "reject" rejects initialization; "hang" never responds.
+ * - MOCK_ACP_RESISTANT_DESCENDANT_PID_FILE: Spawn a same-group child that ignores SIGTERM.
  */
 
 import * as fs from "node:fs";
 import * as readline from "node:readline";
-import { execSync } from "node:child_process";
+import { execSync, spawn } from "node:child_process";
 
 // ─── State ───────────────────────────────────────────────────────────────────
 
@@ -55,6 +67,10 @@ const verifyEnvFile = process.env.MOCK_ACP_VERIFY_ENV_FILE;
 const verifyEnvVars = process.env.MOCK_ACP_VERIFY_ENV_VARS; // comma-separated var names
 // Write process.argv to a file for verifying command-line args
 const verifyArgsFile = process.env.MOCK_ACP_VERIFY_ARGS_FILE;
+// Write the params payload of each session/prompt request to this file
+// (one JSON line per prompt) so tests can assert on prompt content like
+// adapter-specific skill reference formatting.
+const verifyPromptFile = process.env.MOCK_ACP_VERIFY_PROMPT_FILE;
 const sendPermissionRequest = process.env.MOCK_ACP_SEND_PERMISSION_REQUEST === "true";
 const emitRateLimitEvent = process.env.MOCK_ACP_EMIT_RATE_LIMIT_EVENT === "true";
 const actionableStderr = process.env.MOCK_ACP_EMIT_ACTIONABLE_STDERR;
@@ -63,6 +79,35 @@ const suppressUpdates = process.env.MOCK_ACP_SUPPRESS_UPDATES === "true";
 const sendNonMeaningfulOnly = process.env.MOCK_ACP_SEND_NON_MEANINGFUL_ONLY === "true";
 // Send a specific sessionUpdate type before responding
 const customUpdateType = process.env.MOCK_ACP_CUSTOM_UPDATE_TYPE;
+const resistTermination = process.env.MOCK_ACP_RESIST_TERMINATION === "true";
+const pidFile = process.env.MOCK_ACP_PID_FILE;
+const initializeMode = process.env.MOCK_ACP_INITIALIZE_MODE;
+const resistantDescendantPidFile = process.env.MOCK_ACP_RESISTANT_DESCENDANT_PID_FILE;
+
+if (resistTermination) {
+  process.on("SIGTERM", () => {
+    // Intentionally resist graceful termination. SIGKILL remains uncatchable.
+  });
+}
+
+// The PID file is a readiness signal: once it exists, configured signal
+// handlers are installed and tests may safely trigger immediate cleanup.
+if (pidFile) {
+  fs.writeFileSync(pidFile, String(process.pid));
+}
+
+if (resistantDescendantPidFile) {
+  const descendant = spawn(
+    process.execPath,
+    [
+      "-e",
+      "process.on('SIGTERM',()=>{});require('node:fs').writeFileSync(process.argv[1],String(process.pid));setInterval(()=>{},1000)",
+      resistantDescendantPidFile,
+    ],
+    { stdio: "ignore" },
+  );
+  descendant.unref();
+}
 
 // ─── JSON-RPC Helpers ────────────────────────────────────────────────────────
 
@@ -93,6 +138,19 @@ function sendError(id, code, message) {
 function sendNotification(method, params) {
   const notification = { jsonrpc: "2.0", method, params };
   console.log(JSON.stringify(notification));
+}
+
+// ─── Failure Composition ─────────────────────────────────────────────────────
+
+function buildFailureMessage() {
+  const template = process.env.MOCK_ACP_FAIL_TEMPLATE;
+  if (!template) return "Mock failure";
+  const varName = process.env.MOCK_ACP_FAIL_VAR;
+  const value = varName ? process.env[varName] : null;
+  if (varName && value) {
+    return template.split("{VAR}").join(value);
+  }
+  return template;
 }
 
 // ─── Failure Tracking ────────────────────────────────────────────────────────
@@ -173,23 +231,36 @@ async function handlePrompt(id, params) {
     return;
   }
 
+  // Append the prompt params to the verify file so tests can assert on
+  // adapter-specific prompt content (e.g. resolved skill reference formatting).
+  if (verifyPromptFile) {
+    try {
+      fs.appendFileSync(verifyPromptFile, `${JSON.stringify(params)}\n`);
+    } catch {
+      // Best-effort: test-only artifact, never fail the mock for I/O issues.
+    }
+  }
+
   // Optional delay
   if (delayMs > 0) {
     await new Promise((resolve) => setTimeout(resolve, delayMs));
   }
 
-  // Check if we should fail
-  if (shouldFail()) {
-    sendError(id, -32000, "Mock failure");
-    return;
-  }
-
+  // Emit stderr lines BEFORE the failure check so failure-path tests can
+  // assert that adapter stderr is forwarded (and, where applicable, redacted)
+  // even when the prompt fails.
   if (emitRateLimitEvent) {
     console.error('Unexpected case: {"type":"rate_limit_event","detail":"mock rate limit info"}');
   }
 
   if (actionableStderr) {
     console.error(actionableStderr);
+  }
+
+  // Check if we should fail
+  if (shouldFail()) {
+    sendError(id, -32000, buildFailureMessage());
+    return;
   }
 
   // Optionally send a permission request before responding (for ac-11 tests)
@@ -356,6 +427,11 @@ async function handleMessage(line) {
 
     switch (msg.method) {
       case "initialize":
+        if (initializeMode === "reject") {
+          sendError(msg.id, -32000, "Injected initialization failure");
+          break;
+        }
+        if (initializeMode === "hang") break;
         await handleInitialize(msg.id, msg.params);
         break;
       case "session/new":
@@ -392,5 +468,9 @@ rl.on("line", (line) => {
 });
 
 rl.on("close", () => {
+  if (resistTermination) {
+    setInterval(() => {}, 1_000);
+    return;
+  }
   process.exit(0);
 });

@@ -30,6 +30,11 @@ const heavySerialSuites = [
   "tests/cli/session-start-notes.test.ts",
   "tests/cli/session-start-activity-timeline.test.ts",
   "tests/meta.test.ts",
+  // Small but prompt-heavy destructive CLI suite. It still creates fresh
+  // fixture projects and mutates shadow state for every test; under default
+  // full-suite fan-out the empty-response case has surfaced the same opaque
+  // STACK_TRACE_ERROR pressure class as the larger CLI-heavy suites above.
+  "tests/ac-delete-confirmation.test.ts",
   // Rebuilds dist/daemon/ in-place via `npm run build:daemon`. Any other
   // suite that spawns dist/daemon/index.js concurrently can hit
   // ERR_MODULE_NOT_FOUND mid-rebuild, so this must run serially after the
@@ -43,6 +48,15 @@ const heavySerialSuites = [
   // test passes deterministically in isolation. Run serially after the
   // default pool to remove cross-file contention.
   "tests/daemon-api/websocket-protocol.test.ts",
+  // Spawns real daemon children via startTestDaemon, which serializes
+  // dynamic-port startups on a global port-start lock held through each
+  // holder's full readiness wait. In the default pool the lock queue behind
+  // helpers/daemon.test.ts (whose contract tests deliberately hold the lock
+  // through failing-readiness budgets) plus general CPU saturation can
+  // exceed the 45s test timeout — the graceful-SIGTERM test then dies as an
+  // opaque timeout even though the file passes deterministically in
+  // isolation. Run serially after the default pool drains.
+  "tests/daemon-last-exit.test.ts",
 ];
 
 // On machines with many cores vitest spawns one worker per core by default.

@@ -11,11 +11,11 @@ import { DispatchEngine } from "../src/agent-runtime/dispatch.js";
 import { initContext } from "../src/parser/index.js";
 import { SHADOW_WORKTREE_DIR } from "../src/parser/shadow.js";
 import {
-  findDispatchWorkspaceByTaskRef,
   getDispatchWorkspaceRegistryPath,
   loadDispatchWorkspaceRegistry,
   saveDispatchWorkspaceRecord,
 } from "../src/parser/dispatch-workspaces.js";
+import { findDispatchWorkspaceByCanonicalTask } from "../src/agent-runtime/workspace-identity.js";
 import {
   cleanupReviewerDispatchWorkspace,
   getDispatchShadowMutationLockPath,
@@ -158,15 +158,15 @@ async function waitForWorkspaceRecord(
 async function waitForLoadedWorkspaceRecord(
   projectDir: string,
   taskRef: string,
-  predicate: (record: Awaited<ReturnType<typeof findDispatchWorkspaceByTaskRef>>) => boolean,
+  predicate: (record: Awaited<ReturnType<typeof findDispatchWorkspaceByCanonicalTask>>) => boolean,
   timeoutMs: number = 2000,
-): Promise<NonNullable<Awaited<ReturnType<typeof findDispatchWorkspaceByTaskRef>>>> {
+): Promise<NonNullable<Awaited<ReturnType<typeof findDispatchWorkspaceByCanonicalTask>>>> {
   const deadline = Date.now() + timeoutMs;
-  let record = await findDispatchWorkspaceByTaskRef(await initContext(projectDir), taskRef);
+  let record = await findDispatchWorkspaceByCanonicalTask(await initContext(projectDir), taskRef);
 
   while ((!record || !predicate(record)) && Date.now() < deadline) {
     await new Promise((resolve) => setTimeout(resolve, 10));
-    record = await findDispatchWorkspaceByTaskRef(await initContext(projectDir), taskRef);
+    record = await findDispatchWorkspaceByCanonicalTask(await initContext(projectDir), taskRef);
   }
 
   if (!record) {
@@ -886,7 +886,7 @@ describe("dispatch workspace registry", () => {
 
     const ctx = await initContext(tempDir);
     const registryPath = getDispatchWorkspaceRegistryPath(ctx);
-    const existingRecord = await findDispatchWorkspaceByTaskRef(ctx, taskRef, {
+    const existingRecord = await findDispatchWorkspaceByCanonicalTask(ctx, taskRef, {
       includeClosed: true,
     });
     expect(existingRecord?.worktrees.reviewer?.path).toBeTruthy();
@@ -1164,7 +1164,10 @@ describe("dispatch workspace registry shadow durability", () => {
         active_role: "worker",
       });
 
-      const reloaded = await findDispatchWorkspaceByTaskRef(await initContext(tempDir), taskRef);
+      const reloaded = await findDispatchWorkspaceByCanonicalTask(
+        await initContext(tempDir),
+        taskRef,
+      );
       expect(reloaded?.lifecycle_state).toBe("active");
       expect(reloaded?.active_role).toBe("worker");
     },

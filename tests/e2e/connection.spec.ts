@@ -1,4 +1,5 @@
 import { test, expect } from "./fixtures/test-base";
+import type { Page } from "@playwright/test";
 
 /**
  * WebSocket Connection Handling E2E Tests
@@ -14,36 +15,76 @@ import { test, expect } from "./fixtures/test-base";
  * - AC-32: Re-subscribe to all topics on reconnect
  */
 
-function isTasksApiResponse(url: string): boolean {
+function isTasksApiUrl(url: string): boolean {
   return /\/api\/tasks(?:\?|$)/.test(url);
 }
 
-async function waitForTasksApiCountToSettle(
-  readCount: () => number,
-  stableMs = 750,
-  timeoutMs = 5000,
-): Promise<number> {
-  const pollMs = 100;
-  let lastCount = readCount();
-  let stableFor = 0;
-  const deadline = Date.now() + timeoutMs;
+/**
+ * Track GET /api/tasks traffic by request initiation and completion.
+ *
+ * Dedup assertions count request *initiation*, not responses: a query
+ * invalidation starts its request synchronously on the client, while the
+ * response can land arbitrarily late under full-suite parallel load. Counting
+ * responses made the dedup check flaky — slow in-flight responses landed after
+ * the settle window and were misattributed to the duplicate event.
+ */
+function trackTasksApi(page: Page) {
+  let started = 0;
+  let finished = 0;
+  let responses = 0;
 
-  while (Date.now() < deadline) {
-    await new Promise((resolve) => setTimeout(resolve, pollMs));
-    const nextCount = readCount();
-    if (nextCount === lastCount) {
-      stableFor += pollMs;
-      if (stableFor >= stableMs) {
-        return nextCount;
+  page.on("request", (request) => {
+    if (request.method() === "GET" && isTasksApiUrl(request.url())) started++;
+  });
+  page.on("requestfinished", (request) => {
+    if (request.method() === "GET" && isTasksApiUrl(request.url())) finished++;
+  });
+  page.on("requestfailed", (request) => {
+    if (request.method() === "GET" && isTasksApiUrl(request.url())) finished++;
+  });
+  page.on("response", (response) => {
+    if (response.request().method() === "GET" && isTasksApiUrl(response.url())) responses++;
+  });
+
+  return {
+    get requestCount() {
+      return started;
+    },
+    get responseCount() {
+      return responses;
+    },
+    /**
+     * Wait until no new /api/tasks request has started AND none is in flight
+     * for `stableMs`, then return the request count.
+     *
+     * stableMs must exceed the longest delayed invalidation timer in
+     * ws-invalidation.ts (files:updates events schedule invalidations at
+     * +650ms and +1500ms) so that timers already scheduled by earlier events
+     * fire inside the stability window instead of after settle returns.
+     */
+    async settle(stableMs = 2_000, timeoutMs = 15_000): Promise<number> {
+      const pollMs = 100;
+      const deadline = Date.now() + timeoutMs;
+      let lastStarted = started;
+      let stableFor = 0;
+
+      while (Date.now() < deadline) {
+        await new Promise((resolve) => setTimeout(resolve, pollMs));
+        if (started === lastStarted && started === finished) {
+          stableFor += pollMs;
+          if (stableFor >= stableMs) {
+            return started;
+          }
+          continue;
+        }
+
+        lastStarted = started;
+        stableFor = 0;
       }
-      continue;
-    }
 
-    lastCount = nextCount;
-    stableFor = 0;
-  }
-
-  throw new Error("Timed out waiting for /api/tasks traffic to settle");
+      throw new Error("Timed out waiting for /api/tasks traffic to settle");
+    },
+  };
 }
 
 test.describe("WebSocket Connection Handling", () => {
@@ -163,24 +204,30 @@ test.describe("WebSocket Connection Handling", () => {
 
   // AC: @web-dashboard ac-30
   test("skips duplicate events by sequence number", async ({ page, daemon: _daemon }) => {
+    test.setTimeout(60000);
     // Prove the difference between "event handled" and "duplicate skipped":
-    // the first injected event must trigger a task-list refetch, while replaying
-    // the same seq must not trigger a second /api/tasks request.
+    // the first injected event must start a task-list refetch, while replaying
+    // the same seq must not start a second /api/tasks request.
+
+    const tasksApi = trackTasksApi(page);
 
     let clientWs: {
       send: (data: string) => void;
     } | null = null;
-    let tasksApiResponseCount = 0;
-
-    page.on("response", (response) => {
-      if (response.request().method() === "GET" && isTasksApiResponse(response.url())) {
-        tasksApiResponseCount++;
-      }
-    });
+    let forwardServerMessages = true;
 
     await page.routeWebSocket(/ws/, (ws) => {
       const server = ws.connectToServer();
-      server.onMessage((msg) => ws.send(msg));
+      // Server→client forwarding is cut off after page load so real daemon
+      // broadcasts (cache:status domain_ready, files:updates, tasks:updates)
+      // cannot schedule query invalidations during the dedup measurement.
+      // Safe to go silent: the client manager has no heartbeat, and the
+      // daemon's pong timeout is 90s — far beyond this test's window.
+      server.onMessage((msg) => {
+        if (forwardServerMessages) {
+          ws.send(msg);
+        }
+      });
       ws.onMessage((msg) => server.send(msg));
       clientWs = ws;
     });
@@ -190,14 +237,21 @@ test.describe("WebSocket Connection Handling", () => {
     // Wait for task list to load — proves connection and data are ready
     const taskListItems = page.getByTestId("task-list-item");
     await expect(taskListItems.first()).toBeVisible();
-    const baselineResponseCount = tasksApiResponseCount;
 
-    // First delivery of seq=500 must be handled and refetch the task list.
-    const firstRefetch = page.waitForResponse(
-      (response) =>
-        response.request().method() === "GET" &&
-        isTasksApiResponse(response.url()) &&
-        tasksApiResponseCount > baselineResponseCount,
+    // Make the measurement hermetic: from here on, the only WS events the
+    // client receives are the ones this test injects.
+    forwardServerMessages = false;
+
+    // Drain pending traffic — including the up-to-1500ms delayed file-watcher
+    // invalidation timers scheduled by events forwarded during page load —
+    // before establishing the baseline.
+    const baselineRequestCount = await tasksApi.settle();
+
+    // First delivery of seq=500 must be handled and start a task-list refetch.
+    // The baseline is settled and forwarding is cut, so any new /api/tasks
+    // request is attributable to this injection.
+    const firstRefetch = page.waitForRequest(
+      (request) => request.method() === "GET" && isTasksApiUrl(request.url()),
     );
     clientWs!.send(
       JSON.stringify({
@@ -218,10 +272,11 @@ test.describe("WebSocket Connection Handling", () => {
     );
     await firstRefetch;
 
-    const afterFirstDeliveryCount = await waitForTasksApiCountToSettle(() => tasksApiResponseCount);
+    const afterFirstDeliveryCount = await tasksApi.settle();
+    expect(afterFirstDeliveryCount).toBeGreaterThan(baselineRequestCount);
 
     // Replay the same seq. If deduplication is working, the second delivery is
-    // skipped and no second /api/tasks refetch occurs.
+    // skipped and no second /api/tasks request starts.
     clientWs!.send(
       JSON.stringify({
         msg_id: "test-duplicate-001-second",
@@ -240,12 +295,15 @@ test.describe("WebSocket Connection Handling", () => {
       }),
     );
 
+    // If the duplicate were (incorrectly) processed, the invalidation would
+    // start a request synchronously on the client — 1s is ample to observe it.
     await page.waitForTimeout(1000);
-    expect(tasksApiResponseCount).toBe(afterFirstDeliveryCount);
+    expect(tasksApi.requestCount).toBe(afterFirstDeliveryCount);
   });
 
   // AC: @web-dashboard ac-31, ac-32
   test("resets sequence and re-subscribes on reconnect", async ({ page, daemon: _daemon }) => {
+    test.setTimeout(60000);
     // Strategy:
     // 1. Proxy initial WebSocket connection to real server
     // 2. Wait for tasks page to load (proves subscription is active)
@@ -255,19 +313,14 @@ test.describe("WebSocket Connection Handling", () => {
     // 6. After reconnect, inject a broadcast event with seq=0 and verify
     //    it is processed (proving lastSeqProcessed was reset to -1, AC-31)
 
+    const tasksApi = trackTasksApi(page);
+
     let currentClientWs: {
       send: (data: string) => void;
       close: (opts?: { code?: number; reason?: string }) => void;
     } | null = null;
     let connectionCount = 0;
     let subscribeCommandSeen = false;
-    let tasksApiResponseCount = 0;
-
-    page.on("response", (response) => {
-      if (response.request().method() === "GET" && isTasksApiResponse(response.url())) {
-        tasksApiResponseCount++;
-      }
-    });
 
     await page.routeWebSocket(/ws/, (ws) => {
       connectionCount++;
@@ -314,17 +367,14 @@ test.describe("WebSocket Connection Handling", () => {
     // AC-32: verify subscribe command was sent after reconnect
     expect(subscribeCommandSeen).toBe(true);
 
-    const baselineResponseCount = await waitForTasksApiCountToSettle(() => tasksApiResponseCount);
+    const baselineRequestCount = await tasksApi.settle();
 
     // AC-31: inject a broadcast event with seq=0. If lastSeqProcessed was NOT
     // reset to -1 on reconnect, this event would be skipped and no /api/tasks
     // refetch would happen. A refetch proves the handler accepted seq=0 after
     // reconnect.
-    const postReconnectRefetch = page.waitForResponse(
-      (response) =>
-        response.request().method() === "GET" &&
-        isTasksApiResponse(response.url()) &&
-        tasksApiResponseCount > baselineResponseCount,
+    const postReconnectRefetch = page.waitForRequest(
+      (request) => request.method() === "GET" && isTasksApiUrl(request.url()),
     );
     currentClientWs!.send(
       JSON.stringify({
@@ -348,7 +398,7 @@ test.describe("WebSocket Connection Handling", () => {
     // The UI stays populated after reconnect, and the refetch above proves the
     // seq=0 event was accepted instead of skipped.
     await expect(page.getByTestId("task-list-item").first()).toBeVisible();
-    expect(tasksApiResponseCount).toBeGreaterThan(baselineResponseCount);
+    expect(tasksApi.requestCount).toBeGreaterThan(baselineRequestCount);
   });
 
   // AC: @web-dashboard ac-28

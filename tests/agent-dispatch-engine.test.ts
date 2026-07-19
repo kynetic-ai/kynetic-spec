@@ -39,10 +39,34 @@ import * as http from "node:http";
 import type { Agent } from "../src/schema/meta.js";
 import { provisionDispatchWorkspace } from "../src/agent-runtime/workspace.js";
 import * as bootstrapModule from "../src/agent-runtime/bootstrap.js";
+import * as runnerConfigModule from "../src/agents/runner-config.js";
+import { mergeRunnerConfigs } from "../src/agents/runner-config.js";
+import { registerAdapter } from "../src/agents/adapters.js";
 
 // ─── Fixtures ────────────────────────────────────────────────────────────────
 
 const MOCK_KSPEC_CLI = path.join(__dirname, "mocks", "kspec-capture-mock.cjs");
+
+async function admitMockInvocation(options: invocationModule.InvocationOptions) {
+  const handoff = await options.beforeCreate?.();
+  if (handoff) {
+    await options.onOwnershipPersisted?.({
+      invocation_id: handoff.invocationId,
+      session_id: handoff.sessionId,
+      task_id: handoff.taskId,
+      agent_id: handoff.agentId,
+      adapter: handoff.adapter,
+      owner_instance_id: handoff.ownerInstanceId,
+      pid: process.pid,
+      pgid: process.pid,
+      process_start_ticks: "1",
+      process_identity_platform: "linux_proc_stat_v1",
+      captured_at: new Date().toISOString(),
+      group_members: [{ pid: process.pid, process_start_ticks: "1" }],
+    });
+  }
+  return handoff;
+}
 
 /**
  * Build a lightweight mock workspace metadata object for tests that need to
@@ -355,6 +379,7 @@ async function setupProjectWithAgents(dir: string, agents: Agent[]): Promise<voi
         adapter: a.adapter,
         budget: a.budget,
         auto_approve: a.auto_approve ?? false,
+        ...(a.runner && { runner: a.runner }),
         ...(a.prompt_template && { prompt_template: a.prompt_template }),
       })),
     }),
@@ -814,7 +839,7 @@ describe("Dispatch scheduling priority model", () => {
 
     await engine.start();
     drainSpy.mockRestore();
-    internal.recentTaskAffinityRef = `@${taskB}`;
+    internal.recentTaskAffinityRef = taskB; // affinity is keyed on canonical task id
 
     const spawned: string[] = [];
     vi.spyOn(
@@ -872,7 +897,7 @@ describe("Dispatch scheduling priority model", () => {
 
     await engine.start();
     drainSpy.mockRestore();
-    internal.recentTaskAffinityRef = `@${taskB}`;
+    internal.recentTaskAffinityRef = taskB; // affinity is keyed on canonical task id
 
     const queue = internal.queues.get(reviewer.id) ?? [];
     const older = queue.find((entry) => entry.change.taskRef === `@${taskA}`);
@@ -1450,6 +1475,9 @@ describe("AC-8: Bootstrap evaluates existing tasks on start", () => {
 
     // Bootstrap should have evaluated the pending task
     expect(enqueueCount).toBeGreaterThanOrEqual(1);
+    // Traditional-layout fixtures retain their historical running default;
+    // real shadow projects load the committed lifecycle authority first.
+    expect(engine.getLifecycleStatus().globalAuthority).toBe("running");
 
     await engine.stop();
   });
@@ -1816,6 +1844,1040 @@ describe("AC-10: Unresolvable adapter skips invocation with error log", () => {
   });
 });
 
+// ─── Dispatch uses the runner resolver ──────────────────────────────────────
+
+// AC: @runner-resolution-and-preflight ac-dispatch-uses-runner-resolution
+// AC: @runner-resolution-and-preflight ac-unknown-runner-blocks-before-spawn
+// AC: @runner-resolution-and-preflight ac-unknown-runner-reports-guidance
+describe("Dispatch runner resolution preflight", () => {
+  let testDir: string;
+
+  beforeEach(async () => {
+    testDir = await createTempDir("kspec-dispatch-runner-preflight-");
+  });
+
+  afterEach(async () => {
+    await cleanupTempDir(testDir);
+  });
+
+  // AC: @runner-resolution-and-preflight ac-dispatch-uses-runner-resolution
+  it("blocks dispatch before spawn when the configured runner is not in the effective registry", async () => {
+    // No project.runners.yaml or system runners.yaml on disk → the effective
+    // registry is empty. The agent points at an unknown runner, which can
+    // only fail if dispatch routes the invocation through the same
+    // resolveRunnerInvocation contract that one-shot agent run uses.
+    const agentMissingRunner = makeTestAgent({
+      id: "runner-missing-agent",
+      runner: "absent-runner",
+      adapter: undefined,
+      dispatch: [{ on: "task.ready" }],
+    });
+    await setupProjectWithAgents(testDir, [agentMissingRunner]);
+
+    const captureFile = path.join(testDir, "kspec-runner-preflight-capture.json");
+    process.env.KSPEC_CAPTURE_FILE = captureFile;
+    try {
+      const engine = new DispatchEngine({
+        projectDir: testDir,
+        specDir: testDir,
+        kspecCliPath: MOCK_KSPEC_CLI,
+        coalesceWindowMs: 0,
+      });
+      (engine as unknown as { running: boolean }).running = true;
+
+      const errorSpy = vi.spyOn(console, "error").mockImplementation(() => {});
+      const runSpy = vi.spyOn(invocationModule, "runInvocation");
+
+      const taskRef = `@${testUlid("TASK")}`;
+      const change = makeStateChange({
+        toStatus: "pending",
+        fromStatus: "in_progress",
+        taskRef,
+      });
+      const entry = { agent: agentMissingRunner, change, retryCount: 0, nextRetryAt: 0 };
+
+      type EngineInternal = { _spawnInvocation: (a: unknown, e: unknown) => Promise<boolean> };
+      const spawned = await (engine as unknown as EngineInternal)._spawnInvocation(
+        agentMissingRunner,
+        entry,
+      );
+
+      // Dispatch skipped the invocation entirely — runInvocation never ran.
+      expect(spawned).toBe(false);
+      expect(runSpy).not.toHaveBeenCalled();
+
+      // The dispatch path surfaced the resolver's typed error to the operator
+      // (unknown_runner is a RunnerResolutionError reason code, not a
+      // generic adapter-resolution failure).
+      const errorMessage = errorSpy.mock.calls.map((c) => String(c[0])).join("\n");
+      expect(errorMessage).toContain("unknown_runner");
+      expect(errorMessage).toContain("absent-runner");
+
+      // Dispatch recorded the resolver guidance on the task so the next
+      // operator can find both layers + the agent definition.
+      const calls = JSON.parse(readTestOutputSync(captureFile)) as Array<{ args: string[] }>;
+      const noteCall = calls.find((c) => c.args.includes("note") && c.args.includes(taskRef));
+      expect(noteCall, "expected dispatch to add an AGENT-SKIP task note").toBeDefined();
+      const noteText = noteCall!.args.join(" ");
+      expect(noteText).toContain("AGENT-SKIP");
+      expect(noteText).toContain("absent-runner");
+      expect(noteText).toContain("unknown_runner");
+
+      errorSpy.mockRestore();
+      runSpy.mockRestore();
+    } finally {
+      delete process.env.KSPEC_CAPTURE_FILE;
+      vi.restoreAllMocks();
+    }
+  });
+
+  // AC: @runner-process-invocation-inputs ac-existing-executable-reference-resolves
+  // AC: @runner-process-invocation-inputs ac-invocation-diagnostics-identify-inputs
+  //
+  // Without dispatch-level executable preflight, an unspawnable runner-
+  // configured command would only surface inside runInvocation, where the
+  // dispatch retry path would treat it as a transient invocation failure and
+  // re-attempt it on backoff. Dispatch must run the typed preflight up front
+  // so deterministic runner configuration errors land in the AGENT-SKIP path
+  // (skip + task note + no retry) rather than the retry loop.
+  it("skips invocation with a typed unspawnable_command diagnostic when the runner executable cannot be spawned", async () => {
+    const agent = makeTestAgent({
+      id: "unspawnable-runner-agent",
+      runner: "unspawnable-runner",
+      adapter: undefined,
+      dispatch: [{ on: "task.ready" }],
+    });
+    await setupProjectWithAgents(testDir, [agent]);
+
+    const missingExecutable = path.join(testDir, "no-such-runner-binary");
+
+    const captureFile = path.join(testDir, "kspec-runner-unspawnable-preflight-capture.json");
+    process.env.KSPEC_CAPTURE_FILE = captureFile;
+    try {
+      vi.spyOn(runnerConfigModule, "resolveEffectiveRunners").mockResolvedValue({
+        project: { config: null, path: "", loaded: false, issues: null },
+        system: { config: null, path: "", loaded: false, issues: null },
+        registry: mergeRunnerConfigs(null, {
+          runners: {
+            "unspawnable-runner": {
+              kind: "acp_process",
+              adapter: "claude-agent-acp",
+              process: { executable: missingExecutable },
+            },
+          },
+        }),
+      });
+
+      const engine = new DispatchEngine({
+        projectDir: testDir,
+        specDir: testDir,
+        kspecCliPath: MOCK_KSPEC_CLI,
+        coalesceWindowMs: 0,
+      });
+      (engine as unknown as { running: boolean }).running = true;
+
+      const errorSpy = vi.spyOn(console, "error").mockImplementation(() => {});
+      const runSpy = vi.spyOn(invocationModule, "runInvocation");
+
+      const taskRef = `@${testUlid("TASK")}`;
+      const change = makeStateChange({
+        toStatus: "pending",
+        fromStatus: "in_progress",
+        taskRef,
+      });
+      const entry = { agent, change, retryCount: 0, nextRetryAt: 0 };
+
+      type EngineInternal = { _spawnInvocation: (a: unknown, e: unknown) => Promise<boolean> };
+      const spawned = await (engine as unknown as EngineInternal)._spawnInvocation(agent, entry);
+
+      // Dispatch skipped the invocation entirely — runInvocation never ran,
+      // which means the retry path never saw a runner configuration error.
+      expect(spawned).toBe(false);
+      expect(runSpy).not.toHaveBeenCalled();
+      // Retry counter must NOT have advanced: this is a deterministic
+      // configuration error, not a transient invocation failure.
+      expect(entry.retryCount).toBe(0);
+
+      const errorMessage = errorSpy.mock.calls.map((c) => String(c[0])).join("\n");
+      expect(errorMessage).toContain("unspawnable_command");
+      expect(errorMessage).toContain(missingExecutable);
+
+      const calls = JSON.parse(readTestOutputSync(captureFile)) as Array<{ args: string[] }>;
+      const noteCall = calls.find((c) => c.args.includes("note") && c.args.includes(taskRef));
+      expect(noteCall, "expected dispatch to add an AGENT-SKIP task note").toBeDefined();
+      const noteText = noteCall!.args.join(" ");
+      expect(noteText).toContain("AGENT-SKIP");
+      expect(noteText).toContain("unspawnable_command");
+      expect(noteText).toContain(missingExecutable);
+
+      errorSpy.mockRestore();
+      runSpy.mockRestore();
+    } finally {
+      delete process.env.KSPEC_CAPTURE_FILE;
+      vi.restoreAllMocks();
+    }
+  });
+
+  // AC: @runner-invocation-semantics ac-dispatch-preflight-accepts-configured-runners
+  // AC: @runner-resolution-and-preflight ac-dispatch-uses-runner-resolution
+  //
+  // Spec wording is "whose adapter is not a built-in adapter id". Register
+  // a custom adapter at runtime so the runner cannot fall through to a
+  // built-in default — only the runner-aware preflight can keep the
+  // dispatch flow open here.
+  it("accepts dispatch for a runner-backed worker whose adapter is a custom-registered (non-built-in) adapter", async () => {
+    const customAdapterId = `custom-dispatch-adapter-${testUlid("ADPT").toLowerCase()}`;
+    registerAdapter(customAdapterId, {
+      command: "node",
+      args: [],
+      description: "Custom test adapter for dispatch preflight",
+    });
+
+    const agent = makeTestAgent({
+      id: "runner-worker-custom-adapter",
+      adapter: undefined,
+      runner: "test-custom-runner",
+      dispatch: [{ on: "task.ready" }],
+    });
+    await setupProjectWithAgents(testDir, [agent]);
+
+    try {
+      vi.spyOn(runnerConfigModule, "resolveEffectiveRunners").mockResolvedValue({
+        project: { config: null, path: "", loaded: false, issues: null },
+        system: { config: null, path: "", loaded: false, issues: null },
+        registry: mergeRunnerConfigs(null, {
+          runners: {
+            "test-custom-runner": { kind: "acp_process", adapter: customAdapterId },
+          },
+        }),
+      });
+
+      const mockMetadata = buildMockWorkspaceMetadata(testDir);
+      vi.spyOn(workspaceModule, "provisionDispatchWorkspace").mockResolvedValue({
+        cwd: testDir,
+        metadataPath: path.join(testDir, ".kspec-dispatch-workspace.json"),
+        metadata: mockMetadata,
+      });
+      vi.spyOn(bootstrapModule, "ensureWorkspaceBootstrap").mockResolvedValue({
+        metadata: mockMetadata,
+      });
+      vi.spyOn(workspaceModule, "getDispatchWorkspaceHealth").mockResolvedValue({
+        exists: true,
+        healthy: true,
+        reason: null,
+        metadata: null,
+      });
+
+      const runSpy = vi.spyOn(invocationModule, "runInvocation").mockResolvedValue({
+        session: {} as any,
+        outcome: "success",
+        durationMs: 1,
+      });
+
+      const engine = new DispatchEngine({
+        projectDir: testDir,
+        specDir: testDir,
+        kspecCliPath: MOCK_KSPEC_CLI,
+        coalesceWindowMs: 0,
+      });
+      (engine as unknown as { running: boolean }).running = true;
+
+      const taskRef = `@${testUlid("TASK")}`;
+      const change = makeStateChange({
+        toStatus: "pending",
+        fromStatus: "in_progress",
+        taskRef,
+      });
+      const entry = { agent, change, retryCount: 0, nextRetryAt: 0 };
+      type EngineInternal = { _spawnInvocation: (a: unknown, e: unknown) => Promise<boolean> };
+      const spawned = await (engine as unknown as EngineInternal)._spawnInvocation(agent, entry);
+      await waitForMockCall(runSpy);
+
+      // Dispatch accepted the runner: invocation was actually started.
+      expect(spawned).toBe(true);
+      expect(runSpy).toHaveBeenCalledTimes(1);
+
+      // The runner-resolved registry was forwarded so runInvocation produces
+      // the same contract — dispatch did not bypass the resolver.
+      const invocationOpts = runSpy.mock.calls[0][0] as {
+        agent: Agent;
+        runnerRegistry?: { runners: Record<string, unknown> };
+      };
+      expect(invocationOpts.agent.id).toBe(agent.id);
+      expect(invocationOpts.runnerRegistry?.runners?.["test-custom-runner"]).toBeDefined();
+    } finally {
+      vi.restoreAllMocks();
+    }
+  });
+
+  // AC: @runner-invocation-semantics ac-dispatch-preflight-accepts-configured-runners
+  // AC: @runner-resolution-and-preflight ac-dispatch-uses-runner-resolution
+  //
+  // Reviewer pickup routes through the same _spawnInvocation pathway as a
+  // worker. Verify the runner preflight accepts a valid configured runner
+  // for the reviewer role too — same resolver, just a different role tag.
+  it("accepts dispatch for a runner-backed reviewer with a configured runner", async () => {
+    const customAdapterId = `custom-reviewer-adapter-${testUlid("ADPT").toLowerCase()}`;
+    registerAdapter(customAdapterId, {
+      command: "node",
+      args: [],
+      description: "Custom test reviewer adapter",
+    });
+
+    const reviewerAgent = makeTestAgent({
+      id: "runner-reviewer",
+      adapter: undefined,
+      runner: "test-reviewer-runner",
+      dispatch: [{ on: "task.pending_review" }],
+    });
+    await setupProjectWithAgents(testDir, [reviewerAgent]);
+
+    try {
+      vi.spyOn(runnerConfigModule, "resolveEffectiveRunners").mockResolvedValue({
+        project: { config: null, path: "", loaded: false, issues: null },
+        system: { config: null, path: "", loaded: false, issues: null },
+        registry: mergeRunnerConfigs(null, {
+          runners: {
+            "test-reviewer-runner": { kind: "acp_process", adapter: customAdapterId },
+          },
+        }),
+      });
+
+      const mockMetadata = buildMockWorkspaceMetadata(testDir);
+      vi.spyOn(workspaceModule, "provisionDispatchWorkspace").mockResolvedValue({
+        cwd: testDir,
+        metadataPath: path.join(testDir, ".kspec-dispatch-workspace.json"),
+        metadata: mockMetadata,
+      });
+      vi.spyOn(bootstrapModule, "ensureWorkspaceBootstrap").mockResolvedValue({
+        metadata: mockMetadata,
+      });
+      vi.spyOn(workspaceModule, "getDispatchWorkspaceHealth").mockResolvedValue({
+        exists: true,
+        healthy: true,
+        reason: null,
+        metadata: null,
+      });
+
+      const runSpy = vi.spyOn(invocationModule, "runInvocation").mockResolvedValue({
+        session: {} as any,
+        outcome: "success",
+        durationMs: 1,
+      });
+
+      const engine = new DispatchEngine({
+        projectDir: testDir,
+        specDir: testDir,
+        kspecCliPath: MOCK_KSPEC_CLI,
+        coalesceWindowMs: 0,
+      });
+      (engine as unknown as { running: boolean }).running = true;
+
+      const taskRef = `@${testUlid("TASK")}`;
+      const change = makeStateChange({
+        toStatus: "pending_review",
+        fromStatus: "in_progress",
+        taskRef,
+      });
+      const entry = { agent: reviewerAgent, change, retryCount: 0, nextRetryAt: 0 };
+      type EngineInternal = { _spawnInvocation: (a: unknown, e: unknown) => Promise<boolean> };
+      const spawned = await (engine as unknown as EngineInternal)._spawnInvocation(
+        reviewerAgent,
+        entry,
+      );
+      await waitForMockCall(runSpy);
+
+      expect(spawned).toBe(true);
+      expect(runSpy).toHaveBeenCalledTimes(1);
+      const invocationOpts = runSpy.mock.calls[0][0] as {
+        agent: Agent;
+        runnerRegistry?: { runners: Record<string, unknown> };
+      };
+      expect(invocationOpts.agent.id).toBe(reviewerAgent.id);
+      expect(invocationOpts.runnerRegistry?.runners?.["test-reviewer-runner"]).toBeDefined();
+    } finally {
+      vi.restoreAllMocks();
+    }
+  });
+
+  // AC: @runner-invocation-semantics ac-dispatch-preflight-rejects-invalid-runners
+  // AC: @runner-resolution-and-preflight ac-invalid-runner-blocks-before-prompt
+  //
+  // Regression: previously dispatch validated the agent.adapter field via a
+  // bare getAdapter() call, which would have either accepted (synthesizing
+  // an npx fallback) or rejected based purely on the legacy field — without
+  // ever looking at the runner registry. Now the runner-aware preflight
+  // routes through the resolver, which rejects unregistered runner adapters
+  // with a typed invalid_adapter reason before any spawn or prompt build.
+  it("rejects dispatch when the configured runner references an unregistered adapter", async () => {
+    const agent = makeTestAgent({
+      id: "runner-invalid-adapter-agent",
+      adapter: undefined,
+      runner: "runner-pointing-at-missing-adapter",
+      dispatch: [{ on: "task.ready" }],
+    });
+    await setupProjectWithAgents(testDir, [agent]);
+
+    const captureFile = path.join(testDir, "kspec-runner-invalid-adapter-capture.json");
+    process.env.KSPEC_CAPTURE_FILE = captureFile;
+    try {
+      vi.spyOn(runnerConfigModule, "resolveEffectiveRunners").mockResolvedValue({
+        project: { config: null, path: "", loaded: false, issues: null },
+        system: { config: null, path: "", loaded: false, issues: null },
+        registry: mergeRunnerConfigs(null, {
+          runners: {
+            "runner-pointing-at-missing-adapter": {
+              kind: "acp_process",
+              adapter: "never-registered-adapter-id-xyz",
+            },
+          },
+        }),
+      });
+
+      const engine = new DispatchEngine({
+        projectDir: testDir,
+        specDir: testDir,
+        kspecCliPath: MOCK_KSPEC_CLI,
+        coalesceWindowMs: 0,
+      });
+      (engine as unknown as { running: boolean }).running = true;
+
+      const errorSpy = vi.spyOn(console, "error").mockImplementation(() => {});
+      const runSpy = vi.spyOn(invocationModule, "runInvocation");
+
+      const taskRef = `@${testUlid("TASK")}`;
+      const change = makeStateChange({
+        toStatus: "pending",
+        fromStatus: "in_progress",
+        taskRef,
+      });
+      const entry = { agent, change, retryCount: 0, nextRetryAt: 0 };
+
+      type EngineInternal = { _spawnInvocation: (a: unknown, e: unknown) => Promise<boolean> };
+      const spawned = await (engine as unknown as EngineInternal)._spawnInvocation(agent, entry);
+
+      expect(spawned).toBe(false);
+      expect(runSpy).not.toHaveBeenCalled();
+
+      const errorMessage = errorSpy.mock.calls.map((c) => String(c[0])).join("\n");
+      expect(errorMessage).toContain("invalid_adapter");
+      expect(errorMessage).toContain("runner-pointing-at-missing-adapter");
+      expect(errorMessage).toContain("never-registered-adapter-id-xyz");
+
+      const calls = JSON.parse(readTestOutputSync(captureFile)) as Array<{ args: string[] }>;
+      const noteCall = calls.find((c) => c.args.includes("note") && c.args.includes(taskRef));
+      expect(noteCall, "expected dispatch to add an AGENT-SKIP task note").toBeDefined();
+      const noteText = noteCall!.args.join(" ");
+      expect(noteText).toContain("AGENT-SKIP");
+      expect(noteText).toContain("invalid_adapter");
+      expect(noteText).toContain("runner-pointing-at-missing-adapter");
+      expect(noteText).toContain("never-registered-adapter-id-xyz");
+
+      errorSpy.mockRestore();
+      runSpy.mockRestore();
+    } finally {
+      delete process.env.KSPEC_CAPTURE_FILE;
+      vi.restoreAllMocks();
+    }
+  });
+
+  // AC: @runner-environment-secret-boundaries ac-required-secret-missing-blocks
+  // AC: @runner-environment-secret-boundaries ac-diagnostics-redact-secrets
+  // AC: @runner-invocation-semantics ac-dispatch-preflight-rejects-invalid-runners
+  //
+  // A required secret binding that cannot resolve must block dispatch
+  // before any adapter spawn. The diagnostic surfaces must reference the
+  // binding name and source identifier — but never a secret value (none
+  // could be resolved here, so the test also asserts the env var name is
+  // the only secret-related token leaked).
+  it("rejects dispatch when a required runner secret binding cannot be resolved", async () => {
+    // Unique env var name guaranteed to be absent from process.env.
+    const missingSecretEnvName = `KSPEC_MISSING_SECRET_${testUlid("VAR")}`;
+    delete process.env[missingSecretEnvName];
+
+    const agent = makeTestAgent({
+      id: "runner-missing-secret-agent",
+      adapter: undefined,
+      runner: "runner-with-required-secret",
+      dispatch: [{ on: "task.ready" }],
+    });
+    await setupProjectWithAgents(testDir, [agent]);
+
+    const captureFile = path.join(testDir, "kspec-runner-missing-secret-capture.json");
+    process.env.KSPEC_CAPTURE_FILE = captureFile;
+    try {
+      vi.spyOn(runnerConfigModule, "resolveEffectiveRunners").mockResolvedValue({
+        project: { config: null, path: "", loaded: false, issues: null },
+        system: { config: null, path: "", loaded: false, issues: null },
+        registry: mergeRunnerConfigs(null, {
+          runners: {
+            "runner-with-required-secret": {
+              kind: "acp_process",
+              adapter: "claude-agent-acp",
+              env: {
+                secrets: {
+                  [missingSecretEnvName]: { source: "user_env", required: true },
+                },
+              },
+            },
+          },
+        }),
+      });
+
+      const engine = new DispatchEngine({
+        projectDir: testDir,
+        specDir: testDir,
+        kspecCliPath: MOCK_KSPEC_CLI,
+        coalesceWindowMs: 0,
+      });
+      (engine as unknown as { running: boolean }).running = true;
+
+      const errorSpy = vi.spyOn(console, "error").mockImplementation(() => {});
+      const runSpy = vi.spyOn(invocationModule, "runInvocation");
+
+      const taskRef = `@${testUlid("TASK")}`;
+      const change = makeStateChange({
+        toStatus: "pending",
+        fromStatus: "in_progress",
+        taskRef,
+      });
+      const entry = { agent, change, retryCount: 0, nextRetryAt: 0 };
+
+      type EngineInternal = { _spawnInvocation: (a: unknown, e: unknown) => Promise<boolean> };
+      const spawned = await (engine as unknown as EngineInternal)._spawnInvocation(agent, entry);
+
+      expect(spawned).toBe(false);
+      expect(runSpy).not.toHaveBeenCalled();
+
+      const errorMessage = errorSpy.mock.calls.map((c) => String(c[0])).join("\n");
+      expect(errorMessage).toContain("missing_secret");
+      expect(errorMessage).toContain("runner-with-required-secret");
+      expect(errorMessage).toContain(missingSecretEnvName);
+
+      const calls = JSON.parse(readTestOutputSync(captureFile)) as Array<{ args: string[] }>;
+      const noteCall = calls.find((c) => c.args.includes("note") && c.args.includes(taskRef));
+      expect(noteCall, "expected dispatch to add an AGENT-SKIP task note").toBeDefined();
+      const noteText = noteCall!.args.join(" ");
+      expect(noteText).toContain("AGENT-SKIP");
+      expect(noteText).toContain("missing_secret");
+      expect(noteText).toContain("runner-with-required-secret");
+      expect(noteText).toContain(missingSecretEnvName);
+
+      errorSpy.mockRestore();
+      runSpy.mockRestore();
+    } finally {
+      delete process.env.KSPEC_CAPTURE_FILE;
+      delete process.env[missingSecretEnvName];
+      vi.restoreAllMocks();
+    }
+  });
+
+  // AC: @agent-runner-configuration ac-adapter-field-backcompat
+  // AC: @runner-invocation-semantics ac-dispatch-preflight-accepts-configured-runners
+  //
+  // Legacy adapter compatibility: agents with no runner field still flow
+  // through the runner-aware preflight (the resolver takes the implicit
+  // path) and dispatch must continue to accept them when agent.adapter
+  // names a registered built-in adapter. This guards against a regression
+  // where preflight could start requiring a runner on every agent.
+  it("accepts dispatch for a legacy agent (no runner field) with a registered built-in adapter", async () => {
+    const agent = makeTestAgent({
+      id: "legacy-adapter-agent",
+      adapter: "mock-acp",
+      runner: undefined,
+      dispatch: [{ on: "task.ready" }],
+    });
+    await setupProjectWithAgents(testDir, [agent]);
+
+    try {
+      // No runner registry: the resolver should take the implicit/legacy
+      // path keyed off agent.adapter alone.
+      vi.spyOn(runnerConfigModule, "resolveEffectiveRunners").mockResolvedValue({
+        project: { config: null, path: "", loaded: false, issues: null },
+        system: { config: null, path: "", loaded: false, issues: null },
+        registry: mergeRunnerConfigs(null, null),
+      });
+
+      const mockMetadata = buildMockWorkspaceMetadata(testDir);
+      vi.spyOn(workspaceModule, "provisionDispatchWorkspace").mockResolvedValue({
+        cwd: testDir,
+        metadataPath: path.join(testDir, ".kspec-dispatch-workspace.json"),
+        metadata: mockMetadata,
+      });
+      vi.spyOn(bootstrapModule, "ensureWorkspaceBootstrap").mockResolvedValue({
+        metadata: mockMetadata,
+      });
+      vi.spyOn(workspaceModule, "getDispatchWorkspaceHealth").mockResolvedValue({
+        exists: true,
+        healthy: true,
+        reason: null,
+        metadata: null,
+      });
+
+      const runSpy = vi.spyOn(invocationModule, "runInvocation").mockResolvedValue({
+        session: {} as any,
+        outcome: "success",
+        durationMs: 1,
+      });
+
+      const engine = new DispatchEngine({
+        projectDir: testDir,
+        specDir: testDir,
+        kspecCliPath: MOCK_KSPEC_CLI,
+        coalesceWindowMs: 0,
+      });
+      (engine as unknown as { running: boolean }).running = true;
+
+      const taskRef = `@${testUlid("TASK")}`;
+      const change = makeStateChange({
+        toStatus: "pending",
+        fromStatus: "in_progress",
+        taskRef,
+      });
+      const entry = { agent, change, retryCount: 0, nextRetryAt: 0 };
+      type EngineInternal = { _spawnInvocation: (a: unknown, e: unknown) => Promise<boolean> };
+      const spawned = await (engine as unknown as EngineInternal)._spawnInvocation(agent, entry);
+      await waitForMockCall(runSpy);
+
+      expect(spawned).toBe(true);
+      expect(runSpy).toHaveBeenCalledTimes(1);
+      const invocationOpts = runSpy.mock.calls[0][0] as { agent: Agent };
+      expect(invocationOpts.agent.id).toBe(agent.id);
+      expect(invocationOpts.agent.runner).toBeUndefined();
+      expect(invocationOpts.agent.adapter).toBe("mock-acp");
+    } finally {
+      vi.restoreAllMocks();
+    }
+  });
+
+  // AC: @runner-invocation-semantics ac-dispatch-preflight-uses-canonical-session-id
+  //
+  // Dispatch must allocate the tracked invocation's canonical session id
+  // BEFORE the runner preflight resolver call. Otherwise preflight builds a
+  // contract with one KSPEC_SESSION_ID (a throwaway ulid) while the eventual
+  // runInvocation builds a contract with a different KSPEC_SESSION_ID (the
+  // tracked id), and any session-scoped runner env/diagnostic interpolation
+  // would see one id at preflight and another at spawn time.
+  it("uses the same canonical session id for preflight and the tracked invocation", async () => {
+    const customAdapterId = `custom-canonical-session-adapter-${testUlid("ADPT").toLowerCase()}`;
+    registerAdapter(customAdapterId, {
+      command: "node",
+      args: [],
+      description: "Custom adapter for canonical session id test",
+    });
+
+    const agent = makeTestAgent({
+      id: "runner-canonical-session-agent",
+      adapter: undefined,
+      runner: "canonical-session-runner",
+      dispatch: [{ on: "task.ready" }],
+    });
+    await setupProjectWithAgents(testDir, [agent]);
+
+    // Capture the contract dispatch passes to runner preflight. The contract
+    // env carries KSPEC_SESSION_ID, which the resolver injected from the
+    // dispatch-supplied session id. Observing this captures the preflight
+    // session id even when ESM import bindings would shadow a direct
+    // resolveRunnerInvocation spy.
+    const runnersModule = await import("../src/agents/runners.js");
+    const capturedPreflightSessionIds: string[] = [];
+    vi.spyOn(runnersModule, "preflightRunnerInvocation").mockImplementation(async (contract) => {
+      const sid = contract.env.KSPEC_SESSION_ID;
+      if (typeof sid === "string") capturedPreflightSessionIds.push(sid);
+    });
+
+    try {
+      vi.spyOn(runnerConfigModule, "resolveEffectiveRunners").mockResolvedValue({
+        project: { config: null, path: "", loaded: false, issues: null },
+        system: { config: null, path: "", loaded: false, issues: null },
+        registry: mergeRunnerConfigs(null, {
+          runners: {
+            "canonical-session-runner": { kind: "acp_process", adapter: customAdapterId },
+          },
+        }),
+      });
+
+      const mockMetadata = buildMockWorkspaceMetadata(testDir);
+      vi.spyOn(workspaceModule, "provisionDispatchWorkspace").mockResolvedValue({
+        cwd: testDir,
+        metadataPath: path.join(testDir, ".kspec-dispatch-workspace.json"),
+        metadata: mockMetadata,
+      });
+      vi.spyOn(bootstrapModule, "ensureWorkspaceBootstrap").mockResolvedValue({
+        metadata: mockMetadata,
+      });
+      vi.spyOn(workspaceModule, "getDispatchWorkspaceHealth").mockResolvedValue({
+        exists: true,
+        healthy: true,
+        reason: null,
+        metadata: null,
+      });
+
+      // Gate runInvocation on a deferred the test controls. Dispatch deletes the
+      // active-invocation record only AFTER runInvocation resolves (it awaits the
+      // invocation, then runs cleanup including activeInvocationDetails.delete).
+      // Holding runInvocation pending therefore freezes the in-flight state so the
+      // active-record assertions below are deterministic rather than racing the
+      // cleanup path's real markDispatchWorkspaceIdle shadow op against the poll
+      // interval (the source of the prior flakiness).
+      let releaseRunInvocation!: () => void;
+      const runInvocationGate = new Promise<void>((resolve) => {
+        releaseRunInvocation = resolve;
+      });
+      const runSpy = vi
+        .spyOn(invocationModule, "runInvocation")
+        .mockImplementation(async (options) => {
+          await admitMockInvocation(options);
+          await runInvocationGate;
+          return { session: {} as any, outcome: "success", durationMs: 1 };
+        });
+
+      const engine = new DispatchEngine({
+        projectDir: testDir,
+        specDir: testDir,
+        kspecCliPath: MOCK_KSPEC_CLI,
+        coalesceWindowMs: 0,
+      });
+      (engine as unknown as { running: boolean }).running = true;
+
+      const taskRef = `@${testUlid("TASK")}`;
+      const change = makeStateChange({
+        toStatus: "pending",
+        fromStatus: "in_progress",
+        taskRef,
+      });
+      const entry = { agent, change, retryCount: 0, nextRetryAt: 0 };
+      type EngineInternal = {
+        _spawnInvocation: (a: unknown, e: unknown) => Promise<boolean>;
+        activeInvocationDetails: Map<string, { sessionId: string; taskRef: string | undefined }>;
+        running: boolean;
+        runningInvocations: Set<Promise<unknown>>;
+      };
+      const internal = engine as unknown as EngineInternal;
+      const spawned = await internal._spawnInvocation(agent, entry);
+      // runInvocation is now called and parked on the gate; the active record is
+      // registered and cleanup is blocked until we release the gate below.
+      await waitForMockCall(runSpy);
+      const inFlightInvocation = Array.from(internal.runningInvocations)[0];
+
+      expect(spawned).toBe(true);
+      expect(runSpy).toHaveBeenCalledTimes(1);
+
+      // Dispatch builds the preflight contract using the dispatch-allocated
+      // canonical session id. The contract env therefore carries that same
+      // id under KSPEC_SESSION_ID — exactly the value that downstream
+      // child kspec commands would see at spawn time.
+      expect(capturedPreflightSessionIds.length).toBeGreaterThanOrEqual(1);
+      const preflightSessionId = capturedPreflightSessionIds[0];
+      expect(typeof preflightSessionId).toBe("string");
+      expect(preflightSessionId.length).toBeGreaterThan(0);
+
+      // The runInvocation options carry the canonical session id used for
+      // active tracking, lifecycle events, and the runtime-built contract.
+      const invocationOpts = runSpy.mock.calls[0][0] as {
+        sessionId?: string;
+        env?: Record<string, string>;
+      };
+      expect(invocationOpts.sessionId).toBe(preflightSessionId);
+
+      // The active invocation record exposes the same session id to status
+      // surfaces (dispatch status, daemon API, Web UI). runInvocation is still
+      // parked on the gate, so the record is guaranteed present here.
+      const activeRecords = Array.from(internal.activeInvocationDetails.values());
+      const activeForTask = activeRecords.find((r) => r.taskRef === taskRef);
+      expect(activeForTask).toBeDefined();
+      expect(activeForTask!.sessionId).toBe(preflightSessionId);
+
+      // Release the gate and let the invocation drain so its cleanup (record
+      // delete, workspace idle) settles before mocks are restored. Stop the
+      // engine first so the post-invocation re-evaluation/drain short-circuits.
+      internal.running = false;
+      releaseRunInvocation();
+      if (inFlightInvocation) await inFlightInvocation;
+    } finally {
+      vi.restoreAllMocks();
+    }
+  });
+});
+
+// ─── Dispatch preflight registry-load failure diagnostics ───────────────────
+
+// AC: @runner-resolution-and-preflight ac-registry-load-failure-reports-config-error
+// AC: @runner-resolution-and-preflight ac-registry-load-failure-blocks-runner-spawn
+describe("Dispatch preflight surfaces runner_registry_unavailable", () => {
+  let testDir: string;
+
+  beforeEach(async () => {
+    testDir = await createTempDir("kspec-dispatch-registry-load-");
+  });
+
+  afterEach(async () => {
+    await cleanupTempDir(testDir);
+  });
+
+  // AC: @runner-resolution-and-preflight ac-registry-load-failure-blocks-runner-spawn
+  it("blocks dispatch with runner_registry_unavailable when system runner config is malformed", async () => {
+    const agent = makeTestAgent({
+      id: "runner-backed-agent",
+      runner: "configured-runner",
+      adapter: undefined,
+      dispatch: [{ on: "task.ready" }],
+    });
+    await setupProjectWithAgents(testDir, [agent]);
+
+    const sysConfigPath = path.join(testDir, "fake-system-runners.yaml");
+
+    const captureFile = path.join(testDir, "kspec-dispatch-registry-load-capture.json");
+    process.env.KSPEC_CAPTURE_FILE = captureFile;
+    try {
+      // Simulate the loader returning a layer-load failure rather than a
+      // healthy registry. Real disk path would also work, but the spy keeps
+      // the test fast and independent of the home-dir HOME override.
+      vi.spyOn(runnerConfigModule, "resolveEffectiveRunners").mockResolvedValue({
+        project: { config: null, path: "", loaded: false, issues: null },
+        system: {
+          config: null,
+          path: sysConfigPath,
+          loaded: true,
+          issues: [
+            { path: "runners.configured-runner", message: "Expected object, received array" },
+          ],
+        },
+        registry: { runners: {} },
+      });
+
+      const engine = new DispatchEngine({
+        projectDir: testDir,
+        specDir: testDir,
+        kspecCliPath: MOCK_KSPEC_CLI,
+        coalesceWindowMs: 0,
+      });
+      (engine as unknown as { running: boolean }).running = true;
+
+      const errorSpy = vi.spyOn(console, "error").mockImplementation(() => {});
+      const runSpy = vi.spyOn(invocationModule, "runInvocation");
+
+      const taskRef = `@${testUlid("TASK")}`;
+      const change = makeStateChange({
+        toStatus: "pending",
+        fromStatus: "in_progress",
+        taskRef,
+      });
+      const entry = { agent, change, retryCount: 0, nextRetryAt: 0 };
+
+      type EngineInternal = { _spawnInvocation: (a: unknown, e: unknown) => Promise<boolean> };
+      const spawned = await (engine as unknown as EngineInternal)._spawnInvocation(agent, entry);
+
+      // Dispatch must NOT invoke runInvocation when the registry is
+      // unavailable — the prompt would never be forwarded.
+      expect(spawned).toBe(false);
+      expect(runSpy).not.toHaveBeenCalled();
+      // Retry counter does not advance — this is a configuration error,
+      // not a transient invocation failure.
+      expect(entry.retryCount).toBe(0);
+
+      // Console error must surface the stable reason, not collapse it to
+      // unknown_runner.
+      const errorMessage = errorSpy.mock.calls.map((c) => String(c[0])).join("\n");
+      expect(errorMessage).toContain("runner_registry_unavailable");
+      expect(errorMessage).not.toContain("unknown_runner");
+
+      // Task note carries the stable reason and the failing config path so
+      // operators can find which file to fix without rerunning the validator.
+      const calls = JSON.parse(readTestOutputSync(captureFile)) as Array<{ args: string[] }>;
+      const noteCall = calls.find((c) => c.args.includes("note") && c.args.includes(taskRef));
+      expect(noteCall, "expected dispatch to add an AGENT-SKIP task note").toBeDefined();
+      const noteText = noteCall!.args.join(" ");
+      expect(noteText).toContain("AGENT-SKIP");
+      expect(noteText).toContain("runner_registry_unavailable");
+      expect(noteText).toContain(sysConfigPath);
+      expect(noteText).toContain("system=");
+
+      errorSpy.mockRestore();
+      runSpy.mockRestore();
+    } finally {
+      delete process.env.KSPEC_CAPTURE_FILE;
+      vi.restoreAllMocks();
+    }
+  });
+
+  // AC: @runner-resolution-and-preflight ac-registry-load-failure-blocks-runner-spawn
+  // Mixed-layer regression: even when the malformed project layer leaves a
+  // valid sibling system layer that contributes the referenced runner,
+  // dispatch must still block on runner_registry_unavailable rather than
+  // resolving against the partial registry.
+  it("blocks dispatch with runner_registry_unavailable when project layer is malformed even if system layer contributes the runner", async () => {
+    const agent = makeTestAgent({
+      id: "runner-backed-agent",
+      runner: "configured-runner",
+      adapter: undefined,
+      dispatch: [{ on: "task.ready" }],
+    });
+    await setupProjectWithAgents(testDir, [agent]);
+
+    const projectConfigPath = path.join(testDir, "fake-project-runners.yaml");
+
+    const captureFile = path.join(testDir, "kspec-dispatch-mixed-layer-capture.json");
+    process.env.KSPEC_CAPTURE_FILE = captureFile;
+    try {
+      // System layer succeeds and contributes a runner with the agent's name.
+      // Project layer fails to load. The dispatch preflight must still block.
+      vi.spyOn(runnerConfigModule, "resolveEffectiveRunners").mockResolvedValue({
+        project: {
+          config: null,
+          path: projectConfigPath,
+          loaded: true,
+          issues: [{ path: "", message: "unterminated flow sequence" }],
+        },
+        system: {
+          config: { runners: {} },
+          path: path.join(testDir, "fake-system-runners.yaml"),
+          loaded: true,
+          issues: null,
+        },
+        registry: {
+          runners: {
+            "configured-runner": {
+              name: "configured-runner",
+              kind: "acp_process",
+              adapter: "claude-agent-acp",
+              process: { executable: null, args: [], cwd: null },
+              env: { inherit: "minimal", pass: [], set: {}, secrets: {} },
+              privacy: { disable_nonessential_traffic: true },
+              diagnostics: { retain_raw_logs: "on_failure" },
+              sources: {
+                kind: "system",
+                adapter: "system",
+                processExecutable: null,
+                processArgs: null,
+                processCwd: null,
+                envInherit: "system",
+                envPass: "default",
+                envSet: { keys: {} },
+                envSecrets: null,
+                privacyDisableNonessentialTraffic: "system",
+                diagnosticsRetainRawLogs: "system",
+                overriddenBySystem: [],
+              },
+            },
+          },
+        },
+      });
+
+      const engine = new DispatchEngine({
+        projectDir: testDir,
+        specDir: testDir,
+        kspecCliPath: MOCK_KSPEC_CLI,
+        coalesceWindowMs: 0,
+      });
+      (engine as unknown as { running: boolean }).running = true;
+
+      const errorSpy = vi.spyOn(console, "error").mockImplementation(() => {});
+      const runSpy = vi.spyOn(invocationModule, "runInvocation");
+
+      const taskRef = `@${testUlid("TASK")}`;
+      const change = makeStateChange({
+        toStatus: "pending",
+        fromStatus: "in_progress",
+        taskRef,
+      });
+      const entry = { agent, change, retryCount: 0, nextRetryAt: 0 };
+
+      type EngineInternal = { _spawnInvocation: (a: unknown, e: unknown) => Promise<boolean> };
+      const spawned = await (engine as unknown as EngineInternal)._spawnInvocation(agent, entry);
+
+      // Even though the surviving system layer contains the runner, the
+      // malformed project layer must block dispatch and runInvocation must
+      // not run.
+      expect(spawned).toBe(false);
+      expect(runSpy).not.toHaveBeenCalled();
+      expect(entry.retryCount).toBe(0);
+
+      const errorMessage = errorSpy.mock.calls.map((c) => String(c[0])).join("\n");
+      expect(errorMessage).toContain("runner_registry_unavailable");
+
+      // Task note carries the failing layer + config path.
+      const calls = JSON.parse(readTestOutputSync(captureFile)) as Array<{ args: string[] }>;
+      const noteCall = calls.find((c) => c.args.includes("note") && c.args.includes(taskRef));
+      expect(noteCall).toBeDefined();
+      const noteText = noteCall!.args.join(" ");
+      expect(noteText).toContain("runner_registry_unavailable");
+      expect(noteText).toContain(projectConfigPath);
+      expect(noteText).toContain("project=");
+
+      errorSpy.mockRestore();
+      runSpy.mockRestore();
+    } finally {
+      delete process.env.KSPEC_CAPTURE_FILE;
+      vi.restoreAllMocks();
+    }
+  });
+
+  // AC: @runner-resolution-and-preflight ac-registry-load-failure-reports-config-error
+  it("emits runner_registry_unavailable for malformed project runner config too", async () => {
+    const agent = makeTestAgent({
+      id: "runner-backed-agent",
+      runner: "configured-runner",
+      adapter: undefined,
+      dispatch: [{ on: "task.ready" }],
+    });
+    await setupProjectWithAgents(testDir, [agent]);
+
+    const projectConfigPath = path.join(testDir, "fake-project-runners.yaml");
+
+    const captureFile = path.join(testDir, "kspec-dispatch-project-load-capture.json");
+    process.env.KSPEC_CAPTURE_FILE = captureFile;
+    try {
+      vi.spyOn(runnerConfigModule, "resolveEffectiveRunners").mockResolvedValue({
+        project: {
+          config: null,
+          path: projectConfigPath,
+          loaded: true,
+          issues: [{ path: "", message: "unterminated flow sequence" }],
+        },
+        system: { config: null, path: "", loaded: false, issues: null },
+        registry: { runners: {} },
+      });
+
+      const engine = new DispatchEngine({
+        projectDir: testDir,
+        specDir: testDir,
+        kspecCliPath: MOCK_KSPEC_CLI,
+        coalesceWindowMs: 0,
+      });
+      (engine as unknown as { running: boolean }).running = true;
+
+      const errorSpy = vi.spyOn(console, "error").mockImplementation(() => {});
+
+      const taskRef = `@${testUlid("TASK")}`;
+      const change = makeStateChange({
+        toStatus: "pending",
+        fromStatus: "in_progress",
+        taskRef,
+      });
+      const entry = { agent, change, retryCount: 0, nextRetryAt: 0 };
+
+      type EngineInternal = { _spawnInvocation: (a: unknown, e: unknown) => Promise<boolean> };
+      const spawned = await (engine as unknown as EngineInternal)._spawnInvocation(agent, entry);
+
+      expect(spawned).toBe(false);
+
+      const calls = JSON.parse(readTestOutputSync(captureFile)) as Array<{ args: string[] }>;
+      const noteCall = calls.find((c) => c.args.includes("note") && c.args.includes(taskRef));
+      expect(noteCall).toBeDefined();
+      const noteText = noteCall!.args.join(" ");
+      expect(noteText).toContain("runner_registry_unavailable");
+      expect(noteText).toContain(projectConfigPath);
+      expect(noteText).toContain("project=");
+
+      errorSpy.mockRestore();
+    } finally {
+      delete process.env.KSPEC_CAPTURE_FILE;
+      vi.restoreAllMocks();
+    }
+  });
+});
+
 // ─── AC-11: Graceful shutdown ─────────────────────────────────────────────────
 
 // AC: @agent-dispatch-engine ac-11
@@ -2165,7 +3227,8 @@ describe("Active fleet cleanup on invocation completion", () => {
     const statusDuringSecondInvocation: Array<ReturnType<DispatchEngine["getStatus"]>> = [];
     let invocationCount = 0;
 
-    vi.spyOn(invocationModule, "runInvocation").mockImplementation(async () => {
+    vi.spyOn(invocationModule, "runInvocation").mockImplementation(async (options) => {
+      await admitMockInvocation(options);
       invocationCount++;
       if (invocationCount === 2) {
         // During the second invocation (spawned by drain), check if the first
@@ -2282,11 +3345,15 @@ describe("Active fleet cleanup on invocation completion", () => {
     });
     const runSpy = vi
       .spyOn(invocationModule, "runInvocation")
-      .mockImplementationOnce(async () => {
+      .mockImplementationOnce(async (options) => {
+        await admitMockInvocation(options);
         await quietInvocationGate;
         return { session: {} as never, outcome: "success", durationMs: 1 };
       })
-      .mockRejectedValueOnce(new Error("early failure"));
+      .mockImplementationOnce(async (options) => {
+        await admitMockInvocation(options);
+        throw new Error("early failure");
+      });
 
     const quietEngine = new DispatchEngine({
       projectDir: testDir,
@@ -3192,6 +4259,115 @@ describe("Dispatch role workflow entrypoints", () => {
     }
   });
 
+  // AC: @runner-resolution-and-preflight ac-dispatch-uses-runner-resolution
+  // AC: @agent-runner-configuration ac-runner-precedence-over-adapter
+  //
+  // Regression: dispatch previously rendered the role-entry workflow using
+  // `agent.adapter ?? "claude-agent-acp"` BEFORE the runner resolver ran,
+  // which made adapter-specific tokens (`/skill` vs `$skill`) always reflect
+  // the legacy adapter even when a runner was configured to spawn a
+  // different platform.
+  it("renders role-entry using the runner-resolved adapter, not the legacy agent.adapter", async () => {
+    const agent = makeTestAgent({
+      id: "runner-worker",
+      // Legacy adapter intentionally points at claude — the runner must win
+      // and render codex-style entrypoint tokens instead.
+      adapter: "claude-agent-acp",
+      runner: "test-codex-runner",
+      dispatch: [{ on: "task.ready" }],
+    });
+    await setupProjectWithAgents(testDir, [agent]);
+    await fs.writeFile(
+      path.join(testDir, "kspec.config.yaml"),
+      [
+        "dispatch:",
+        "  base_branch: main",
+        "agent:",
+        "  skills:",
+        '    task_work: "/kspec:task-work"',
+      ].join("\n"),
+      "utf-8",
+    );
+    execSync("git remote add origin https://github.com/example/repo.git", {
+      cwd: testDir,
+      stdio: "pipe",
+    });
+    const fakeGh = await installFakeGh(testDir);
+
+    try {
+      vi.spyOn(configModule, "resolveDispatchRemoteSync").mockReturnValue(false);
+      // Inject a runner registry containing the runner used by the agent so
+      // dispatch resolves it without depending on host ~/.config/kspec state.
+      vi.spyOn(runnerConfigModule, "resolveEffectiveRunners").mockResolvedValue({
+        project: { config: null, path: "", loaded: false, issues: null },
+        system: { config: null, path: "", loaded: false, issues: null },
+        registry: mergeRunnerConfigs(null, {
+          runners: {
+            "test-codex-runner": { kind: "acp_process", adapter: "codex-acp" },
+          },
+        }),
+      });
+      const runSpy = vi.spyOn(invocationModule, "runInvocation").mockResolvedValue({
+        session: {} as any,
+        outcome: "success",
+        durationMs: 1,
+      });
+
+      const engine = new DispatchEngine({
+        projectDir: testDir,
+        specDir: testDir,
+        kspecCliPath: MOCK_KSPEC_CLI,
+        coalesceWindowMs: 0,
+      });
+
+      await engine.start();
+      try {
+        const taskId = testUlid("TASK");
+        await engine.handleStateChange({
+          taskId,
+          taskRef: `@${taskId}`,
+          fromStatus: "in_progress",
+          toStatus: "pending",
+          timestamp: Date.now(),
+          task: {
+            _ulid: taskId,
+            title: "Runner-resolved role entry task",
+            slugs: ["runner-resolved-role-entry-task"],
+            status: "pending",
+            type: "task",
+            priority: 1,
+            blocked_by: [],
+            depends_on: [],
+            context: [],
+            tags: [],
+            vcs_refs: [],
+            notes: [],
+            todos: [],
+            created_at: new Date().toISOString(),
+            automation: "eligible",
+          } as any,
+        });
+
+        await waitForMockCall(runSpy);
+
+        expect(runSpy).toHaveBeenCalled();
+        const invocation = runSpy.mock.calls[0][0];
+        // Codex-style entrypoint syntax — proves the resolver-supplied
+        // adapter (codex-acp) drove role-entry, not the legacy claude
+        // agent.adapter field.
+        expect(invocation.prompt).toContain("Workflow entrypoint: `$kspec-task-work`");
+        // Negative: the claude-style entrypoint MUST NOT appear, since
+        // rendering it would mean the legacy adapter won the role-entry
+        // build instead of the resolved runner adapter.
+        expect(invocation.prompt).not.toContain("Workflow entrypoint: `/kspec:task-work`");
+      } finally {
+        await engine.stop();
+      }
+    } finally {
+      fakeGh.restore();
+    }
+  });
+
   // AC: @dispatch-role-workflow-entry-contract ac-3
   // AC: @detached-reviewer-merge-helper ac-helper-path-in-reviewer-guidance
   it("renders manual merge reviewer guidance directing to supported merge helper", async () => {
@@ -3274,6 +4450,19 @@ describe("Dispatch role workflow entrypoints", () => {
       // Must NOT instruct reviewer to checkout integration branch manually
       expect(invocation.prompt).not.toContain("git checkout");
       expect(invocation.prompt).toContain("detached snapshot");
+      // Regression: the reviewer prompt previously claimed the helper would
+      // perform an "occupied-worktree refresh" — that described the
+      // pre-rework helper. The current helper uses an ephemeral helper-owned
+      // worktree, never refreshes a persistent occupied target checkout.
+      expect(invocation.prompt).not.toContain("occupied-worktree refresh");
+      expect(invocation.prompt).not.toContain("occupied worktree refreshed");
+      // Regression: the old helper recovery hint told reviewers to "check
+      // out '$MERGE_TARGET' in a worktree" to satisfy the helper. Reviewer
+      // guidance must never carry that wording or any equivalent telling
+      // the reviewer to create an auxiliary target checkout.
+      expect(invocation.prompt.toLowerCase()).not.toMatch(
+        /check out .*in (a|another|some|an auxiliary|another auxiliary) worktree/,
+      );
       expect(invocation.env?.KSPEC_DISPATCH_PUBLICATION_MODE).toBe("manual_merge");
     } finally {
       await engine.stop();
@@ -4550,7 +5739,7 @@ describe("AC-19: Periodic reconciliation re-enqueues missed tasks", () => {
     expect(fsSync.existsSync(workspace.cwd)).toBe(true);
 
     // Corrupt the artifact metadata so it cannot be parsed, AND clear the
-    // registry so no record protects the workspace. With no activeTaskRefs
+    // registry so no record protects the workspace. With no activeTaskIds
     // passed in, reconcileDispatchWorkspaceArtifacts must classify the
     // artifact as cleanup-eligible and remove both the worker worktree and
     // its canonical dispatch branch.
@@ -7679,8 +8868,8 @@ describe("In-flight spawn refs are included in cleanup protection inputs", () =>
   type EngineInternal = {
     inFlightTaskKeys: Set<string>;
     activeInvocationDetails: Map<string, ActiveInvocationRecord>;
-    _activeTaskRefs: () => Set<string>;
-    _hasActiveInvocationForTask: (taskRef: string) => boolean;
+    _activeTaskIds: () => Set<string>;
+    _hasActiveInvocationForTask: (taskId: string) => boolean;
   };
 
   type ActiveInvocationRecord = {
@@ -7688,9 +8877,12 @@ describe("In-flight spawn refs are included in cleanup protection inputs", () =>
     sessionId: string;
     agentId: string;
     agentName: string;
+    taskId: string | undefined;
     taskRef: string | undefined;
     role: "worker" | "reviewer";
     startedAtMs: number;
+    resolvedAdapter: string;
+    runner: string | undefined;
   };
 
   function makeActiveRecord(overrides: Partial<ActiveInvocationRecord>): ActiveInvocationRecord {
@@ -7699,15 +8891,19 @@ describe("In-flight spawn refs are included in cleanup protection inputs", () =>
       sessionId: testUlid("SESS"),
       agentId: "test-worker",
       agentName: "Test Worker",
+      taskId: undefined,
       taskRef: undefined,
       role: "worker",
       startedAtMs: Date.now(),
+      resolvedAdapter: "claude-agent-acp",
+      runner: undefined,
       ...overrides,
     };
   }
 
   // AC: @agent-dispatch-engine ac-inflight-spawn-refs-protect-cleanup
-  it("_activeTaskRefs() includes a task ref from inFlightTaskKeys when no active invocation is registered yet", async () => {
+  // AC: @dispatch-canonical-task-identity ac-cleanup-protection-uses-canonical-task
+  it("_activeTaskIds() includes a canonical task id from inFlightTaskKeys when no active invocation is registered yet", async () => {
     const engine = new DispatchEngine({
       projectDir: testDir,
       specDir: testDir,
@@ -7716,16 +8912,18 @@ describe("In-flight spawn refs are included in cleanup protection inputs", () =>
     });
     const internal = engine as unknown as EngineInternal;
 
-    const taskRef = `@${testUlid("TASK")}`;
-    internal.inFlightTaskKeys.add(`test-worker:${taskRef}`);
+    const taskId = testUlid("TASK");
+    // In-flight keys are formatted `${agentId}:${canonicalTaskId}` (bare ULID).
+    internal.inFlightTaskKeys.add(`test-worker:${taskId}`);
 
-    const refs = internal._activeTaskRefs();
-    expect(refs.has(taskRef)).toBe(true);
-    expect(refs.size).toBe(1);
+    const ids = internal._activeTaskIds();
+    expect(ids.has(taskId)).toBe(true);
+    expect(ids.size).toBe(1);
   });
 
   // AC: @agent-dispatch-engine ac-inflight-spawn-refs-protect-cleanup
-  it("_activeTaskRefs() merges in-flight and active invocation refs with deduplication", async () => {
+  // AC: @dispatch-canonical-task-identity ac-cleanup-protection-uses-canonical-task
+  it("_activeTaskIds() merges in-flight and active invocation canonical ids with deduplication", async () => {
     const engine = new DispatchEngine({
       projectDir: testDir,
       specDir: testDir,
@@ -7735,30 +8933,27 @@ describe("In-flight spawn refs are included in cleanup protection inputs", () =>
     const internal = engine as unknown as EngineInternal;
 
     const [sharedId, inflightOnlyId, activeOnlyId] = testUlids("TASK", 3);
-    const sharedTaskRef = `@${sharedId}`;
-    const inflightOnlyRef = `@${inflightOnlyId}`;
-    const activeOnlyRef = `@${activeOnlyId}`;
 
-    internal.inFlightTaskKeys.add(`test-worker:${sharedTaskRef}`);
-    internal.inFlightTaskKeys.add(`test-worker:${inflightOnlyRef}`);
+    internal.inFlightTaskKeys.add(`test-worker:${sharedId}`);
+    internal.inFlightTaskKeys.add(`test-worker:${inflightOnlyId}`);
     internal.activeInvocationDetails.set(
       "invocation-shared",
-      makeActiveRecord({ taskRef: sharedTaskRef }),
+      makeActiveRecord({ taskId: sharedId }),
     );
     internal.activeInvocationDetails.set(
       "invocation-active-only",
-      makeActiveRecord({ taskRef: activeOnlyRef }),
+      makeActiveRecord({ taskId: activeOnlyId }),
     );
 
-    const refs = internal._activeTaskRefs();
-    expect(refs.has(sharedTaskRef)).toBe(true);
-    expect(refs.has(inflightOnlyRef)).toBe(true);
-    expect(refs.has(activeOnlyRef)).toBe(true);
-    expect(refs.size).toBe(3);
+    const ids = internal._activeTaskIds();
+    expect(ids.has(sharedId)).toBe(true);
+    expect(ids.has(inflightOnlyId)).toBe(true);
+    expect(ids.has(activeOnlyId)).toBe(true);
+    expect(ids.size).toBe(3);
   });
 
   // AC: @agent-dispatch-engine ac-inflight-spawn-refs-protect-cleanup
-  it("parsing splits on the first ':' so task refs containing ':' remain intact", async () => {
+  it("parsing splits on the first ':' so the canonical task id remains intact", async () => {
     const engine = new DispatchEngine({
       projectDir: testDir,
       specDir: testDir,
@@ -7767,12 +8962,12 @@ describe("In-flight spawn refs are included in cleanup protection inputs", () =>
     });
     const internal = engine as unknown as EngineInternal;
 
-    const taskRefWithColon = `@task:with:colons`;
-    internal.inFlightTaskKeys.add(`test-worker:${taskRefWithColon}`);
+    const taskId = testUlid("TASK");
+    internal.inFlightTaskKeys.add(`test-worker:${taskId}`);
 
-    const refs = internal._activeTaskRefs();
-    expect(refs.has(taskRefWithColon)).toBe(true);
-    expect(internal._hasActiveInvocationForTask(taskRefWithColon)).toBe(true);
+    const ids = internal._activeTaskIds();
+    expect(ids.has(taskId)).toBe(true);
+    expect(internal._hasActiveInvocationForTask(taskId)).toBe(true);
   });
 
   // AC: @agent-dispatch-engine ac-inflight-spawn-refs-protect-cleanup
@@ -7787,12 +8982,13 @@ describe("In-flight spawn refs are included in cleanup protection inputs", () =>
 
     internal.inFlightTaskKeys.add(`no-separator-here`);
 
-    const refs = internal._activeTaskRefs();
-    expect(refs.size).toBe(0);
+    const ids = internal._activeTaskIds();
+    expect(ids.size).toBe(0);
   });
 
   // AC: @agent-dispatch-engine ac-inflight-spawn-refs-protect-cleanup
-  it("reconciliation passes the in-flight task ref to reconcileDispatchWorkspaceArtifacts", async () => {
+  // AC: @dispatch-canonical-task-identity ac-cleanup-protection-uses-canonical-task
+  it("reconciliation passes the in-flight canonical task id to reconcileDispatchWorkspaceArtifacts", async () => {
     const agent = makeTestAgent({ dispatch: [{ on: "task.ready" }] });
     await setupProjectWithAgents(testDir, [agent]);
 
@@ -7813,24 +9009,24 @@ describe("In-flight spawn refs are included in cleanup protection inputs", () =>
       _reconcile: () => Promise<void>;
     };
 
-    const inFlightTaskRef = `@${testUlid("TASK")}`;
-    internal.inFlightTaskKeys.add(`${agent.id}:${inFlightTaskRef}`);
+    const inFlightTaskId = testUlid("TASK");
+    internal.inFlightTaskKeys.add(`${agent.id}:${inFlightTaskId}`);
 
     await engine.start();
 
     const callsAfterStart = reconcileArtifactsSpy.mock.calls.length;
     expect(callsAfterStart).toBeGreaterThan(0);
     const startCallArg = reconcileArtifactsSpy.mock.calls[callsAfterStart - 1]?.[1];
-    const startActiveRefs = new Set(startCallArg?.activeTaskRefs ?? []);
-    expect(startActiveRefs.has(inFlightTaskRef)).toBe(true);
+    const startActiveIds = new Set(startCallArg?.activeTaskIds ?? []);
+    expect(startActiveIds.has(inFlightTaskId)).toBe(true);
 
     reconcileArtifactsSpy.mockClear();
     await internal._reconcile();
 
     expect(reconcileArtifactsSpy.mock.calls.length).toBeGreaterThan(0);
     const reconcileCallArg = reconcileArtifactsSpy.mock.calls[0]?.[1];
-    const reconcileActiveRefs = new Set(reconcileCallArg?.activeTaskRefs ?? []);
-    expect(reconcileActiveRefs.has(inFlightTaskRef)).toBe(true);
+    const reconcileActiveIds = new Set(reconcileCallArg?.activeTaskIds ?? []);
+    expect(reconcileActiveIds.has(inFlightTaskId)).toBe(true);
 
     await engine.stop();
   });
@@ -7921,8 +9117,8 @@ describe(
       });
 
       // Spy on the real artifact reconciliation (call-through). We use it to
-      // assert that the in-flight task ref flowed into activeTaskRefs as the
-      // protection input — and we let it run for real so the workspace dir is
+      // assert that the in-flight canonical task id flowed into activeTaskIds as
+      // the protection input — and we let it run for real so the workspace dir is
       // exercised by the cleanup logic, not just inspected.
       const reconcileArtifactsSpy = vi.spyOn(
         workspaceModule,
@@ -7989,21 +9185,22 @@ describe(
         inFlightTaskKeys: Set<string>;
         activeInvocationDetails: Map<string, { taskRef: string | undefined }>;
         _reconcile: () => Promise<void>;
-        _activeTaskRefs: () => Set<string>;
+        _activeTaskIds: () => Set<string>;
       };
 
       // Pre-active window invariants — the very state the regression test exists
-      // to protect: in-flight has it, active does not.
+      // to protect: in-flight has it, active does not. In-flight keys are now
+      // keyed on canonical task identity (`${agentId}:${taskId}`).
       expect(
-        Array.from(engineInternal.inFlightTaskKeys).some((key) => key.endsWith(`:${taskRef}`)),
+        Array.from(engineInternal.inFlightTaskKeys).some((key) => key.endsWith(`:${taskId}`)),
       ).toBe(true);
       expect(
         Array.from(engineInternal.activeInvocationDetails.values()).some(
           (record) => record.taskRef === taskRef,
         ),
       ).toBe(false);
-      // The engine's protection input set must include the in-flight task ref.
-      expect(engineInternal._activeTaskRefs().has(taskRef)).toBe(true);
+      // The engine's protection input set must include the in-flight canonical task id.
+      expect(engineInternal._activeTaskIds().has(taskId)).toBe(true);
 
       // Force the registry record + per-worker metadata into a cleanup-eligible
       // closing state with resolved integration. Without this mutation the
@@ -8011,8 +9208,8 @@ describe(
       // provisioning are in DISPATCH_PROTECTED_LIFECYCLE_STATES), and the test
       // would not actually exercise the in-flight cleanup-protection branch.
       // With this mutation, the ONLY thing standing between reap and
-      // workspace deletion is the in-flight task ref being passed into
-      // activeTaskRefs — which is exactly what the AC requires.
+      // workspace deletion is the in-flight canonical task id being passed into
+      // activeTaskIds — which is exactly what the AC requires.
       const registryPath = path.join(testDir, "project.dispatch-workspaces.yaml");
       const registryRaw = YAML.parse(await fs.readFile(registryPath, "utf-8")) as {
         kynetic_dispatch_workspaces?: string;
@@ -8082,10 +9279,10 @@ describe(
       reconcileArtifactsSpy.mockClear();
 
       // Trigger reconciliation while the spawn remains in-flight at bootstrap.
-      // The fix under regression: _reconcile() builds activeTaskRefs via
-      // _activeTaskRefs(), which includes inFlightTaskKeys entries, and passes
+      // The fix under regression: _reconcile() builds activeTaskIds via
+      // _activeTaskIds(), which includes inFlightTaskKeys entries, and passes
       // the merged set to reconcileDispatchWorkspaceArtifacts. The cleanup
-      // surface then routes the task ref through the shared protection state
+      // surface then routes the canonical task id through the shared protection state
       // and preserves the worker workspace despite the cleanup-eligible record.
       await engineInternal._reconcile();
 
@@ -8093,8 +9290,8 @@ describe(
       // protection input.
       expect(reconcileArtifactsSpy).toHaveBeenCalled();
       const reconcileArgs = reconcileArtifactsSpy.mock.calls[0]?.[1];
-      const reconcileActiveRefs = new Set(reconcileArgs?.activeTaskRefs ?? []);
-      expect(reconcileActiveRefs.has(taskRef)).toBe(true);
+      const reconcileActiveIds = new Set(reconcileArgs?.activeTaskIds ?? []);
+      expect(reconcileActiveIds.has(taskId)).toBe(true);
 
       // Behavioral assertion: workspace directory and bootstrap-created
       // sentinel both survive the cleanup pass.

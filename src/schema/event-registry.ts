@@ -29,6 +29,7 @@ import {
   SCHEDULE_TICK_PAYLOAD_FIELDS,
   ACTION_STARTED_PAYLOAD_FIELDS,
   ACTION_TERMINAL_PAYLOAD_FIELDS,
+  DISPATCH_CONTROL_PAYLOAD_FIELDS,
 } from "./event-payloads.js";
 
 // ─── Event Domains ────────────────────────────────────────────────────────────
@@ -36,7 +37,14 @@ import {
 /**
  * Event domain identifiers. Each domain groups related event types.
  */
-export const EVENT_DOMAINS = ["task", "invocation", "session", "schedule", "action"] as const;
+export const EVENT_DOMAINS = [
+  "task",
+  "invocation",
+  "session",
+  "schedule",
+  "action",
+  "dispatch_control",
+] as const;
 
 export type EventDomain = (typeof EVENT_DOMAINS)[number];
 
@@ -187,6 +195,45 @@ export const EVENT_REGISTRY: readonly EventRegistryEntry[] = [
       "failure_reason",
     ],
   },
+
+  // ─── Dispatch control domain ─────────────────────────────────────────
+  // AC: @dispatch-event-taxonomy ac-dispatch-control-domain
+  {
+    event_type: "dispatch_control.start_applied",
+    domain: "dispatch_control",
+    description: "A global dispatch start control was durably applied",
+    payload_fields: DISPATCH_CONTROL_PAYLOAD_FIELDS,
+  },
+  {
+    event_type: "dispatch_control.pause_applied",
+    domain: "dispatch_control",
+    description: "A dispatch pause control was durably applied",
+    payload_fields: DISPATCH_CONTROL_PAYLOAD_FIELDS,
+  },
+  {
+    event_type: "dispatch_control.resume_applied",
+    domain: "dispatch_control",
+    description: "A dispatch resume control was durably applied",
+    payload_fields: DISPATCH_CONTROL_PAYLOAD_FIELDS,
+  },
+  {
+    event_type: "dispatch_control.stop_applied",
+    domain: "dispatch_control",
+    description: "A dispatch stop control was durably applied",
+    payload_fields: DISPATCH_CONTROL_PAYLOAD_FIELDS,
+  },
+  {
+    event_type: "dispatch_control.noop",
+    domain: "dispatch_control",
+    description: "A dispatch control completed idempotently without changing authority",
+    payload_fields: DISPATCH_CONTROL_PAYLOAD_FIELDS,
+  },
+  {
+    event_type: "dispatch_control.failed",
+    domain: "dispatch_control",
+    description: "A dispatch control reached a durable failed outcome",
+    payload_fields: DISPATCH_CONTROL_PAYLOAD_FIELDS,
+  },
 ] as const;
 
 // ─── Derived Constants ────────────────────────────────────────────────────────
@@ -210,6 +257,7 @@ export const EVENTS_BY_DOMAIN: Record<EventDomain, readonly EventRegistryEntry[]
   session: EVENT_REGISTRY.filter((e) => e.domain === "session"),
   schedule: EVENT_REGISTRY.filter((e) => e.domain === "schedule"),
   action: EVENT_REGISTRY.filter((e) => e.domain === "action"),
+  dispatch_control: EVENT_REGISTRY.filter((e) => e.domain === "dispatch_control"),
 };
 
 /**

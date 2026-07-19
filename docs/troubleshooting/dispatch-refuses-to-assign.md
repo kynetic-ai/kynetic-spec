@@ -6,10 +6,11 @@ You start the dispatch engine or run an agent, but the task you expect to be pic
 
 The [dispatch engine](../concepts/agents-and-dispatch.md) matches tasks to agents based on several conditions. A task will not be assigned if any of these checks fail:
 
-- **The task is not marked as automation-eligible.** Dispatch only picks up tasks where automation has been explicitly enabled. Tasks without this marking are reserved for human contributors.
+- **The matching rule filters the task out.** For each candidate, automation filtering is evaluated per matching rule and event. The default worker rules for `task.ready`, `task.in_progress`, and `task.needs_work` require `automation: eligible`; a reviewer rule for `task.pending_review` or a project-defined rule may use a different filter.
 - **The task is not in a dispatchable state.** Only tasks in `pending`, `in_progress`, or `needs_work` status are candidates for worker agents. Tasks that are `blocked`, `completed`, `cancelled`, or `pending_review` are not routed to workers.
 - **No agent matches the trigger event.** Each agent defines which events it handles. If no agent's dispatch rules match the task's current event, it stays in the queue.
 - **The task has unmet dependencies.** If a task's `depends_on` references include incomplete tasks, it is not considered ready.
+- **Lifecycle authority and held status prevent admission.** A task can remain semantically ready while global dispatch is paused or stopped, or while its canonical task control is paused or stopped. Lifecycle control does not rewrite task readiness.
 
 ## How to Fix It
 
@@ -47,6 +48,14 @@ Check that dispatch is running and has agents configured:
 kspec agent dispatch status
 kspec agent list
 ```
+
+Read `globalAuthority`, `heldTasks`, and `taskControls` from JSON status when the task is ready but not starting:
+
+```bash
+kspec agent dispatch status --json
+```
+
+If lifecycle status holds the task, use the valid action shown by status. Follow [Dispatch Lifecycle Status Rejects an Action or Shows Cleanup](./dispatch-lifecycle-control-failures.md) rather than changing task readiness or control state by hand.
 
 If no agents are defined, run setup to create the defaults:
 

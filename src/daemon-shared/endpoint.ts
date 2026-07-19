@@ -111,6 +111,34 @@ export const LEGACY_PORT_FILENAME = "daemon.port";
 export const CONNECTION_METADATA_FILENAME = "daemon.connection.json";
 /** Filename for the daemon PID file. */
 export const PID_FILENAME = "daemon.pid";
+/**
+ * Filename for the daemon last-exit record. Written on every daemon
+ * termination path (graceful shutdown, fatal error, startup failure) and
+ * read by `kspec serve status` when no daemon is running. Shared between
+ * the daemon and the CLI so both resolve the same path.
+ * AC: @daemon-failure-observability ac-exit-record-durable
+ */
+export const LAST_EXIT_FILENAME = "daemon.last-exit.json";
+/**
+ * Filename for the daemon operational log. Shared between the daemon's
+ * in-process console tee and the CLI lifecycle commands so both resolve
+ * the same path.
+ * AC: @daemon-log-capture ac-detached-output-captured
+ */
+export const DAEMON_LOG_FILENAME = "daemon.log";
+/**
+ * Default maximum size of the active daemon log before rotation (5 MiB).
+ * Overridable via daemon.log_max_size_bytes in project config.
+ * AC: @daemon-log-capture ac-bounded-rotation
+ */
+export const DEFAULT_DAEMON_LOG_MAX_SIZE_BYTES = 5 * 1024 * 1024;
+/**
+ * Default execution time limit for commands dispatched through the daemon
+ * command API (120 seconds). Overridable via daemon.command_timeout_ms in
+ * project config.
+ * AC: @daemon-command-api ac-command-timeout
+ */
+export const DEFAULT_DAEMON_COMMAND_TIMEOUT_MS = 120_000;
 
 // ── Path helpers ───────────────────────────────────────────────────
 
@@ -134,6 +162,22 @@ export function getDaemonConnectionMetadataPath(
   configDir: string = getDefaultDaemonConfigDir(),
 ): string {
   return join(configDir, CONNECTION_METADATA_FILENAME);
+}
+
+/**
+ * Path to the daemon operational log file.
+ * AC: @daemon-log-capture ac-log-location-discoverable
+ */
+export function getDaemonLogPath(configDir: string = getDefaultDaemonConfigDir()): string {
+  return join(configDir, DAEMON_LOG_FILENAME);
+}
+
+/**
+ * Path to the daemon last-exit record file.
+ * AC: @daemon-failure-observability ac-exit-record-durable
+ */
+export function getDaemonLastExitPath(configDir: string = getDefaultDaemonConfigDir()): string {
+  return join(configDir, LAST_EXIT_FILENAME);
 }
 
 // ── Pure host helpers ──────────────────────────────────────────────
@@ -548,6 +592,118 @@ export function removeDaemonConnectionMetadata(
   configDir: string = getDefaultDaemonConfigDir(),
 ): void {
   unlinkIfPresent(getDaemonConnectionMetadataPath(configDir));
+}
+
+// ── Last-exit record I/O ───────────────────────────────────────────
+
+/**
+ * How the most recent daemon process terminated.
+ *
+ * - `graceful`: shutdown in response to a shutdown signal or stop command
+ * - `fatal`: an uncaught exception, unhandled rejection, or teardown error
+ * - `startup_failure`: the daemon never finished starting
+ *
+ * AC: @daemon-failure-observability ac-exit-record-durable
+ */
+export type DaemonLastExitKind = "graceful" | "fatal" | "startup_failure";
+
+/**
+ * Durable record of the most recent daemon termination, persisted at
+ * ~/.config/kspec/daemon.last-exit.json. Overwritten on every termination —
+ * only the most recent exit matters. Deliberately NOT removed on daemon
+ * start or by PidFileManager.remove(), so a disappeared daemon stays
+ * diagnosable until the next termination overwrites the record.
+ *
+ * AC: @daemon-failure-observability ac-exit-record-durable
+ */
+export interface DaemonLastExitRecord {
+  kind: DaemonLastExitKind;
+  /** Human-readable reason detail (signal name, error message, ...). */
+  reason: string;
+  /** Stack trace when the termination was caused by an error. */
+  stack?: string;
+  /** ISO-8601 timestamp of the termination. */
+  timestamp: string;
+  /** PID of the daemon process that terminated. */
+  pid: number;
+}
+
+function isValidLastExitKind(value: unknown): value is DaemonLastExitKind {
+  return value === "graceful" || value === "fatal" || value === "startup_failure";
+}
+
+function isValidLastExitRecord(value: unknown): value is DaemonLastExitRecord {
+  if (!value || typeof value !== "object") return false;
+  const r = value as Record<string, unknown>;
+  return (
+    isValidLastExitKind(r.kind) &&
+    typeof r.reason === "string" &&
+    (r.stack === undefined || typeof r.stack === "string") &&
+    typeof r.timestamp === "string" &&
+    typeof r.pid === "number" &&
+    Number.isInteger(r.pid)
+  );
+}
+
+/**
+ * Write the daemon last-exit record, stamping the current timestamp and
+ * PID. Overwrites any prior record. Never throws — this runs on fatal and
+ * shutdown paths where a recording failure must not mask the original
+ * error or block the exit. Returns the written record, or null when the
+ * write failed.
+ *
+ * AC: @daemon-failure-observability ac-exit-record-durable
+ */
+export function writeDaemonLastExitRecord(
+  exit: { kind: DaemonLastExitKind; reason: string; stack?: string },
+  configDir: string = getDefaultDaemonConfigDir(),
+): DaemonLastExitRecord | null {
+  const record: DaemonLastExitRecord = {
+    kind: exit.kind,
+    reason: exit.reason,
+    ...(exit.stack !== undefined ? { stack: exit.stack } : {}),
+    timestamp: new Date().toISOString(),
+    pid: process.pid,
+  };
+  try {
+    ensureConfigDir(configDir);
+    writeFileSync(
+      getDaemonLastExitPath(configDir),
+      `${JSON.stringify(record, null, 2)}\n`,
+      "utf-8",
+    );
+    return record;
+  } catch {
+    return null;
+  }
+}
+
+/**
+ * Read the daemon last-exit record. Returns null when the file is absent,
+ * unreadable, or does not contain a valid record — a malformed file must
+ * never break the status surface that reports it.
+ *
+ * AC: @daemon-failure-observability ac-exit-record-durable
+ */
+export function readDaemonLastExitRecord(
+  configDir: string = getDefaultDaemonConfigDir(),
+): DaemonLastExitRecord | null {
+  const raw = readFileOrNull(getDaemonLastExitPath(configDir));
+  if (raw === null) return null;
+  let parsed: unknown;
+  try {
+    parsed = JSON.parse(raw);
+  } catch {
+    return null;
+  }
+  if (!isValidLastExitRecord(parsed)) return null;
+  return {
+    kind: parsed.kind,
+    reason: parsed.reason,
+    ...(parsed.stack !== undefined ? { stack: parsed.stack } : {}),
+    timestamp: parsed.timestamp,
+    pid: parsed.pid,
+  };
 }
 
 /**

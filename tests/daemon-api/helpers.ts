@@ -46,10 +46,11 @@
  */
 
 import { execSync } from "node:child_process";
-import { cpSync, mkdirSync, writeFileSync } from "node:fs";
+import { cpSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import * as path from "node:path";
 import { Elysia } from "elysia";
 import { vi } from "vitest";
+import { parse as yamlParse, stringify as yamlStringify } from "yaml";
 import {
   cleanupTempDir,
   createTempDir,
@@ -59,11 +60,15 @@ import {
   testUlids,
 } from "../helpers/cli.js";
 import { projectContextMiddleware } from "../../dist/daemon/middleware/project-context.js";
+import { formatVersionIncompatibilityResponse } from "../../dist/daemon/routes/format-version-error.js";
 import { createTasksRoutes } from "../../dist/daemon/routes/tasks.js";
+import { createTaskResourcesRoutes } from "../../dist/daemon/routes/task-resources.js";
 import { createItemsRoutes } from "../../dist/daemon/routes/items.js";
 import { createReviewsRoutes } from "../../dist/daemon/routes/reviews.js";
+import { createReviewResourcesRoutes } from "../../dist/daemon/routes/review-resources.js";
 import { createTriageRoutes } from "../../dist/daemon/routes/triage.js";
 import { createPlansRoutes } from "../../dist/daemon/routes/plans.js";
+import { createPlanResourcesRoutes } from "../../dist/daemon/routes/plan-resources.js";
 import { createSessionRoutes } from "../../dist/daemon/routes/sessions.js";
 import { createValidationRoutes } from "../../dist/daemon/routes/validation.js";
 import { createMetaRoutes } from "../../dist/daemon/routes/meta.js";
@@ -115,6 +120,18 @@ export function setupFixtures(tempDir: string): void {
 
   // Copy modules directory
   cpSync(path.join(E2E_FIXTURES, "modules"), path.join(kspecDir, "modules"), { recursive: true });
+
+  // AC: @entity-folder-migration-and-compatibility-1 ac-new-projects-declare-folder-storage
+  // AC: @entity-folder-migration-and-compatibility-1 ac-unmigrated-projects-are-blocked-with-guidance
+  // AC: @entity-folder-migration-and-compatibility-1 ac-partial-folder-layouts-are-blocked
+  //   — daemon review/plan/resource routes require folder-backed storage. The
+  //   on-disk e2e fixture is a kynetic 1.2 folder-backed snapshot (lean
+  //   `project.plans.yaml` / `project.reviews.yaml` indexes copied above,
+  //   per-entity folders copied here), so the copied project exercises the
+  //   post-upgrade contract as-is.
+  for (const dir of ["plans", "reviews"]) {
+    cpSync(path.join(E2E_FIXTURES, dir), path.join(kspecDir, dir), { recursive: true });
+  }
 
   // Copy tasks directory (split task storage)
   cpSync(path.join(E2E_FIXTURES, "tasks"), path.join(kspecDir, "tasks"), { recursive: true });
@@ -185,6 +202,156 @@ includes:
   - modules/test.yaml
 tasks_file: project.tasks.yaml
 `;
+
+/**
+ * Folder-backed (kynetic 1.2) inline manifest. Declares the storage formats
+ * that the daemon review/plan/resource route gates require:
+ *   - `task_storage.format: split`
+ *   - `plan_storage.format: folder`
+ *   - `review_storage.format: folder`
+ *   - `resource_storage.format: entity_scoped`
+ *
+ * Pair with {@link materializeFolderBackedReviewShells} /
+ * {@link materializeFolderBackedPlanShells} (or rely on
+ * {@link setupInlineFixtures}'s manifest auto-detection) so the
+ * partial-layout detector sees matching `.kspec/<domain>/<ulid>/` folders
+ * for each entry in the supplied monolithic YAML.
+ */
+export const FOLDER_BACKED_INLINE_MANIFEST = `kynetic: "1.2"
+task_storage:
+  format: split
+plan_storage:
+  format: folder
+review_storage:
+  format: folder
+resource_storage:
+  format: entity_scoped
+project:
+  name: Test Project
+  version: "0.1.0"
+  status: draft
+includes:
+  - modules/test.yaml
+`;
+
+/**
+ * Materialise folder-shell directories for entries in a monolithic
+ * `project.<domain>.yaml`. The partial-layout detector compares the ULIDs
+ * declared in the index against the ULIDs of folders on disk that contain
+ * the domain sidecar (`plan.yaml` / `review.yaml`). When both sets match,
+ * the layout is treated as consistent and the strict folder-storage gate
+ * passes.
+ *
+ * Until the sibling folder-backed storage manager lands, `loadPlans` /
+ * `loadReviewRecords` still read from the monolithic file; these shells
+ * exist solely so the gate accepts the fixture as folder-backed.
+ *
+ * AC: @entity-folder-migration-and-compatibility-1 ac-partial-folder-layouts-are-blocked
+ */
+function materializeFolderShellsFor(
+  specDir: string,
+  arrayKey: "plans" | "reviews",
+  sidecarName: "plan.yaml" | "review.yaml",
+): void {
+  const monolithicPath = path.join(specDir, `project.${arrayKey}.yaml`);
+  let raw: string;
+  try {
+    // Reads test-fixture YAML the caller just wrote into a temp specDir so
+    // we can materialise per-entity folder shells the new folder-backed
+    // managers expect. Not source scanning — the only consumer is fixture
+    // bootstrap for daemon tests.
+    // oxlint-disable-next-line no-source-scanning/no-source-file-reads
+    raw = readFileSync(monolithicPath, "utf8");
+  } catch {
+    return;
+  }
+  let parsed: unknown;
+  try {
+    parsed = yamlParse(raw);
+  } catch {
+    return;
+  }
+  if (!parsed || typeof parsed !== "object") return;
+  const arr = (parsed as Record<string, unknown>)[arrayKey];
+  if (!Array.isArray(arr)) return;
+
+  const folderRoot = path.join(specDir, arrayKey);
+  mkdirSync(folderRoot, { recursive: true });
+  for (const entry of arr) {
+    if (!entry || typeof entry !== "object") continue;
+    const record = entry as Record<string, unknown>;
+    const id = record._ulid;
+    if (typeof id !== "string" || id.length === 0) continue;
+    const dir = path.join(folderRoot, id);
+    mkdirSync(dir, { recursive: true });
+
+    if (arrayKey === "reviews" && sidecarName === "review.yaml") {
+      // Reviews are folder-backed and keep ONE cohesive review.yaml — the
+      // full structured ReviewRecord lives inside the per-review sidecar so
+      // the folder-backed manager can serve detail reads directly without
+      // also touching the monolithic file.
+      writeFileSync(path.join(dir, "review.yaml"), yamlStringify(record));
+    } else if (arrayKey === "plans" && sidecarName === "plan.yaml") {
+      // Plans are folder-backed: split the monolithic record into the
+      // authoritative sidecars (plan.yaml metadata, plan.md content,
+      // notes.yaml when notes exist). The folder-backed plan storage
+      // manager reads from these — empty placeholder sidecars are not
+      // enough.
+      const { content, notes, ...core } = record;
+      const documentContent = typeof content === "string" ? content : "";
+      writeFileSync(path.join(dir, "plan.yaml"), yamlStringify(core));
+      writeFileSync(path.join(dir, "plan.md"), documentContent);
+      if (Array.isArray(notes) && notes.length > 0) {
+        writeFileSync(path.join(dir, "notes.yaml"), yamlStringify({ notes }));
+      }
+    } else {
+      // Minimal sidecar — the partial-layout detector only checks
+      // existence, not contents.
+      writeFileSync(path.join(dir, sidecarName), `_ulid: "${id}"\n`);
+    }
+  }
+}
+
+/**
+ * Create folder shells for every review ULID in the monolithic
+ * `project.reviews.yaml` so a folder-backed manifest's partial-layout
+ * detector accepts the fixture. `specDir` is the directory that holds the
+ * monolithic file (e.g. `<tempDir>/.kspec` for {@link setupFixtures} or
+ * `<tempDir>` for {@link setupInlineFixtures}).
+ */
+export function materializeFolderBackedReviewShells(specDir: string): void {
+  materializeFolderShellsFor(specDir, "reviews", "review.yaml");
+}
+
+/**
+ * Create folder shells for every plan ULID in the monolithic
+ * `project.plans.yaml`. See {@link materializeFolderBackedReviewShells}.
+ */
+export function materializeFolderBackedPlanShells(specDir: string): void {
+  materializeFolderShellsFor(specDir, "plans", "plan.yaml");
+}
+
+/**
+ * Detect from a manifest YAML string whether the project declares folder-
+ * backed storage for the given domain. Returns true only when the relevant
+ * declaration parses as `format: folder` (plans/reviews) or
+ * `format: entity_scoped` (resources). Used by {@link setupInlineFixtures}
+ * to auto-materialise folder shells when the caller passes monolithic
+ * reviews/plans alongside a folder-backed manifest.
+ */
+function manifestDeclaresFolderFormat(manifestText: string, domain: "plans" | "reviews"): boolean {
+  let parsed: unknown;
+  try {
+    parsed = yamlParse(manifestText);
+  } catch {
+    return false;
+  }
+  if (!parsed || typeof parsed !== "object") return false;
+  const key = domain === "plans" ? "plan_storage" : "review_storage";
+  const storage = (parsed as Record<string, unknown>)[key];
+  if (!storage || typeof storage !== "object") return false;
+  return (storage as Record<string, unknown>).format === "folder";
+}
 
 export type SeedSplitTaskInput = Parameters<typeof seedSplitTask>[1];
 
@@ -282,9 +449,19 @@ export function setupInlineFixtures(tempDir: string, files: InlineProjectFiles =
 
   if (files.reviews !== undefined) {
     writeFileSync(path.join(tempDir, "project.reviews.yaml"), files.reviews);
+    // AC: @entity-folder-migration-and-compatibility-1 ac-partial-folder-layouts-are-blocked
+    // When the manifest declares folder-backed review storage, create matching
+    // .kspec/reviews/<ulid>/review.yaml shells so the partial-layout detector
+    // accepts the fixture as a consistent folder-backed layout.
+    if (manifestDeclaresFolderFormat(manifest, "reviews")) {
+      materializeFolderBackedReviewShells(tempDir);
+    }
   }
   if (files.plans !== undefined) {
     writeFileSync(path.join(tempDir, "project.plans.yaml"), files.plans);
+    if (manifestDeclaresFolderFormat(manifest, "plans")) {
+      materializeFolderBackedPlanShells(tempDir);
+    }
   }
   if (files.inbox !== undefined) {
     writeFileSync(path.join(tempDir, "project.inbox.yaml"), files.inbox);
@@ -319,6 +496,7 @@ export interface CreateTestAppOptions {
  * Registered route groups (each via the same constructor used by
  * `createServer()` in packages/daemon/src/server.ts):
  *   - createTasksRoutes        → /api/tasks/*
+ *   - createTaskResourcesRoutes → /api/tasks/:ref/resources/*
  *   - createItemsRoutes        → /api/items/*
  *   - createReviewsRoutes      → /api/reviews/*
  *   - createTriageRoutes       → /api/triage/*
@@ -389,12 +567,26 @@ export function createTestApp(options: CreateTestAppOptions = {}): {
         return body;
       },
     }))
+    // AC: @data-format-forward-compatibility ac-daemon-structured-error
+    // Mirror of the production global onError in packages/daemon/src/server.ts:
+    // map format-version ceiling refusals from initContext into the structured
+    // 409 contract for every registered route group.
+    .onError(({ error: err, set }) => {
+      const conflict = formatVersionIncompatibilityResponse(err);
+      if (conflict) {
+        set.status = conflict.status;
+        return conflict.body;
+      }
+    })
     .use(middleware)
     .use(createTasksRoutes({ pubsub, getEntityCache }))
+    .use(createTaskResourcesRoutes({ getEntityCache }))
     .use(createItemsRoutes())
     .use(createReviewsRoutes({ pubsub, getEntityCache }))
+    .use(createReviewResourcesRoutes({ pubsub, getEntityCache }))
     .use(createTriageRoutes({ pubsub }))
-    .use(createPlansRoutes())
+    .use(createPlansRoutes({ getEntityCache }))
+    .use(createPlanResourcesRoutes({ getEntityCache }))
     .use(createSessionRoutes())
     .use(createValidationRoutes())
     .use(createMetaRoutes())
@@ -416,13 +608,20 @@ export function makeRequest(
   urlPath: string,
   init: RequestInit = {},
 ): Promise<Response> {
+  // For FormData bodies, omit the explicit Content-Type so the Request
+  // constructor derives `multipart/form-data; boundary=…` automatically.
+  // Explicit `application/json` would prevent the multipart body from
+  // being parsed by `request.formData()` on the route side.
+  const isFormDataBody = typeof FormData !== "undefined" && init.body instanceof FormData;
+  const autoContentType =
+    init.body && !isFormDataBody ? { "Content-Type": "application/json" } : {};
   return app.handle(
     new Request(`http://localhost${urlPath}`, {
       method: init.method ?? "GET",
       headers: {
         Host: "localhost",
         "X-Kspec-Dir": tempDir,
-        ...(init.body ? { "Content-Type": "application/json" } : {}),
+        ...autoContentType,
         ...(init.headers as Record<string, string>),
       },
       body: init.body,

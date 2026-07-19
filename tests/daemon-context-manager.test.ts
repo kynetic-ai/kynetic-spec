@@ -10,13 +10,52 @@
 import { describe, it, expect, beforeEach, afterEach, vi } from "vitest";
 import { setupMultiDirFixtures, cleanupTempDir } from "./helpers/cli";
 import { join } from "path";
-import { access, readdir, rm, symlink, writeFile } from "fs/promises";
+import { access, mkdir, readdir, rm, symlink, writeFile } from "fs/promises";
 import { ProjectContextManager } from "../packages/daemon/src/project-context";
 import { KspecWatcher } from "../packages/daemon/src/watcher";
 import { SessionWatcher } from "../packages/daemon/src/session-watcher";
 import { WatcherHealthMonitor } from "../packages/daemon/src/watcher-health-monitor";
 
 const WATCHER_WAIT_MS = process.env.CI ? 2500 : 1500;
+
+interface CacheInvalidationEvent {
+  projectPath: string;
+  kspecDir: string;
+  file: string;
+  content: string | undefined;
+}
+
+async function writeUntilCacheInvalidated(
+  received: readonly CacheInvalidationEvent[],
+  expected: CacheInvalidationEvent,
+  write: (attempt: number) => Promise<void>,
+): Promise<void> {
+  const deadline = Date.now() + WATCHER_WAIT_MS;
+  let attempt = 0;
+  let lastError: unknown;
+
+  while (Date.now() < deadline) {
+    await write(attempt);
+    attempt += 1;
+
+    try {
+      await vi.waitFor(
+        () => {
+          expect(received).toContainEqual(expected);
+        },
+        { timeout: Math.min(250, Math.max(50, deadline - Date.now())) },
+      );
+      return;
+    } catch (error) {
+      lastError = error;
+    }
+  }
+
+  if (lastError) {
+    throw lastError;
+  }
+  expect(received).toContainEqual(expected);
+}
 
 describe("ProjectContextManager", () => {
   let fixturesRoot: string;
@@ -238,6 +277,83 @@ describe("ProjectContextManager", () => {
         },
         { timeout: WATCHER_WAIT_MS },
       );
+    });
+
+    // AC: @coverage-state-api-cache ac-cache-invalidation
+    it("forwards configured coverage scan-path file changes to cache invalidation", async () => {
+      await writeFile(
+        join(projectA, "kspec.config.yaml"),
+        "coverage:\n  scan_paths:\n    - tests\n",
+        "utf-8",
+      );
+      await mkdir(join(projectA, "tests"), { recursive: true });
+      manager.registerProject(projectA);
+
+      const received: CacheInvalidationEvent[] = [];
+      manager.setCacheInvalidationCallback((projectPath, kspecDir, file, content) => {
+        received.push({ projectPath, kspecDir, file, content });
+      });
+
+      await manager.startWatcher(projectA);
+
+      const changedFile = join(projectA, "tests", "coverage-source.test.ts");
+      const expectedEvent = {
+        projectPath: projectA,
+        kspecDir: projectA,
+        file: changedFile,
+        content: undefined,
+      };
+      await writeUntilCacheInvalidated(received, expectedEvent, (attempt) =>
+        writeFile(
+          changedFile,
+          `// ${"AC"}: @coverage-state-api-cache ac-cache-invalidation\n// attempt ${attempt}\n`,
+          "utf-8",
+        ),
+      );
+      expect(received).toContainEqual(expectedEvent);
+    });
+
+    // AC: @coverage-state-api-cache ac-cache-invalidation
+    it("reconfigures coverage source watching when configured scan paths change", async () => {
+      const configFile = join(projectA, "kspec.config.yaml");
+      await writeFile(configFile, "coverage:\n  scan_paths:\n    - tests\n", "utf-8");
+      await mkdir(join(projectA, "tests"), { recursive: true });
+      await mkdir(join(projectA, "runtime-tests"), { recursive: true });
+      manager.registerProject(projectA);
+
+      const received: CacheInvalidationEvent[] = [];
+      manager.setCacheInvalidationCallback((projectPath, kspecDir, file, content) => {
+        received.push({ projectPath, kspecDir, file, content });
+      });
+
+      await manager.startWatcher(projectA);
+      const expectedConfigEvent = {
+        projectPath: projectA,
+        kspecDir: projectA,
+        file: configFile,
+        content: undefined,
+      };
+      await writeUntilCacheInvalidated(received, expectedConfigEvent, () =>
+        writeFile(configFile, "coverage:\n  scan_paths:\n    - runtime-tests\n", "utf-8"),
+      );
+      expect(received).toContainEqual(expectedConfigEvent);
+
+      received.length = 0;
+      const changedFile = join(projectA, "runtime-tests", "coverage-source.test.ts");
+      const expectedSourceEvent = {
+        projectPath: projectA,
+        kspecDir: projectA,
+        file: changedFile,
+        content: undefined,
+      };
+      await writeUntilCacheInvalidated(received, expectedSourceEvent, (attempt) =>
+        writeFile(
+          changedFile,
+          `// ${"AC"}: @coverage-state-api-cache ac-cache-invalidation\n// attempt ${attempt}\n`,
+          "utf-8",
+        ),
+      );
+      expect(received).toContainEqual(expectedSourceEvent);
     });
   });
 

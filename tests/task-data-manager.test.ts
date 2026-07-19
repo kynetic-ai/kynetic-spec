@@ -2009,4 +2009,190 @@ describe("TaskDataManager", () => {
       }
     });
   });
+
+  // ── Folder-Backed Trait Baseline ─────────────────────────────────────────
+  //
+  // The task data manager has been shipping the trait-folder-backed-entity-1
+  // consistency contract for some time: every mutator path (createTask,
+  // mutateTask, addNote, deleteTask) keeps project.tasks.yaml in sync with
+  // the per-task <ulid>/task.yaml + notes.yaml sidecars in the same atomic
+  // mutation. These baseline assertions pin that behavior so the plan/review
+  // storage managers have a concrete pattern to converge on as the trait
+  // promotion lands across folder-backed entities.
+  //
+  // AC: @trait-folder-backed-entity-1 ac-index-entry-created-with-folder
+  // AC: @trait-folder-backed-entity-1 ac-indexed-mutation-updates-index
+  // AC: @trait-folder-backed-entity-1 ac-index-repair-converges
+  // AC: @task-index-file ac-2
+  // AC: @task-index-file ac-5
+  describe("folder-backed trait baseline (task index consistency)", () => {
+    /**
+     * Compute index drift without writing — mirrors the dry-run rebuild
+     * path used by `kspec task rebuild-index`. Returns added/removed/changed
+     * entries; empty arrays mean the index is in sync with the per-task
+     * folders.
+     */
+    async function computeTaskIndexDrift(ctx: Awaited<ReturnType<typeof initContext>>): Promise<{
+      added: string[];
+      removed: string[];
+      changed: string[];
+    }> {
+      const { listTaskDirs, toIndexEntry, getIndexFilePath, indexEntriesEqual } =
+        await import("../src/parser/split-backend.js");
+      const { readYamlFile } = await import("../src/parser/yaml.js");
+      const splitManagerLocal = new TaskDataManager("split");
+
+      const ulids = await listTaskDirs(ctx);
+      const tasks = await splitManagerLocal.loadAllTasks(ctx);
+      const newEntries = new Map<string, Record<string, unknown>>();
+      for (const t of tasks) {
+        newEntries.set(t._ulid, toIndexEntry(t));
+      }
+      // Sanity: the per-task dir count must match the task loader count.
+      expect(tasks.length).toBe(ulids.length);
+
+      let raw: unknown;
+      try {
+        raw = await readYamlFile<unknown>(getIndexFilePath(ctx));
+      } catch {
+        raw = [];
+      }
+      let currentEntries: Record<string, unknown>[] = [];
+      if (Array.isArray(raw)) {
+        currentEntries = raw.filter(
+          (e): e is Record<string, unknown> => !!e && typeof e === "object",
+        );
+      } else if (raw && typeof raw === "object" && "tasks" in raw) {
+        const wrapper = raw as Record<string, unknown>;
+        if (Array.isArray(wrapper.tasks)) {
+          currentEntries = wrapper.tasks.filter(
+            (e): e is Record<string, unknown> => !!e && typeof e === "object",
+          );
+        }
+      }
+      const currentByUlid = new Map<string, Record<string, unknown>>();
+      for (const entry of currentEntries) {
+        const id = entry._ulid;
+        if (typeof id === "string") currentByUlid.set(id, entry);
+      }
+
+      const added: string[] = [];
+      const removed: string[] = [];
+      const changed: string[] = [];
+      for (const [ulid, newEntry] of newEntries) {
+        const cur = currentByUlid.get(ulid);
+        if (!cur) {
+          added.push(ulid);
+        } else if (!indexEntriesEqual(cur, newEntry)) {
+          changed.push(ulid);
+        }
+      }
+      for (const ulid of currentByUlid.keys()) {
+        if (!newEntries.has(ulid)) removed.push(ulid);
+      }
+      return { added, removed, changed };
+    }
+
+    /**
+     * The shipped fixtures' project.tasks.yaml predates a couple of optional
+     * projection fields (blocked_by defaults, expanded notes_count semantics)
+     * and would surface as "stale" against the current toIndexEntry shape.
+     * Calling splitBackend.rebuildIndex first establishes a clean baseline so
+     * the per-mutation assertions in these tests catch drift introduced by
+     * the mutation under test rather than by historical fixture skew.
+     */
+    async function syncIndexBaseline(ctx: Awaited<ReturnType<typeof initContext>>): Promise<void> {
+      await splitBackend.rebuildIndex(ctx);
+    }
+
+    // AC: @trait-folder-backed-entity-1 ac-index-entry-created-with-folder
+    // AC: @task-index-file ac-5
+    it("createTask: the new index entry is written in the same mutation as the per-task folder", async () => {
+      tempDir = await setupTempFixtures();
+      const ctx = await initContext(tempDir);
+      manager = resolveTaskDataManager(ctx);
+      await syncIndexBaseline(ctx);
+
+      await manager.createTask(ctx, {
+        title: "Baseline Created Task",
+        slugs: ["baseline-created-task"],
+      });
+
+      const drift = await computeTaskIndexDrift(ctx);
+      expect(drift).toEqual({ added: [], removed: [], changed: [] });
+    });
+
+    // AC: @trait-folder-backed-entity-1 ac-indexed-mutation-updates-index
+    // AC: @task-index-file ac-2
+    it("mutateTask: updates to indexed fields (priority, tags, status) keep the index in sync", async () => {
+      tempDir = await setupTempFixtures();
+      const ctx = await initContext(tempDir);
+      manager = resolveTaskDataManager(ctx);
+      await syncIndexBaseline(ctx);
+
+      await manager.mutateTask(ctx, "@test-task-pending", (task) => ({
+        ...task,
+        priority: 1,
+        tags: [...task.tags, "baseline"],
+        status: "in_progress",
+        started_at: "2026-05-23T13:00:00Z",
+      }));
+
+      const drift = await computeTaskIndexDrift(ctx);
+      expect(drift).toEqual({ added: [], removed: [], changed: [] });
+    });
+
+    // AC: @trait-folder-backed-entity-1 ac-indexed-mutation-updates-index
+    // AC: @task-index-file ac-2
+    it("addNote: notes_count is reflected in the index in the same mutation", async () => {
+      tempDir = await setupTempFixtures();
+      const ctx = await initContext(tempDir);
+      manager = resolveTaskDataManager(ctx);
+      await syncIndexBaseline(ctx);
+
+      await manager.addNote(ctx, "@test-task-pending", "Baseline note", "@tester");
+
+      const drift = await computeTaskIndexDrift(ctx);
+      expect(drift).toEqual({ added: [], removed: [], changed: [] });
+    });
+
+    // AC: @trait-folder-backed-entity-1 ac-indexed-mutation-updates-index
+    // AC: @task-index-file ac-5
+    it("deleteTask: the index entry is removed in the same mutation as the folder", async () => {
+      tempDir = await setupTempFixtures();
+      const ctx = await initContext(tempDir);
+      manager = resolveTaskDataManager(ctx);
+      await syncIndexBaseline(ctx);
+
+      await manager.deleteTask(ctx, "@test-task-pending");
+
+      const drift = await computeTaskIndexDrift(ctx);
+      expect(drift).toEqual({ added: [], removed: [], changed: [] });
+    });
+
+    // AC: @trait-folder-backed-entity-1 ac-index-repair-converges
+    it("rebuildIndex converges: after a fresh repair, a follow-up drift check reports zero changes", async () => {
+      tempDir = await setupTempFixtures();
+      const ctx = await initContext(tempDir);
+      manager = resolveTaskDataManager(ctx);
+
+      // Touch every mutator path to exercise the projection surface.
+      await manager.createTask(ctx, {
+        title: "Converge Baseline Task",
+        slugs: ["converge-baseline-task"],
+      });
+      await manager.mutateTask(ctx, "@test-task-pending", (task) => ({
+        ...task,
+        priority: 1,
+      }));
+      await manager.addNote(ctx, "@test-task-pending", "Converge note", "@tester");
+
+      // Rebuild from per-task folders, then assert a follow-up drift check
+      // reports no remaining differences (no spurious update churn).
+      await splitBackend.rebuildIndex(ctx);
+
+      const drift = await computeTaskIndexDrift(ctx);
+      expect(drift).toEqual({ added: [], removed: [], changed: [] });
+    });
+  });
 });

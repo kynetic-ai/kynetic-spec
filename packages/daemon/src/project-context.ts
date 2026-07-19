@@ -8,11 +8,17 @@
  */
 
 import { existsSync } from "fs";
-import { mkdir, rm, writeFile } from "fs/promises";
+import { mkdir, readFile, rm, writeFile } from "fs/promises";
+import { execFile } from "node:child_process";
 import { isAbsolute, join, normalize, relative } from "path";
+import { promisify } from "node:util";
+import { parse as parseYaml } from "yaml";
+import { watch as chokidarWatch, type FSWatcher as ChokidarWatcher } from "chokidar";
 import { KspecWatcher } from "./watcher.js";
 import { SessionWatcher } from "./session-watcher.js";
 import type { PubSubManager } from "./websocket/pubsub.js";
+
+const execFileAsync = promisify(execFile);
 
 /**
  * Optional callback for file change events from the watcher.
@@ -32,6 +38,11 @@ export type CacheInvalidationCallback = (
   content?: string,
 ) => void;
 
+export type DispatchControlFileCallback = (
+  projectPath: string,
+  observedHead: string | null,
+) => void | Promise<void>;
+
 export interface ProjectContext {
   path: string;
   registeredAt: Date;
@@ -43,6 +54,112 @@ export interface ProjectContext {
 interface PendingHealthProbe {
   filePath: string;
   resolve: () => void;
+}
+
+interface ProjectConfigCoverage {
+  coverage?: {
+    scan_paths?: unknown;
+  };
+}
+
+async function loadCoverageScanPaths(projectPath: string): Promise<string[]> {
+  try {
+    const raw = await readFile(join(projectPath, "kspec.config.yaml"), "utf-8");
+    const parsed = parseYaml(raw) as ProjectConfigCoverage | null;
+    const scanPaths = parsed?.coverage?.scan_paths;
+    if (!Array.isArray(scanPaths)) return [];
+    return scanPaths.filter((path): path is string => typeof path === "string" && path.length > 0);
+  } catch {
+    return [];
+  }
+}
+
+class CoverageScanWatcher {
+  private watcher: ChokidarWatcher | null = null;
+  private watchedSourcePaths = new Set<string>();
+  private reloadScanPathsPromise: Promise<void> = Promise.resolve();
+  private readonly configPath: string;
+
+  constructor(
+    private readonly projectPath: string,
+    private readonly onSourceChange: (file: string) => void,
+    private readonly onError: (error: Error, file?: string) => void,
+  ) {
+    this.configPath = join(projectPath, "kspec.config.yaml");
+  }
+
+  async start(): Promise<void> {
+    this.watchedSourcePaths = this.resolveWatchedSourcePaths(
+      await loadCoverageScanPaths(this.projectPath),
+    );
+    const watchedPaths = [this.configPath, ...this.watchedSourcePaths];
+
+    this.watcher = chokidarWatch(watchedPaths, {
+      ignoreInitial: true,
+      followSymlinks: false,
+      awaitWriteFinish: {
+        stabilityThreshold: 100,
+        pollInterval: 50,
+      },
+    });
+
+    this.watcher.on("add", (file: string) => this.handleFileEvent(file));
+    this.watcher.on("change", (file: string) => this.handleFileEvent(file));
+    this.watcher.on("unlink", (file: string) => this.handleFileEvent(file));
+    this.watcher.on("error", (error: unknown) => {
+      this.onError(error instanceof Error ? error : new Error(String(error)));
+    });
+
+    await new Promise<void>((resolve) => {
+      this.watcher?.once("ready", () => resolve());
+    });
+  }
+
+  async stop(): Promise<void> {
+    if (!this.watcher) return;
+    await this.watcher.close();
+    this.watcher = null;
+  }
+
+  private handleFileEvent(file: string): void {
+    if (normalize(file) === normalize(this.configPath)) {
+      this.reloadScanPathsPromise = this.reloadScanPathsPromise
+        .catch(() => undefined)
+        .then(async () => {
+          await this.reloadWatchedSourcePaths(file);
+          this.onSourceChange(file);
+        });
+      void this.reloadScanPathsPromise;
+      return;
+    }
+    this.onSourceChange(file);
+  }
+
+  private async reloadWatchedSourcePaths(file: string): Promise<void> {
+    try {
+      const nextSourcePaths = this.resolveWatchedSourcePaths(
+        await loadCoverageScanPaths(this.projectPath),
+      );
+      const removedPaths = [...this.watchedSourcePaths].filter(
+        (path) => !nextSourcePaths.has(path),
+      );
+      const addedPaths = [...nextSourcePaths].filter((path) => !this.watchedSourcePaths.has(path));
+
+      for (const removedPath of removedPaths) {
+        await this.watcher?.unwatch(removedPath);
+      }
+      if (addedPaths.length > 0) {
+        this.watcher?.add(addedPaths);
+      }
+      this.watchedSourcePaths = nextSourcePaths;
+    } catch (error) {
+      this.onError(error instanceof Error ? error : new Error(String(error)), file);
+    }
+  }
+
+  private resolveWatchedSourcePaths(scanPaths: readonly string[]): Set<string> {
+    return new Set(scanPaths.map((scanPath) => join(this.projectPath, scanPath)));
+  }
 }
 
 /**
@@ -57,7 +174,10 @@ interface PendingHealthProbe {
  */
 export class ProjectContextManager {
   private projects: Map<string, ProjectContext> = new Map();
-  private watchers: Map<string, { kspec: KspecWatcher; sessions: SessionWatcher }> = new Map();
+  private watchers: Map<
+    string,
+    { kspec: KspecWatcher; sessions: SessionWatcher; coverage: CoverageScanWatcher }
+  > = new Map();
   private pendingHealthProbes: Map<string, PendingHealthProbe> = new Map();
   private defaultProjectPath: string | null = null;
   private pubsub: PubSubManager | null = null;
@@ -65,6 +185,7 @@ export class ProjectContextManager {
   private fileChangeCallback: FileChangeCallback | null = null;
   /** Optional callback for cache invalidation on file changes. AC: @daemon-entity-cache ac-watcher-invalidation */
   private cacheInvalidationCallback: CacheInvalidationCallback | null = null;
+  private dispatchControlFileCallback: DispatchControlFileCallback | null = null;
   /** Optional callback invoked when a project is unregistered (from any path). AC: @daemon-entity-cache ac-unregister-cleanup */
   private unregisterCallback: ((projectPath: string) => void) | null = null;
 
@@ -92,6 +213,30 @@ export class ProjectContextManager {
    */
   setCacheInvalidationCallback(callback: CacheInvalidationCallback | null): void {
     this.cacheInvalidationCallback = callback;
+  }
+
+  setDispatchControlFileCallback(callback: DispatchControlFileCallback | null): void {
+    this.dispatchControlFileCallback = callback;
+  }
+
+  private async notifyDispatchControlFileEvent(
+    projectPath: string,
+    kspecDir: string,
+  ): Promise<void> {
+    if (!this.dispatchControlFileCallback) return;
+    let observedHead: string | null = null;
+    try {
+      const result = await execFileAsync("git", ["rev-parse", "HEAD"], {
+        cwd: kspecDir,
+        env: { ...process.env, GIT_TERMINAL_PROMPT: "0" },
+        encoding: "utf-8",
+      });
+      observedHead = result.stdout.toString().trim();
+    } catch {
+      // The committed reload owns degraded-state reporting. A null observation
+      // makes it capture HEAD again under the dispatch-shadow lock.
+    }
+    await this.dispatchControlFileCallback(projectPath, observedHead);
   }
 
   /**
@@ -133,6 +278,7 @@ export class ProjectContextManager {
     const sessionsDir = join(normalizedPath, ".kspec-sessions");
     let kspecWatcher: KspecWatcher | null = null;
     let sessionWatcher: SessionWatcher | null = null;
+    let coverageWatcher: CoverageScanWatcher | null = null;
 
     try {
       // AC: @multi-directory-daemon ac-17, ac-18 - Create watcher with project-scoped broadcasts
@@ -141,6 +287,13 @@ export class ProjectContextManager {
         onFileChange: (file, content) => {
           if (this.isHealthProbePath(normalizedPath, file)) {
             this.resolveHealthProbe(normalizedPath, file);
+            return;
+          }
+
+          if (relative(kspecDir, file) === "dispatch-control.yaml") {
+            void this.notifyDispatchControlFileEvent(normalizedPath, kspecDir).catch((error) => {
+              console.error("[dispatch-control] Failed committed reload:", error);
+            });
             return;
           }
 
@@ -169,6 +322,13 @@ export class ProjectContextManager {
         // AC: @daemon-entity-cache ac-watcher-invalidation — file deletion/rename invalidates cache
         onFileRemoved: (file) => {
           if (this.isHealthProbePath(normalizedPath, file)) {
+            return;
+          }
+
+          if (relative(kspecDir, file) === "dispatch-control.yaml") {
+            void this.notifyDispatchControlFileEvent(normalizedPath, kspecDir).catch((error) => {
+              console.error("[dispatch-control] Failed committed removal reload:", error);
+            });
             return;
           }
 
@@ -235,9 +395,51 @@ export class ProjectContextManager {
         },
       });
 
+      coverageWatcher = new CoverageScanWatcher(
+        normalizedPath,
+        (file) => {
+          if (this.pubsub) {
+            const relativePath = relative(normalizedPath, file);
+            this.pubsub.broadcast(
+              "files:updates",
+              "file_changed",
+              {
+                ref: relativePath,
+                action: "modified",
+                family: "coverage_state",
+              },
+              normalizedPath,
+            );
+          }
+          // AC: @coverage-state-api-cache ac-cache-invalidation — source annotation
+          // files and coverage scan config are outside .kspec/, so forward them
+          // with the project root as the watched root.
+          this.cacheInvalidationCallback?.(normalizedPath, normalizedPath, file, undefined);
+        },
+        (error, file) => {
+          if (this.pubsub) {
+            const relativePath = file ? relative(normalizedPath, file) : undefined;
+            this.pubsub.broadcast(
+              "coverage:errors",
+              "source_watch_error",
+              {
+                ref: relativePath,
+                error: error.message,
+              },
+              normalizedPath,
+            );
+          }
+        },
+      );
+
       await kspecWatcher.start();
       await sessionWatcher.start();
-      this.watchers.set(normalizedPath, { kspec: kspecWatcher, sessions: sessionWatcher });
+      await coverageWatcher.start();
+      this.watchers.set(normalizedPath, {
+        kspec: kspecWatcher,
+        sessions: sessionWatcher,
+        coverage: coverageWatcher,
+      });
 
       // Update context
       const context = this.projects.get(normalizedPath);
@@ -247,6 +449,9 @@ export class ProjectContextManager {
     } catch (error: unknown) {
       if (sessionWatcher) {
         await sessionWatcher.stop().catch(() => undefined);
+      }
+      if (coverageWatcher) {
+        await coverageWatcher.stop().catch(() => undefined);
       }
       if (kspecWatcher) {
         await kspecWatcher.stop().catch(() => undefined);
@@ -278,6 +483,7 @@ export class ProjectContextManager {
     if (watcher) {
       await watcher.kspec.stop();
       await watcher.sessions.stop();
+      await watcher.coverage.stop();
       this.watchers.delete(normalizedPath);
 
       // Update context

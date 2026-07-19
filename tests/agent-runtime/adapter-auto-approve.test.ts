@@ -73,6 +73,16 @@ describe("Adapter auto-approve args registry", () => {
     const adapter = resolveAdapter("some-unknown-package");
     expect(adapter.autoApproveArgs).toBeUndefined();
   });
+
+  // AC: @runner-process-invocation-inputs ac-generic-acp-process-omits-built-in-launch-args
+  it("generic-acp is registered as a requiresProcessExecutable profile with no command, empty args, and no autoApproveArgs", () => {
+    const adapter = getAdapter("generic-acp");
+    expect(adapter).toBeDefined();
+    expect(adapter!.requiresProcessExecutable).toBe(true);
+    expect(adapter!.command).toBeUndefined();
+    expect(adapter!.args).toEqual([]);
+    expect(adapter!.autoApproveArgs).toBeUndefined();
+  });
 });
 
 // ============================================================================

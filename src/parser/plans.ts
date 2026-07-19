@@ -14,6 +14,33 @@ import { withFileLock } from "./file-lock.js";
 import { type Plan, type PlanInput, PlanSchema, PlansFileSchema } from "../schema/index.js";
 import type { KspecContext } from "./yaml.js";
 import { readYamlFile, warnSkippedRecord, writeYamlFilePreserveFormat } from "./yaml.js";
+import {
+  assertPlanStorageCompatible,
+  assertPlanStorageWritable,
+} from "./entity-storage-compatibility.js";
+import {
+  deletePlanFromFolder,
+  findPlanByRefInFolders,
+  loadPlansFromFolders,
+  mutatePlanInFolder,
+  savePlanToFolder,
+} from "./plan-storage-manager.js";
+
+/**
+ * Detect whether the project's manifest declares folder-backed plan
+ * storage. The dispatcher routes loadPlans/findPlanByRef/savePlan/
+ * mutatePlanAtomically/deletePlan through the folder manager when this
+ * returns true, and through the legacy monolithic implementation
+ * otherwise. The lenient compatibility gate still fires on either side,
+ * so partial/incompatible manifests raise the deterministic error
+ * codes rather than dual-reading or silently migrating.
+ *
+ * AC: @folder-backed-plan-storage-1 ac-plan-metadata-sidecar-is-authoritative
+ * AC: @entity-folder-migration-and-compatibility-1 ac-partial-folder-layouts-are-blocked
+ */
+function usesFolderStorage(ctx: KspecContext): boolean {
+  return ctx.manifest?.plan_storage?.format === "folder";
+}
 
 /**
  * Loaded plan with runtime metadata
@@ -176,8 +203,14 @@ function stripPlanMetadata(plan: Plan | LoadedPlan): Plan {
 /**
  * Load all plans from the project.
  * AC: @plan-crud ac-7, ac-31 - listing plans
+ * AC: @entity-folder-migration-and-compatibility-1 ac-unmigrated-projects-are-blocked-with-guidance
+ * AC: @entity-folder-migration-and-compatibility-1 ac-partial-folder-layouts-are-blocked
  */
 export async function loadPlans(ctx: KspecContext): Promise<LoadedPlan[]> {
+  if (usesFolderStorage(ctx)) {
+    return loadPlansFromFolders(ctx);
+  }
+  await assertPlanStorageCompatible(ctx);
   const { getEntityCacheContext } = await import("./yaml.js");
   const cacheContext = getEntityCacheContext();
   if (cacheContext) {
@@ -219,11 +252,15 @@ export async function loadPlans(ctx: KspecContext): Promise<LoadedPlan[]> {
 /**
  * Find a plan by reference (ULID, short ULID, or slug)
  * AC: @plan-crud ac-8 - get plan by reference
+ * AC: @entity-folder-migration-and-compatibility-1 ac-unmigrated-projects-are-blocked-with-guidance
  */
 export async function findPlanByRef(
   ctx: KspecContext,
   ref: string,
 ): Promise<LoadedPlan | undefined> {
+  if (usesFolderStorage(ctx)) {
+    return findPlanByRefInFolders(ctx, ref);
+  }
   const plans = await loadPlans(ctx);
   const cleanRef = ref.startsWith("@") ? ref.slice(1) : ref;
 
@@ -273,6 +310,10 @@ export function createPlan(input: PlanInput, _author?: string): Plan {
  * added by Zod defaults.
  */
 export async function savePlan(ctx: KspecContext, plan: LoadedPlan): Promise<void> {
+  if (usesFolderStorage(ctx)) {
+    return savePlanToFolder(ctx, plan);
+  }
+  await assertPlanStorageWritable(ctx);
   const plansPath = getPlansFilePath(ctx);
 
   // Lock the file to prevent concurrent read-modify-write races
@@ -318,6 +359,19 @@ export async function mutatePlanAtomically(
   plan: LoadedPlan,
   mutate: (latestPlan: LoadedPlan) => Plan | LoadedPlan | Promise<Plan | LoadedPlan>,
 ): Promise<LoadedPlan> {
+  if (usesFolderStorage(ctx)) {
+    return mutatePlanInFolder(ctx, plan, mutate);
+  }
+  // Mutate-only operations update an existing plan in place and require
+  // that plan to already exist in the monolithic file; they cannot
+  // introduce a partial folder layout the way `savePlan` (create-or-update)
+  // or `deletePlan` (orphan-folder maker) can. The compatibility gate
+  // (lenient manifest + partial-layout detector) is sufficient — applying
+  // the broader writable gate would block valid updates under a consistent
+  // folder-backed layout. The strict monolithic-write rule still applies
+  // to save/delete.
+  // AC: @entity-folder-migration-and-compatibility-1 ac-partial-folder-layouts-are-blocked
+  await assertPlanStorageCompatible(ctx);
   const plansPath = plan._sourceFile || getPlansFilePath(ctx);
   let updatedPlan: LoadedPlan | undefined;
 
@@ -378,6 +432,10 @@ export async function mutatePlanAtomically(
  * AC: @plan-crud ac-40
  */
 export async function deletePlan(ctx: KspecContext, planUlid: string): Promise<void> {
+  if (usesFolderStorage(ctx)) {
+    return deletePlanFromFolder(ctx, planUlid);
+  }
+  await assertPlanStorageWritable(ctx);
   const plansPath = getPlansFilePath(ctx);
 
   // Lock the file to prevent concurrent read-modify-write races

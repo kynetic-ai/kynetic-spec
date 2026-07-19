@@ -818,6 +818,20 @@ describe("subscribe and unsubscribe", () => {
     expect(received[0].event_type).toBe("task.ready");
   });
 
+  // AC: @dispatch-event-taxonomy ac-dispatch-control-domain
+  it("delivers dispatch control outcomes exactly once to domain subscribers", async () => {
+    const received: EventEnvelope[] = [];
+    bus.subscribe("dispatch_control.*", (event) => received.push(event));
+    bus.emit({
+      event_type: "dispatch_control.pause_applied",
+      source_type: "api",
+      source_id: "dispatch-control:global",
+      payload: { scope: "global", action: "pause", outcome: "applied" },
+    });
+    await new Promise((resolve) => setImmediate(resolve));
+    expect(received.map((event) => event.event_type)).toEqual(["dispatch_control.pause_applied"]);
+  });
+
   it("should not deliver non-matching events", async () => {
     const received: EventEnvelope[] = [];
     bus.subscribe("task.*", (event) => {

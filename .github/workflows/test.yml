@@ -21,6 +21,7 @@ on:
   push:
     branches:
       - main
+  workflow_dispatch:
 
 jobs:
   lint:
@@ -54,10 +55,14 @@ jobs:
     needs: lint
     strategy:
       fail-fast: false
+      # AC: @prepublish-runtime-verification ac-1
+      # Test suite runs on the oldest supported Node.js major (20, from
+      # package.json engines) and a newer major (24) as distinct runs.
       matrix:
         shard: [1, 2, 3]
+        node-version: ["20", "24"]
 
-    name: test (shard ${{ matrix.shard }}/3)
+    name: test (node ${{ matrix.node-version }}, shard ${{ matrix.shard }}/3)
 
     steps:
       - name: Checkout code
@@ -68,7 +73,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: "24"
+          node-version: ${{ matrix.node-version }}
           cache: "npm"
 
       - name: Install dependencies
@@ -81,7 +86,7 @@ jobs:
         run: npm run build
 
       - name: Run tests
-        run: npx vitest run --shard=${{ matrix.shard }}/3
+        run: npm test -- --shard=${{ matrix.shard }}/3
 
       - name: Verify CLI functionality
         if: matrix.shard == 1

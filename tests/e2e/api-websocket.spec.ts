@@ -69,15 +69,33 @@ test.describe("WebSocket UI Behavior", () => {
   // AC: @web-dashboard ac-28
   // AC: @web-dashboard ac-29
   test("shows disconnection and reconnects after the daemon restarts", async ({ page, daemon }) => {
+    // Reconnect timing is governed by the spec'd exponential backoff
+    // (ac-28: 1s, 2s, 4s... capped at 30s), so attempts land at cumulative
+    // ~1s, 3s, 7s, 15s, 31s after the disconnect. daemon.stop()/start()
+    // serialize on the global port-start lock shared by every parallel
+    // worker, so under a full-suite run the daemon can be down >15s and the
+    // first reconnect attempt after restart can be a full 30s backoff gap
+    // away. Budget the test for that worst case instead of assuming an
+    // early backoff attempt lands after the restart.
+    test.setTimeout(120_000);
+
     await page.goto("/");
     await waitForConnected(page);
 
     const connectionStatus = page.getByTestId("connection-status");
 
     await daemon.stop();
-    await expect(connectionStatus).toContainText("Disconnected", { timeout: 2_000 });
+    // After >10s offline the badge upgrades from "Disconnected" to
+    // "Connection Lost" (ac-29). Accept either as disconnection evidence so
+    // a slow stop under lock contention cannot strand this assertion on a
+    // label that has already moved on.
+    await expect(connectionStatus).toContainText(/Disconnected|Connection Lost/, {
+      timeout: 10_000,
+    });
 
     await daemon.start();
-    await expect(connectionStatus).toContainText("Connected", { timeout: 10_000 });
+    // 45s covers the 30s worst-case backoff gap between daemon readiness
+    // and the next reconnect attempt, plus the attempt itself.
+    await expect(connectionStatus).toContainText("Connected", { timeout: 45_000 });
   });
 });

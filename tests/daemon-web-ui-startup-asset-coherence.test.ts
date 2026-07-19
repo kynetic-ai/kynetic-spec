@@ -42,7 +42,7 @@ afterEach(() => {
   }
 });
 
-function writeAsset(relativePath: string, content: string): void {
+function writeAsset(relativePath: string, content: string | Uint8Array): void {
   const fullPath = join(tempBundleDir, relativePath);
   mkdirSync(dirname(fullPath), { recursive: true });
   writeFileSync(fullPath, content);
@@ -307,6 +307,55 @@ describe("Daemon-served entry document <-> startup asset coherence (node runtime
       new Request(urlFor("/missing-favicon-not-referenced.ico")),
     );
     expect(missingRoot.status).toBe(404);
+  });
+
+  // AC: @docs-search ac-2
+  it("serves packaged Pagefind entry and nested binary assets with static asset semantics", async () => {
+    const indexBytes = Uint8Array.from([0, 255, 17, 128, 64, 3]);
+    writeAsset("pagefind/pagefind.js", "export const ready = true;");
+    writeAsset("pagefind/index/en_test.pf_index", indexBytes);
+
+    const app = buildBundleApp(tempBundleDir);
+    const entry = await app.handle(new Request(urlFor("/pagefind/pagefind.js")));
+    expect(entry.status).toBe(200);
+    expect(entry.headers.get("content-type")).toBe("text/javascript; charset=utf-8");
+    expect(entry.headers.get("cache-control")).toBe("public, max-age=86400");
+    expect(await entry.text()).toBe("export const ready = true;");
+
+    const index = await app.handle(new Request(urlFor("/pagefind/index/en_test.pf_index")));
+    expect(index.status).toBe(200);
+    expect(index.headers.get("content-type")).toBe("application/octet-stream");
+    expect(index.headers.get("cache-control")).toBe("public, max-age=86400");
+    expect(new Uint8Array(await index.arrayBuffer())).toEqual(indexBytes);
+  });
+
+  // AC: @docs-search ac-2
+  it("keeps missing and traversal Pagefind requests inside the Pagefind subtree", async () => {
+    writeAsset("pagefind/pagefind.js", "export const ready = true;");
+    writeAsset("bundle-secret.txt", "FORBIDDEN-BUNDLE-CONTENT");
+
+    const outsideName = `outside-pagefind-${Date.now()}-${Math.random().toString(36).slice(2)}.txt`;
+    const outsideFile = join(dirname(tempBundleDir), outsideName);
+    writeFileSync(outsideFile, "FORBIDDEN-OUTSIDE-CONTENT");
+
+    try {
+      const app = buildBundleApp(tempBundleDir);
+      const rejectedPaths = [
+        "/pagefind/missing.pf_index",
+        "/pagefind/%2e%2e%2fbundle-secret.txt",
+        `/pagefind/%2e%2e%2f%2e%2e%2f${outsideName}`,
+      ];
+
+      for (const requestPath of rejectedPaths) {
+        const response = await app.handle(new Request(urlFor(requestPath)));
+        const body = await response.text();
+        expect(response.status, requestPath).toBe(404);
+        expect(body, requestPath).not.toContain("FORBIDDEN-BUNDLE-CONTENT");
+        expect(body, requestPath).not.toContain("FORBIDDEN-OUTSIDE-CONTENT");
+      }
+    } finally {
+      if (existsSync(outsideFile)) unlinkSync(outsideFile);
+    }
   });
 });
 

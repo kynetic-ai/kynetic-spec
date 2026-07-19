@@ -56,6 +56,16 @@ function makeToolCallCompleteUpdate(id: string, status: string): SessionUpdate {
   } as unknown as SessionUpdate;
 }
 
+function makeTerminalToolCallUpdate(status: "completed" | "failed"): SessionUpdate {
+  return {
+    sessionUpdate: "tool_call",
+    toolCallId: `view-image-${status}`,
+    status,
+    kind: "read",
+    title: "View Image /tmp/example.png",
+  } as unknown as SessionUpdate;
+}
+
 describe("SessionEventAccumulator", () => {
   let accumulator: SessionEventAccumulator;
   let events: SessionEventData[];
@@ -302,6 +312,44 @@ describe("SessionEventAccumulator", () => {
 
       const complete = events.find((e) => e.type === "tool_call_complete") as any;
       expect(complete.status).toBe("failed");
+    });
+
+    // AC: @session-event-broadcast ac-terminal-tool-call-status
+    it("emits start and completion for an initial completed tool_call event", () => {
+      const ctx = makeCtx();
+
+      accumulator.handleUpdate(ctx, makeTerminalToolCallUpdate("completed"), emit);
+
+      expect(events.map((event) => event.type)).toEqual(["tool_call_start", "tool_call_complete"]);
+      const start = events[0] as any;
+      const complete = events[1] as any;
+      expect(start.tool_call_id).toBe("view-image-completed");
+      expect(complete.tool_call_id).toBe(start.tool_call_id);
+      expect(start.tool_name).toBe("View Image /tmp/example.png");
+      expect(complete.tool_name).toBe(start.tool_name);
+      expect(complete.session_id).toBe(ctx.sessionId);
+      expect(complete.status).toBe("completed");
+      expect(complete).not.toHaveProperty("output");
+      expect(complete).not.toHaveProperty("tool_output");
+    });
+
+    // AC: @session-event-broadcast ac-terminal-tool-call-status
+    it("emits start and completion for an initial failed tool_call event", () => {
+      const ctx = makeCtx();
+
+      accumulator.handleUpdate(ctx, makeTerminalToolCallUpdate("failed"), emit);
+
+      expect(events.map((event) => event.type)).toEqual(["tool_call_start", "tool_call_complete"]);
+      const start = events[0] as any;
+      const complete = events[1] as any;
+      expect(start.tool_call_id).toBe("view-image-failed");
+      expect(complete.tool_call_id).toBe(start.tool_call_id);
+      expect(start.tool_name).toBe("View Image /tmp/example.png");
+      expect(complete.tool_name).toBe(start.tool_name);
+      expect(complete.session_id).toBe(ctx.sessionId);
+      expect(complete.status).toBe("failed");
+      expect(complete).not.toHaveProperty("output");
+      expect(complete).not.toHaveProperty("tool_output");
     });
   });
 

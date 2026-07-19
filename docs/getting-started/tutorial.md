@@ -14,10 +14,10 @@ The example uses a documentation deliverable so you can try the whole flow in al
 
 ## Before you begin
 
-- Node.js 18+
+- Node.js 20+
 - Git repository initialized locally
 - `gh` installed if you want to open a pull request from the command line
-- [Bun](https://bun.sh) installed if you plan to use the web dashboard (`kspec serve`)
+- Node.js is also the default daemon runtime for `kspec serve`. Install [Bun](https://bun.sh) only if your project explicitly configures `daemon.runtime: bun`.
 
 If you need install variants, cloned-project setup, or troubleshooting, read [INSTALL.md](../../INSTALL.md) first.
 
@@ -210,3 +210,7 @@ kspec --help
 kspec task --help
 kspec item --help
 ```
+
+---
+
+**Next:** [Where to Go Next](./where-to-go-next.md)
