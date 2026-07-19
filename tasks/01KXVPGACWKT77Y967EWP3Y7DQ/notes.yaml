@@ -1,1 +1,14 @@
-notes: []
+notes:
+  - _ulid: 01KXVZ9HZQ9CVAQQAMKQM4F5JA
+    content: "Approach: add only a /pagefind/* Node route and reuse serveWebUiStaticAsset so MIME,
+      cache, byte reads, and bundle-root containment stay centralized. Guard the route to the
+      Pagefind subtree and reject empty/non-matching paths. Remove the local Pagefind interception
+      from docs E2E while retaining the isolated same-content parity fixture. Edge cases: missing
+      entry, nested binary fidelity, direct traversal outside Pagefind/bundle, non-vacuous
+      same-origin request observation, transport/non-2xx/browser errors. Test plan: first add
+      behavioral route cases for @docs-search ac-2 and strengthen wide/narrow daemon-backed searches
+      for ac-1/ac-2; retain canonical parity for ac-3; run focused failures before implementation,
+      then all project gates."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-07-19T01:19:18.519Z
