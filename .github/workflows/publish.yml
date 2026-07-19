@@ -5,10 +5,14 @@ on:
     types: [published]
   workflow_dispatch:
     inputs:
+      release-tag:
+        description: "Existing published release tag to verify or recover (vX.Y.Z)"
+        required: true
+        type: string
       dry-run:
-        description: "Dry run (skip actual publish)"
+        description: "Dry run (run every gate but skip npm publish)"
         required: false
-        default: "false"
+        default: true
         type: boolean
 
 jobs:
@@ -18,18 +22,67 @@ jobs:
   verify-min-node:
     runs-on: ubuntu-latest
     name: verify on minimum Node.js
+    permissions:
+      contents: read
 
     steps:
-      - name: Checkout code
+      - name: Checkout release tag
         uses: actions/checkout@v4
         with:
-          ref: main
+          ref: ${{ github.event_name == 'release' && github.event.release.tag_name || inputs.release-tag }}
+          fetch-depth: 0
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: "20"
           cache: "npm"
+
+      - name: Validate release tag and package version
+        env:
+          GH_TOKEN: ${{ github.token }}
+          RELEASE_TAG: ${{ github.event_name == 'release' && github.event.release.tag_name || inputs.release-tag }}
+          EVENT_NAME: ${{ github.event_name }}
+        run: |
+          set -euo pipefail
+          TAG="$RELEASE_TAG"
+          SEMVER_IDENTIFIER='(0|[1-9][0-9]*|[0-9A-Za-z-]*[A-Za-z-][0-9A-Za-z-]*)'
+          SEMVER_PATTERN="^v(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)(-${SEMVER_IDENTIFIER}(\\.${SEMVER_IDENTIFIER})*)?(\\+[0-9A-Za-z-]+(\\.[0-9A-Za-z-]+)*)?$"
+
+          if [[ ! "$TAG" =~ $SEMVER_PATTERN ]]; then
+            echo "::error::Release tag must use vX.Y.Z semantic-version grammar; got '$TAG'."
+            exit 1
+          fi
+
+          TAG_COMMIT="$(git rev-parse "refs/tags/$TAG^{commit}")"
+          CHECKED_OUT_COMMIT="$(git rev-parse HEAD)"
+          if [[ "$TAG_COMMIT" != "$CHECKED_OUT_COMMIT" ]]; then
+            echo "::error::Checked-out commit $CHECKED_OUT_COMMIT does not match $TAG ($TAG_COMMIT)."
+            exit 1
+          fi
+
+          VERSION="${TAG#v}"
+          PACKAGE_VERSION="$(node -p "require('./package.json').version")"
+          LOCK_VERSION="$(node -p "require('./package-lock.json').version")"
+          if [[ "$PACKAGE_VERSION" != "$VERSION" ]]; then
+            echo "::error::package.json version '$PACKAGE_VERSION' does not match release tag '$TAG'."
+            exit 1
+          fi
+          if [[ "$LOCK_VERSION" != "$VERSION" ]]; then
+            echo "::error::package-lock.json version '$LOCK_VERSION' does not match release tag '$TAG'."
+            exit 1
+          fi
+
+          if [[ "$EVENT_NAME" == "workflow_dispatch" ]]; then
+            IFS=$'\t' read -r API_RELEASE_TAG RELEASE_DRAFT RELEASE_PUBLISHED_AT < <(
+              gh api "repos/${GITHUB_REPOSITORY}/releases/tags/${TAG}" \
+                --jq '[.tag_name, (.draft | tostring), (.published_at // "")] | @tsv'
+            )
+            if [[ "$API_RELEASE_TAG" != "$TAG" || "$RELEASE_DRAFT" != "false" || -z "$RELEASE_PUBLISHED_AT" ]]; then
+              echo "::error::Manual recovery requires an existing published, non-draft GitHub release for '$TAG'."
+              exit 1
+            fi
+          fi
 
       - name: Install dependencies
         run: npm ci
@@ -47,20 +100,67 @@ jobs:
     runs-on: ubuntu-latest
     needs: verify-min-node
     permissions:
-      contents: read # Required for checkout
+      contents: read # Required for checkout and manual release validation
       id-token: write # Required for npm trusted publishers (OIDC)
 
     steps:
-      - name: Checkout code
+      - name: Checkout release tag
         uses: actions/checkout@v4
         with:
-          ref: main
+          ref: ${{ github.event_name == 'release' && github.event.release.tag_name || inputs.release-tag }}
+          fetch-depth: 0
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: "24"
           cache: "npm"
+
+      - name: Validate release tag and package version
+        env:
+          GH_TOKEN: ${{ github.token }}
+          RELEASE_TAG: ${{ github.event_name == 'release' && github.event.release.tag_name || inputs.release-tag }}
+          EVENT_NAME: ${{ github.event_name }}
+        run: |
+          set -euo pipefail
+          TAG="$RELEASE_TAG"
+          SEMVER_IDENTIFIER='(0|[1-9][0-9]*|[0-9A-Za-z-]*[A-Za-z-][0-9A-Za-z-]*)'
+          SEMVER_PATTERN="^v(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)(-${SEMVER_IDENTIFIER}(\\.${SEMVER_IDENTIFIER})*)?(\\+[0-9A-Za-z-]+(\\.[0-9A-Za-z-]+)*)?$"
+
+          if [[ ! "$TAG" =~ $SEMVER_PATTERN ]]; then
+            echo "::error::Release tag must use vX.Y.Z semantic-version grammar; got '$TAG'."
+            exit 1
+          fi
+
+          TAG_COMMIT="$(git rev-parse "refs/tags/$TAG^{commit}")"
+          CHECKED_OUT_COMMIT="$(git rev-parse HEAD)"
+          if [[ "$TAG_COMMIT" != "$CHECKED_OUT_COMMIT" ]]; then
+            echo "::error::Checked-out commit $CHECKED_OUT_COMMIT does not match $TAG ($TAG_COMMIT)."
+            exit 1
+          fi
+
+          VERSION="${TAG#v}"
+          PACKAGE_VERSION="$(node -p "require('./package.json').version")"
+          LOCK_VERSION="$(node -p "require('./package-lock.json').version")"
+          if [[ "$PACKAGE_VERSION" != "$VERSION" ]]; then
+            echo "::error::package.json version '$PACKAGE_VERSION' does not match release tag '$TAG'."
+            exit 1
+          fi
+          if [[ "$LOCK_VERSION" != "$VERSION" ]]; then
+            echo "::error::package-lock.json version '$LOCK_VERSION' does not match release tag '$TAG'."
+            exit 1
+          fi
+
+          if [[ "$EVENT_NAME" == "workflow_dispatch" ]]; then
+            IFS=$'\t' read -r API_RELEASE_TAG RELEASE_DRAFT RELEASE_PUBLISHED_AT < <(
+              gh api "repos/${GITHUB_REPOSITORY}/releases/tags/${TAG}" \
+                --jq '[.tag_name, (.draft | tostring), (.published_at // "")] | @tsv'
+            )
+            if [[ "$API_RELEASE_TAG" != "$TAG" || "$RELEASE_DRAFT" != "false" || -z "$RELEASE_PUBLISHED_AT" ]]; then
+              echo "::error::Manual recovery requires an existing published, non-draft GitHub release for '$TAG'."
+              exit 1
+            fi
+          fi
 
       - name: Install latest npm
         run: npm install -g npm@latest && npm --version
@@ -85,21 +185,13 @@ jobs:
           npm link
           kspec --version
 
-      - name: Sync version from release tag
-        if: github.event_name == 'release'
-        run: |
-          VERSION="${{ github.event.release.tag_name }}"
-          # Strip leading 'v' if present
-          VERSION="${VERSION#v}"
-          npm version "$VERSION" --no-git-tag-version --allow-same-version
-
       - name: Verify clean-source pack
         run: npm run verify-clean-pack
 
       - name: Publish to npm
-        if: ${{ github.event.inputs.dry-run != 'true' }}
+        if: github.event_name == 'release' || (github.event_name == 'workflow_dispatch' && inputs.dry-run == false)
         run: npm publish --provenance --access public
 
-      # Note: Version sync to main requires a manual PR due to branch protection rules.
-      # After release, create a PR to update package.json version.
-      # See /release skill for details.
+      # Version and release notes are prepared in the version-first release PR.
+      # The published tag must already match package.json and package-lock.json.
+      # See the release skill for the complete release procedure.
