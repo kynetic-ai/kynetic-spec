@@ -2,7 +2,17 @@ _ulid: 01KXW0VTXQFQ14AG8MCBWRRPK2
 slugs: []
 title: "Implementation review: Serve packaged Pagefind assets from Node daemon"
 author: Jacob Chapel
-checks: []
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Exit 0; oxfmt checked 1,067 files and reported all matched files correctly formatted.
+    name: format
+    required: true
+    runner: npm run format:check
+    created_at: 2026-07-19T02:04:26.086Z
+    completed_at: 2026-07-19T02:04:26.086Z
 events:
   - _ulid: 01KXW0VTXFZD9WTX3ST11BADRZ
     actor: Jacob Chapel
@@ -17,6 +27,13 @@ events:
       from: draft
       to: open
     timestamp: 2026-07-19T01:47:08.968Z
+  - _ulid: 01KXW1W6BYK6QRQAXHGNT3NYZ8
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: format
+    timestamp: 2026-07-19T02:04:26.367Z
 examined_commit: 6627036ddfb8e0163081f9ddd85d89898c1874bd
 external_links: []
 lifecycle_state: open
@@ -29,5 +46,5 @@ subject:
 threads: []
 verdicts: []
 created_at: 2026-07-19T01:46:46.071Z
-updated_at: 2026-07-19T01:47:08.712Z
+updated_at: 2026-07-19T02:04:26.086Z
 notes: []
