@@ -276,7 +276,7 @@ describe("resolveRunnerInvocation: runner precedence over adapter", () => {
   });
 
   // AC: @runner-invocation-semantics ac-auto-approve-from-resolved-contract
-  it("uses the runner-resolved adapter's autoApproveArgs, not the agent.adapter's", () => {
+  it("uses the runner-resolved adapter's auto-approve config, not the agent.adapter's", () => {
     const registry = buildRegistry(null, {
       runners: {
         codex: { kind: "acp_process", adapter: "codex-acp" },
@@ -285,9 +285,8 @@ describe("resolveRunnerInvocation: runner precedence over adapter", () => {
     const agent = makeAgent({ runner: "codex", adapter: "claude-agent-acp" });
     const result = resolveRunnerInvocation(makeInput({ agent, registry, autoApprove: true }));
 
-    // codex-acp uses `-c` flag args, not --dangerously-skip-permissions
     expect(result.extraArgs).not.toContain("--dangerously-skip-permissions");
-    expect(result.extraArgs).toContain("-c");
+    expect(result.env.INITIAL_AGENT_MODE).toBe("agent-full-access");
   });
 });
 

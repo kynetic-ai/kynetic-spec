@@ -677,6 +677,28 @@ describe("resolveRunnerInvocation: contract redactor + routed session id", () =>
     expect(result.env.KSPEC_NO_DAEMON).toBe("1");
   });
 
+  // AC: @ralph-adapter-auto-approve ac-1
+  it("applies codex-acp auto-approve environment on the runner-backed path", () => {
+    const registry = buildRegistry(null, {
+      runners: { codex: { kind: "acp_process", adapter: "codex-acp" } },
+    });
+    const agent = makeAgent({ runner: "codex", auto_approve: true });
+    const result = resolveRunnerInvocation(makeInput({ agent, registry, autoApprove: true }));
+
+    expect(result.env.INITIAL_AGENT_MODE).toBe("agent-full-access");
+  });
+
+  // AC: @ralph-adapter-auto-approve ac-3
+  it("omits codex-acp auto-approve environment when auto-approve is disabled", () => {
+    const registry = buildRegistry(null, {
+      runners: { codex: { kind: "acp_process", adapter: "codex-acp" } },
+    });
+    const agent = makeAgent({ runner: "codex", auto_approve: false });
+    const result = resolveRunnerInvocation(makeInput({ agent, registry, autoApprove: false }));
+
+    expect(result.env.INITIAL_AGENT_MODE).toBeUndefined();
+  });
+
   // AC: @runner-invocation-semantics ac-session-env-injected-through-runner
   it("threads mutationLockFile into the contract env on the runner-backed path", () => {
     const registry = buildRegistry(null, {

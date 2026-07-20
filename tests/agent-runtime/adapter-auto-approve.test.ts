@@ -33,18 +33,14 @@ async function cleanShutdown(agent: SpawnedAgent): Promise<void> {
 // Adapter Registry Tests
 // ============================================================================
 
-describe("Adapter auto-approve args registry", () => {
+describe("Adapter auto-approve configuration registry", () => {
   // AC: @ralph-adapter-auto-approve ac-1
-  it("codex-acp pins latest Zed package and has correct autoApproveArgs", () => {
+  it("codex-acp pins the current ACP package and selects full-access mode for auto-approve", () => {
     const adapter = getAdapter("codex-acp");
     expect(adapter).toBeDefined();
-    expect(adapter!.args).toContain("@zed-industries/codex-acp@0.12.0");
-    expect(adapter!.autoApproveArgs).toEqual([
-      "-c",
-      'approval_policy="never"',
-      "-c",
-      'sandbox_mode="danger-full-access"',
-    ]);
+    expect(adapter!.args).toContain("@agentclientprotocol/codex-acp@1.1.2");
+    expect(adapter!.autoApproveArgs).toBeUndefined();
+    expect(adapter!.autoApproveEnv).toEqual({ INITIAL_AGENT_MODE: "agent-full-access" });
   });
 
   // AC: @ralph-adapter-auto-approve ac-2

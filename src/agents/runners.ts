@@ -501,6 +501,7 @@ function withResolvedCommand(adapter: AgentAdapter, executable: string): Command
     ...(adapter.shell !== undefined ? { shell: adapter.shell } : {}),
     ...(adapter.description !== undefined ? { description: adapter.description } : {}),
     ...(adapter.autoApproveArgs !== undefined ? { autoApproveArgs: adapter.autoApproveArgs } : {}),
+    ...(adapter.autoApproveEnv !== undefined ? { autoApproveEnv: adapter.autoApproveEnv } : {}),
     command: executable,
     requiresProcessExecutable: false,
   };
@@ -579,6 +580,9 @@ function buildImplicitContract(inputs: ImplicitContractInputs): RunnerInvocation
   // host process env directly.
   // AC: @runner-invocation-semantics ac-session-env-injected-through-runner
   const contractEnv: Record<string, string> = { ...env };
+  if (autoApprove) {
+    Object.assign(contractEnv, adapter.autoApproveEnv);
+  }
   applyKspecRequiredEnv(contractEnv, sessionId, mutationLockFile);
   const mutationEnv = buildKspecRequiredEnv(sessionId, mutationLockFile);
 
@@ -701,6 +705,9 @@ function buildRunnerContract(inputs: RunnerContractInputs): RunnerInvocation {
     ? (effectiveAdapter.autoApproveArgs ?? [])
     : [];
   const extraArgs: readonly string[] = [...autoApproveArgs, ...runner.process.args];
+  if (autoApprove) {
+    Object.assign(composedEnv, effectiveAdapter.autoApproveEnv);
+  }
 
   const sourceLayer = computeSourceLayer(runner);
 
