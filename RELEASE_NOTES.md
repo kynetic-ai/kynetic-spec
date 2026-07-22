@@ -198,6 +198,13 @@ pipeline.
 
 ### Bug Fixes
 
+- **Current Codex ACP compatibility.** The built-in `codex-acp` adapter now
+  runs pinned `@agentclientprotocol/codex-acp@1.1.2` instead of
+  `@zed-industries/codex-acp@0.12.0`, restoring compatibility with the current
+  Codex ACP integration used for GPT-5.6. When auto-approve is enabled,
+  implicit and named runner-backed invocations use ACP's supported
+  `INITIAL_AGENT_MODE=agent-full-access` environment contract; invocations
+  with auto-approve disabled do not receive it.
 - **Canonical dispatch identity.** Full task ULIDs now govern scheduling,
   sessions, lifecycle controls, workspace lookup, reviewer targets, and event
   history. Ambiguous or mismatched aliases fail closed; existing workspace
