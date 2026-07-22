@@ -1,0 +1,1 @@
+import{e as a,r as i}from"./BZz3Ixdm.js";function f(r,n,t){return i(r,n?.map(e=>({id:e.id,path:e.path,rewritable:e.status==="present"})),t)}function o(r,n){const t=a(r);if(t.length===0)return[];const e=new Set((n??[]).map(s=>s.path));return t.filter(s=>!e.has(s))}export{o as f,f as r};

@@ -1,0 +1,1 @@
+import{j as f,k as i,l as p}from"./B3e3Nrf3.js";function l(e,r){switch(e){case"post":i(r);break;case"pre":f(r);break}}const k=(e,r,n)=>{let s=!1,a=Array.isArray(e)?[]:void 0;l(r,()=>{const t=Array.isArray(e)?e.map(u=>u()):e();if(!s){s=!0,a=t;return}const c=p(()=>n(t,a));return a=t,c})};export{k as w};
