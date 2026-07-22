@@ -918,7 +918,9 @@ describe("Environment Injection", () => {
       expect(adapter.command).toMatch(/\b(bun|npx)\b/);
       // Registered codex-acp pins a specific package version; ad-hoc resolution would
       // pass through the bare adapter id without a version suffix.
-      expect(adapter.args.some((arg) => arg.startsWith("@zed-industries/codex-acp@"))).toBe(true);
+      expect(adapter.args.some((arg) => arg.startsWith("@agentclientprotocol/codex-acp@"))).toBe(
+        true,
+      );
     });
 
     // AC: @droid-acp-adapter ac-1
