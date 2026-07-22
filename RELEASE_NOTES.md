@@ -6,31 +6,74 @@ skill for the authoring conventions enforced by the CLI.
 
 ## Unreleased
 
-Human-authored summary of changes staged for the next release. Promote this
-block to a versioned section (with the chosen version number) as part of the
-release workflow before tagging.
-
 ### New or changed configuration
 
-- **`kynetic: "1.2"` storage format.** Project manifests now declare
-  `kynetic: "1.2"`, `task_storage.format: split`, `plan_storage.format: folder`,
-  `review_storage.format: folder`, and `resource_storage.format: entity_scoped`.
-  `kspec init` writes these fields on new projects; `kspec upgrade` migrates
-  existing projects.
+- No new configuration keys.
 
 ### Breaking changes
 
-- **Folder-backed plan and review storage.** Plans now live in
+- None.
+
+## v0.15.0
+
+This release moves plans, reviews, and local evidence into safer folder-backed
+storage, and adds configurable agent runners plus durable dispatch lifecycle
+controls. It also strengthens task/workspace identity, merge and recovery
+safety, daemon operations, the Web UI, documentation, and the npm release
+pipeline.
+
+### New or changed configuration
+
+- **Complete `kynetic: "1.2"` manifest declaration.** `kspec init` and
+  `kspec upgrade` now write `kynetic: "1.2"`, `task_storage.format: split`,
+  `plan_storage.format: folder`, `review_storage.format: folder`, and
+  `resource_storage.format: entity_scoped`. `task_storage.format` was already
+  supported in v0.14.0; this release makes it part of the complete generated
+  and upgraded 1.2 declaration.
+- **Agent runner selection.** Agent definitions may set `agents[].runner` to a
+  named runner. It takes invocation precedence over the legacy
+  `agents[].adapter` field. The new `generic-acp` adapter supports custom
+  ACP-compatible executables and requires a runner-supplied
+  `process.executable`.
+- **Portable project runner policy.** `.kspec/project.runners.yaml` supports
+  `runners.<name>.env.set`,
+  `runners.<name>.privacy.disable_nonessential_traffic`, and
+  `runners.<name>.diagnostics.retain_raw_logs` for non-secret values that may
+  travel with the project.
+- **Machine-local runner registry.** The daemon configuration directory stores
+  per-project runner definitions at `projects/<project-key>/runners.yaml`.
+  Machine-local entries support `runners.<name>.kind` (currently `acp_process`),
+  `runners.<name>.adapter`, `runners.<name>.process.executable`,
+  `runners.<name>.process.args`, `runners.<name>.process.cwd`,
+  `runners.<name>.env.inherit` (`ambient`, `minimal`, or `none`; default
+  `minimal`), `runners.<name>.env.pass`, `runners.<name>.env.set`,
+  `runners.<name>.env.secrets.<VAR>.source`,
+  `runners.<name>.env.secrets.<VAR>.required`,
+  `runners.<name>.privacy.disable_nonessential_traffic` (default `true`), and
+  `runners.<name>.diagnostics.retain_raw_logs` (`never`, `on_failure`, or
+  `always`; default `on_failure`). Commands, working directories, inheritance,
+  and secret bindings remain machine-local rather than entering portable
+  project state.
+- **Daemon operations.** `daemon.log_max_size_bytes` controls daemon-log
+  rotation (default 5 MiB), and `daemon.command_timeout_ms` bounds how long a
+  caller waits for daemon command or batch execution (default 120000 ms).
+
+### Breaking changes
+
+- **Existing projects must run `kspec upgrade`.** Plans now live in
   `.kspec/plans/<plan-ulid>/` directories with `plan.md`, `plan.yaml`, optional
   `notes.yaml`, `resources.yaml`, and `resources/`. Reviews live in
   `.kspec/reviews/<review-ulid>/` directories with cohesive `review.yaml`,
   `resources.yaml`, and `resources/`. The project-wide
   `.kspec/project.plans.yaml` and `.kspec/project.reviews.yaml` files remain as
   lean indexes (identity, lifecycle, summary fields, resource summaries) but no
-  longer inline plan markdown, review records, or resource bytes. Existing
-  projects must run `kspec upgrade` to migrate; commands and daemon routes that
-  need folder-backed plan, review, or resource data on an unmigrated project
-  fail with `entity_storage_incompatible`. See
+  longer inline plan markdown, review records, or resource bytes. Run
+  `kspec upgrade` before using v0.15.0 with an existing project. Commands and
+  daemon routes that need folder-backed plan, review, or resource data fail
+  closed with `entity_storage_incompatible` until migration completes. A
+  manifest version newer than the supported 1.2 ceiling, an unrecognized
+  version, or a partial/incompatible layout is rejected before project data is
+  read or mutated; kspec does not guess at forward compatibility. See
   [Upgrading kspec to a New Version](docs/guides/upgrading-kspec.md) and
   [`entity_storage_incompatible` troubleshooting](docs/troubleshooting/entity-storage-incompatible.md).
 
@@ -60,9 +103,10 @@ release workflow before tagging.
   `kspec plan derive --materialize-resources` to copy plan resource bytes into
   each derived task's `.kspec/tasks/<task-ulid>/resources/plan/<plan-ulid>/`
   tree with the id `plan-<resource-id>`.
-- **Daemon resource API** — `GET/POST/DELETE /api/plans/:ref/resources[/:id[/bytes]]`
-  and `GET/POST/DELETE /api/reviews/:ref/resources[/:id[/bytes]]` serve
-  resource metadata and bytes. `POST` accepts `multipart/form-data` with
+- **Daemon resource API** — plan and review resources have GET collection,
+  item, and item `/bytes` routes; POST applies only to the resource collection,
+  and DELETE applies only to an individual resource. `POST` accepts
+  `multipart/form-data` with
   `file`, `id`, `path`, optional `label`/`description`/`content_type`, and an
   optional `replace` field accepting `"true"`/`"1"` or `"false"`/`"0"`. The
   `/bytes` route sets `Content-Type`, `Content-Length`, and the resource's
@@ -118,6 +162,69 @@ release workflow before tagging.
 - **Upgrade rollback reference** — `kspec upgrade` and `kspec upgrade --dry-run`
   now report the previous shadow commit (short SHA captured before any
   mutation) so operators have a deterministic rollback point.
+- **Configurable, validated agent runners.** Layered project and machine-local
+  runner definitions can choose custom executables, arguments, working
+  directories, PATH/environment inheritance, privacy behavior, secret
+  bindings, and diagnostic retention. `kspec agent runners validate` checks the
+  effective registry, while CLI, daemon APIs, dry-run/preflight output,
+  sessions/events, and the Web UI expose the selected runner and resolved
+  adapter. Unknown runners, malformed layers, invalid adapters, paths or
+  arguments, missing required secrets, and unspawnable commands fail before
+  invocation. Secret-looking project literals and process arguments are
+  rejected, and diagnostics and mutation subprocesses are redacted. Existing
+  agents using `adapter` remain compatible; an explicit `--adapter` continues
+  to bypass runner selection.
+- **Durable dispatch lifecycle controls.** Operators can start, pause, resume,
+  or hard-stop dispatch globally, and pause, resume, or hard-stop one task.
+  Pauses hold new admission while active work drains. Hard stops require
+  confirmation (or `--force`), commit stopped authority before cancelling only
+  verified dispatch-owned processes, and prevent a dispatched agent from
+  stopping its own host. Revisioned authority and pending cleanup survive
+  daemon restarts; failed cleanup remains stopped and can be retried at the
+  matching global or task scope. CLI, daemon APIs, lifecycle events, and Web UI
+  controls now distinguish held, queued, active, and cleanup work.
+- **Evidence-preserving recovery.** Pause, resume, and stop preserve session,
+  branch, workspace, worktree, snapshot, and audit evidence; they do not delete
+  workspaces or rewrite task readiness. Recovery and cleanup protect active,
+  held, in-flight, stopped-pending, corrupt, or unverifiable artifacts instead
+  of deleting uncertain state.
+- **Improved daemon operations.** Daemon output is captured in a rotating log;
+  `kspec serve logs` supports tailing, `--lines`, `--follow`, and JSON output.
+  `kspec serve status` reports the log path, latest termination reason, and
+  degraded or stuck command-dispatch health. Timed-out command and batch callers
+  receive structured HTTP 504 `command_timeout` responses without breaking
+  serialized execution. Non-loopback `daemon.connect_host` values now produce
+  a security warning, and packaged Pagefind assets restore local docs search.
+
+### Bug Fixes
+
+- **Current Codex ACP compatibility.** The built-in `codex-acp` adapter now
+  runs pinned `@agentclientprotocol/codex-acp@1.1.2` instead of
+  `@zed-industries/codex-acp@0.12.0`, restoring compatibility with the current
+  Codex ACP integration used for GPT-5.6. When auto-approve is enabled,
+  implicit and named runner-backed invocations use ACP's supported
+  `INITIAL_AGENT_MODE=agent-full-access` environment contract; invocations
+  with auto-approve disabled do not receive it.
+- **Canonical dispatch identity.** Full task ULIDs now govern scheduling,
+  sessions, lifecycle controls, workspace lookup, reviewer targets, and event
+  history. Ambiguous or mismatched aliases fail closed; existing workspace
+  records are normalized when safe and otherwise treated as stale. Plan context
+  and submission-linkage fallback are preserved during provisioning.
+- **Safer workspaces and merges.** Sync and publication stay coherent when an
+  integration target is already checked out. Dirty, auxiliary, ambiguous,
+  in-progress, and untracked-overwrite-hazard targets are refused. Detached
+  reviewer merges can use a temporary target worktree when necessary, with
+  branch locking and conservative cleanup.
+- **Safer recovery and subprocesses.** Shadow restore failures now report the
+  preserved backup, actual filesystem state, and shell-safe recovery commands.
+  Git operations pass dynamic values as literal argument arrays rather than
+  constructing shell commands.
+- **Web UI accessibility and stability.** Active Fleet previews strip ANSI and
+  OSC terminal controls, normal operation no longer emits debug logging, and
+  dashboard counts use server summaries. Plan/task resource markdown renders
+  more reliably in review surfaces. Dispatch lifecycle dialogs preserve focus
+  and announcements, and a pending hard-stop confirmation cannot be dismissed
+  accidentally.
 
 ### Documentation
 
@@ -148,6 +255,29 @@ release workflow before tagging.
   project-local `.kspec/skills/`, project meta conventions). A new project-local
   `shared-guidance-neutrality` reviewer skill encodes the semantic checklist
   reviewers apply to future changes to these shared surfaces.
+- Added agent-runner concept, configuration, migration, validation, and
+  troubleshooting guidance, including the portable-versus-machine-local
+  security boundary.
+- Added dispatch workspace and lifecycle-control guides covering bootstrap,
+  synchronization, cleanup, authority, and restart recovery.
+- Added a frozen public-doc inventory and behavior-bound drift checks, release
+  notes child navigation, and packaged docs-search coverage.
+
+### CI
+
+- `prepack` now performs a complete build. Published artifacts are checked by
+  `verify-package` and clean-source `verify-clean-pack`, and build/test locking
+  prevents concurrent `dist/` rewrites and `npm pack` races.
+- Internal workspace packages are private and remain at their independent
+  0.1.0 versions. CI covers Node 20 and Node 24, and publication requires a
+  complete Node 20 build and test run against one immutable validated release
+  commit.
+- Production dependencies were updated to resolve audit findings, with
+  `file-type` pinned to a Node-20-compatible 21.x release. The production
+  package audit is clean. The repository now includes MIT `LICENSE`,
+  `CONTRIBUTING.md`, and `SECURITY.md` files.
+
+**Full Changelog**: https://github.com/lepahc/kynetic-spec/compare/v0.14.0...v0.15.0
 
 ## v0.14.0
 

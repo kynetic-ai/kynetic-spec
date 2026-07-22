@@ -1,6 +1,6 @@
 {
   "name": "@kynetic-ai/spec",
-  "version": "0.14.0",
+  "version": "0.15.0",
   "description": "Kynetic Spec - Structured specification format for human-AI collaboration",
   "keywords": [
     "agent",
@@ -76,7 +76,7 @@
     "croner": "^10.0.1",
     "diff": "^8.0.3",
     "elysia": "^1.4.28",
-    "js-yaml": "^4.1.0",
+    "js-yaml": "^4.3.0",
     "smol-toml": "^1.6.0",
     "ulid": "^2.3.0",
     "ulidx": "^2.4.1",

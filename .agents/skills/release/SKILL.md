@@ -362,8 +362,17 @@ git push origin --delete v$VERSION
 git tag -d v$VERSION
 # Fix issue and retry from Phase 6
 
-# Option 2: Manually trigger publish
-# Go to Actions tab, run publish workflow manually
+# Option 2: Recover the existing published release through Actions
+# Prerequisite: v$VERSION already names a published, non-draft GitHub release.
+# In Actions > "Publish to npm" > "Run workflow", set:
+#   release-tag: v$VERSION
+#   dry-run: true        # default; reruns every gate without publishing
+# Review the dry-run result first. To actually recover npm publication, rerun
+# with the same release-tag and explicitly set dry-run: false.
+#
+# Both runs fail closed unless the remote tag still resolves to the immutable
+# release commit selected by preflight. Never move or recreate the tag during
+# recovery; a moved tag requires a new version-first release instead.
 ```
 
 **If version PR was merged but you need to abort:**

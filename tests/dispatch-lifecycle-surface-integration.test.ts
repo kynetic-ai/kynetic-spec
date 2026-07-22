@@ -1,5 +1,6 @@
 import { cpSync, rmSync, writeFileSync } from "node:fs";
 import { execFileSync } from "node:child_process";
+import { createServer, type Server } from "node:http";
 import { join } from "node:path";
 import { describe, expect, it, onTestFinished, vi } from "vitest";
 import WsClient from "ws";
@@ -56,6 +57,47 @@ interface SurfaceEvent {
   data: Record<string, unknown>;
 }
 
+function closeServer(server: Server): Promise<void> {
+  return new Promise((resolve, reject) => {
+    server.close((error) => (error ? reject(error) : resolve()));
+  });
+}
+
+async function listenOnLoopback(server: Server): Promise<string> {
+  await new Promise<void>((resolve, reject) => {
+    server.once("error", reject);
+    server.listen(0, "127.0.0.1", resolve);
+  });
+  const address = server.address();
+  if (!address || typeof address === "string") {
+    throw new Error("Failed to resolve request-surface test server address");
+  }
+  return `http://127.0.0.1:${address.port}`;
+}
+
+function requestFixture(
+  apiUrl: string,
+  daemon: {
+    exitCode?: number | null;
+    signalCode?: NodeJS.Signals | null;
+    stdout?: string;
+    stderr?: string;
+  } = {},
+): SurfaceDaemonFixture {
+  return {
+    project: { tempDir: "request-surface-fixture" },
+    daemon: {
+      apiUrl,
+      child: {
+        exitCode: daemon.exitCode ?? null,
+        signalCode: daemon.signalCode ?? null,
+      },
+      stdoutTail: () => daemon.stdout ?? "",
+      stderrTail: () => daemon.stderr ?? "",
+    },
+  } as SurfaceDaemonFixture;
+}
+
 async function createSurfaceDaemonFixture(): Promise<SurfaceDaemonFixture> {
   const project = await createTestDaemonProject({ skipFixtures: true });
   onTestFinished(() => project.cleanup());
@@ -87,20 +129,77 @@ async function createSurfaceDaemonFixture(): Promise<SurfaceDaemonFixture> {
   return { project, daemon, taskId: TASK_ID, taskRef: TASK_REF };
 }
 
-function requestSurface(
+async function requestSurface(
   fixture: SurfaceDaemonFixture,
   route: string,
   body?: Record<string, unknown>,
 ): Promise<Response> {
-  return boundedDaemonFetch(`${fixture.daemon.apiUrl}${route}`, {
-    method: body === undefined ? "GET" : "POST",
-    headers: {
-      "X-Kspec-Dir": fixture.project.tempDir,
-      ...(body === undefined ? {} : { "Content-Type": "application/json" }),
-    },
-    ...(body === undefined ? {} : { body: JSON.stringify(body) }),
-  });
+  try {
+    return await boundedDaemonFetch(`${fixture.daemon.apiUrl}${route}`, {
+      method: body === undefined ? "GET" : "POST",
+      headers: {
+        // This fixture alternates API calls with long synchronous CLI gaps.
+        // Do not leave an Undici-pooled socket idle past the daemon's keep-alive timeout.
+        Connection: "close",
+        "X-Kspec-Dir": fixture.project.tempDir,
+        ...(body === undefined ? {} : { "Content-Type": "application/json" }),
+      },
+      ...(body === undefined ? {} : { body: JSON.stringify(body) }),
+    });
+  } catch (error) {
+    const message = error instanceof Error ? error.message : String(error);
+    const { child } = fixture.daemon;
+    const exitCode =
+      child.exitCode === null
+        ? child.signalCode === null
+          ? "<running>"
+          : "<none>"
+        : String(child.exitCode);
+    throw new Error(
+      `Dispatch lifecycle API fetch ${route} failed: ${message}\n` +
+        `exitCode=${exitCode} ` +
+        `signal=${child.signalCode ?? "<none>"}\n` +
+        // StartedTestDaemon owns capped (~8KB) stream-tail buffers.
+        `stdout-tail:\n${fixture.daemon.stdoutTail() || "<empty>"}\n` +
+        `stderr-tail:\n${fixture.daemon.stderrTail() || "<empty>"}`,
+      { cause: error },
+    );
+  }
 }
+
+describe("dispatch lifecycle request harness", () => {
+  it("closes each HTTP connection instead of pooling it across synchronous CLI gaps", async () => {
+    let connectionHeader: string | undefined;
+    const server = createServer((request, response) => {
+      connectionHeader = request.headers.connection;
+      response.writeHead(200, { "Content-Type": "application/json" });
+      response.end("{}");
+    });
+    onTestFinished(() => closeServer(server));
+    const apiUrl = await listenOnLoopback(server);
+
+    const response = await requestSurface(requestFixture(apiUrl), "/surface-probe");
+    await response.text();
+
+    expect(connectionHeader).toBe("close");
+  });
+
+  it("reports owned daemon exit state and output tails when a fetch fails", async () => {
+    const server = createServer((request) => request.socket.destroy());
+    onTestFinished(() => closeServer(server));
+    const apiUrl = await listenOnLoopback(server);
+    const fixture = requestFixture(apiUrl, {
+      exitCode: null,
+      signalCode: "SIGKILL",
+      stdout: "daemon stdout marker",
+      stderr: "daemon stderr marker",
+    });
+
+    await expect(requestSurface(fixture, "/closed-socket")).rejects.toThrow(
+      /exitCode=<none> signal=SIGKILL[\s\S]*stdout-tail:[\s\S]*daemon stdout marker[\s\S]*stderr-tail:[\s\S]*daemon stderr marker/,
+    );
+  });
+});
 
 function runSurfaceCli(
   fixture: SurfaceDaemonFixture,
