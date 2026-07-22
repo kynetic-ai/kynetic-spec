@@ -5,31 +5,75 @@ on:
     types: [published]
   workflow_dispatch:
     inputs:
+      release-tag:
+        description: "Existing published release tag to verify or recover (vX.Y.Z)"
+        required: true
+        type: string
       dry-run:
-        description: "Dry run (skip actual publish)"
+        description: "Dry run (run every gate but skip npm publish)"
         required: false
-        default: "false"
+        default: true
         type: boolean
 
 jobs:
+  resolve-release:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    outputs:
+      tag: ${{ steps.resolve.outputs.tag }}
+      commit: ${{ steps.resolve.outputs.commit }}
+      version: ${{ steps.resolve.outputs.version }}
+    steps:
+      - name: Checkout release candidate
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event_name == 'release' && github.sha || inputs.release-tag }}
+          fetch-depth: 0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "24"
+          cache: "npm"
+
+      - name: Resolve authoritative release
+        id: resolve
+        env:
+          GH_TOKEN: ${{ github.token }}
+          EVENT_NAME: ${{ github.event_name }}
+          RELEASE_TAG: ${{ github.event_name == 'release' && github.event.release.tag_name || inputs.release-tag }}
+          RELEASE_EVENT_COMMIT: ${{ github.sha }}
+        run: scripts/validate-release.sh resolve
+
   # AC: @prepublish-runtime-verification ac-2
   # Publication is gated on build + test verification at the oldest
   # supported Node.js major version (engines: >=20.0.0).
   verify-min-node:
     runs-on: ubuntu-latest
     name: verify on minimum Node.js
+    needs: resolve-release
+    permissions:
+      contents: read
 
     steps:
-      - name: Checkout code
+      - name: Checkout authoritative release commit
         uses: actions/checkout@v4
         with:
-          ref: main
+          ref: ${{ needs.resolve-release.outputs.commit }}
+          fetch-depth: 0
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: "20"
           cache: "npm"
+
+      - name: Verify authoritative tag binding
+        env:
+          RELEASE_TAG: ${{ needs.resolve-release.outputs.tag }}
+          EXPECTED_COMMIT: ${{ needs.resolve-release.outputs.commit }}
+        run: scripts/validate-release.sh verify
 
       - name: Install dependencies
         run: npm ci
@@ -45,22 +89,29 @@ jobs:
 
   publish:
     runs-on: ubuntu-latest
-    needs: verify-min-node
+    needs: [resolve-release, verify-min-node]
     permissions:
-      contents: read # Required for checkout
+      contents: read # Required for checkout and remote tag validation
       id-token: write # Required for npm trusted publishers (OIDC)
 
     steps:
-      - name: Checkout code
+      - name: Checkout authoritative release commit
         uses: actions/checkout@v4
         with:
-          ref: main
+          ref: ${{ needs.resolve-release.outputs.commit }}
+          fetch-depth: 0
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: "24"
           cache: "npm"
+
+      - name: Verify authoritative tag binding
+        env:
+          RELEASE_TAG: ${{ needs.resolve-release.outputs.tag }}
+          EXPECTED_COMMIT: ${{ needs.resolve-release.outputs.commit }}
+        run: scripts/validate-release.sh verify
 
       - name: Install latest npm
         run: npm install -g npm@latest && npm --version
@@ -85,21 +136,19 @@ jobs:
           npm link
           kspec --version
 
-      - name: Sync version from release tag
-        if: github.event_name == 'release'
-        run: |
-          VERSION="${{ github.event.release.tag_name }}"
-          # Strip leading 'v' if present
-          VERSION="${VERSION#v}"
-          npm version "$VERSION" --no-git-tag-version --allow-same-version
-
       - name: Verify clean-source pack
         run: npm run verify-clean-pack
 
+      - name: Final remote tag-binding check
+        env:
+          RELEASE_TAG: ${{ needs.resolve-release.outputs.tag }}
+          EXPECTED_COMMIT: ${{ needs.resolve-release.outputs.commit }}
+        run: scripts/validate-release.sh verify
+
       - name: Publish to npm
-        if: ${{ github.event.inputs.dry-run != 'true' }}
+        if: github.event_name == 'release' || (github.event_name == 'workflow_dispatch' && inputs.dry-run == false)
         run: npm publish --provenance --access public
 
-      # Note: Version sync to main requires a manual PR due to branch protection rules.
-      # After release, create a PR to update package.json version.
-      # See /release skill for details.
+      # Version and release notes are prepared in the version-first release PR.
+      # The published tag must already match package.json and package-lock.json.
+      # See the release skill for the complete release procedure.
