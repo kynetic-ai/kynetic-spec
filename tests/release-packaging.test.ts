@@ -17,6 +17,7 @@ import { describe, it, expect, afterEach } from "vitest";
 import { spawnSync } from "node:child_process";
 import { mkdirSync, readFileSync, readdirSync, writeFileSync } from "node:fs";
 import { join, dirname, relative } from "node:path";
+import { createRequire } from "node:module";
 import { fileURLToPath } from "node:url";
 import { buildTestSubprocessEnv, cleanupTempDir, createTempDir } from "./helpers/cli";
 import packageJson from "../package.json" with { type: "json" };
@@ -37,6 +38,11 @@ interface PackFileEntry {
 interface PackResult {
   files: PackFileEntry[];
 }
+
+const require = createRequire(import.meta.url);
+const { parsePackJson } = require(VERIFY_PACKAGE_SCRIPT) as {
+  parsePackJson(stdout: string): PackResult[];
+};
 
 /** Run scripts/verify-package.cjs against the package rooted at `cwd`. */
 function runVerifyPackage(cwd: string) {
@@ -180,6 +186,62 @@ describe("Workspace package privacy", () => {
   });
 });
 
+describe("pack JSON output parsing", () => {
+  const packageRecord = {
+    id: "@kynetic-ai/spec@0.15.0",
+    name: "@kynetic-ai/spec",
+    version: "0.15.0",
+    filename: "kynetic-ai-spec-0.15.0.tgz",
+    files: [
+      { path: "LICENSE", size: 1067, mode: 0o644 },
+      { path: "dist/[generated]/index.js", size: 2048, mode: 0o644 },
+    ],
+  };
+
+  it("normalizes npm 11's package array with harmless surrounding log text", () => {
+    const stdout = `npm notice packing\n${JSON.stringify([packageRecord])}\nnpm notice done\n`;
+
+    expect(parsePackJson(stdout)).toEqual([packageRecord]);
+  });
+
+  it("normalizes npm 12's package-name-keyed object without selecting its nested files array", () => {
+    const stdout = JSON.stringify({ "@kynetic-ai/spec": packageRecord }, null, 2);
+
+    expect(parsePackJson(stdout)).toEqual([packageRecord]);
+  });
+
+  it("rejects output without a JSON payload with a clear diagnostic", () => {
+    expect(() => parsePackJson("npm notice packing completed\n")).toThrow(/no JSON payload/i);
+  });
+
+  it("rejects malformed JSON payloads with a clear diagnostic", () => {
+    expect(() => parsePackJson('{"@kynetic-ai/spec":{"files":[}')).toThrow(
+      /malformed JSON payload/i,
+    );
+  });
+
+  it("rejects JSON that contains no package records", () => {
+    expect(() => parsePackJson('{"status":"ok"}')).toThrow(/no package records/i);
+  });
+
+  it("rejects ambiguous output containing multiple package payloads", () => {
+    const arrayPayload = JSON.stringify([packageRecord]);
+    const objectPayload = JSON.stringify({ "@kynetic-ai/spec": packageRecord });
+
+    expect(() => parsePackJson(`${arrayPayload}\n${objectPayload}`)).toThrow(/ambiguous/i);
+  });
+
+  it("rejects a payload containing multiple package records", () => {
+    const otherRecord = { ...packageRecord, name: "other-package", id: "other-package@0.15.0" };
+    const stdout = JSON.stringify({
+      "@kynetic-ai/spec": packageRecord,
+      "other-package": otherRecord,
+    });
+
+    expect(() => parsePackJson(stdout)).toThrow(/ambiguous/i);
+  });
+});
+
 describe("Release packaging", () => {
   // AC: @published-artifact-completeness ac-1
   it("includes LICENSE at the package root when packed for publication", () => {
@@ -195,12 +257,7 @@ describe("Release packaging", () => {
     expect(result.error).toBeUndefined();
     expect(result.status).toBe(0);
 
-    // npm may print notice/log lines to stdout before the JSON array,
-    // so parse from the array's opening bracket.
-    const stdout = result.stdout;
-    const jsonStart = stdout.indexOf("[");
-    expect(jsonStart).toBeGreaterThanOrEqual(0);
-    const parsed = JSON.parse(stdout.slice(jsonStart)) as PackResult[];
+    const parsed = parsePackJson(result.stdout);
 
     const paths = parsed[0].files.map((file) => file.path);
     expect(paths).toContain("LICENSE");

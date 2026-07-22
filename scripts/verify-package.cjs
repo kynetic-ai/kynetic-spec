@@ -53,16 +53,125 @@ function findMissingArtifacts(packedPaths) {
   return problems;
 }
 
+/** Return whether a parsed value has npm's package-record shape. */
+function isPackResult(value) {
+  return (
+    value !== null &&
+    typeof value === "object" &&
+    !Array.isArray(value) &&
+    Array.isArray(value.files) &&
+    value.files.every(
+      (file) =>
+        file !== null &&
+        typeof file === "object" &&
+        !Array.isArray(file) &&
+        typeof file.path === "string",
+    )
+  );
+}
+
+/** Normalize npm <=11's array and npm 12's package-name-keyed object. */
+function normalizePackPayload(value) {
+  if (Array.isArray(value)) {
+    return value.length > 0 && value.every(isPackResult) ? value : null;
+  }
+  if (value !== null && typeof value === "object") {
+    const records = Object.values(value);
+    return records.length > 0 && records.every(isPackResult) ? records : null;
+  }
+  return null;
+}
+
 /**
- * Extract the JSON payload from `npm pack --json` stdout. npm may print
- * notice/log lines around the JSON array, so parse from the first `[`.
+ * Extract balanced top-level object/array candidates without treating brackets
+ * inside JSON strings as structure. Text outside a candidate is ignored so npm
+ * notice lines before or after the payload remain harmless.
+ */
+function extractJsonCandidates(stdout) {
+  const candidates = [];
+  const malformed = [];
+
+  for (let start = 0; start < stdout.length; start += 1) {
+    const opening = stdout[start];
+    if (opening !== "[" && opening !== "{") continue;
+
+    const stack = [opening];
+    let inString = false;
+    let escaped = false;
+    let end = start + 1;
+    let mismatch = false;
+
+    for (; end < stdout.length; end += 1) {
+      const char = stdout[end];
+      if (inString) {
+        if (escaped) {
+          escaped = false;
+        } else if (char === "\\") {
+          escaped = true;
+        } else if (char === '"') {
+          inString = false;
+        }
+        continue;
+      }
+
+      if (char === '"') {
+        inString = true;
+      } else if (char === "[" || char === "{") {
+        stack.push(char);
+      } else if (char === "]" || char === "}") {
+        const expected = char === "]" ? "[" : "{";
+        if (stack.pop() !== expected) {
+          mismatch = true;
+          break;
+        }
+        if (stack.length === 0) break;
+      }
+    }
+
+    if (mismatch || stack.length > 0) {
+      malformed.push(`unbalanced JSON value beginning at character ${start}`);
+      start = end;
+      continue;
+    }
+
+    const text = stdout.slice(start, end + 1);
+    try {
+      candidates.push(JSON.parse(text));
+    } catch (err) {
+      malformed.push(`invalid JSON value beginning at character ${start}: ${err.message}`);
+    }
+    start = end;
+  }
+
+  return { candidates, malformed };
+}
+
+/**
+ * Parse and normalize the package listing from `npm pack --json` stdout.
+ * npm <=11 emits an array; npm 12 emits an object keyed by package name.
  */
 function parsePackJson(stdout) {
-  const jsonStart = stdout.indexOf("[");
-  if (jsonStart < 0) {
-    throw new Error(`npm pack produced no JSON output:\n${stdout}`);
+  const { candidates, malformed } = extractJsonCandidates(stdout);
+  const payloads = candidates.map(normalizePackPayload).filter((value) => value !== null);
+
+  if (payloads.length > 1) {
+    throw new Error(`ambiguous npm pack output: found ${payloads.length} package JSON payloads`);
   }
-  return JSON.parse(stdout.slice(jsonStart));
+  if (payloads.length === 1) {
+    if (payloads[0].length !== 1) {
+      throw new Error(
+        `ambiguous npm pack output: found ${payloads[0].length} package records in one payload`,
+      );
+    }
+    return payloads[0];
+  }
+  if (candidates.length > 0) {
+    throw new Error("npm pack JSON payload contained no package records with valid files entries");
+  }
+  if (malformed.length > 0) {
+    throw new Error(`malformed JSON payload in npm pack output: ${malformed[0]}`);
+  }
+  throw new Error("npm pack produced no JSON payload");
 }
 
 /**
@@ -125,4 +234,10 @@ if (require.main === module) {
   main();
 }
 
-module.exports = { REQUIRED_FILES, REQUIRED_PREFIXES, findMissingArtifacts, parsePackJson };
+module.exports = {
+  REQUIRED_FILES,
+  REQUIRED_PREFIXES,
+  findMissingArtifacts,
+  normalizePackPayload,
+  parsePackJson,
+};
