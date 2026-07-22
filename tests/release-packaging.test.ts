@@ -204,10 +204,42 @@ describe("pack JSON output parsing", () => {
     expect(parsePackJson(stdout)).toEqual([packageRecord]);
   });
 
-  it("normalizes npm 12's package-name-keyed object without selecting its nested files array", () => {
+  it("normalizes npm 12's scoped package-name-keyed object without selecting its nested files array", () => {
     const stdout = JSON.stringify({ "@kynetic-ai/spec": packageRecord }, null, 2);
 
     expect(parsePackJson(stdout)).toEqual([packageRecord]);
+  });
+
+  it("rejects an npm 12-shaped record under an arbitrary log key", () => {
+    expect(() => parsePackJson(JSON.stringify({ status: packageRecord }))).toThrow(
+      /no package records/i,
+    );
+  });
+
+  it("rejects an npm 12 package key that does not match the record name", () => {
+    expect(() => parsePackJson(JSON.stringify({ "@kynetic-ai/other": packageRecord }))).toThrow(
+      /no package records/i,
+    );
+  });
+
+  it.each([
+    ["missing", undefined],
+    ["empty", ""],
+  ])("rejects a package record with a %s name", (_label, name) => {
+    const record = { ...packageRecord, name };
+
+    expect(() => parsePackJson(JSON.stringify([record]))).toThrow(/no package records/i);
+  });
+
+  it.each([
+    ["missing version", { ...packageRecord, version: undefined }],
+    ["empty version", { ...packageRecord, version: "" }],
+    ["missing filename", { ...packageRecord, filename: undefined }],
+    ["empty filename", { ...packageRecord, filename: "" }],
+    ["empty files array", { ...packageRecord, files: [] }],
+    ["empty file path", { ...packageRecord, files: [{ path: "", size: 0, mode: 0o644 }] }],
+  ])("rejects a generic object with %s", (_label, record) => {
+    expect(() => parsePackJson(JSON.stringify([record]))).toThrow(/no package records/i);
   });
 
   it("rejects output without a JSON payload with a clear diagnostic", () => {

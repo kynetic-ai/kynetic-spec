@@ -53,19 +53,28 @@ function findMissingArtifacts(packedPaths) {
   return problems;
 }
 
-/** Return whether a parsed value has npm's package-record shape. */
+/** Return whether a value is a non-empty string. */
+function isNonEmptyString(value) {
+  return typeof value === "string" && value.trim().length > 0;
+}
+
+/** Return whether a parsed value has npm's stable package-record shape. */
 function isPackResult(value) {
   return (
     value !== null &&
     typeof value === "object" &&
     !Array.isArray(value) &&
+    isNonEmptyString(value.name) &&
+    isNonEmptyString(value.version) &&
+    isNonEmptyString(value.filename) &&
     Array.isArray(value.files) &&
+    value.files.length > 0 &&
     value.files.every(
       (file) =>
         file !== null &&
         typeof file === "object" &&
         !Array.isArray(file) &&
-        typeof file.path === "string",
+        isNonEmptyString(file.path),
     )
   );
 }
@@ -75,11 +84,25 @@ function normalizePackPayload(value) {
   if (Array.isArray(value)) {
     return value.length > 0 && value.every(isPackResult) ? value : null;
   }
-  if (value !== null && typeof value === "object") {
-    const records = Object.values(value);
-    return records.length > 0 && records.every(isPackResult) ? records : null;
+  if (value !== null && typeof value === "object" && !Array.isArray(value)) {
+    const entries = Object.entries(value);
+    if (entries.length !== 1) return null;
+
+    const [packageName, record] = entries[0];
+    return isPackResult(record) && packageName === record.name ? [record] : null;
   }
   return null;
+}
+
+/** Return whether an npm 12 object contains multiple identity-bound records. */
+function isMultiRecordObjectPayload(value) {
+  if (value === null || typeof value !== "object" || Array.isArray(value)) return false;
+
+  const entries = Object.entries(value);
+  return (
+    entries.length > 1 &&
+    entries.every(([packageName, record]) => isPackResult(record) && packageName === record.name)
+  );
 }
 
 /**
@@ -153,7 +176,14 @@ function extractJsonCandidates(stdout) {
 function parsePackJson(stdout) {
   const { candidates, malformed } = extractJsonCandidates(stdout);
   const payloads = candidates.map(normalizePackPayload).filter((value) => value !== null);
+  const multiRecordPayloads = candidates.filter(isMultiRecordObjectPayload);
 
+  if (multiRecordPayloads.length > 0) {
+    const recordCount = Object.keys(multiRecordPayloads[0]).length;
+    throw new Error(
+      `ambiguous npm pack output: found ${recordCount} package records in one payload`,
+    );
+  }
   if (payloads.length > 1) {
     throw new Error(`ambiguous npm pack output: found ${payloads.length} package JSON payloads`);
   }
